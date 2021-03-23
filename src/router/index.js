@@ -79,10 +79,113 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   },
+
+
+  {
+    path: '/manage',
+    component: Layout,
+    redirect: '/manage/architec/architec-site',
+    name: 'Manage',
+    meta: {
+      title: '管理中心',
+      icon: 'component'
+    },
+    children: [
+      {
+        path: 'architec',
+        component: () => import('@/views/manage/index'), // Parent router-view
+        name: 'Architec',
+        meta: { title: '架构管理' },
+        alwaysShow: true,
+        redirect: '/manage/architec/architec-site',
+        children: [
+          {
+            path: 'architec-site',
+            component: () => import('@/views/manage/architec/architec-site'),
+            name: 'Architec-site',
+            meta: { title: '站点管理' }
+          }
+        ]
+      },
+      {
+        path: 'staff',
+        component: () => import('@/views/manage/index'), // Parent router-view
+        name: 'Staff',
+        meta: { title: '员工管理' },
+        alwaysShow: true,
+        redirect: '/manage/staff/staff-list',
+        children: [
+          {
+            path: 'staff-list',
+            component: () => import('@/views/manage/staff/staff-list'),
+            name: 'Staff-list',
+            meta: { title: '员工列表' }
+          },
+          {
+            path: 'staff-department',
+            component: () => import('@/views/manage/staff/staff-department'),
+            name: 'Staff-department',
+            meta: { title: '部门管理' }
+          },
+          {
+            path: 'staff-role',
+            component: () => import('@/views/manage/staff/staff-role'),
+            name: 'Staff-role',
+            meta: { title: '角色管理' }
+          },
+        ]
+      },
+      {
+        path: 'user',
+        component: () => import('@/views/manage/index'), // Parent router-view
+        name: 'User',
+        meta: { title: '用户管理' },
+        alwaysShow: true,
+        redirect: '/manage/user/user-list',
+        children: [
+          {
+            path: 'user-list',
+            component: () => import('@/views/manage/user/user-list'),
+            name: 'User-list',
+            meta: { title: '用户列表' }
+          }
+        ]
+      },
+      {
+        path: 'system',
+        component: () => import('@/views/manage/index'), // Parent router-view
+        name: 'System',
+        meta: { title: '系统设置' },
+        alwaysShow: true,
+        redirect: '/manage/system/system-sensitword',
+        children: [
+          {
+            path: 'system-sensitword',
+            component: () => import('@/views/manage/system/system-sensitword'),
+            name: 'System-sensitword',
+            meta: { title: '敏感词管理' }
+          }
+        ]
+      },
+    ]
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -171,18 +274,18 @@ export const asyncRoutes = [
     ]
   },
 
-  {
-    path: '/icon',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/icons/index'),
-        name: 'Icons',
-        meta: { title: 'Icons', icon: 'icon', noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/icons/index'),
+  //       name: 'Icons',
+  //       meta: { title: 'Icons', icon: 'icon', noCache: true }
+  //     }
+  //   ]
+  // },
 
   /** when your routing map is too long, you can split it into small modules **/
   // componentsRouter,
@@ -190,37 +293,37 @@ export const asyncRoutes = [
   // nestedRouter,
   // tableRouter,
 
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
-    meta: {
-      title: 'Example',
-      icon: 'el-icon-s-help'
-    },
-    children: [
-      {
-        path: 'create',
-        component: () => import('@/views/example/create'),
-        name: 'CreateArticle',
-        meta: { title: 'Create Article', icon: 'edit' }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/example/edit'),
-        name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
-        hidden: true
-      },
-      {
-        path: 'list',
-        component: () => import('@/views/example/list'),
-        name: 'ArticleList',
-        meta: { title: 'Article List', icon: 'list' }
-      }
-    ]
-  },
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/list',
+  //   name: 'Example',
+  //   meta: {
+  //     title: 'Example',
+  //     icon: 'el-icon-s-help'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'create',
+  //       component: () => import('@/views/example/create'),
+  //       name: 'CreateArticle',
+  //       meta: { title: 'Create Article', icon: 'edit' }
+  //     },
+  //     {
+  //       path: 'edit/:id(\\d+)',
+  //       component: () => import('@/views/example/edit'),
+  //       name: 'EditArticle',
+  //       meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/views/example/list'),
+  //       name: 'ArticleList',
+  //       meta: { title: 'Article List', icon: 'list' }
+  //     }
+  //   ]
+  // },
 
   // {
   //   path: '/tab',

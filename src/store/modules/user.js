@@ -67,7 +67,7 @@ const actions = {
         const data = {
           roles: ['1570006493'],
           introduction:'aaaaa',
-          avatar:'https://www.baidu.com',
+          avatar:'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
           name:'zy'
         }
         if (!data) {
