@@ -33,12 +33,14 @@
           <el-button
             size="mini"
             type="text"
+            style="color:#E6A23C;"
             icon="el-icon-edit"
             @click="editdata(scope.row)"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
+            style="color:#F56C6C;"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
           >删除</el-button>
@@ -79,7 +81,7 @@ import {
   deletearrPermissions} from '@/api/manage'
 
   export default {
-    name: 'staff-role',
+    name: 'staff-jurisdiction',
     data() {
       return {
         loading:true,

@@ -1,50 +1,48 @@
 <template>
-  <div class="staff-role">
-    <el-form ref="queryForm" :model="queryParams" :inline="true">
-        <el-form-item label="角色：" prop="name">
-          <el-input
-            v-model="queryParams.name"
-            placeholder="请输入关键字"
-            clearable
-            size="small"
-            style="width: 240px"
-          />
-        </el-form-item>
-        <el-form-item label="创建时间：" prop="creattime"  style="margin-right:50px;">
-          <el-date-picker
-            v-model="queryParams.creattime"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions">
-          </el-date-picker>
-        </el-form-item>
+  <div class="staff-jurisdiction">
+    <el-form ref="queryForm" :inline="true">
         <el-form-item>
-            <el-button type="info" @click="resetqueryParams" size="mini" >重置</el-button>
-            <el-button type="primary" style="margin-right:50px;" size="mini">搜索</el-button>
-            <el-button type="primary" @click="addAuthority" size="mini" >添加</el-button>
+            <el-button type="primary" @click="adddata(0)" size="mini" >新增</el-button>
+            <el-button :disabled="multipleSelection.length<1" @click="delarrdata" type="danger" size="mini" >批量删除</el-button>
+            <el-button :disabled="multipleSelection.length!=1" @click="editdata" type="warning" size="mini" >修改</el-button>
         </el-form-item>
     </el-form>
 
-    <el-table border v-loading="loading" :data="dataList">
-      <el-table-column label="角色id" align="center" prop="id" />
-      <el-table-column label="角色名称" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column label="创建时间" align="center" prop="updateAt" :show-overflow-tooltip="true" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+    <el-table 
+      border 
+      v-loading="loading" 
+      :data="dataList" 
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column label="id" align="center" prop="id" />
+      <el-table-column label="名称" align="center" prop="name" :show-overflow-tooltip="true" />
+      <el-table-column label="显示名称" align="center" prop="remarks" :show-overflow-tooltip="true" />
+      <el-table-column label="site-id" align="center" prop="site_id" :show-overflow-tooltip="true" />
+      <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
+      <el-table-column label="更新时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
+      <el-table-column label="操作" align="center" width="200px">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
+            style="color:#E6A23C;"
             icon="el-icon-edit"
-            @click="editAuthority(scope.row)"
-          >修改</el-button>
+            v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'"
+            @click="editdata(scope.row)"
+          >编辑</el-button>
           <el-button
             size="mini"
             type="text"
+            style="color:#67C23A;"
+            icon="el-icon-edit"
+            @click="editjurisdiction(scope.row)"
+          >权限</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            style="color:#F56C6C;"
             icon="el-icon-delete"
+            v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'"
             @click="handleDelete(scope.row)"
           >删除</el-button>
         </template>
@@ -53,16 +51,21 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.pageIndex"
+      :page.sync="queryParams.page"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
-    <!-- 新增角色弹窗 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="rules" ref="authorityForm">
-        <el-form-item label="角色姓名" prop="authorityName">
-          <el-input style="width: 300px" autocomplete="off" placeholder="请输入角色名称" v-model="form.authorityName"></el-input>
+    <!-- 新增/修改角色弹窗 -->
+    <el-dialog width="600px" :title="dialogTitle" :visible.sync="dialogFormVisible">
+      <el-form :model="form" :rules="rules" ref="dataFrom">
+        <el-form-item label-width="100px" label="角色名称" prop="name">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入角色名称" v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label-width="100px" label="显示名称" prop="remarks">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入显示名称" v-model="form.remarks"></el-input>
+        </el-form-item>
+        <el-form-item label-width="100px" v-if="dialogType=='add'" label="site-id" prop="site_id">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入当前角色的site-id" v-model="form.site_id"></el-input>
         </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
@@ -71,89 +74,204 @@
       </div>
     </el-dialog>
 
-
+    <!-- 权限抽屉 -->
+    <el-drawer
+      :visible.sync="drawer" :with-header="false" size="40%" title="角色配置" v-if="drawer"
+    >
+      <el-tabs class="role-box" type="border-card">
+        <el-tab-pane label="角色菜单">
+          <div class="clearflex">
+            <el-button class="fl-right" size="small" type="primary">确 定</el-button>
+          </div>
+          <el-tree
+            :data="treedata"
+            :default-checked-keys="treechoosedata"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            ref="tree"
+            highlight-current
+            :props="defaultProps">
+          </el-tree>
+        </el-tab-pane>
+      </el-tabs>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import { 
+  getRole,
+  addroles,
+  editroles,
+  delroles,
+  deletearrRoles,
+  getrolepermission
+  } from '@/api/manage'
+
   export default {
     name: 'staff-role',
     data() {
       return {
         // 查询参数
         queryParams: {
-          pageIndex: 1,
+          page: 1,
           pageSize: 10,
-          name: undefined,
-          creattime:'',
-        },
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近七天',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三十天',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近九十天',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
         },
         loading:true,
-        dataList:[{
-          id:'1',
-        }],
-        // 总条数
-        total: 0,
+        dataList:[],
         dialogFormVisible: false,
         form: {
-          authorityName: "",
+          name: "",
+          remarks:"",
+          site_id:""
         },
         rules: {
-          authorityName: [
-            { required: true, message: "请输入角色名", trigger: "blur" }
+          name: [
+            { required: true, message: "请输入角色名称", trigger: "blur" },
+          ],
+          remarks: [
+            { required: true, message: "请输入显示名称", trigger: "blur" },
           ]
         },
         dialogType: "add",
-        dialogTitle:''
+        dialogTitle:'',
+        multipleSelection:[],//选中数组
+        total:0,
+        drawer: true,
+
+        treedata: [],
+        treechoosedata: [],
+        defaultProps: {
+          children: 'children',
+          label: 'remarks'
+        }
       }
     },
     created() {
       this.getList();
+      this.getownrolelist();
     },
     methods:{
-      /** 搜索按钮操作 */
-      handleQuery() {
-        this.queryParams.pageIndex = 1
-      },
       getList(){
-        this.loading = false;
+        var data={};
+        data.model = 'Role';
+        getRole(Object.assign(data,this.queryParams)).then(response => {
+          this.loading = false;
+          this.dataList = response.data;
+          this.total = response.total;
+        })
       },
-      handleDelete(){
-
+      // 表格选中变化
+      handleSelectionChange(val){
+        this.multipleSelection = val;
       },
-      resetqueryParams(){
-        this.queryParams = {
-          pageIndex: 1,
-          pageSize: 10,
-          name: undefined,
-          creattime:'',
+      getownrolelist(){
+        getrolepermission().then(response => {
+          this.treedata = response.data;
+          var _treedata = JSON.parse(JSON.stringify(this.treedata));
+          console.log(_treedata)
+          var c_arr= [];
+          function getdata(arr){
+            for(var i=0;i<arr.length;i++){
+              if(arr[i].children){
+                console.log(1)
+                c_arr.concat(arr[i])
+              }
+            }
+          }
+          getdata(_treedata)
+          console.log(c_arr)
+        })
+      },
+      // 权限修改
+      editjurisdiction(){
+        this.drawer = true
+      },
+      // 初始化表单
+      initForm() {
+        if (this.$refs.dataFrom) {
+          this.$refs.dataFrom.resetFields();
         }
+        this.form = {
+          name: "",
+          remarks:"",
+          site_id:""
+        };
+      },
+      // 增加角色
+      adddata() {
+        this.initForm();
+        this.dialogTitle = "新增角色";
+        this.dialogType = "add";
+        this.dialogFormVisible = true;
+      },
+      // 编辑角色
+      editdata(row) {
+        var row = this.multipleSelection[0]||row;
+        this.initForm();
+        this.form = JSON.parse(JSON.stringify(row));
+        this.dialogTitle = "编辑角色";
+        this.dialogType = "edit";
+        this.dialogFormVisible = true;
+      },
+      //删除角色
+      handleDelete(row){
+        this.$confirm('此操作将永久删除id为'+row.id+'的角色, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delroles(row.id).then(response => {
+            if (response.status_code >= 200 && response.status_code < 300) {
+                this.$message({
+                  message: response.message,
+                  type: 'success'
+                });
+                this.getList();
+            }else {
+                this.$message({
+                  message: response.message,
+                  type: 'warning'
+                });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
+      //批量删除
+      delarrdata(){
+        var data=this.multipleSelection.map((obj)=>{return obj.id}).join(",");
+          // console.log(data)
+        this.$confirm('此操作将永久删除id为'+data+'的角色, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deletearrRoles(data).then(response => {
+            if (response.status_code >= 200 && response.status_code < 300) {
+                this.$message({
+                  message: response.message,
+                  type: 'success'
+                });
+                this.getList();
+            }else {
+                this.$message({
+                  message: response.message,
+                  type: 'warning'
+                });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       },
       // 关闭窗口
       closeDialog() {
@@ -162,38 +280,74 @@
       },
       // 确定弹窗
       enterDialog() {
-        this.dialogFormVisible = false;
-      },
-      // 初始化表单
-      initForm() {
-        if (this.$refs.authorityForm) {
-          this.$refs.authorityForm.resetFields();
-        }
-        this.form = {
-          authorityName: ""
-        };
-      },
-      // 增加角色
-      addAuthority() {
-        this.initForm();
-        this.dialogTitle = "新增角色";
-        this.dialogType = "add";
-        this.dialogFormVisible = true;
-      },
-      // 编辑角色
-      editAuthority(row) {
-        this.dialogTitle = "编辑角色";
-        this.dialogType = "edit";
-        for (let key in this.form) {
-          this.form[key] = row[key];
-        }
-        this.dialogFormVisible = true;
+        this.$refs["dataFrom"].validate((valid) => {
+          if (!valid) return;
+          if (this.dialogType=='edit') {
+            //修改
+            editroles(this.form.id,this.form).then(response => {
+              if (response.status_code >= 200 && response.status_code < 300) {
+                  this.$message({
+                    message: response.message,
+                    type: 'success'
+                  });
+                  this.dialogFormVisible = false;
+                  this.getList();
+              }else {
+                  this.$message({
+                    message: response.message,
+                    type: 'warning'
+                  });
+              }
+            })
+          }else{
+            //新增
+            addroles(this.form).then(response => {
+              if (response.status_code >= 200 && response.status_code < 300) {
+                  this.$message({
+                    message: response.message,
+                    type: 'success'
+                  });
+                  this.dialogFormVisible = false;
+                  this.getList();
+              }else {
+                  this.$message({
+                    message: response.message,
+                    type: 'warning'
+                  });
+              }
+            })
+          }
+        })
       }
     }
   }
 
 </script>
+<style scoped>
+.clearflex {
+    *zoom: 1;
+}
 
-<style scoped lang="scss">
+.clearflex:after {
+    content: '';
+    display: block;
+    height: 0;
+    visibility: hidden;
+    clear: both;
+}
+
+.fl-right{
+  float: right;
+}
+
+
+</style>
+<style lang="scss">
+.role-box {
+  .el-tabs__content {
+    height: calc(100vh - 150px);
+    overflow: auto;
+  }
+}
 
 </style>
