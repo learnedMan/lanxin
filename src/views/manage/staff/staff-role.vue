@@ -38,7 +38,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-circle-check"
+            icon="el-icon-edit"
             @click="editAuthority(scope.row)"
           >修改</el-button>
           <el-button
