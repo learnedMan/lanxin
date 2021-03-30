@@ -81,12 +81,15 @@
       <el-tabs class="role-box" type="border-card">
         <el-tab-pane label="角色菜单">
           <div class="clearflex">
-            <el-button class="fl-right" size="small" type="primary">确 定</el-button>
+            <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
+            <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
           </div>
           <el-tree
             :data="treedata"
             :default-checked-keys="treechoosedata"
             show-checkbox
+            :check-strictly="true"
+            @check-change = "checkChange"
             default-expand-all
             node-key="id"
             ref="tree"
@@ -106,7 +109,8 @@ import {
   editroles,
   delroles,
   deletearrRoles,
-  getrolepermission
+  getrolepermission,
+  assignrolepermission
   } from '@/api/manage'
 
   export default {
@@ -138,19 +142,19 @@ import {
         dialogTitle:'',
         multipleSelection:[],//选中数组
         total:0,
-        drawer: true,
+        drawer: false,
 
         treedata: [],
         treechoosedata: [],
         defaultProps: {
           children: 'children',
           label: 'remarks'
-        }
+        },
+        chooseid:undefined
       }
     },
     created() {
       this.getList();
-      this.getownrolelist();
     },
     methods:{
       getList(){
@@ -166,27 +170,89 @@ import {
       handleSelectionChange(val){
         this.multipleSelection = val;
       },
-      getownrolelist(){
-        getrolepermission().then(response => {
+      //权限切换选中
+      checkChange(data,b,c){
+        Array.prototype.remove = function(val) {
+          var index = this.indexOf(val);
+            if (index > -1) {
+            this.splice(index, 1);
+          }
+        };
+        let thisNode = this.$refs.tree.getNode(data.id) // 获取当前节点
+        var keys = this.$refs.tree.getCheckedKeys() // 获取已勾选节点的key值
+        if (b) { // 当前节点若被选中
+          for (let i = thisNode.level; i > 1; i--) { // 判断是否有父级节点
+            if (!thisNode.parent.checked) { // 父级节点未被选中，则将父节点替换成当前节点，往上继续查询，并将此节点key存入keys数组
+              thisNode = thisNode.parent
+              keys.push(thisNode.data.id)
+            }
+          }
+          // if(thisNode.childNodes){
+          //   for(var i=0;i<thisNode.childNodes.length;i++){
+          //     keys.push(thisNode.childNodes[i].key)
+          //   }
+          // }
+        }else{
+          if(thisNode.childNodes){
+            for(var i=0;i<thisNode.childNodes.length;i++){
+              keys.remove(thisNode.childNodes[i].key)
+            }
+          }
+        }
+        this.$refs.tree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
+      },
+      cancelrole(){
+        this.drawer = false;
+      },
+      //确定权限
+      surerole(){
+        var keys = this.$refs.tree.getCheckedKeys() // 获取已勾选节点的key值
+        var data = keys.map((obj)=>{return obj}).join(",");
+        assignrolepermission(this.chooseid,data).then(response =>{
+          if (response.status_code >= 200 && response.status_code < 300) {
+                this.$message({
+                  message: response.message,
+                  type: 'success'
+                });
+                this.getList();
+                this.drawer = false;
+            }else {
+                this.$message({
+                  message: response.message,
+                  type: 'warning'
+                });
+            }
+          // console.log(response)
+        })
+      },
+      // 权限修改、出来弹框
+      editjurisdiction(row){
+        this.treechoosedata = [];
+        this.treedata = [];
+        this.drawer = true;
+        this.chooseid = row.id;
+        getrolepermission(row.id).then(response => {
           this.treedata = response.data;
           var _treedata = JSON.parse(JSON.stringify(this.treedata));
-          console.log(_treedata)
           var c_arr= [];
           function getdata(arr){
             for(var i=0;i<arr.length;i++){
-              if(arr[i].children){
-                console.log(1)
-                c_arr.concat(arr[i])
+              c_arr=c_arr.concat(arr[i])
+              if(!arr[i].children){
+              }else{
+                getdata(arr[i].children)
               }
             }
           }
           getdata(_treedata)
-          console.log(c_arr)
+          for(var i=0;i<c_arr.length;i++){
+            if(c_arr[i].own){
+              this.treechoosedata.push(c_arr[i].id)
+            }
+          }
+          // console.log(c_arr)
+          // console.log(_treedata)
         })
-      },
-      // 权限修改
-      editjurisdiction(){
-        this.drawer = true
       },
       // 初始化表单
       initForm() {

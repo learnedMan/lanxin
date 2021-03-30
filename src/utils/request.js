@@ -44,10 +44,10 @@ service.interceptors.response.use(response => {
       duration:3000,
       type: "error"
   });
-if (error.response.status == 401) {
-  sessionStorage.removeItem('token');
-  location.href = '/login';
-}
+  if (error.response.status == 401) {
+    sessionStorage.removeItem('token');
+    location.href = '/login';
+  }
   return Promise.reject(error);
 })
 

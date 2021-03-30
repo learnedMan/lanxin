@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 
+// 权限
 export function getAllPermissions() {
     return request({
       url: '/api/permissions/getAllPermissions',
@@ -46,6 +47,7 @@ export function deletearrPermissions(data) {
   })
 }
 
+// 角色
 export function getRole(query) {
   return request({
     url: '/api/system/data',
@@ -85,9 +87,26 @@ export function deletearrRoles(data) {
   })
 }
 
-export function getrolepermission() {
+export function getrolepermission(id) {
   return request({
-    url: '/api/roles/1/permission',
+    url: '/api/roles/'+id+'/permission',
     method: 'get'
+  })
+}
+
+export function assignrolepermission(id,data) {
+  return request({
+    url: '/api/roles/'+id+'/assignPermission',
+    method: 'post',
+    params:{"permissions":data}
+  })
+}
+
+// 用户
+export function getUser(query) {
+  return request({
+    url: '/api/system/data',
+    method: 'get',
+    params:query
   })
 }

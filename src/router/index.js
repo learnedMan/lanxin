@@ -172,6 +172,24 @@ export const constantRoutes = [
         ]
       },
     ]
+  },
+  {
+    path: '/mbh',
+    component: Layout,
+    redirect: '/mbh/index',
+    name: 'MBH',
+    meta: {
+      title: '模板化',
+      icon: 'component'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/mbh/index'), // Parent router-view
+        name: 'index',
+        meta: { title: '模板化首页' },
+      }
+    ]
   }
 
 

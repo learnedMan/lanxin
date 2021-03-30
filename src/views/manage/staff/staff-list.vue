@@ -1,107 +1,80 @@
 <template>
   <div class="staff-staff">
     <el-form ref="queryForm" :model="queryParams" :inline="true">
-        <el-form-item label="姓名：" prop="name">
+        <el-form-item label="关键字：">
           <el-input
-            v-model="queryParams.name"
+            v-model="queryParams.keyword"
             placeholder="请输入关键字"
             clearable
             size="small"
             style="width: 200px"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="手机号：" prop="mobile">
-          <el-input
-            v-model="queryParams.mobile"
-            placeholder="请输入手机号"
-            clearable
-            size="small"
-            style="width: 200px"
-          />
-        </el-form-item>
-        <el-form-item label="角色：" prop="role">
-          <el-select v-model="queryParams.role" placeholder="请选择">
-            <el-option
-              v-for="item in roleoptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态：" prop="status">
-          <el-select v-model="queryParams.status" placeholder="请选择">
-            <el-option
-              v-for="item in statusoptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="创建时间：" prop="creattime">
-          <el-date-picker
-            v-model="queryParams.creattime"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="上次登录时间：" prop="endlogintime"  style="margin-right:50px;">
-          <el-date-picker
-            v-model="queryParams.endlogintime"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions">
-          </el-date-picker>
         </el-form-item>
         <el-form-item>
-            <el-button type="info" @click="resetqueryParams" size="mini" >重置</el-button>
-            <el-button type="primary" style="margin-right:50px;" size="mini">搜索</el-button>
-            <el-button type="primary" @click="addAuthority" size="mini" >添加</el-button>
+            <el-button type="primary" @click="handleQuery" style="margin-right:50px;" size="mini">搜索</el-button>
+            <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
             <el-button type="success" :disabled="multipleSelection.length==0" size="mini" >批量启用</el-button>
-            <el-button type="success" :disabled="multipleSelection.length==0" size="mini" >批量禁用</el-button>
-            <el-button type="success" :disabled="multipleSelection.length==0" size="mini" >批量离职</el-button>
+            <el-button type="warning" :disabled="multipleSelection.length==0" size="mini" >批量禁用</el-button>
+            <el-button type="danger" :disabled="multipleSelection.length==0" size="mini" >批量离职</el-button>
         </el-form-item>
     </el-form>
 
-    <el-table border v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
+    <el-table 
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      border v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="头像" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column label="姓名" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column label="手机号" align="center" prop="id" :show-overflow-tooltip="true" />
+      <el-table-column label="头像" width="80px" align="center" prop="avatar" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <img :src="scope.row.avatar||useravatar" alt="" style="width: 50px;height: 50px;border-radius: 50%;">
+        </template>
+      </el-table-column>
+      <el-table-column label="姓名" align="center" prop="name" :show-overflow-tooltip="true" />
+      <el-table-column label="手机号" align="center" prop="phone" :show-overflow-tooltip="true" />
+      <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
       <el-table-column 
         label="状态" 
         align="center" 
-        prop="id" 
+        prop="status" 
         :show-overflow-tooltip="true" >
         <template slot-scope="scope">
-          
+          <el-select @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
+            <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column label="上次登录时间" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
+      <el-table-column label="上次登录时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
+      <el-table-column width="240px" label="操作" align="center">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="editAuthority(scope.row)"
+            style="color:#E6A23C;"
+            @click="editdata(scope.row)"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-thumb"
+            style="color:#67C23A;"
+            @click="editdata(scope.row)"
+          >权限</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-s-custom"
+            @click="editdata(scope.row)"
+          >角色</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-delete"
+            style="color:#F56C6C;"
             @click="handleDelete(scope.row)"
           >删除</el-button>
         </template>
@@ -110,85 +83,84 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.pageIndex"
+      :page.sync="queryParams.page"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
     <!-- 新增/修改员工弹窗 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="rules" ref="authorityForm">
-        <el-form-item label="员工姓名" prop="authorityName">
-          <el-input style="width: 300px" autocomplete="off" placeholder="请输入姓名" v-model="form.authorityName"></el-input>
+    <el-dialog width="600px" :title="dialogTitle" :visible.sync="dialogFormVisible">
+      <el-form :model="form" :rules="rules" ref="dataForm">
+        <el-form-item  label-width="100px" label="员工姓名" prop="dataName">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入姓名" v-model="form.dataName"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="100px" label="头像：" prop="headImg">
+          <el-upload
+            class="avatar-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item  label-width="100px" label="手机号" prop="dataName">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入姓名" v-model="form.dataName"></el-input>
         </el-form-item>
       </el-form>
+      
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeDialog">取 消</el-button>
         <el-button @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
-
-
   </div>
 </template>
 
 <script>
+import { 
+  getRole,
+  addroles,
+  editroles,
+  delroles,
+  deletearrRoles,
+  getrolepermission,
+  assignrolepermission,
+  getUser
+  } from '@/api/manage'
+
   export default {
-    name: 'staff-role',
+    name: 'staff-list',
     data() {
       return {
+        useravatar: require('@/assets/c_images/useravatar.jpg'),
+        imageUrl: '',
         // 查询参数
         queryParams: {
-          pageIndex: 1,
+          page: 1,
           pageSize: 10,
-          name: undefined,
-          mobile:'',
-          role:'',
-          status:'',
-          creattime:'',
-          endlogintime:''
-        },
-        roleoptions:[],
-        statusoptions:[],
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近七天',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三十天',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近九十天',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+          keyword:""
         },
         loading:true,
-        dataList:[{
-          id:'1',
-        }],
+        dataList:[],
         // 总条数
         total: 0,
+        statusoptions: [{
+          value: '1',
+          label: '启用'
+        },{
+          value: '2',
+          label: '禁用'
+        },{
+          value: '0',
+          label: '离职'
+        }],
         dialogFormVisible: false,
         form: {
-          authorityName: "",
+          dataName: "",
         },
         rules: {
-          authorityName: [
+          dataName: [
             { required: true, message: "请输入员工姓名", trigger: "blur" }
           ]
         },
@@ -201,27 +173,48 @@
       this.getList();
     },
     methods:{
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+        console.log(this.imageUrl)
+        console.log(file)
+
+      },
+      beforeAvatarUpload(file) {
+        const isLt = file.size / 1024 / 1024 < 20;
+        if (!isLt) {
+          this.$message.error('上传头像图片大小不能超过 20MB!');
+        }
+        return isLt;
+      },
+
+
+
       /** 搜索按钮操作 */
       handleQuery() {
-        // this.queryParams.pageIndex = 1
+        this.loading = true;
+        this.queryParams.page = 1;
+        this.getList();
       },
       getList(){
-        this.loading = false;
+        var data={};
+        data.model = 'User';
+        getUser(Object.assign(data,this.queryParams)).then(response => {
+          this.loading = false;
+          this.dataList = response.data;
+          this.total = response.total;
+        })
+      },
+      statuschange(data){
+        // console.log(data)
+      },
+      adddata(){
+        this.initForm();
+        this.dialogTitle = "新增用户";
+        this.dialogType = "add";
+        this.dialogFormVisible = true;
       },
       handleDelete(){
 
-      },
-      resetqueryParams(){
-        this.queryParams={
-          pageIndex: 1,
-          pageSize: 10,
-          name: undefined,
-          mobile:'',
-          role:'',
-          status:'',
-          creattime:'',
-          endlogintime:'',
-        }
       },
       // 关闭窗口
       closeDialog() {
@@ -234,22 +227,15 @@
       },
       // 初始化表单
       initForm() {
-        if (this.$refs.authorityForm) {
-          this.$refs.authorityForm.resetFields();
+        if (this.$refs.dataForm) {
+          this.$refs.dataForm.resetFields();
         }
         this.form = {
-          authorityName: ""
+          dataName: ""
         };
       },
-      // 增加员工
-      addAuthority() {
-        this.initForm();
-        this.dialogTitle = "新增员工";
-        this.dialogType = "add";
-        this.dialogFormVisible = true;
-      },
       // 编辑员工
-      editAuthority(row) {
+      editdata(row) {
         this.dialogTitle = "编辑员工";
         this.dialogType = "edit";
         for (let key in this.form) {
@@ -260,9 +246,33 @@
       // 表格选中变化
       handleSelectionChange(val){
         this.multipleSelection = val;
-        console.log(val)
       }
     }
   }
 
 </script>
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+</style>
