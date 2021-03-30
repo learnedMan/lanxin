@@ -110,3 +110,26 @@ export function getUser(query) {
     params:query
   })
 }
+
+export function uploadImg(data) {
+  return request({
+    url: '/api/upload/image',
+    method: 'post',
+    data:data
+  })
+}
+
+export function getChannels() {
+  return request({
+    url: '/api/channels',
+    method: 'get'
+  })
+}
+
+export function addusers(data) {
+  return request({
+    url: '/api/users',
+    method: 'post',
+    data:data
+  })
+}

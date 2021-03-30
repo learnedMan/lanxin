@@ -17,7 +17,7 @@
             <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
             <el-button type="success" :disabled="multipleSelection.length==0" size="mini" >批量启用</el-button>
             <el-button type="warning" :disabled="multipleSelection.length==0" size="mini" >批量禁用</el-button>
-            <el-button type="danger" :disabled="multipleSelection.length==0" size="mini" >批量离职</el-button>
+            <el-button type="danger" :disabled="multipleSelection.length==0" size="mini" >批量冻结</el-button>
         </el-form-item>
     </el-form>
 
@@ -88,24 +88,63 @@
       @pagination="getList"
     />
     <!-- 新增/修改员工弹窗 -->
-    <el-dialog width="600px" :title="dialogTitle" :visible.sync="dialogFormVisible">
+    <el-dialog width="700px" :title="dialogTitle" :visible.sync="dialogFormVisible">
+      <el-dialog
+        width="600px"
+        title="栏目权限"
+        :visible.sync="innerVisible"
+        :show-close = false
+        :close-on-click-modal = false
+        :close-on-press-escape = false
+        append-to-body>
+        <el-tree
+            :data="channeltree"
+            :default-checked-keys="channeltreechoose"
+            show-checkbox
+            :check-strictly="true"
+            @check-change = "checkChange"
+            default-expand-all
+            node-key="id"
+            ref="tree"
+            highlight-current
+            :props="defaultProps">
+          </el-tree>
+          <div class="dialog-footer" slot="footer">
+            <el-button @click="innercloseDialog">取 消</el-button>
+            <el-button @click="innerenterDialog" type="primary">确 定</el-button>
+          </div>
+      </el-dialog>
       <el-form :model="form" :rules="rules" ref="dataForm">
-        <el-form-item  label-width="100px" label="员工姓名" prop="dataName">
-          <el-input style="width: 300px" autocomplete="off" placeholder="请输入姓名" v-model="form.dataName"></el-input>
+        <el-form-item  label-width="120px" label="用户姓名" prop="name">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入姓名" v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item  label-width="100px" label="头像：" prop="headImg">
+        <el-form-item  label-width="120px" label="头像："  prop="avatar">
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :action="VUE_APP_BASE_API+'/api/upload/image'"
+            :headers="importHeaders"
+            name="image"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-if="form.avatar" :src="form.avatar" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item  label-width="100px" label="手机号" prop="dataName">
-          <el-input style="width: 300px" autocomplete="off" placeholder="请输入姓名" v-model="form.dataName"></el-input>
+        <el-form-item  label-width="120px" label="手机号" prop="phone">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入手机号" v-model="form.phone"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="邮箱" prop="email">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入邮箱" v-model="form.email"></el-input>
+        </el-form-item>
+        <el-form-item el-form-item  label-width="120px" label="设置栏目权限">
+           <el-button size="mini" @click="showchannel" type="success">权限</el-button>
+        </el-form-item>
+        <el-form-item v-if="dialogType=='edit'" el-form-item  label-width="120px" label="是否启用" prop="status">
+          <el-select v-model="form.status" placeholder="请选择">
+            <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       
@@ -119,22 +158,27 @@
 
 <script>
 import { 
-  getRole,
-  addroles,
-  editroles,
-  delroles,
-  deletearrRoles,
-  getrolepermission,
-  assignrolepermission,
-  getUser
+  getUser,
+  getChannels,
+  addusers
   } from '@/api/manage'
 
   export default {
     name: 'staff-list',
     data() {
+      var mytoken = sessionStorage.getItem('token');
       return {
         useravatar: require('@/assets/c_images/useravatar.jpg'),
+        importHeaders: {Authorization: mytoken},
         imageUrl: '',
+        innerVisible:false,
+        defaultProps: {
+          children: 'children',
+          label: 'name'
+        },
+        channeltree:[],
+        channeltreechoose:[],
+        recordtree:[],
         // 查询参数
         queryParams: {
           page: 1,
@@ -153,15 +197,22 @@ import {
           label: '禁用'
         },{
           value: '0',
-          label: '离职'
+          label: '冻结'
         }],
         dialogFormVisible: false,
         form: {
-          dataName: "",
+          name: "",
+          phone:"",
+          avatar:"",
+          email:"",
+          status:""
         },
         rules: {
-          dataName: [
+          name: [
             { required: true, message: "请输入员工姓名", trigger: "blur" }
+          ],
+          phone: [
+            { required: true, message: "请输入手机号", trigger: "blur" }
           ]
         },
         dialogType: "add",
@@ -169,15 +220,49 @@ import {
         multipleSelection:[]//选中数组
       }
     },
+    computed: {
+        VUE_APP_BASE_API(){
+            return process.env.VUE_APP_BASE_API
+        }
+    },
     created() {
       this.getList();
     },
     methods:{
-      handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-        console.log(this.imageUrl)
-        console.log(file)
+      showchannel(){
+        this.innerVisible = true;
+        this.getChannelsList();
+      },
+      //权限切换选中
+      checkChange(data,b,c){
+        Array.prototype.remove = function(val) {
+          var index = this.indexOf(val);
+            if (index > -1) {
+            this.splice(index, 1);
+          }
+        };
+        let thisNode = this.$refs.tree.getNode(data.id) // 获取当前节点
+        var keys = this.$refs.tree.getCheckedKeys() // 获取已勾选节点的key值
+        if (b) { // 当前节点若被选中
+          for (let i = thisNode.level; i > 1; i--) { // 判断是否有父级节点
+            if (!thisNode.parent.checked) { // 父级节点未被选中，则将父节点替换成当前节点，往上继续查询，并将此节点key存入keys数组
+              thisNode = thisNode.parent
+              keys.push(thisNode.data.id)
+            }
+          }
+        }else{
+          if(thisNode.childNodes){
+            for(var i=0;i<thisNode.childNodes.length;i++){
+              keys.remove(thisNode.childNodes[i].key)
+            }
+          }
+        }
+        this.$refs.tree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
+      },
 
+      handleAvatarSuccess(response, file, fileList) {
+        this.form.avatar = response.path;
+        this.$forceUpdate();
       },
       beforeAvatarUpload(file) {
         const isLt = file.size / 1024 / 1024 < 20;
@@ -187,18 +272,25 @@ import {
         return isLt;
       },
 
-
-
       /** 搜索按钮操作 */
       handleQuery() {
         this.loading = true;
         this.queryParams.page = 1;
         this.getList();
       },
+      getChannelsList(){
+        getChannels().then(response => {
+          // console.log(response)
+          this.channeltree = response;
+          this.channeltreechoose = this.$refs.tree.getCheckedKeys();
+          this.recordtree = JSON.parse(JSON.stringify(this.channeltreechoose));//记录一下一开始选中的节点
+        })
+      },
       getList(){
         var data={};
         data.model = 'User';
         getUser(Object.assign(data,this.queryParams)).then(response => {
+          // console.log(response)
           this.loading = false;
           this.dataList = response.data;
           this.total = response.total;
@@ -216,23 +308,118 @@ import {
       handleDelete(){
 
       },
+      
       // 关闭窗口
+      innercloseDialog(){
+        this.channeltreechoose = this.recordtree;
+        this.$refs.tree.setCheckedKeys(this.channeltreechoose)
+        this.innerVisible = false;
+      },
+      innerenterDialog() {
+        this.channeltreechoose = this.$refs.tree.getCheckedKeys() ;
+        this.innerVisible = false;
+      },
       closeDialog() {
-        // this.initForm();
+        this.initForm();
         this.dialogFormVisible = false;
+      },
+      toFormData(val) {
+        let formData = new FormData();
+        for (let i in val) {
+          isArray(val[i], i);
+        }
+        function isArray(array, key) {
+          if (array == undefined || typeof array == "function") {
+            return false;
+          }
+          if (typeof array != "object") {
+            formData.append(key, array);
+          } else if (array instanceof Array) {
+            if (array.length == 0) {
+              formData.append(`${key}`, "");
+            } else {
+              for (let i in array) {
+                for (let j in array[i]) {
+                  isArray(array[i][j], `${key}[${i}].${j}`);
+                }
+              }
+            }
+          } else {
+            let arr = Object.keys(array);
+            if (arr.indexOf("uid") == -1) {
+              for (let j in array) {
+                isArray(array[j], `${key}.${j}`);
+              }
+            } else {
+              formData.append(`${key}`, array);
+            }
+          }
+        }
+        return formData;
+        // for (var [a, b] of formData.entries()) {
+        //   console.log(a, b);
+        // }
       },
       // 确定弹窗
       enterDialog() {
-        this.dialogFormVisible = false;
+        // this.dialogFormVisible = false;
+        this.$refs["dataForm"].validate((valid) => {
+          if (!valid) return;
+          if (this.dialogType=='edit') {
+            //修改
+            // editroles(this.form.id,this.form).then(response => {
+            //   if (response.status_code >= 200 && response.status_code < 300) {
+            //       this.$message({
+            //         message: response.message,
+            //         type: 'success'
+            //       });
+            //       this.dialogFormVisible = false;
+            //       this.getList();
+            //   }else {
+            //       this.$message({
+            //         message: response.message,
+            //         type: 'warning'
+            //       });
+            //   }
+            // })
+          }else{
+            // 新增
+            // console.log(this.channeltreechoose)
+            var choosestr = this.channeltreechoose.map((obj)=>{return obj}).join(",");
+            var data = this.form;
+            data.extra = {}
+            data.extra.channel_limit = choosestr;
+            console.log(data)
+            var _data = this.toFormData(data)
+            // var data = new FormData();
+            // data.append(this.form);
+            // data.append(this.form);
+
+            addusers(_data).then(response => {
+              if (response.status_code >= 200 && response.status_code < 300) {
+                  this.$message({
+                    message: response.message,
+                    type: 'success'
+                  });
+                  this.dialogFormVisible = false;
+                  this.getList();
+              }else {
+                  this.$message({
+                    message: response.message,
+                    type: 'warning'
+                  });
+              }
+            })
+          }
+        })
       },
       // 初始化表单
       initForm() {
         if (this.$refs.dataForm) {
           this.$refs.dataForm.resetFields();
         }
-        this.form = {
-          dataName: ""
-        };
+        this.recordtree = [];
+        this.channeltreechoose = [];
       },
       // 编辑员工
       editdata(row) {

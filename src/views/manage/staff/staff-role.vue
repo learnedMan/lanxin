@@ -57,7 +57,7 @@
     />
     <!-- 新增/修改角色弹窗 -->
     <el-dialog width="600px" :title="dialogTitle" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="rules" ref="dataFrom">
+      <el-form :model="form" :rules="rules" ref="dataForm">
         <el-form-item label-width="100px" label="角色名称" prop="name">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入角色名称" v-model="form.name"></el-input>
         </el-form-item>
@@ -256,8 +256,8 @@ import {
       },
       // 初始化表单
       initForm() {
-        if (this.$refs.dataFrom) {
-          this.$refs.dataFrom.resetFields();
+        if (this.$refs.dataForm) {
+          this.$refs.dataForm.resetFields();
         }
         this.form = {
           name: "",
@@ -346,7 +346,7 @@ import {
       },
       // 确定弹窗
       enterDialog() {
-        this.$refs["dataFrom"].validate((valid) => {
+        this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
           if (this.dialogType=='edit') {
             //修改
