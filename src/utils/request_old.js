@@ -2,7 +2,7 @@ import axios from 'axios'; // 引入axios
 import { Message } from 'element-ui';
 // create an axios instance
 const service = axios.create({
-    baseURL: process.env.VUE_APP_BASE_API_old, // url = base url + request url
+    baseURL: 'http://10.30.10.158/api/v1', // url = base url + request url
     // withCredentials: true, // send cookies when cross-domain requests
     timeout: 5000 // request timeout
   })
@@ -50,5 +50,4 @@ service.interceptors.response.use(
         return Promise.reject(error)
     }
 )
-
 export default service

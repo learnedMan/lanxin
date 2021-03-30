@@ -131,7 +131,14 @@
 </template>
 
 <script>
-import { listtemplate , infotemplate , updatetemplate , addtemplate , deltemplate , copymeal , listmeal } from '@/api/mbh'
+import { 
+  listtemplate ,
+  infotemplate ,
+  updatetemplate ,
+  addtemplate ,
+  deltemplate ,
+  copymeal ,
+  listmeal } from '@/api/mbh'
 export default {
   name: 'templatemanage',
   data() {
@@ -213,14 +220,14 @@ export default {
       console.log(data)
       if(data.sourceId==10000){
         this.$router.push({
-          path:'/layout/stylelist',
+          path:'/mbh/stylelist',
           query:{
             sourceId:data.sourceId
           }
         });
       }else{
         this.$router.push({
-          path:'/layout/productstylelist',
+          path:'/mbh/productstylelist',
           query:{
             sourceId:data.sourceId,
             pname:data.templateName
@@ -324,7 +331,7 @@ export default {
     /** 点击套餐 */
     handleSetmeallist(row) {
       this.$router.push({
-        path:'/layout/setmeal',
+        path:'/mbh/setmeal',
         query:{
           id:row.id
         }

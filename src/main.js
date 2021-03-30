@@ -20,7 +20,8 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 
-
+import {resetForm} from '@/utils/costum'
+Vue.prototype.resetForm = resetForm
 // 组件
 import Pagination from '@/components/Pagination'
 Vue.component('Pagination', Pagination)
