@@ -94,6 +94,7 @@ export function getrolepermission(id) {
   })
 }
 
+// 角色权限
 export function assignrolepermission(id,data) {
   return request({
     url: '/api/roles/'+id+'/assignPermission',
@@ -131,5 +132,52 @@ export function addusers(data) {
     url: '/api/users',
     method: 'post',
     data:data
+  })
+}
+
+export function editusers(id,data) {
+  return request({
+    url: '/api/user/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+
+export function changearrusersstatus(data,status) {
+  return request({
+    url: '/api/users/setStatus',
+    method: 'post',
+    params:{"ids":data,"status":status}
+  })
+}
+
+export function delusers(id) {
+  return request({
+    url: '/api/user/'+id,
+    method: 'delete',
+  })
+}
+
+export function deletearrusers(data) {
+  return request({
+    url: '/api/user/deleteUsers',
+    method: 'post',
+    params:{"ids":data}
+  })
+}
+
+export function getuserroles(id) {
+  return request({
+    url: '/api/user/'+id+'/directPermission',
+    method: 'get'
+  })
+}
+
+// 角色权限
+export function assignuserroles(id,data) {
+  return request({
+    url: '/api/user/'+id+'/assignPermission',
+    method: 'post',
+    params:{"permissions":data}
   })
 }

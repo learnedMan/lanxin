@@ -9,6 +9,7 @@
     </el-form>
 
     <el-table 
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border 
       v-loading="loading" 
       :data="dataList" 
@@ -79,7 +80,7 @@
       :visible.sync="drawer" :with-header="false" size="40%" title="角色配置" v-if="drawer"
     >
       <el-tabs class="role-box" type="border-card">
-        <el-tab-pane label="角色菜单">
+        <el-tab-pane label="角色权限菜单">
           <div class="clearflex">
             <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
             <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>

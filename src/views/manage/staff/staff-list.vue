@@ -15,9 +15,10 @@
         <el-form-item>
             <el-button type="primary" @click="handleQuery" style="margin-right:50px;" size="mini">搜索</el-button>
             <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
-            <el-button type="success" :disabled="multipleSelection.length==0" size="mini" >批量启用</el-button>
-            <el-button type="warning" :disabled="multipleSelection.length==0" size="mini" >批量禁用</el-button>
-            <el-button type="danger" :disabled="multipleSelection.length==0" size="mini" >批量冻结</el-button>
+            <el-button type="success" @click="changearrstatus(1)" :disabled="multipleSelection.length==0" size="mini" >批量启用</el-button>
+            <el-button type="warning" @click="changearrstatus(2)" :disabled="multipleSelection.length==0" size="mini" >批量禁用</el-button>
+            <el-button type="danger" @click="changearrstatus(0)" :disabled="multipleSelection.length==0" size="mini" >批量冻结</el-button>
+            <el-button type="danger" @click="delarrdata" :disabled="multipleSelection.length==0" size="mini" >批量删除</el-button>
         </el-form-item>
     </el-form>
 
@@ -62,7 +63,7 @@
             type="text"
             icon="el-icon-thumb"
             style="color:#67C23A;"
-            @click="editdata(scope.row)"
+            @click="editjurisdiction(scope.row)"
           >权限</el-button>
           <el-button
             size="mini"
@@ -87,7 +88,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <!-- 新增/修改员工弹窗 -->
+    <!-- 新增/修改用户弹窗 -->
     <el-dialog width="700px" :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-dialog
         width="600px"
@@ -153,6 +154,32 @@
         <el-button @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 权限抽屉 -->
+    <el-drawer
+      :visible.sync="drawer" :with-header="false" size="40%" title="角色配置" v-if="drawer"
+    >
+      <el-tabs class="role-box" type="border-card">
+        <el-tab-pane label="用户直接权限菜单">
+          <div class="clearflex">
+            <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
+            <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
+          </div>
+          <el-tree
+            :data="treedata"
+            :default-checked-keys="treechoosedata"
+            show-checkbox
+            :check-strictly="true"
+            @check-change = "rolecheckChange"
+            default-expand-all
+            node-key="id"
+            ref="roletree"
+            highlight-current
+            :props="roledefaultProps">
+          </el-tree>
+        </el-tab-pane>
+      </el-tabs>
+    </el-drawer>
   </div>
 </template>
 
@@ -160,23 +187,39 @@
 import { 
   getUser,
   getChannels,
-  addusers
+  addusers,
+  editusers,
+  changearrusersstatus,
+  delusers,
+  deletearrusers,
+  getuserroles,
+  assignuserroles
   } from '@/api/manage'
-
+import { validUsername , validEmail } from '@/utils/validate'
   export default {
     name: 'staff-list',
     data() {
       var mytoken = sessionStorage.getItem('token');
       return {
-        useravatar: require('@/assets/c_images/useravatar.jpg'),
-        importHeaders: {Authorization: mytoken},
-        imageUrl: '',
+        // 抽屉
+          drawer: false,
+          treedata: [],
+          treechoosedata: [],
+          roledefaultProps: {
+            children: 'children',
+            label: 'remarks'
+          },
+          chooseid:undefined,
+        // 抽屉
+
+        useravatar: require('@/assets/c_images/useravatar.jpg'),//默认头像
+        importHeaders: {Authorization: mytoken},//传图片时的token
         innerVisible:false,
         defaultProps: {
           children: 'children',
           label: 'name'
         },
-        channeltree:[],
+        channeltree:[],//栏目树
         channeltreechoose:[],
         recordtree:[],
         // 查询参数
@@ -209,7 +252,7 @@ import {
         },
         rules: {
           name: [
-            { required: true, message: "请输入员工姓名", trigger: "blur" }
+            { required: true, message: "请输入用户姓名", trigger: "blur" }
           ],
           phone: [
             { required: true, message: "请输入手机号", trigger: "blur" }
@@ -229,6 +272,88 @@ import {
       this.getList();
     },
     methods:{
+      // 抽屉
+      cancelrole(){
+        this.drawer = false;
+      },
+      surerole(){
+        var keys = this.$refs.roletree.getCheckedKeys() // 获取已勾选节点的key值
+        var data = keys.map((obj)=>{return obj}).join(",");
+        assignuserroles(this.chooseid,data).then(response =>{
+          if (response.status_code >= 200 && response.status_code < 300) {
+                this.$message({
+                  message: response.message,
+                  type: 'success'
+                });
+                this.getList();
+                this.drawer = false;
+            }else {
+                this.$message({
+                  message: response.message,
+                  type: 'warning'
+                });
+            }
+          // console.log(response)
+        })
+      },
+      // 权限修改、出来弹框
+      editjurisdiction(row){
+        this.treechoosedata = [];
+        this.treedata = [];
+        this.drawer = true;
+        this.chooseid = row.id;
+        getuserroles(row.id).then(response => {
+          // console.log(response)
+          this.treedata = response.data;
+          var _treedata = JSON.parse(JSON.stringify(this.treedata));
+          var c_arr= [];
+          function getdata(arr){
+            for(var i=0;i<arr.length;i++){
+              c_arr=c_arr.concat(arr[i])
+              if(!arr[i].children){
+              }else{
+                getdata(arr[i].children)
+              }
+            }
+          }
+          getdata(_treedata)
+          for(var i=0;i<c_arr.length;i++){
+            if(c_arr[i].own){
+              this.treechoosedata.push(c_arr[i].id)
+            }
+          }
+        })
+      },
+      //权限切换选中
+      rolecheckChange(data,b,c){
+        Array.prototype.remove = function(val) {
+          var index = this.indexOf(val);
+            if (index > -1) {
+            this.splice(index, 1);
+          }
+        };
+        let thisNode = this.$refs.roletree.getNode(data.id) // 获取当前节点
+        var keys = this.$refs.roletree.getCheckedKeys() // 获取已勾选节点的key值
+        if (b) { // 当前节点若被选中
+          for (let i = thisNode.level; i > 1; i--) { // 判断是否有父级节点
+            if (!thisNode.parent.checked) { // 父级节点未被选中，则将父节点替换成当前节点，往上继续查询，并将此节点key存入keys数组
+              thisNode = thisNode.parent
+              keys.push(thisNode.data.id)
+            }
+          }
+        }else{
+          if(thisNode.childNodes){
+            for(var i=0;i<thisNode.childNodes.length;i++){
+              keys.remove(thisNode.childNodes[i].key)
+            }
+          }
+        }
+        this.$refs.roletree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
+      },
+      // 抽屉
+      
+
+
       showchannel(){
         this.innerVisible = true;
         this.getChannelsList();
@@ -244,22 +369,26 @@ import {
         let thisNode = this.$refs.tree.getNode(data.id) // 获取当前节点
         var keys = this.$refs.tree.getCheckedKeys() // 获取已勾选节点的key值
         if (b) { // 当前节点若被选中
-          for (let i = thisNode.level; i > 1; i--) { // 判断是否有父级节点
-            if (!thisNode.parent.checked) { // 父级节点未被选中，则将父节点替换成当前节点，往上继续查询，并将此节点key存入keys数组
-              thisNode = thisNode.parent
-              keys.push(thisNode.data.id)
+          function delchild(data){
+            if(data.childNodes!=[]){  
+              for(var i=0;i<data.childNodes.length;i++){
+                if(data.childNodes[i].checked){
+                  keys.remove(data.childNodes[i].key)
+                }
+                delchild(data.childNodes[i])
+              }
             }
           }
-        }else{
-          if(thisNode.childNodes){
-            for(var i=0;i<thisNode.childNodes.length;i++){
-              keys.remove(thisNode.childNodes[i].key)
+          delchild(thisNode)
+          for (let i = thisNode.level; i > 1; i--) { // 判断是否有父级节点
+            if (thisNode.parent.checked) { // 父级节点未被选中，则将父节点替换成当前节点，往上继续查询，并将此节点key存入keys数组
+              keys.remove(thisNode.parent.key)
             }
+            thisNode = thisNode.parent
           }
         }
         this.$refs.tree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
       },
-
       handleAvatarSuccess(response, file, fileList) {
         this.form.avatar = response.path;
         this.$forceUpdate();
@@ -271,19 +400,35 @@ import {
         }
         return isLt;
       },
-
       /** 搜索按钮操作 */
       handleQuery() {
         this.loading = true;
         this.queryParams.page = 1;
         this.getList();
       },
+      changearrstatus(data){
+        var idarr=this.multipleSelection.map((obj)=>{return obj.id}).join(",");
+        changearrusersstatus(idarr,data).then(response => {
+          // console.log(response)
+          if (response.status_code >= 200 && response.status_code < 300) {
+              this.$message({
+                message: response.message,
+                type: 'success'
+              });
+              this.dialogFormVisible = false;
+              this.getList();
+          }else {
+              this.$message({
+                message: response.message,
+                type: 'warning'
+              });
+          }
+        })
+      },
       getChannelsList(){
         getChannels().then(response => {
           // console.log(response)
           this.channeltree = response;
-          this.channeltreechoose = this.$refs.tree.getCheckedKeys();
-          this.recordtree = JSON.parse(JSON.stringify(this.channeltreechoose));//记录一下一开始选中的节点
         })
       },
       getList(){
@@ -297,7 +442,21 @@ import {
         })
       },
       statuschange(data){
-        // console.log(data)
+        editusers(data.id,data).then(response => {
+          if (response.status_code >= 200 && response.status_code < 300) {
+              this.$message({
+                message: response.message,
+                type: 'success'
+              });
+              this.dialogFormVisible = false;
+              this.getList();
+          }else {
+              this.$message({
+                message: response.message,
+                type: 'warning'
+              });
+          }
+        })
       },
       adddata(){
         this.initForm();
@@ -305,10 +464,81 @@ import {
         this.dialogType = "add";
         this.dialogFormVisible = true;
       },
-      handleDelete(){
-
+      // 初始化表单
+      initForm() {
+        if (this.$refs.dataForm) {
+          this.$refs.dataForm.resetFields();
+        }
+        this.form={
+          name: "",
+          phone:"",
+          avatar:"",
+          email:"",
+          status:""
+        }
+        this.recordtree = [];
+        this.channeltreechoose = [];
       },
-      
+      // 编辑用户
+      editdata(row) {
+        this.initForm();
+        this.dialogTitle = "编辑用户";
+        this.dialogType = "edit";
+        for (let key in row) {
+          this.form[key] = row[key];
+        }
+        this.getChannelsList()
+        try {
+          var arr = this.form.extra.channel_limit.split(',');
+          this.recordtree = arr;
+          this.channeltreechoose = arr;
+        } catch (error) {
+        }
+        this.dialogFormVisible = true;
+      },
+      handleDelete(row){
+        this.$confirm('此操作将永久删除id为'+row.id+'的权限, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delusers(row.id).then(response => {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                });
+                this.getList();
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
+      //批量删除
+      delarrdata(){
+        var data=this.multipleSelection.map((obj)=>{return obj.id}).join(",");
+          // console.log(data)
+        this.$confirm('此操作将永久删除id为'+data+'的权限, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deletearrusers(data).then(response => {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            });
+            this.getList();
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
       // 关闭窗口
       innercloseDialog(){
         this.channeltreechoose = this.recordtree;
@@ -317,6 +547,7 @@ import {
       },
       innerenterDialog() {
         this.channeltreechoose = this.$refs.tree.getCheckedKeys() ;
+        this.recordtree = this.channeltreechoose;
         this.innerVisible = false;
       },
       closeDialog() {
@@ -356,32 +587,52 @@ import {
           }
         }
         return formData;
-        // for (var [a, b] of formData.entries()) {
-        //   console.log(a, b);
-        // }
       },
       // 确定弹窗
       enterDialog() {
         // this.dialogFormVisible = false;
+        if(!validUsername(this.form.phone)){
+            this.$message({
+              message: '请输入正确的手机号',
+              type: 'error'
+            })
+            return
+        } 
+        if(this.form.email){
+          if(!validEmail(this.form.email)){
+            this.$message({
+              message: '请输入正确的邮箱',
+              type: 'error'
+            })
+            return
+          } 
+        }
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
           if (this.dialogType=='edit') {
             //修改
-            // editroles(this.form.id,this.form).then(response => {
-            //   if (response.status_code >= 200 && response.status_code < 300) {
-            //       this.$message({
-            //         message: response.message,
-            //         type: 'success'
-            //       });
-            //       this.dialogFormVisible = false;
-            //       this.getList();
-            //   }else {
-            //       this.$message({
-            //         message: response.message,
-            //         type: 'warning'
-            //       });
-            //   }
-            // })
+            // console.log(this.form)
+            var choosestr = this.channeltreechoose.map((obj)=>{return obj}).join(",");
+            var data = this.form;
+            data.extra = {}
+            data.extra.channel_limit = choosestr;
+            // console.log(data)
+            // return
+            editusers(data.id,data).then(response => {
+              if (response.status_code >= 200 && response.status_code < 300) {
+                  this.$message({
+                    message: response.message,
+                    type: 'success'
+                  });
+                  this.dialogFormVisible = false;
+                  this.getList();
+              }else {
+                  this.$message({
+                    message: response.message,
+                    type: 'warning'
+                  });
+              }
+            })
           }else{
             // 新增
             // console.log(this.channeltreechoose)
@@ -390,12 +641,8 @@ import {
             data.extra = {}
             data.extra.channel_limit = choosestr;
             console.log(data)
-            var _data = this.toFormData(data)
-            // var data = new FormData();
-            // data.append(this.form);
-            // data.append(this.form);
-
-            addusers(_data).then(response => {
+            // var _data = this.toFormData(data)
+            addusers(data).then(response => {
               if (response.status_code >= 200 && response.status_code < 300) {
                   this.$message({
                     message: response.message,
@@ -413,23 +660,6 @@ import {
           }
         })
       },
-      // 初始化表单
-      initForm() {
-        if (this.$refs.dataForm) {
-          this.$refs.dataForm.resetFields();
-        }
-        this.recordtree = [];
-        this.channeltreechoose = [];
-      },
-      // 编辑员工
-      editdata(row) {
-        this.dialogTitle = "编辑员工";
-        this.dialogType = "edit";
-        for (let key in this.form) {
-          this.form[key] = row[key];
-        }
-        this.dialogFormVisible = true;
-      },
       // 表格选中变化
       handleSelectionChange(val){
         this.multipleSelection = val;
@@ -438,7 +668,7 @@ import {
   }
 
 </script>
-<style>
+<style lang="scss">
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -462,4 +692,33 @@ import {
     height: 178px;
     display: block;
   }
+
+.role-box {
+  .el-tabs__content {
+    height: calc(100vh - 150px);
+    overflow: auto;
+  }
+}
+</style>
+
+
+
+<style scoped>
+.clearflex {
+    *zoom: 1;
+}
+
+.clearflex:after {
+    content: '';
+    display: block;
+    height: 0;
+    visibility: hidden;
+    clear: both;
+}
+
+.fl-right{
+  float: right;
+}
+
+
 </style>

@@ -9,6 +9,7 @@
     </el-form>
 
     <el-table 
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border 
       v-loading="loading" 
       :data="dataList" 

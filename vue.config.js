@@ -37,13 +37,13 @@ module.exports = {
       errors: true
     },
     proxy: {
-      [process.env.VUE_APP_BASE_API]: {
-        target: 'http://batrix-local.cztv.com',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
-        }
-      },
+      // [process.env.VUE_APP_BASE_API]: {
+      //   target: 'http://batrix-local.cztv.com',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + process.env.VUE_APP_BASE_API]: ''
+      //   }
+      // },
       [process.env.VUE_APP_IM_BASE_API]: { //需要代理的路径   例如 '/api'
           target: 'http://10.30.10.158', //代理到 目标路径 测试
           // target: 'http://10.30.10.125', //代理到 目标路径    正式
