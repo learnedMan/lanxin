@@ -84,6 +84,34 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/workbench',
+    component: Layout,
+    redirect: '/workbench/commentVerify/index',
+    name: 'Workbench',
+    meta: {
+      title: '工作台',
+      icon: 'component'
+    },
+    children: [
+      {
+        path: 'commentVerify',
+        component: () => import('@/views/workbench/index'), // Parent router-view
+        name: 'CommentVerify',
+        meta: { title: '评论审核' },
+        alwaysShow: true,
+        redirect: '/workbench/commentVerify/index',
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/views/workbench/commentVerify/index'),
+            name: 'Index',
+            meta: { title: '首页' }
+          }
+        ]
+      }
+    ]
+  },
 
   {
     path: '/manage',

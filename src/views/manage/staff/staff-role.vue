@@ -77,7 +77,7 @@
 
     <!-- 权限抽屉 -->
     <el-drawer
-      :visible.sync="drawer" :with-header="false" size="40%" title="角色配置" v-if="drawer"
+      :visible.sync="drawer" :with-header="false" size="40%" title="角色权限配置" v-if="drawer"
     >
       <el-tabs class="role-box" type="border-card">
         <el-tab-pane label="角色权限菜单">

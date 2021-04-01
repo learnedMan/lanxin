@@ -157,7 +157,7 @@
 
     <!-- 权限抽屉 -->
     <el-drawer
-      :visible.sync="drawer" :with-header="false" size="40%" title="角色配置" v-if="drawer"
+      :visible.sync="drawer" :with-header="false" size="40%" title="用户直接权限配置" v-if="drawer"
     >
       <el-tabs class="role-box" type="border-card">
         <el-tab-pane label="用户直接权限菜单">
@@ -174,6 +174,31 @@
             default-expand-all
             node-key="id"
             ref="roletree"
+            highlight-current
+            :props="roledefaultProps">
+          </el-tree>
+        </el-tab-pane>
+      </el-tabs>
+    </el-drawer>
+
+    <el-drawer
+      :visible.sync="userroledrawer" :with-header="false" size="40%" title="角色配置" v-if="userroledrawer"
+    >
+      <el-tabs class="userrole-box" type="border-card">
+        <el-tab-pane label="用户角色菜单">
+          <div class="clearflex">
+            <el-button class="fl-right" @click="userrolecancelrole" size="small" type="info">取消</el-button>
+            <el-button class="fl-right" style="margin-right:15px;" @click="userrolesurerole" size="small" type="primary">确 定</el-button>
+          </div>
+          <el-tree
+            :data="userroletreedata"
+            :default-checked-keys="userroletreechoosedata"
+            show-checkbox
+            :check-strictly="true"
+            @check-change = "userrolecheckChange"
+            default-expand-all
+            node-key="id"
+            ref="userroletree"
             highlight-current
             :props="roledefaultProps">
           </el-tree>
@@ -210,6 +235,7 @@ import { validUsername , validEmail } from '@/utils/validate'
             label: 'remarks'
           },
           chooseid:undefined,
+          userroledrawer:false,
         // 抽屉
 
         useravatar: require('@/assets/c_images/useravatar.jpg'),//默认头像
