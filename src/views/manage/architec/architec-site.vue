@@ -1,5 +1,413 @@
 <template>
-  <div style="padding:30px;">
-    站点管理
+  <div class="architec-site">
+    <el-form ref="queryForm" :model="queryParams" :inline="true">
+      <el-form-item label="站点名称：">
+        <el-input
+          v-model="queryParams.name"
+          placeholder="请输入关键字"
+          clearable
+          size="small"
+          style="width: 200px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="状态：">
+        <el-select v-model="queryParams.status" placeholder="请选择">
+          <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+          <el-button type="primary" @click="handleQuery" style="margin-right:50px;" size="mini">搜索</el-button>
+          <el-button type="info" @click="initcondition" size="mini" >重置</el-button>
+          <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-table 
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      border v-loading="loading" :data="dataList">
+      <el-table-column label="站点id" align="center" prop="id" />
+      <el-table-column label="站点名称" align="center" prop="name" :show-overflow-tooltip="true" />
+      <el-table-column label="站点标识" align="center" prop="en_name" :show-overflow-tooltip="true" />
+      <el-table-column label="站点负责人" align="center" prop="user.name" :show-overflow-tooltip="true" />
+      <el-table-column label="负责人电话" align="center" prop="user.phone" :show-overflow-tooltip="true" />
+      <el-table-column 
+        label="状态" 
+        align="center" 
+        prop="status" 
+        :show-overflow-tooltip="true" >
+        <template slot-scope="scope">
+          <el-select @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
+            <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
+      <el-table-column label="上次登录时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
+      <el-table-column width="100px" label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            style="color:#E6A23C;"
+            @click="editdata(scope.row)"
+          >修改</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.page"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+    <!-- 新增/修改站点弹窗 -->
+    <el-dialog width="700px" 
+    :close-on-click-modal = false
+    :title="dialogTitle" :visible.sync="dialogFormVisible">
+      <el-form :model="form" :rules="rules" ref="dataForm">
+        <el-form-item  label-width="120px" label="站点名称" prop="name">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入站点名称" v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="英文标识" prop="en_name">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入英文标识" v-model="form.en_name"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="区域选择" prop="zone_id">
+            <el-select v-model="form.zone_id" placeholder="请选择">
+              <el-option v-for="item in zoneoptions" :key="item.id" :label="item.description" :value="item.id">
+              </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="LOGO："  prop="logo">
+          <el-upload
+            class="avatar-uploader"
+            :action="VUE_APP_BASE_API+'/api/upload/image'"
+            :headers="importHeaders"
+            name="image"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="form.logo" :src="form.logo" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label-width="120px" label="负责人姓名" prop="site_manager_name">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入负责人姓名"  v-model="form.site_manager_name" ></el-input>
+        </el-form-item>
+        <el-form-item label-width="120px" label="负责人手机号" prop="site_manager_phone">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入负责人手机号" v-model="form.site_manager_phone"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="简介" prop="introduction">
+          <el-input type="textarea" style="width: 300px" autocomplete="off" placeholder="请输入简介" v-model="form.introduction"></el-input>
+        </el-form-item>
+        <el-form-item v-if="dialogType=='edit'" el-form-item  label-width="120px" label="是否启用" prop="status">
+          <el-select v-model="form.status" placeholder="请选择">
+            <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      
+      <div class="dialog-footer" slot="footer">
+        <el-button @click="closeDialog">取 消</el-button>
+        <el-button @click="enterDialog" type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
+
+<script>
+import { 
+  getsites,
+  addsites,
+  editsites,
+  getzones
+  } from '@/api/manage'
+import { validUsername , validEmail } from '@/utils/validate'
+  export default {
+    name: 'architec-site',
+    data() {
+      var mytoken = sessionStorage.getItem('token');
+      var data = {
+
+      }
+      return {
+        importHeaders: {Authorization: mytoken},//传图片时的token
+        // 查询参数
+        queryParams: {
+          page: 1,
+          pageSize: 10,
+          name:"",
+          status:""
+        },
+        loading:true,
+        dataList:[],
+        zoneoptions:[],
+        // 总条数
+        total: 0,
+        statusoptions: [{
+          value: 1,
+          label: '启用'
+        },{
+          value: 2,
+          label: '禁用'
+        }],
+        dialogFormVisible: false,
+        form: {
+          name: "",
+          en_name: "",
+          logo: "",
+          status:"",
+          introduction:"",
+          site_manager_name:'',
+          site_manager_phone:''
+        },
+        rules: {
+          name: [
+            { required: true, message: "请输入站点姓名", trigger: "blur" }
+          ],
+          en_name: [
+            { required: true, message: "请输入英文标识", trigger: "blur" }
+          ],
+          zone_id: [
+            { required: true, message: "请选择区域", trigger: "blur" }
+          ],
+          logo: [
+            { required: true, message: "请选择logo", trigger: "blur" }
+          ],
+          site_manager_name: [
+            { required: true, message: "请输入负责人姓名", trigger: "blur" }
+          ],
+          site_manager_phone: [
+            { required: true, message: "请输入负责人手机号", trigger: "blur" }
+          ]
+        },
+        dialogType: "add",
+        dialogTitle:'',
+        multipleSelection:[]//选中数组
+      }
+    },
+    computed: {
+      VUE_APP_BASE_API(){
+          return process.env.VUE_APP_BASE_API
+      }
+    },
+    created() {
+      this.getList();
+      this.getzones();
+    },
+    methods:{
+      handleAvatarSuccess(response, file, fileList) {
+        this.form.logo = response.path;
+        this.$forceUpdate();
+      },
+      beforeAvatarUpload(file) {
+        const isLt = file.size / 1024 / 1024 < 20;
+        if (!isLt) {
+          this.$message.error('上传头像图片大小不能超过 20MB!');
+        }
+        return isLt;
+      },
+      initcondition(){
+        this.queryParams.name="";
+        this.queryParams.status="";
+      },
+      /** 搜索按钮操作 */
+      handleQuery() {
+        this.loading = true;
+        this.queryParams.page = 1;
+        this.getList();
+      },
+      getzones(){
+        getzones().then(response => {
+          this.zoneoptions = response.data;
+          console.log(this.zoneoptions)
+        })
+      },
+      getList(){
+        var data = JSON.parse(JSON.stringify(this.queryParams));
+        var removePropertyOfNull=function(obj){
+            Object.keys(obj).forEach(item=>{
+                if(!obj[item])  delete obj[item]
+            })
+            return obj;
+        }
+        removePropertyOfNull(data)
+        getsites(data).then(response => {
+          // console.log(response)
+          this.loading = false;
+          this.dataList = response.data;
+          this.total = response.meta.pagination.total;
+        })
+      },
+      statuschange(data){
+        editsites(data.id,data).then(response => {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          });
+          this.getList();
+        })
+      },
+      adddata(){
+        this.initForm();
+        this.dialogTitle = "新增站点";
+        this.dialogType = "add";
+        this.dialogFormVisible = true;
+      },
+      // 初始化表单
+      initForm() {
+        if (this.$refs.dataForm) {
+          this.$refs.dataForm.resetFields();
+        }
+      },
+      // 编辑站点
+      editdata(row) {
+        this.initForm();
+        this.dialogTitle = "编辑站点";
+        this.dialogType = "edit";
+        for (let key in row) {
+          this.form[key] = row[key];
+        }
+        console.log(this.form)
+        this.form.site_manager_name = this.form.user.name
+        this.form.site_manager_phone = this.form.user.phone;
+        this.dialogFormVisible = true;
+      },
+      // 关闭窗口
+      closeDialog() {
+        this.initForm();
+        this.dialogFormVisible = false;
+      },
+      // 确定弹窗
+      enterDialog() {
+        // if(!validUsername(this.form.phone)){
+        //     this.$message({
+        //       message: '请输入正确的手机号',
+        //       type: 'error'
+        //     })
+        //     return
+        // } 
+        // if(this.form.email){
+        //   if(!validEmail(this.form.email)){
+        //     this.$message({
+        //       message: '请输入正确的邮箱',
+        //       type: 'error'
+        //     })
+        //     return
+        //   } 
+        // }
+        this.$refs["dataForm"].validate((valid) => {
+          if (!valid) return;
+          if (this.dialogType=='edit') {
+            //修改
+            // console.log(this.form)
+            var data = this.form;
+            editsites(data.id,data).then(response => {
+              // if (response.status_code >= 200 && response.status_code < 300) {
+                  this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                  });
+                  this.dialogFormVisible = false;
+                  this.getList();
+              // }else {
+              //     this.$message({
+              //       message: response.message,
+              //       type: 'warning'
+              //     });
+              // }
+            })
+          }else{
+            // 新增
+            var data = JSON.parse(JSON.stringify(this.form));
+            var removePropertyOfNull=function(obj){
+                Object.keys(obj).forEach(item=>{
+                    if(!obj[item])  delete obj[item]
+                })
+                return obj;
+            }
+            removePropertyOfNull(data)
+            // console.log(data)
+            // return
+            addsites(data).then(response => {
+              // if (response.status_code >= 200 && response.status_code < 300) {
+                  this.$message({
+                    message: '新建成功',
+                    type: 'success'
+                  });
+                  this.dialogFormVisible = false;
+                  this.getList();
+              // }else {
+              //     this.$message({
+              //       message: response.message,
+              //       type: 'warning'
+              //     });
+              // }
+            })
+          }
+        })
+      }
+    }
+  }
+
+</script>
+<style lang="scss">
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+
+.role-box {
+  .el-tabs__content {
+    height: calc(100vh - 150px);
+    overflow: auto;
+  }
+}
+</style>
+
+
+
+<style scoped>
+.clearflex {
+    *zoom: 1;
+}
+
+.clearflex:after {
+    content: '';
+    display: block;
+    height: 0;
+    visibility: hidden;
+    clear: both;
+}
+
+.fl-right{
+  float: right;
+}
+
+
+</style>

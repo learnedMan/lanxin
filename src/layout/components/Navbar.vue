@@ -5,18 +5,12 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-      <!-- <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
-
-        <error-log class="errLog-container right-menu-item hover-effect" />
-
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
-        <el-tooltip content="Global Size" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-      </template> -->
+      <el-button
+        style="color:#999;margin-right:30px;"
+        type="text"
+        icon="el-icon-sort"
+        @click="dialogFormVisible = true;"
+      >切换频道</el-button>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
@@ -24,23 +18,34 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <!-- <router-link to="/profile/index">
-            <el-dropdown-item>Profile</el-dropdown-item>
-          </router-link> -->
           <router-link to="/">
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
-          <!-- <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a> -->
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">登出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      
+      <!-- 切换频道 -->
+      <el-dialog 
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        width="600px" title="切换频道" :visible.sync="dialogFormVisible">
+        <el-form :model="form" :rules="rules" ref="dataForm">
+          <el-form-item label-width="100px" label="选择频道" prop="id">
+              <el-select v-model="form.id" placeholder="请选择">
+                <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+                </el-option>
+              </el-select>
+          </el-form-item>
+        </el-form>
+        <div class="dialog-footer" slot="footer">
+          <el-button @click="closeDialog">取 消</el-button>
+          <el-button @click="enterDialog" type="primary">确 定</el-button>
+        </div>
+      </el-dialog>
+
     </div>
   </div>
 </template>
@@ -63,12 +68,30 @@ export default {
     SizeSelect,
     Search
   },
+  data(){
+    return {
+      dialogFormVisible: false,
+      form:{
+        id:""
+      },
+      rules:{
+        id:[
+          { required: true, message: "请选择频道", trigger: "blur" }
+        ]
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'u_info'
     ])
+  },
+  created(){
+    console.log(this.u_info)
+    this.options = this.u_info.site_list
   },
   methods: {
     toggleSideBar() {
@@ -77,6 +100,28 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    pickformdata(val){
+      for(var i=0;i<this.options.length;i++){
+        if(this.options[i].id==val){
+          return this.options[i]
+        }
+      }
+    },
+    // 关闭窗口
+    closeDialog() {
+      this.dialogFormVisible = false;
+    },
+    // 确定弹窗
+    enterDialog() {
+      this.$refs["dataForm"].validate((valid) => {
+          if (!valid) return;
+          this.dialogFormVisible = false;
+          var data = this.pickformdata(this.form.id);
+          sessionStorage.setItem('TempZone',data.zone_id)
+          sessionStorage.setItem('TempSite',data.id)
+          window.location.reload()
+      })
     }
   }
 }
@@ -116,7 +161,8 @@ export default {
     float: right;
     height: 100%;
     line-height: 50px;
-
+    display: flex;
+    align-items: center;
     &:focus {
       outline: none;
     }

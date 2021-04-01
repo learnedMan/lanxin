@@ -208,10 +208,7 @@ export default {
       }
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-
-          
           let formData = new FormData()
-
             formData.append( "username",this.loginForm.username )
             formData.append( "verification_code",this.loginForm.yzcode )
             formData.append( "verification_key",this.verification_key )
