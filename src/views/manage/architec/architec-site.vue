@@ -18,7 +18,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-          <el-button type="primary" @click="handleQuery" style="margin-right:50px;" size="mini">搜索</el-button>
+          <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
           <el-button type="info" @click="initcondition" size="mini" >重置</el-button>
           <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
       </el-form-item>
@@ -134,7 +134,6 @@ import { validUsername , validEmail } from '@/utils/validate'
     data() {
       var mytoken = sessionStorage.getItem('token');
       var data = {
-
       }
       return {
         importHeaders: {Authorization: mytoken},//传图片时的token
@@ -226,7 +225,7 @@ import { validUsername , validEmail } from '@/utils/validate'
       getzones(){
         getzones().then(response => {
           this.zoneoptions = response.data;
-          console.log(this.zoneoptions)
+          // console.log(this.zoneoptions)
         })
       },
       getList(){
@@ -256,27 +255,31 @@ import { validUsername , validEmail } from '@/utils/validate'
       },
       adddata(){
         this.initForm();
+        console.log(this.form)
         this.dialogTitle = "新增站点";
         this.dialogType = "add";
         this.dialogFormVisible = true;
       },
       // 初始化表单
       initForm() {
-        if (this.$refs.dataForm) {
-          this.$refs.dataForm.resetFields();
-        }
+          if (this.$refs.dataForm) {
+            this.$refs.dataForm.resetFields();
+          }
       },
       // 编辑站点
       editdata(row) {
         this.initForm();
         this.dialogTitle = "编辑站点";
         this.dialogType = "edit";
-        for (let key in row) {
-          this.form[key] = row[key];
-        }
-        console.log(this.form)
-        this.form.site_manager_name = this.form.user.name
-        this.form.site_manager_phone = this.form.user.phone;
+        this.$nextTick(() => { 
+          for (let key in row) {
+            this.form[key] = row[key];
+          }
+          this.form.site_manager_name = this.form.user.name
+          this.form.site_manager_phone = this.form.user.phone;
+        })
+        
+
         this.dialogFormVisible = true;
       },
       // 关闭窗口

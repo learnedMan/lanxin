@@ -90,7 +90,7 @@ export default {
     ])
   },
   created(){
-    console.log(this.u_info)
+    // console.log(this.u_info)
     this.options = this.u_info.site_list
   },
   methods: {

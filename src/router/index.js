@@ -136,6 +136,18 @@ export const constantRoutes = [
             component: () => import('@/views/manage/architec/architec-site'),
             name: 'Architec-site',
             meta: { title: '站点管理' }
+          },
+          {
+            path: 'channel-info',
+            component: () => import('@/views/manage/architec/channel-info'),
+            name: 'Channel-info',
+            meta: { title: '频道信息' }
+          },
+          {
+            path: 'product',
+            component: () => import('@/views/manage/architec/product'),
+            name: 'Product',
+            meta: { title: '产品管理' }
           }
         ]
       },

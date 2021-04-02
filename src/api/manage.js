@@ -233,3 +233,19 @@ export function getzones() {
     method: 'get'
   })
 }
+
+export function getchannelinfo(id) {
+  return request({
+    url: '/api/sites/'+id,
+    method: 'get'
+  })
+}
+
+// 产品管理
+export function getproduct(query) {
+  return request({
+    url: '/api/products',
+    method: 'get',
+    params:query
+  })
+}
