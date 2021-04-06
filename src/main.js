@@ -20,8 +20,9 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 
-import {resetForm} from '@/utils/costum'
+import {resetForm , removePropertyOfNull} from '@/utils/costum'
 Vue.prototype.resetForm = resetForm
+Vue.prototype.removePropertyOfNull = removePropertyOfNull
 // 组件
 import Pagination from '@/components/Pagination'
 Vue.component('Pagination', Pagination)

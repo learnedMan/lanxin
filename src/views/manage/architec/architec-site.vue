@@ -272,9 +272,10 @@ import { validUsername , validEmail } from '@/utils/validate'
         this.dialogTitle = "编辑站点";
         this.dialogType = "edit";
         this.$nextTick(() => { 
-          for (let key in row) {
-            this.form[key] = row[key];
-          }
+          // for (let key in row) {
+          //   this.form[key] = row[key];
+          // }
+          this.form = JSON.parse(JSON.stringify(row))
           this.form.site_manager_name = this.form.user.name
           this.form.site_manager_phone = this.form.user.phone;
         })

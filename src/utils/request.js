@@ -12,8 +12,8 @@ const service = axios.create({
 service.interceptors.request.use(config => {
   // 在发送请求之前做些什么
   config.headers.Authorization = sessionStorage.getItem('token')
-  config.headers.TempZone = sessionStorage.getItem('TempZone')
-  config.headers.TempSite = sessionStorage.getItem('TempSite')
+  config.headers.TempZone = sessionStorage.getItem('TempZone')||''
+  config.headers.TempSite = sessionStorage.getItem('TempSite')||''
   return config;
 }, error => {
   Message({

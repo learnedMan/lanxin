@@ -120,10 +120,11 @@ export function uploadImg(data) {
   })
 }
 
-export function getChannels() {
+export function getChannels(query) {
   return request({
     url: '/api/channels',
-    method: 'get'
+    method: 'get',
+    params:query
   })
 }
 
@@ -249,3 +250,32 @@ export function getproduct(query) {
     params:query
   })
 }
+
+export function addproducts(data) {
+  return request({
+    url: '/api/products',
+    method: 'post',
+    data:data
+  })
+}
+
+export function editproducts(id,data) {
+  return request({
+    url: '/api/products/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+
+export function delproducts(id) {
+  return request({
+    url: '/api/products/'+id,
+    method: 'delete',
+  })
+}
+
+// 栏目管理
+
+// getChannels
+// getproduct
+// getUser

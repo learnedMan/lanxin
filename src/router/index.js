@@ -148,6 +148,12 @@ export const constantRoutes = [
             component: () => import('@/views/manage/architec/product'),
             name: 'Product',
             meta: { title: '产品管理' }
+          },
+          {
+            path: 'column',
+            component: () => import('@/views/manage/architec/column'),
+            name: 'Column',
+            meta: { title: '栏目管理' }
           }
         ]
       },

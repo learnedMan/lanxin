@@ -598,9 +598,10 @@ import { validUsername , validEmail } from '@/utils/validate'
         this.initForm();
         this.dialogTitle = "编辑用户";
         this.dialogType = "edit";
-        for (let key in row) {
-          this.form[key] = row[key];
-        }
+        // for (let key in row) {
+        //   this.form[key] = row[key];
+        // }
+        this.form = JSON.parse(JSON.stringify(row))
         this.getChannelsList()
         try {
           var arr = this.form.extra.channel_limit.split(',');

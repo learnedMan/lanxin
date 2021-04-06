@@ -96,7 +96,7 @@
             type="text"
             icon="el-icon-delete"
             style="color: #f56c6c"
-            @click="editdata(scope.row)"
+            @click="deldata(scope.row)"
             >删除</el-button
           >
           <el-button
@@ -156,7 +156,7 @@
                 :label="item.label"
                 :value="item.value"
                 >
-                </el-option>
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label-width="150px" label="产品LOGO：" prop="extra.logo">
@@ -206,8 +206,6 @@
                 </el-radio-group>
           </el-form-item>
         </div>
-
-
 
         <div class="fr" style="width: 50%">
             <el-form-item label-width="150px" label="水印" prop="extra.watermark">
@@ -277,7 +275,7 @@
 </template>
 
 <script>
-import { addsites, editsites, getproduct } from "@/api/manage";
+import { getproduct , addproducts , editproducts , delproducts } from "@/api/manage";
 export default {
   name: "product",
   data() {
@@ -396,21 +394,7 @@ export default {
   },
   created() {
     this.getList();
-    this.form= {
-        name: "",
-        type:"",
-        extra:{
-            logo:"",
-            logo_dark:"",
-            introduction:"",
-            comment_control:"",
-            watermark:"",
-            watermark_position:"",
-            user_policy:"",
-            privacy_policy:"",
-            moment_policy:""
-        }
-    };
+    this.initForm()
   },
   methods: {
     handleAvatarSuccess(name,res) {
@@ -423,7 +407,7 @@ export default {
       }
       return isLt;
     },
-    initcondition() {
+    initcondition() {//重置
       this.queryParams.name = "";
       this.queryParams.type = "";
     },
@@ -435,13 +419,7 @@ export default {
     },
     getList() {
       var data = JSON.parse(JSON.stringify(this.queryParams));
-      var removePropertyOfNull = function (obj) {
-        Object.keys(obj).forEach((item) => {
-          if (!obj[item]) delete obj[item];
-        });
-        return obj;
-      };
-      removePropertyOfNull(data);
+      this.removePropertyOfNull(data)
       getproduct(data).then((response) => {
         // console.log(response);
         this.loading = false;
@@ -460,18 +438,64 @@ export default {
       if (this.$refs.dataForm) {
         this.$refs.dataForm.resetFields();
       }
+      this.form= {
+        name: "",
+        type:"",
+        extra:{
+            logo:"",
+            logo_dark:"",
+            introduction:"",
+            comment_control:"",
+            watermark:"",
+            watermark_position:"",
+            user_policy:"",
+            privacy_policy:"",
+            moment_policy:""
+        }
+      };
     },
     // 编辑产品
     editdata(row) {
       this.initForm();
       this.dialogTitle = "编辑产品";
       this.dialogType = "edit";
-      this.$nextTick(() => {
-        for (let key in row) {
-          this.form[key] = row[key];
-        }
-      });
+      // this.$nextTick(() => {
+      //   for (let key in row) {
+      //     this.form[key] = row[key];
+      //   }
+      // });
+
+      this.form = JSON.parse(JSON.stringify(row))
+
       this.dialogFormVisible = true;
+    },
+    // 删除产品
+    deldata(row){
+      this.$confirm('此操作将永久删除id为'+row.id+'的产品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delproducts(row.id).then(response => {
+            if (response.status_code >= 200 && response.status_code < 300) {
+                this.$message({
+                  message: response.message,
+                  type: 'success'
+                });
+                this.getList();
+            }else {
+                this.$message({
+                  message: response.message,
+                  type: 'warning'
+                });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
     // 关闭窗口
     closeDialog() {
@@ -485,8 +509,8 @@ export default {
         if (this.dialogType == "edit") {
           //修改
           // console.log(this.form)
-          var data = this.form;
-          editsites(data.id, data).then((response) => {
+          var data = JSON.parse(JSON.stringify(this.form));
+          editproducts(data.id, data).then((response) => {
             this.$message({
               message: "修改成功",
               type: "success",
@@ -497,16 +521,8 @@ export default {
         } else {
           // 新增
           var data = JSON.parse(JSON.stringify(this.form));
-          var removePropertyOfNull = function (obj) {
-            Object.keys(obj).forEach((item) => {
-              if (!obj[item]) delete obj[item];
-            });
-            return obj;
-          };
-          removePropertyOfNull(data);
-          // console.log(data)
-          // return
-          addsites(data).then((response) => {
+          this.removePropertyOfNull(data);
+          addproducts(data).then((response) => {
             this.$message({
               message: "新建成功",
               type: "success",
@@ -555,7 +571,7 @@ export default {
 
 
 
-<style scoped>
+<style scoped lang="scss">
 .clearflex {
   *zoom: 1;
 }
@@ -570,5 +586,36 @@ export default {
 
 .fl-right {
   float: right;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
+}
+
+.role-box {
+  .el-tabs__content {
+    height: calc(100vh - 150px);
+    overflow: auto;
+  }
 }
 </style>

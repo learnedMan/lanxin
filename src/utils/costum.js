@@ -90,3 +90,11 @@ export function praseStrEmpty(str) {
   }
   return str
 }
+
+// 删除对象中空属性（不删调用接口可能报错）
+export function removePropertyOfNull(obj) {
+  Object.keys(obj).forEach((item) => {
+    if (!obj[item]) delete obj[item];
+  });
+  return obj;
+}
