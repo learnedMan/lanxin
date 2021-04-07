@@ -16,11 +16,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      i {
-        flex: 1;
-        cursor: pointer;
-        font-size: 16px;
-      }
+      padding: 0 10px;
     }
     .pagination-container {
       padding: 10px;
@@ -35,8 +31,8 @@
       <el-row>
         <el-col :span="12">
           <el-button size="small" type="primary">添加评论</el-button>
-          <el-button size="small" type="primary" icon="el-icon-circle-check">批量通过</el-button>
-          <el-button size="small" type="primary" icon="el-icon-circle-close">批量拒绝</el-button>
+          <el-button size="small" type="primary">批量通过</el-button>
+          <el-button size="small" type="primary">批量拒绝</el-button>
         </el-col>
         <el-col :span="12" style="text-align: right">
           <el-button size="small" type="primary" @click="resetSearch">重置</el-button>
@@ -77,19 +73,19 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
-          <template>
+        <el-table-column label="操作" align="center" width="280">
+          <template slot-scope="scope">
             <div class="verify-table-action">
               <!-- 不清楚 -->
-              <i class="el-icon-edit" />
+              <el-button type="text" icon="el-icon-edit" size="small">按钮</el-button>
               <!-- 查看 -->
-              <i class="el-icon-view" />
+              <el-button type="text" icon="el-icon-view" size="small" @click="watchDetail">查看</el-button>
               <!-- 回复 -->
-              <i class="el-icon-chat-line-square" />
+              <el-button type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('reply', '回复', scope.row)">回复</el-button>
               <!-- 审批通过 -->
-              <i class="el-icon-circle-check" />
+              <el-button type="text" icon="el-icon-circle-check" size="small" @click="handleAgree">同意</el-button>
               <!-- 拒绝 -->
-              <i class="el-icon-circle-close" />
+              <el-button type="text" icon="el-icon-circle-close" size="small" @click="handleDialogShow('refuse', '拒绝', scope.row)">拒绝</el-button>
             </div>
           </template>
         </el-table-column>
@@ -99,27 +95,27 @@
       <pagination
         v-show="page.total > 0"
         :total="page.total"
-        :page.sync="page.current"
-        :limit.sync="page.size"
+        :page.sync="search.pageNo"
+        :limit.sync="search.pageSize"
         @pagination="getListData"
       />
     </div>
-    <el-dialog width="700px" :title="dialog.title" :visible.sync="dialog.show">
-      <el-form ref="dialogForm" :model="dialog.reply" :rules="dialog.replyRules">
+    <el-dialog width="500px" :title="dialog.title" :visible.sync="dialog.show">
+      <el-form v-show="dialog.key === 'reply'" ref="reply" :model="dialog.reply" :rules="dialog.replyRules">
         <el-form-item label-width="120px" label="回复昵称" prop="nikeName">
           <el-input v-model="dialog.reply.nikeName" style="width: 300px" autocomplete="off" placeholder="请输入昵称" />
         </el-form-item>
         <el-form-item label-width="120px" label="回复内容" prop="nikeName">
           <el-input v-model="dialog.reply.remark" style="width: 300px" type="textarea" autocomplete="off" />
         </el-form-item>
-        <!--<el-form-item label-width="120px" label="是否启用" prop="status">
-          <el-select v-model="form.status" placeholder="请选择">
-            <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>-->
       </el-form>
-
+      <el-form v-show="dialog.key === 'refuse'" ref="refuse" :model="dialog.refuse" :rules="dialog.refuseRules">
+        <el-form-item label-width="120px" label="拒绝原因" prop="cause">
+          <el-select v-model="dialog.refuse.cause" placeholder="请选择拒绝原因">
+            <el-option v-for="item in dialog.refuse.causeOption" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeDialog">取 消</el-button>
         <el-button type="primary" @click="enterDialog">确 定</el-button>
@@ -142,9 +138,11 @@ export default {
         content: '', // 评论内容
         commentType: '', // 评论类型
         title: '', // 媒资标题
-        status: '', // 标题
-        checkDate: '', // 审核时间
-        submitDate: '' // 提交时间
+        status: '', // 状态
+        aduitTime: '', // 审核时间
+        submitDate: '', // 提交时间
+        pageSize: 10, // 页码
+        pageNo: 1 // 当前页
       },
       searchLists: [
         {
@@ -201,7 +199,7 @@ export default {
           placeholder: '请输入关键字',
           label: '审核时间',
           span: 8,
-          key: 'checkDate'
+          key: 'aduitTime'
         },
         {
           component: 'daterange',
@@ -418,14 +416,13 @@ export default {
         }
       ],
       page: {
-        total: 10,
-        current: 1,
-        size: 10
+        total: 10
       },
       tableHeight: 200,
       dialog: {
         show: false,
         title: '回复',
+        key: '',
         reply: {
           nikeName: '',
           remark: ''
@@ -435,7 +432,8 @@ export default {
           remark: { required: true, message: '请输入备注', trigger: 'blur' }
         }, // 回复验证
         refuse: {
-          cause: ''
+          cause: '',
+          causeOption: [] // 选择框列表数据
         }, // 拒绝
         refuseRules: {
           cause: { required: true, message: '请选择拒绝原因', trigger: 'change' }
@@ -451,34 +449,56 @@ export default {
   },
   methods: {
     /*
-        * 重置搜索框
-        * */
+    * 重置搜索框
+    * */
     resetSearch() {
       const form = this.$refs.search.$refs.ruleForm
       form.resetFields()
     },
     /*
-        * 选择项发生变化时
-        * */
+    * 选择项发生变化时
+    * */
     handleSelectionChange(selection) {
 
     },
     /*
-        * 获取列表数据
-        * */
+    * 获取列表数据
+    * */
     getListData() {
 
     },
     /*
-        * 关闭弹框
-        * */
+    * 关闭弹框
+    * */
     closeDialog() {
+      this.dialog.show = false
+    },
+    /*
+    * 弹框确认
+    * */
+    enterDialog() {
 
     },
     /*
-        * 弹框确认
-        * */
-    enterDialog() {
+    * 查看详情
+    * */
+    watchDetail() {
+
+    },
+    /*
+    * 显示回复和拒绝的弹框
+    * */
+    handleDialogShow(key, title, row) {
+      Object.assign(this.dialog, {
+        title,
+        key,
+        show: true
+      })
+    },
+    /*
+    * 审核通过(同意)
+    * */
+    handleAgree() {
 
     }
   }
