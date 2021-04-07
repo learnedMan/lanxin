@@ -95,30 +95,31 @@
         ref="dataForm"
         style="display: flex">
         <div class="fl" style="width: 50%">
-          <el-form-item label-width="150px" label="上级栏目:" prop="id">
+          <el-form-item label-width="150px" label="上级栏目:" prop="father">
             <el-cascader
+            v-model="form.father"
             style="width: 350px"
             :options="dataList"
             :props="{ checkStrictly: true ,value:'id',label:'name'}"
             clearable></el-cascader>
           </el-form-item>
-          <el-form-item label-width="150px" label="栏目名称:" prop="id">
+          <el-form-item label-width="150px" label="栏目名称:" prop="name">
             <el-input
               style="width: 350px"
               placeholder="请输入栏目名称"
-              v-model="form.id"
+              v-model="form.name"
             ></el-input>
           </el-form-item>
-          <el-form-item label-width="150px" label="栏目简介:" prop="id">
+          <el-form-item label-width="150px" label="栏目简介:" prop="extra.intro">
             <el-input
               style="width: 350px"
               placeholder="请输入栏目简介"
-              v-model="form.id"
+              v-model="form.extra.intro"
               :autosize="{ minRows: 4}"
               type="textarea"
             ></el-input>
           </el-form-item>
-          <el-form-item label-width="150px" label="栏目封面:" prop="id">
+          <el-form-item label-width="150px" label="栏目封面:" prop="extra.cover">
             <el-upload
               class="avatar-uploader"
               :action="VUE_APP_BASE_API + '/api/upload/image'"
@@ -127,11 +128,11 @@
               :show-file-list="false"
               :on-success="handleAvatarSuccess.bind(this,'logo')"
               :before-upload="beforeAvatarUpload">
-              <img v-if="form.id" :src="form.id" class="avatar" />
+              <img v-if="form.extra.cover" :src="form.extra.cover" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item label-width="150px" label="栏目Logo:" prop="id">
+          <el-form-item label-width="150px" label="栏目Logo:" prop="extra.logo">
             <el-upload
               class="avatar-uploader"
               :action="VUE_APP_BASE_API + '/api/upload/image'"
@@ -140,58 +141,59 @@
               :show-file-list="false"
               :on-success="handleAvatarSuccess.bind(this,'logo')"
               :before-upload="beforeAvatarUpload">
-              <img v-if="form.id" :src="form.id" class="avatar" />
+              <img v-if="form.extra.logo" :src="form.extra.logo" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
 
-          <el-form-item label-width="150px" label="允许发布的内容:" prop="id">
+          <el-form-item label-width="150px" label="允许发布的内容:" prop="extra.allow_news_types">
             <el-checkbox-group 
                 @change="checkboxchange"
-                v-model="checkedmedias">
+                v-model="form.extra.allow_news_types">
                 <el-checkbox v-for="media in medias" :label="media.label" :key="media.label">{{media.value}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
 
-          <el-form-item el-form-item  label-width="150px" label="加载子栏目:" prop="id">
+          <el-form-item el-form-item  label-width="150px" label="加载子栏目:" prop="extra.load_child">
             <el-switch
-              v-model="form.id">
+              v-model="form.extra.load_child">
             </el-switch>
           </el-form-item>
-          <el-form-item el-form-item  label-width="150px" label="加载新闻:" prop="id">
+          <el-form-item el-form-item  label-width="150px" label="加载新闻:" prop="extra.load_news">
             <el-switch
-              v-model="form.id">
+              v-model="form.extra.load_news">
             </el-switch>
           </el-form-item>
-          <el-form-item label-width="150px" label="关联栏目:" prop="id">
+          <el-form-item label-width="150px" label="关联栏目:" prop="extra.linked_channel_id">
             <el-cascader
+            v-model="form.extra.linked_channel_id"
             style="width: 350px"
             :options="dataList"
             :props="{ checkStrictly: true ,value:'id',label:'name'}"
             clearable></el-cascader>
           </el-form-item>
-          <el-form-item el-form-item  label-width="150px" label="(模板化)样式:" prop="id">
-            <el-select v-model="form.id" placeholder="请选择">
+          <el-form-item el-form-item  label-width="150px" label="(模板化)样式:" prop="extra.template_style">
+            <el-select v-model="form.extra.template_style" placeholder="请选择">
               <el-option v-for="item in columntypeoptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label-width="150px" label="排序(权重):" prop="id">
+          <el-form-item label-width="150px" label="排序(权重):" prop="sort">
+            <el-input
+              style="width: 350px"
+              placeholder="请输入排序(权重)"
+              v-model="form.sort"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label-width="150px" label="展示条数:" prop="extra.show_num">
             <el-input
               style="width: 350px"
               placeholder="请输入栏目名称"
-              v-model="form.id"
+              v-model="form.extra.show_num"
             ></el-input>
           </el-form-item>
-          <el-form-item label-width="150px" label="展示条数:" prop="id">
-            <el-input
-              style="width: 350px"
-              placeholder="请输入栏目名称"
-              v-model="form.id"
-            ></el-input>
-          </el-form-item>
-          <el-form-item el-form-item  label-width="150px" label="是否启用:" prop="id">
-            <el-select v-model="form.id" placeholder="请选择">
+          <el-form-item el-form-item  label-width="150px" label="是否启用:" prop="status">
+            <el-select v-model="form.status" placeholder="请选择">
               <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
@@ -200,16 +202,39 @@
 
 
         <div class="fr" style="width: 50%">
-            <el-form-item el-form-item  label-width="150px" label="栏目类型:" prop="id">
-              <el-select v-model="form.id" placeholder="请选择">
+            <el-form-item el-form-item label-width="150px" label="栏目类型:" prop="type">
+              <el-select v-model="form.type" placeholder="请选择">
                 <el-option v-for="item in columntypeoptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
-            <child-page1 :form="form" v-model="form"></child-page1>  
+
+            <child-page1 v-if="form.type=='default'" :form="form" v-model="form"></child-page1>  
+            <el-form-item v-else-if="form.type=='service'" label-width="150px" label="服务背景图:" prop="extra.background">
+              <el-upload
+                class="avatar-uploader"
+                :action="VUE_APP_BASE_API + '/api/upload/image'"
+                :headers="importHeaders"
+                name="image"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess.bind(this,'logo')"
+                :before-upload="beforeAvatarUpload">
+                <img v-if="form.extra.background" :src="form.extra.background" class="avatar" />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item v-else-if="form.type=='outer_link'||form.type=='auth_link'" 
+              label-width="150px" label="链接地址:" prop="extra.link.url">
+              <el-input
+                style="width: 350px"
+                placeholder="请输入栏目名称"
+                v-model="form.extra.link.url"
+              ></el-input>
+            </el-form-item>
+            <el-form-item v-else>
+            </el-form-item>
         </div>
       </el-form>
-
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeDialog">取 消</el-button>
         <el-button @click="enterDialog" type="primary">确 定</el-button>
@@ -252,21 +277,23 @@ import ChildPage1 from './pages/c_page1'
         }],
         columntypeoptions:[
           {
-            value: 'link',
-            label: '链接'
+            value: 'default',
+            label: '默认'
           },{
+            value: 'service',
+            label: '服务'
+          },
+          // {
+          //   value: 'link',
+          //   label: '链接'
+          // },
+          {
             value: 'outer_link',
             label: '外链'
           },{
             value: 'auth_link',
             label: '授权外链'
-          },{
-            value: 'service',
-            label: '服务'
-          },{
-            value: 'default',
-            label: '默认'
-          }
+          },
         ],
         medias:[{
             value: '新闻',
@@ -282,11 +309,17 @@ import ChildPage1 from './pages/c_page1'
         loading:true,
         dataList:[],
         dialogFormVisible: true,
-        form: {
-          id:''
-        },
+        form:{},
+        basicsform:{},
+        defaultform:{},
+        serviceform:{},
+        linkform:{},
         rules: {
-          id: [{ required: true, message: "请输入栏目id", trigger: "blur" }],
+          father: [{ required: true, message: "请选择上级栏目", trigger: "blur" }],
+          name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
+          'extra.cover': [{ required: true, message: "请选择栏目封面", trigger: "blur" }],
+          'extra.show_num': [{ required: true, message: "请输入展示条数", trigger: "blur" }],
+          type: [{ required: true, message: "请选择栏目类型", trigger: "blur" }],
         },
         dialogType: "add",
         dialogTitle:''
@@ -303,6 +336,52 @@ import ChildPage1 from './pages/c_page1'
       this.getproductList();
     },
     methods:{
+      // 初始化表单
+      initForm() {
+        if (this.$refs.dataFrom) {
+          this.$refs.dataFrom.resetFields();
+        }
+        this.basicsform = {
+          type:'default',
+          father:'',
+          name:'',
+          sort:'',
+          status:'',
+          extra:{
+            intro:'',
+            cover:'',
+            logo:'',
+            allow_news_types:[],
+            load_child:false,
+            load_news:false,
+            linked_channel_id:'',
+            template_style:'',
+            show_num:''
+          }
+        };
+        this.defaultform = {
+          extra:{
+            multi_review:[],
+            display_more:'',
+            display_title:''
+          }
+        }
+        this.serviceform = {
+          extra:{
+            background:''
+          }
+        }
+        this.linkform = {
+          extra:{
+            link:{
+              type:'url',
+              url:''
+            }
+          }
+        }
+        Object.assign(this.form,this.basicsform);
+        console.log(this.form)
+      },
       checkboxchange(val){
         console.log(val)
       },
@@ -343,16 +422,8 @@ import ChildPage1 from './pages/c_page1'
         getChannels(this.queryParams).then(response => {
           this.loading = false;
           this.dataList = response;
-          // console.log(response)
+          console.log(response)
         })
-      },
-      // 初始化表单
-      initForm() {
-        if (this.$refs.dataFrom) {
-          this.$refs.dataFrom.resetFields();
-        }
-        this.form = {
-        };
       },
       // 增加栏目
       adddata(data) {
