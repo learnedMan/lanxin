@@ -120,10 +120,11 @@ export function uploadImg(data) {
   })
 }
 
-export function getChannels() {
+export function getChannels(query) {
   return request({
     url: '/api/channels',
-    method: 'get'
+    method: 'get',
+    params:query
   })
 }
 
@@ -166,18 +167,115 @@ export function deletearrusers(data) {
   })
 }
 
-export function getuserroles(id) {
+// 用户权限
+
+export function getuserPermission(id) {
   return request({
     url: '/api/user/'+id+'/directPermission',
     method: 'get'
   })
 }
 
-// 角色权限
-export function assignuserroles(id,data) {
+
+export function assignuserPermission(id,data) {
   return request({
     url: '/api/user/'+id+'/assignPermission',
     method: 'post',
     params:{"permissions":data}
   })
 }
+
+// 用户角色
+export function getuserroles(id) {
+  return request({
+    url: '/api/user/'+id+'/roles',
+    method: 'get'
+  })
+}
+
+
+export function assignuserroles(id,data) {
+  return request({
+    url: '/api/user/'+id+'/assignRole',
+    method: 'post',
+    params:{"roles":data}
+  })
+}
+
+
+// 站点
+export function getsites(query) {
+  return request({
+    url: '/api/sites',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addsites(data) {
+  return request({
+    url: '/api/sites',
+    method: 'post',
+    data:data
+  })
+}
+
+export function editsites(id,data) {
+  return request({
+    url: '/api/sites/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+
+export function getzones() {
+  return request({
+    url: '/api/zones',
+    method: 'get'
+  })
+}
+
+export function getchannelinfo(id) {
+  return request({
+    url: '/api/sites/'+id,
+    method: 'get'
+  })
+}
+
+// 产品管理
+export function getproduct(query) {
+  return request({
+    url: '/api/products',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addproducts(data) {
+  return request({
+    url: '/api/products',
+    method: 'post',
+    data:data
+  })
+}
+
+export function editproducts(id,data) {
+  return request({
+    url: '/api/products/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+
+export function delproducts(id) {
+  return request({
+    url: '/api/products/'+id,
+    method: 'delete',
+  })
+}
+
+// 栏目管理
+
+// getChannels
+// getproduct
+// getUser

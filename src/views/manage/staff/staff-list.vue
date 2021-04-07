@@ -69,7 +69,7 @@
             size="mini"
             type="text"
             icon="el-icon-s-custom"
-            @click="editdata(scope.row)"
+            @click="editroledata(scope.row)"
           >角色</el-button>
           <el-button
             size="mini"
@@ -217,6 +217,8 @@ import {
   changearrusersstatus,
   delusers,
   deletearrusers,
+  getuserPermission,
+  assignuserPermission,
   getuserroles,
   assignuserroles
   } from '@/api/manage'
@@ -236,6 +238,8 @@ import { validUsername , validEmail } from '@/utils/validate'
           },
           chooseid:undefined,
           userroledrawer:false,
+          userroletreedata:[],
+          userroletreechoosedata:[],
         // 抽屉
 
         useravatar: require('@/assets/c_images/useravatar.jpg'),//默认头像
@@ -299,13 +303,38 @@ import { validUsername , validEmail } from '@/utils/validate'
     },
     methods:{
       // 抽屉
+      userrolecancelrole(){
+        this.userroledrawer = false;
+      },
+      userrolesurerole(){
+        var keys = this.$refs.userroletree.getCheckedKeys() // 获取已勾选节点的key值
+        var data = keys.map((obj)=>{return obj}).join(",");
+        assignuserroles(this.chooseid,data).then(response =>{
+          if (response.status_code >= 200 && response.status_code < 300) {
+                this.$message({
+                  message: response.message,
+                  type: 'success'
+                });
+                this.getList();
+                this.userroledrawer = false;
+            }else {
+                this.$message({
+                  message: response.message,
+                  type: 'warning'
+                });
+            }
+          // console.log(response)
+        })
+      },
+
+
       cancelrole(){
         this.drawer = false;
       },
       surerole(){
         var keys = this.$refs.roletree.getCheckedKeys() // 获取已勾选节点的key值
         var data = keys.map((obj)=>{return obj}).join(",");
-        assignuserroles(this.chooseid,data).then(response =>{
+        assignuserPermission(this.chooseid,data).then(response =>{
           if (response.status_code >= 200 && response.status_code < 300) {
                 this.$message({
                   message: response.message,
@@ -322,13 +351,42 @@ import { validUsername , validEmail } from '@/utils/validate'
           // console.log(response)
         })
       },
-      // 权限修改、出来弹框
+      // 角色修改、抽屉
+      editroledata(row){
+        this.userroletreechoosedata = [];
+        this.userroletreedata = [];
+        this.userroledrawer = true;
+        this.chooseid = row.id;
+        getuserroles(row.id).then(response => {
+          console.log(response)
+          this.userroletreedata = response.data;
+          var _treedata = JSON.parse(JSON.stringify(this.userroletreedata));
+          var c_arr= [];
+          function getdata(arr){
+            for(var i=0;i<arr.length;i++){
+              c_arr=c_arr.concat(arr[i])
+              if(!arr[i].children){
+              }else{
+                getdata(arr[i].children)
+              }
+            }
+          }
+          getdata(_treedata)
+          for(var i=0;i<c_arr.length;i++){
+            if(c_arr[i].own){
+              this.userroletreechoosedata.push(c_arr[i].id)
+            }
+          }
+          console.log(this.userroletreechoosedata)
+        })
+      },
+      // 权限修改、抽屉
       editjurisdiction(row){
         this.treechoosedata = [];
         this.treedata = [];
         this.drawer = true;
         this.chooseid = row.id;
-        getuserroles(row.id).then(response => {
+        getuserPermission(row.id).then(response => {
           // console.log(response)
           this.treedata = response.data;
           var _treedata = JSON.parse(JSON.stringify(this.treedata));
@@ -351,6 +409,36 @@ import { validUsername , validEmail } from '@/utils/validate'
         })
       },
       //权限切换选中
+      userrolecheckChange(data,b,c){
+        Array.prototype.remove = function(val) {
+          var index = this.indexOf(val);
+            if (index > -1) {
+            this.splice(index, 1);
+          }
+        };
+        let thisNode = this.$refs.userroletree.getNode(data.id) // 获取当前节点
+        var keys = this.$refs.userroletree.getCheckedKeys() // 获取已勾选节点的key值
+        if (b) { // 当前节点若被选中
+          for (let i = thisNode.level; i > 1; i--) { // 判断是否有父级节点
+            if (!thisNode.parent.checked) { // 父级节点未被选中，则将父节点替换成当前节点，往上继续查询，并将此节点key存入keys数组
+              thisNode = thisNode.parent
+              keys.push(thisNode.data.id)
+            }
+          }
+          // if(thisNode.childNodes){
+          //   for(var i=0;i<thisNode.childNodes.length;i++){
+          //     keys.push(thisNode.childNodes[i].key)
+          //   }
+          // }
+        }else{
+          if(thisNode.childNodes){
+            for(var i=0;i<thisNode.childNodes.length;i++){
+              keys.remove(thisNode.childNodes[i].key)
+            }
+          }
+        }
+        this.$refs.userroletree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
+      },
       rolecheckChange(data,b,c){
         Array.prototype.remove = function(val) {
           var index = this.indexOf(val);
@@ -510,9 +598,10 @@ import { validUsername , validEmail } from '@/utils/validate'
         this.initForm();
         this.dialogTitle = "编辑用户";
         this.dialogType = "edit";
-        for (let key in row) {
-          this.form[key] = row[key];
-        }
+        // for (let key in row) {
+        //   this.form[key] = row[key];
+        // }
+        this.form = JSON.parse(JSON.stringify(row))
         this.getChannelsList()
         try {
           var arr = this.form.extra.channel_limit.split(',');

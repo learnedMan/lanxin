@@ -7,7 +7,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  u_info:{}
 }
 
 const mutations = {
@@ -25,6 +26,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_INFO: (state, data) => {
+    state.u_info = data
   }
 }
 
@@ -49,6 +53,7 @@ const actions = {
   login({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
+        // console.log(response)
         const token = response.token_type + ' ' + response.access_token;
         commit('SET_TOKEN', token)
         setToken(token)
@@ -59,33 +64,49 @@ const actions = {
     })
   },
 
+  getuserinfo({ commit, state }){
+    return new Promise((resolve, reject) => {
+      getInfo().then(response => {
+          const data = response.data;
+          // console.log(data)
+          commit('SET_INFO', data)
+          resolve(data)
+      })
+      
+    }).catch(error => {
+      reject(error)
+    })
+  },
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      // getInfo(state.token).then(response => {
-        // const { data } = response
-        const data = {
-          roles: ['1570006493'],
-          introduction:'aaaaa',
-          avatar:'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-          name:'zy'
-        }
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
+        // getInfo().then(response => {
+            // return
+            // const data = response.data;
+            const data = {
+              roles: ['1570006493'],
+              introduction:'aaaaa',
+              avatar:'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+              name:'zy'
+            }
+            if (!data) {
+              reject('Verification failed, please Login again.')
+            }
 
-        const { roles, name, avatar, introduction } = data
+            const { roles, name, avatar, introduction } = data
 
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
+            // roles must be a non-empty array
+            if (!roles || roles.length <= 0) {
+              reject('getInfo: roles must be a non-null array!')
+            }
 
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        resolve(data)
+            commit('SET_ROLES', roles)
+            commit('SET_NAME', name)
+            commit('SET_AVATAR', avatar)
+            commit('SET_INTRODUCTION', introduction)
+            resolve(data)
+        // })
+        
       }).catch(error => {
         reject(error)
       })
