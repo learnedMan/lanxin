@@ -7,9 +7,12 @@
             title="编辑审核人"
             :visible.sync="dialogVisible"
             width="800px">
-            <el-button @click="addtransfer" type="primary" size="mini">增加一级</el-button>
-            <el-button @click="deltransfer" type="primary" size="mini">删除一级</el-button>
+            <div style="margin-bottom:20px;">
+                <el-button @click="addtransfer" type="primary" size="mini">增加一级审核人</el-button>
+                <el-button :disabled="listnum<1" @click="deltransfer" type="primary" size="mini">删除一级审核人</el-button>
+            </div>
             <template v-for="(item,index) in listnum">
+                <h3>第{{index+1}}级审核人：</h3>
                 <el-transfer 
                 @change="((val)=>{transferchange(val,index)})"
                 style="display: flex;justify-content: center;align-items: center;margin-bottom:20px;"
@@ -20,8 +23,6 @@
                 v-model="listarr[index]" 
                 :data="userdata"></el-transfer>
             </template>
-
-            
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
@@ -104,8 +105,9 @@ export default({
         transferchange(index,res){
             console.log(index)
             console.log(res)
+            console.log(this.listarr)
         },
-        getuserfn(){
+        getuserfn(){//获取用户列表
             var data={};
             data.model = 'User';
             var queryParams = {
