@@ -159,6 +159,16 @@
               </el-option>
             </el-select>
           </el-form-item>
+
+          <el-form-item label-width="150px" label="source_id" prop="source_id">
+            <el-input
+              style="width: 350px"
+              autocomplete="off"
+              placeholder="请输入source_id"
+              v-model="form.source_id"
+            ></el-input>
+          </el-form-item>
+
           <el-form-item label-width="150px" label="产品LOGO：" prop="extra.logo">
             <el-upload
               class="avatar-uploader"
@@ -216,8 +226,7 @@
               name="image"
               :show-file-list="false"
               :on-success="handleAvatarSuccess.bind(this,'watermark')"
-              :before-upload="beforeAvatarUpload"
-            >
+              :before-upload="beforeAvatarUpload">
               <img v-if="form.extra.watermark" :src="form.extra.watermark" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
@@ -362,6 +371,7 @@ export default {
       form: {
         name: "",
         type:"",
+        source_id:"",
         extra:{
             logo:"",
             logo_dark:"",
@@ -464,7 +474,7 @@ export default {
       //     this.form[key] = row[key];
       //   }
       // });
-
+      console.log(row)
       this.form = JSON.parse(JSON.stringify(row))
 
       this.dialogFormVisible = true;
