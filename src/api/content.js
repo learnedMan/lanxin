@@ -22,7 +22,7 @@ export function PatchScript(id, data) {
   return request({
     url: `/api/scripts/${id}`,
     method: 'patch',
-    params: data
+    data
   })
 }
 
@@ -39,7 +39,7 @@ export function changeNews(id, data) {
   return request({
     url: `/api/news/${id}`,
     method: 'patch',
-    params: data
+    data
   })
 }
 
