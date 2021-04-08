@@ -1,0 +1,597 @@
+<style type="text/scss" lang="scss" scoped>
+.xl-media-my {
+
+}
+</style>
+<template>
+  <div class="xl-media-my">
+    <div class="search">
+      <el-form
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+      >
+        <el-form-item
+          label="媒资名称:"
+          prop="keyword"
+        >
+          <el-input
+            v-model="queryParams.keyword"
+            placeholder="请输入关键字"
+            clearable
+            size="small"
+            style="width: 200px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="媒资类型:"
+          prop="type"
+        >
+          <el-select
+            v-model="queryParams.type"
+            size="small"
+            placeholder="请选择类型"
+            clearable
+          >
+            <el-option
+              v-for="item in typeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="创建日期:">
+          <el-date-picker
+            v-model="dateValue"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="~"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            @change="handleDateChange"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleReset"
+          >
+            重置
+          </el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleQuery"
+          >
+            搜索
+          </el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleAdd"
+          >
+            新增
+          </el-button>
+          <el-button
+            type="success"
+            size="mini"
+            :disabled="selection.length === 0"
+            @click="handlePublish"
+          >
+            批量发布
+          </el-button>
+          <el-button
+            type="warning"
+            size="mini"
+            :disabled="selection.length === 0"
+            @click="handleShelves"
+          >
+            批量下架
+          </el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            :disabled="selection.length === 0"
+            @click="handleCopy"
+          >
+            批量复制
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <el-table
+      ref="multipleTable"
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      :data="tableData"
+      border
+      tooltip-effect="dark"
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+        type="selection"
+        width="55"
+      />
+      <el-table-column
+        label="媒资ID"
+        align="center"
+        prop="id"
+      />
+      <el-table-column
+        label="媒资封面"
+        align="center"
+        prop="id"
+        width="120"
+      >
+        <template slot-scope="scope">
+          <el-image
+            style="width: 50px; height: 50px"
+            :src="scope.row.cover || useravatar"
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="媒资标题"
+        align="center"
+        prop="title"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="媒资类型"
+        align="center"
+        prop="type"
+      />
+      <el-table-column
+        label="作者"
+        align="center"
+        prop="author_name"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="编辑"
+        align="center"
+        prop="last_modify_user_name"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="发布栏目"
+        align="center"
+        prop="id"
+      >
+        <template slot-scope="scope">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleListWatch(scope.row)"
+          >
+            查看
+          </el-button>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="created_at"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+        width="280"
+      >
+        <template slot-scope="scope">
+          <div class="verify-table-action">
+            <!-- 编辑 -->
+            <el-button
+              type="text"
+              icon="el-icon-edit"
+              size="small"
+            >
+              编辑
+            </el-button>
+            <!-- 查看 -->
+            <el-button
+              type="text"
+              icon="el-icon-delete"
+              size="small"
+              @click="handleListDelete(scope.row)"
+            >
+              删除
+            </el-button>
+            <!-- 复制 -->
+            <el-button
+              type="text"
+              icon="el-icon-document-copy"
+              size="small"
+              @click="handleDialogShow('copy',scope.row)"
+            >
+              复制
+            </el-button>
+            <!-- 预览 -->
+            <el-button
+              type="text"
+              icon="el-icon-picture"
+              size="small"
+            >
+              预览
+            </el-button>
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="queryParams.page"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+    <!-- 批量复制和单个复制 -->
+    <el-dialog
+      width="700px"
+      :title="dialog.title"
+      :visible.sync="dialog.show"
+    >
+      <el-form
+        ref="dialogForm"
+        :model="dialog.form"
+        :rules="dialogRules"
+      >
+        <el-form-item
+          label-width="120px"
+          label="栏目"
+          prop="channel_id"
+        >
+          <el-cascader
+            v-model="dialog.form.channel_id"
+            style="width: 350px"
+            :options="channelsList"
+            :props="{ checkStrictly: true, value: 'id', label: 'name' }"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item
+          label-width="120px"
+          label="默认已发布"
+        >
+          <el-radio-group v-model="dialog.form.status">
+            <el-radio label="是" />
+            <el-radio label="否" />
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="closeDialog">
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="enterDialog"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { getNews, deleteNews, changeStatus, pushNewsToChannel } from '@/api/content'
+import { getChannels } from '@/api/manage'
+
+export default {
+  data() {
+    return {
+      queryParams: {
+        keyword: '',
+        type: '',
+        startdate: '',
+        enddate: '',
+        pageSize: 10,
+        page: 1
+      },
+      total: 0, // 总数
+      dateValue: '',
+      typeOptions: [
+        {
+          label: '全部',
+          value: ''
+        },
+        {
+          label: '新闻',
+          value: 'news'
+        },
+        {
+          label: '图集',
+          value: 'album'
+        },
+        {
+          label: '视频',
+          value: 'video'
+        },
+        {
+          label: '外链',
+          value: 'outerlink'
+        }
+      ], // 媒资类型
+      /* statusOptions: [
+            {
+              label: '全部',
+              value: ''
+            },
+            {
+              label: '待审核',
+              value: 0
+            },
+            {
+              label: '已发布',
+              value: 1
+            },
+            {
+              label: '已下架',
+              value: 2
+            }
+          ], // 状态集合*/
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      loading: false,
+      tableData: [], // 列表数据
+      useravatar: require('@/assets/c_images/useravatar.jpg'), // 默认头像
+      dialog: {
+        show: false,
+        title: '复制',
+        form: {
+          channel_id: '',
+          status: 1, // (是: 1, 否: 0),
+          news_ids: ''
+        }
+      },
+      dialogRules: {
+        channel_id: { required: true, message: '请输入昵称', trigger: 'blur' }
+      },
+      channelsList: [], // 栏目列表
+      selection: [] // 表格选中项
+    }
+  },
+  created() {
+    this.getList()
+    this.getChannels()
+  },
+  methods: {
+    /*
+        * 搜索时间变化
+        * */
+    handleDateChange(e) {
+      console.log(e)
+    },
+    /*
+        * 重置搜索
+        * */
+    handleReset() {
+      this.dateValue = ''
+      Object.assign(this.queryParams, {
+        startdate: '',
+        enddate: '',
+        page: 1
+      })
+      this.resetForm('queryForm')
+    },
+    /*
+        * 搜索
+        * */
+    handleQuery() {
+      this.getList()
+    },
+    /*
+        * 新增
+        * */
+    handleAdd() {
+
+    },
+    /*
+        * 批量发布
+        * */
+    handlePublish() {
+      this.changeNewsStatus(this.selection.join(), 1)
+    },
+    /*
+        * 批量下架
+        * */
+    handleShelves() {
+      this.changeNewsStatus(this.selection.join(), 2)
+    },
+    /*
+        * 批量复制
+        * */
+    handleCopy() {
+      this.handleDialogShow()
+    },
+    /*
+        * 获取表格数据
+        * */
+    getList() {
+      this.loading = true
+      this.selection = []
+      this.tableData = []
+      getNews(this.removePropertyOfNull(this.queryParams)).then(res => {
+        this.tableData = (res.data || []).map(item => {
+          const type = this.typeOptions.find(n => item.type === n.value)
+          const cover = item.cover[0]
+          /* {
+                title: '', // 媒资标题
+                type: '', // 媒资类型
+                id: '', // 媒资id
+                cover: '', // 图片(Array)
+                author_name: '', // 作者
+                last_modify_user_name: '', // 编辑人员
+                status: '', // 状态
+                created_at: '', // 创建时间
+              }*/
+          return {
+            ...item,
+            type: type && type.label || '',
+            cover: cover && cover.path || '' // 图片
+          }
+        })
+        this.total = res.total
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    /*
+        * 列表选择框变化
+        * */
+    handleSelectionChange(arr) {
+      this.selection = arr.map(n => n.id)
+    },
+    /*
+        * 查看栏目
+        * */
+    handleListWatch(row) {
+      console.log(row)
+    },
+    /*
+        * 列表删除
+        * */
+    handleListDelete(row) {
+      const { id } = row
+      this.$confirm(`此操作将永久删除这条媒资id为${id}的明细, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteNews(id).then(() => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.getList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    /*
+        * 修改新闻的状态
+        * */
+    changeNewsStatus(ids, status) {
+      changeStatus({
+        ids,
+        status
+      }).then(res => {
+        if (res.status_code >= 200 && res.status_code < 300) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.getList()
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      })
+    },
+    /*
+        * 弹框显示
+        * */
+    handleDialogShow(ident, row) {
+      let id
+      if (ident === 'copy') {
+        id = row.id
+      } else {
+        id = this.selection.join()
+      }
+      Object.assign(this.dialog, {
+        show: true,
+        title: ident === 'copy' ? '复制' : '批量复制',
+        form: {
+          ...this.dialog.form,
+          news_ids: id
+        }
+      })
+    },
+    /*
+        * 关闭弹框
+        * */
+    closeDialog() {
+      this.dialog.show = false
+    },
+    /*
+        * 弹框确认
+        * */
+    enterDialog() {
+      pushNewsToChannel(this.dialog.form).then(res => {
+        if (res.status_code >= 200 && res.status_code < 300) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.dialog = {
+            show: false,
+            title: '',
+            form: {
+              channel_id: '',
+              status: 1, // (是: 1, 否: 0),
+              news_ids: ''
+            }
+          }
+          this.getList()
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      })
+    },
+    /*
+        * 获取栏目列表
+        * */
+    getChannels() {
+      getChannels().then(res => {
+        this.channelsList = res
+      })
+    }
+  }
+}
+</script>

@@ -112,7 +112,47 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/content',
+    component: Layout,
+    redirect: '/content/mediaAssets/all-media',
+    name: 'Content',
+    meta: {
+      title: '内容管理',
+      icon: 'component'
+    },
+    children: [
+      {
+        path: 'mediaAssets',
+        component: () => import('@/views/content/index'), // Parent router-view
+        name: 'MediaAssets',
+        meta: { title: '媒资管理' },
+        alwaysShow: true,
+        redirect: '/content/mediaAssets/all-media',
+        children: [
+          {
+            path: 'all-media',
+            component: () => import('@/views/content/mediaAssets/all-media'),
+            name: 'All-media',
+            meta: { title: '所有媒资' }
+          },
+          {
+            path: 'watch-column',
+            component: () => import('@/views/content/mediaAssets/watch-column'),
+            hidden: true,
+            name: 'Watch-column',
+            meta: { title: '查看栏目' }
+          },
+          {
+            path: 'my',
+            component: () => import('@/views/content/mediaAssets/my'),
+            name: 'My',
+            meta: { title: '我的媒资' }
+          }
+        ]
+      }
+    ]
+  },
   {
     path: '/manage',
     component: Layout,
@@ -182,7 +222,7 @@ export const constantRoutes = [
             component: () => import('@/views/manage/staff/staff-role'),
             name: 'Staff-role',
             meta: { title: '角色管理' }
-          },
+          }
         ]
       },
       {
@@ -216,7 +256,7 @@ export const constantRoutes = [
             meta: { title: '敏感词管理' }
           }
         ]
-      },
+      }
     ]
   },
   {
@@ -233,55 +273,43 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/mbh/index'), // Parent router-view
         name: 'index',
-        meta: { title: '产品管理' },
+        meta: { title: '产品管理' }
       },
       {
         path: 'productstylelist',
         component: () => import('@/views/mbh/productstylelist'), // Parent router-view
         name: 'productstylelist',
         meta: { title: '产品样式列表' },
-        hidden:true
+        hidden: true
       },
       {
         path: 'catalog',
         component: () => import('@/views/mbh/catalog'), // Parent router-view
         name: 'catalog',
-        meta: { title: '栏目管理' },
+        meta: { title: '栏目管理' }
       },
       {
         path: 'setmeal',
         component: () => import('@/views/mbh/setmeal'), // Parent router-view
         name: 'setmeal',
         meta: { title: '套餐管理' },
-        hidden:true
+        hidden: true
       },
       {
         path: 'setmealDetails',
         component: () => import('@/views/mbh/setmealDetails'), // Parent router-view
         name: 'setmealDetails',
         meta: { title: '套餐详情' },
-        hidden:true
+        hidden: true
       },
       {
         path: 'stylelist',
         component: () => import('@/views/mbh/stylelist'), // Parent router-view
         name: 'stylelist',
-        meta: { title: '基础样式列表' },
+        meta: { title: '基础样式列表' }
       }
     ]
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
   // {
   //   path: '/documentation',
