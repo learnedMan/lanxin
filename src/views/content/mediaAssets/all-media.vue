@@ -357,8 +357,10 @@ export default {
     /*
       * 搜索时间变化
       * */
-    handleDateChange(e) {
-      console.log(e)
+    handleDateChange(val) {
+      const arr = val || ['', '']
+      this.queryParams.startdate = arr[0]
+      this.queryParams.enddate = arr[1]
     },
     /*
       * 重置搜索
