@@ -14,13 +14,12 @@
             <template v-for="(item,index) in listnum">
                 <h3>第{{index+1}}级审核人：</h3>
                 <el-transfer 
-                @change="((val)=>{transferchange(val,index)})"
                 style="display: flex;justify-content: center;align-items: center;margin-bottom:20px;"
                 :titles="['用户列表', '审核人列表']"
                 filterable
                 :filter-method="filterMethod"
                 filter-placeholder="请输入审核人姓名" 
-                v-model="listarr[index]" 
+                v-model="c_form.extra.multi_review[index]" 
                 :data="userdata"></el-transfer>
             </template>
 
@@ -56,27 +55,28 @@
 </template>
 
 <script>
-import { 
-  getUser} from '@/api/manage'
 export default({
     name:'ChildPage1',
     props: {
         value: {
             type: Object,
             default: {}
+        },
+        userdata: {
+            type: Array,
+            default: {}
         }
     },
     data () {
         return {
             dialogVisible: false,
-            userdata:[],
+            // userdata:[],
             listnum:1,
-            listarr:[],
             listshowarr:[]
         }
     },
     created () {
-        this.getuserfn();
+        // this.getuserfn();
     },
     computed:{
         c_form: {
@@ -91,13 +91,13 @@ export default({
     methods: {
         addtransfer(){
             this.listnum++
-            this.listarr.length =  this.listnum
-            for(var i=0;i<this.listarr.length;i++){
-                if(!this.listarr[i]){
-                    this.listarr[i] = [];
+            this.c_form.extra.multi_review.length =  this.listnum
+            for(var i=0;i<this.c_form.extra.multi_review.length;i++){
+                if(!this.c_form.extra.multi_review[i]){
+                    this.c_form.extra.multi_review[i] = [];
                 }
             }
-            console.log(this.listarr)
+            console.log(this.c_form.extra.multi_review)
         },
         deltransfer(){
             if(this.listnum>=1){
@@ -108,13 +108,13 @@ export default({
                   type: 'warning'
                 });
             }
-            this.listarr.length =  this.listnum
-            for(var i=0;i<this.listarr.length;i++){
-                if(!this.listarr[i]){
-                    this.listarr[i] = [];
+            this.c_form.extra.multi_review.length =  this.listnum
+            for(var i=0;i<this.c_form.extra.multi_review.length;i++){
+                if(!this.c_form.extra.multi_review[i]){
+                    this.c_form.extra.multi_review[i] = [];
                 }
             }
-            console.log(this.listarr)
+            console.log(this.c_form.extra.multi_review)
         },
         edituser(){
             this.dialogVisible = true;
@@ -122,48 +122,30 @@ export default({
         filterMethod(query, item) {
           return item.pinyin.indexOf(query) > -1;
         },
-        transferchange(index,res){
-            // console.log(index)
-            // console.log(res)
-            // console.log(this.listarr)
-        },
         suretransfer(){
-            // console.log(this.listarr);
             this.dialogVisible = false;
-            this.listshowarr.length = this.listarr.length;
+            this.listshowarr.length = this.c_form.extra.multi_review.length;
+            this.showtxt()
+        },
+        showtxt(){
+            console.log(this.userdata)
             for(var i=0;i<this.listshowarr.length;i++){
                 this.listshowarr[i] = [];
             }
-            for(var i=0;i<this.listarr.length;i++){//外数组
-                for(var j=0;j<this.listarr[i].length;j++){//内数组
+            for(var i=0;i<this.c_form.extra.multi_review.length;i++){//外数组
+                for(var j=0;j<this.c_form.extra.multi_review[i].length;j++){//内数组
                     for(var k=0;k<this.userdata.length;k++){
-                        if(this.listarr[i][j]==this.userdata[k].key){
+                        if(this.c_form.extra.multi_review[i][j]==this.userdata[k].key){
+                            console.log(1)
                             this.listshowarr[i][j] = this.userdata[k].label
                         }
                     }
                 }
             }
-            // console.log(this.userdata)
-            // console.log(this.listshowarr)
+            this.$forceUpdate()
+            console.log(this.c_form.extra.multi_review)
+            console.log(this.listshowarr)
         },
-        getuserfn(){//获取用户列表
-            var data={};
-            data.model = 'User';
-            var queryParams = {
-                page: 1,
-                pageSize: 999
-            }
-            getUser(Object.assign(data,queryParams)).then(response => {
-                // console.log(response)
-                response.data.forEach((item, index) => {
-                    this.userdata.push({
-                        label: item.name,
-                        key: item.id,
-                        pinyin: item.name
-                    });
-                });
-            })
-        }
     }
 })
 </script>

@@ -487,18 +487,11 @@ export default {
           type: 'warning'
         }).then(() => {
           delproducts(row.id).then(response => {
-            if (response.status_code >= 200 && response.status_code < 300) {
-                this.$message({
-                  message: response.message,
-                  type: 'success'
-                });
-                this.getList();
-            }else {
-                this.$message({
-                  message: response.message,
-                  type: 'warning'
-                });
-            }
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+              this.getList();
           })
         }).catch(() => {
           this.$message({

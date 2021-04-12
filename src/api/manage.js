@@ -235,12 +235,12 @@ export function getzones() {
   })
 }
 
-export function getchannelinfo(id) {
-  return request({
-    url: '/api/sites/'+id,
-    method: 'get'
-  })
-}
+// export function getchannelinfo(id) {
+//   return request({
+//     url: '/api/sites/'+id,
+//     method: 'get'
+//   })
+// }
 
 // 产品管理
 export function getproduct(query) {
@@ -279,3 +279,41 @@ export function delproducts(id) {
 // getChannels
 // getproduct
 // getUser
+
+export function addchannels(data) {
+  return request({
+    url: '/api/channels',
+    method: 'post',
+    data:data
+  })
+}
+
+export function delchannels(id) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'delete',
+  })
+}
+
+export function setSortchannels(data) {
+  return request({
+    url: '/api/channels/setSort',
+    method: 'post',
+    data:data
+  })
+}
+
+export function getchannelinfo(id) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'get'
+  })
+}
+
+export function editchannels(id,data) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'patch',
+    data:data
+  })
+}

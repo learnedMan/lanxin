@@ -42,7 +42,7 @@
         </template>
       </el-table-column>
       <el-table-column label="更新时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
-      <el-table-column label="操作" align="left" width="500px">
+      <el-table-column label="操作" align="left" width="360px">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -50,6 +50,7 @@
             style="color:#E6A23C;"
             icon="el-icon-edit"
             @click="editdata(scope.row)"
+            v-if="scope.row.type!='product'"
           >修改</el-button>
           <el-button
             size="mini"
@@ -57,32 +58,38 @@
             style="color:#F56C6C;"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
+            v-if="scope.row.type!='product'"
           >删除</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-document-add"
-            @click="adddata(scope.row.id)"
+            @click="adddata(scope.row)"
           >新增</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-menu"
+            v-if="scope.row.type!='product'"
           >样式调整</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-bottom"
-          >下移</el-button>
+            icon="el-icon-top"
+            :disabled="scope.row.b_sort=='begin'"
+            @click="move(scope.$index, scope.row, 'up')"
+          >上移</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-top"
-          >上移</el-button>
+            icon="el-icon-bottom"
+            :disabled="scope.row.e_sort=='end'"
+            @click="move(scope.$index, scope.row, 'down')"
+          >下移</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 新增/修改产品弹窗 -->
+    <!-- 新增/修改栏目弹窗 -->
     <el-dialog
       width="1200px"
       :close-on-click-modal="false"
@@ -95,12 +102,14 @@
         ref="dataForm"
         style="display: flex">
         <div class="fl" style="width: 50%">
-          <el-form-item label-width="150px" label="上级栏目:" prop="father">
+          <el-form-item class="placeholderdiv" label-width="150px" label="上级栏目:" prop="father">
             <el-cascader
+            :show-all-levels = false
+            :placeholder="form.placeholder"
             v-model="form.father"
             style="width: 350px"
             :options="dataList"
-            :props="{ checkStrictly: true ,value:'id',label:'name'}"
+            :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
             clearable></el-cascader>
           </el-form-item>
           <el-form-item label-width="150px" label="栏目名称:" prop="name">
@@ -126,7 +135,7 @@
               :headers="importHeaders"
               name="image"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess.bind(this,'logo')"
+              :on-success="handleAvatarSuccess.bind(this,'cover')"
               :before-upload="beforeAvatarUpload">
               <img v-if="form.extra.cover" :src="form.extra.cover" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -148,7 +157,6 @@
 
           <el-form-item label-width="150px" label="允许发布的内容:" prop="extra.allow_news_types">
             <el-checkbox-group 
-                @change="checkboxchange"
                 v-model="form.extra.allow_news_types">
                 <el-checkbox v-for="media in medias" :label="media.label" :key="media.label">{{media.value}}</el-checkbox>
             </el-checkbox-group>
@@ -203,35 +211,34 @@
 
         <div class="fr" style="width: 50%">
             <el-form-item el-form-item label-width="150px" label="栏目类型:" prop="type">
-              <el-select v-model="form.type" placeholder="请选择">
+              <el-select @change="changetype" v-model="form.type" placeholder="请选择">
                 <el-option v-for="item in columntypeoptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
 
-            <child-page1 v-if="form.type=='default'" :form="form" v-model="form"></child-page1>  
-            <el-form-item v-else-if="form.type=='service'" label-width="150px" label="服务背景图:" prop="extra.background">
+            <child-page1 v-if="forceRefresh" ref="c_page1" :userdata="userdata" v-show="form.type=='default'" :form="form" v-model="form" />
+
+            <el-form-item v-show="form.type=='service'" label-width="150px" label="服务背景图:" prop="extra.background">
               <el-upload
                 class="avatar-uploader"
                 :action="VUE_APP_BASE_API + '/api/upload/image'"
                 :headers="importHeaders"
                 name="image"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess.bind(this,'logo')"
+                :on-success="handleAvatarSuccess.bind(this,'background')"
                 :before-upload="beforeAvatarUpload">
                 <img v-if="form.extra.background" :src="form.extra.background" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
-            <el-form-item v-else-if="form.type=='outer_link'||form.type=='auth_link'" 
+            <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'" 
               label-width="150px" label="链接地址:" prop="extra.link.url">
               <el-input
                 style="width: 350px"
                 placeholder="请输入栏目名称"
                 v-model="form.extra.link.url"
               ></el-input>
-            </el-form-item>
-            <el-form-item v-else>
             </el-form-item>
         </div>
       </el-form>
@@ -245,12 +252,14 @@
 
 <script>
 import { 
-  addpermissions , 
-  editpermissions , 
-  delpermissions,
-  deletearrPermissions,
   getChannels,
-  getproduct} from '@/api/manage'
+  getproduct,
+  addchannels,
+  delchannels,
+  setSortchannels,
+  getchannelinfo,
+  editchannels,
+  getUser} from '@/api/manage'
 
 import ChildPage1 from './pages/c_page1'
 
@@ -262,6 +271,9 @@ import ChildPage1 from './pages/c_page1'
     data() {
       var mytoken = sessionStorage.getItem("token");
       return {
+        forceRefresh:false,//子组件
+        userdata:[],
+
         importHeaders: { Authorization: mytoken }, //传图片时的token
         // 查询参数
         queryParams: {
@@ -308,18 +320,16 @@ import ChildPage1 from './pages/c_page1'
         checkedmedias:[],
         loading:true,
         dataList:[],
-        dialogFormVisible: true,
+        dialogFormVisible: false,
         form:{},
-        basicsform:{},
-        defaultform:{},
-        serviceform:{},
-        linkform:{},
         rules: {
           father: [{ required: true, message: "请选择上级栏目", trigger: "blur" }],
           name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
           'extra.cover': [{ required: true, message: "请选择栏目封面", trigger: "blur" }],
           'extra.show_num': [{ required: true, message: "请输入展示条数", trigger: "blur" }],
+          'extra.link.url': [{ required: true, message: "请输入链接地址", trigger: "blur" }],
           type: [{ required: true, message: "请选择栏目类型", trigger: "blur" }],
+          status: [{ required: true, message: "请选择是否启用", trigger: "blur" }],
         },
         dialogType: "add",
         dialogTitle:''
@@ -334,18 +344,44 @@ import ChildPage1 from './pages/c_page1'
       this.initForm();
       this.getList();
       this.getproductList();
+
+      this.getuserfn();
     },
     methods:{
+      getuserfn(){//获取用户列表
+        var data={};
+        data.model = 'User';
+        var queryParams = {
+            page: 1,
+            pageSize: 999
+        }
+        getUser(Object.assign(data,queryParams)).then(response => {
+            // console.log(response)
+            response.data.forEach((item, index) => {
+                this.userdata.push({
+                    label: item.name,
+                    key: item.id,
+                    pinyin: item.name
+                });
+            });
+            // console.log(this.userdata)
+            this.forceRefresh = true;
+        })
+      },
       // 初始化表单
       initForm() {
-        if (this.$refs.dataFrom) {
-          this.$refs.dataFrom.resetFields();
+        // this.forceRefresh = false;
+        // this.$nextTick(()=>{
+        //   this.forceRefresh = true;
+        // })
+        if (this.$refs.dataForm) {
+          this.$refs.dataForm.resetFields();
         }
-        this.basicsform = {
+        this.form = {
           type:'default',
           father:'',
           name:'',
-          sort:'',
+          sort:0,
           status:'',
           extra:{
             intro:'',
@@ -356,37 +392,33 @@ import ChildPage1 from './pages/c_page1'
             load_news:false,
             linked_channel_id:'',
             template_style:'',
-            show_num:''
-          }
-        };
-        this.defaultform = {
-          extra:{
+            show_num:'',
+
             multi_review:[],
             display_more:'',
-            display_title:''
-          }
-        }
-        this.serviceform = {
-          extra:{
-            background:''
-          }
-        }
-        this.linkform = {
-          extra:{
+            display_title:'',
+
+            background:'',
+
             link:{
               type:'url',
               url:''
             }
           }
-        }
-        Object.assign(this.form,this.basicsform);
-        console.log(this.form)
+        };
       },
-      checkboxchange(val){
-        console.log(val)
+      changetype(){//修改栏目类型
+        // console.log(this.form.type)
+        if(this.form.type=='default'){
+          this.$nextTick(()=>{
+            this.$refs.c_page1.showtxt()
+          })
+        }
       },
       handleAvatarSuccess(name,res) {
         this.form.extra[name] = res.path;
+        console.log(this.form.extra[name])
+        this.$forceUpdate();
       },
       beforeAvatarUpload(file) {
         const isLt = file.size / 1024 / 1024 < 20;
@@ -395,7 +427,7 @@ import ChildPage1 from './pages/c_page1'
         }
         return isLt;
       },
-      initcondition() {//重置
+      initcondition() {//重置搜索
         this.queryParams.product_id = "";
       },
       statuschange(data){
@@ -422,25 +454,103 @@ import ChildPage1 from './pages/c_page1'
         getChannels(this.queryParams).then(response => {
           this.loading = false;
           this.dataList = response;
-          console.log(response)
+
+          function addstatus(arr){
+            for(var i=0;i<arr.length;i++){
+              if(i==0){
+                arr[i].b_sort = 'begin'
+              }
+              if(i==arr.length-1){
+                arr[i].e_sort = 'end'
+              }
+              if(arr[i].children&&arr[i].children.length!=0){
+                addstatus(arr[i].children)
+              }
+            }
+          }
+          addstatus(this.dataList)
         })
+      },
+      //上移下移
+      move(index, e, type){
+        var thisid = e.id;
+        var thissort = e.sort;
+        var getid='';
+        var getsort='';
+        function find(arr,id,type){
+          for(var i=0;i<arr.length;i++){
+            if(arr[i].id==id){
+              if(type=='up'){
+                getid = arr[i-1].id
+                getsort = arr[i-1].sort
+              }else{//down
+                getid = arr[i+1].id
+                getsort = arr[i+1].sort
+              }
+            }else{
+              if(arr[i].children&&arr[i].children.length!=0){
+                find(arr[i].children,id,type)
+              }
+            }
+          }
+        }
+        find(this.dataList,thisid,type)
+        console.log('当前的id：'+thisid)
+        // console.log('获取的id：'+getid)
+        // console.log('获取的权重：'+getsort)
+        var data = {
+          [thisid]:thissort,
+          [getid]:getsort
+        }
+        setSortchannels(data).then(response => {
+          console.log(response)
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+            this.getList();
+        })
+        
       },
       // 增加栏目
       adddata(data) {
         this.initForm();
-        this.form.father = data||'';
+        this.forceRefresh = false;
+        this.$nextTick(()=>{
+          this.forceRefresh = true;
+        })
+        // console.log(data)
+        this.form.father = [data.id]||[];
+        this.form.placeholder = data.name||'';
+
         this.dialogTitle = "新增栏目";
         this.dialogType = "add";
         this.dialogFormVisible = true;
       },
       // 编辑栏目
       editdata(row) {
-        var row = row;
         this.initForm();
-        this.form = JSON.parse(JSON.stringify(row));
         this.dialogTitle = "编辑栏目";
         this.dialogType = "edit";
         this.dialogFormVisible = true;
+        getchannelinfo(row.id).then(response => {
+          this.form = JSON.parse(JSON.stringify(response)) ;
+          var new_multi_review = [];
+          var multi_review = this.form.extra.multi_review;
+          for(var i=0;i<multi_review.length;i++){
+            new_multi_review[i] = [];
+            console.log(multi_review[i].reviewer_ids)
+            new_multi_review[i] = multi_review[i].reviewer_ids.split(',');
+            for(var k=0;k<new_multi_review[i].length;k++){
+              new_multi_review[i][k] = parseInt(new_multi_review[i][k])
+            }
+          }
+          this.form.extra.multi_review = new_multi_review;
+          this.$refs.c_page1.listnum = new_multi_review.length;
+          this.$nextTick(()=>{
+            this.$refs.c_page1.showtxt()
+          })
+        })
       },
       //删除栏目
       handleDelete(row){
@@ -449,19 +559,12 @@ import ChildPage1 from './pages/c_page1'
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delpermissions(row.id).then(response => {
-            if (response.status_code >= 200 && response.status_code < 300) {
-                this.$message({
-                  message: response.message,
-                  type: 'success'
-                });
-                this.getList();
-            }else {
-                this.$message({
-                  message: response.message,
-                  type: 'warning'
-                });
-            }
+          delchannels(row.id).then(response => {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            });
+            this.getList();
           })
         }).catch(() => {
           this.$message({
@@ -477,40 +580,42 @@ import ChildPage1 from './pages/c_page1'
       },
       // 确定弹窗
       enterDialog() {
-        this.$refs["dataFrom"].validate((valid) => {
+        this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
-          this.dialogFormVisible = false;
+          var data = JSON.parse(JSON.stringify(this.form))
+          data.father = data.father[data.father.length-1];
+
+          var multi_review = data.extra.multi_review;
+          var new_multi_review = [];
+          for(var i=0;i<multi_review.length;i++){
+            new_multi_review[i] = {};
+            new_multi_review[i].sort = (i+1)
+            new_multi_review[i].status = 0
+            new_multi_review[i].reviewer_ids = multi_review[i].join()
+          }
+          data.extra.multi_review = new_multi_review;
+
+
+          // return
           if (this.dialogType=='edit') {
             //修改
-            editpermissions(this.form.id,this.form).then(response => {
-              if (response.status_code >= 200 && response.status_code < 300) {
+            editchannels(data.id,data).then(response => {
                   this.$message({
-                    message: response.message,
+                    message: '修改成功',
                     type: 'success'
                   });
+                  this.dialogFormVisible = false;
                   this.getList();
-              }else {
-                  this.$message({
-                    message: response.message,
-                    type: 'warning'
-                  });
-              }
             })
           }else{
             //新增
-            addpermissions(this.form).then(response => {
-              if (response.status_code >= 200 && response.status_code < 300) {
+            addchannels(data).then(response => {
                   this.$message({
-                    message: response.message,
+                    message: '添加成功',
                     type: 'success'
                   });
+                  this.dialogFormVisible = false;
                   this.getList();
-              }else {
-                  this.$message({
-                    message: response.message,
-                    type: 'warning'
-                  });
-              }
             })
           }
         })
@@ -550,11 +655,28 @@ import ChildPage1 from './pages/c_page1'
     overflow: auto;
   }
 }
+
+.placeholderdiv input::-webkit-input-placeholder {
+  color:#717171 !important;
+}
+.placeholderdiv input::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color:#717171 !important;
+}
+.placeholderdiv input:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color:#717171 !important;
+}
+.placeholderdiv input:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color:#717171 !important;
+}
 </style>
 
 
 
 <style scoped lang="scss">
+
 .clearflex {
   *zoom: 1;
 }
