@@ -119,7 +119,9 @@
             style="width: 50px; height: 50px"
             :src="scope.row.cover || useravatar"
             fit="cover"
-          />
+          >
+            <img slot="error" :src="useravatar" alt="" style="width: 100%;height: 100%">
+          </el-image>
         </template>
       </el-table-column>
       <el-table-column
@@ -232,7 +234,7 @@
             v-model="dialog.form.channel_id"
             style="width: 350px"
             :options="channelsList"
-            :props="{ checkStrictly: true, emitPath: false, value: 'id', label: 'name', multiple: true }"
+            :props="cascaderOption"
             clearable
           />
         </el-form-item>
@@ -256,7 +258,7 @@
 </template>
 
 <script>
-import { getScripts, deleteScript, PatchScript } from '@/api/content'
+import { getScripts, deleteScript, PatchScript, batchPublishScript } from '@/api/content'
 import { getChannels } from '@/api/manage'
 
 export default {
@@ -336,6 +338,13 @@ export default {
       dialogRules: {
         channel_id: { required: true, message: '请选择栏目', trigger: 'change' }
       },
+      cascaderOption: {
+        checkStrictly: true, // 是否强制父子不关联
+        emitPath: false, // 返回值是否为数组
+        value: 'id', // 选项值
+        label: 'name', // 显示值
+        multiple: true // 多选
+      }, // 级联选择器配置
       channelsList: [], // 栏目列表
       selection: [] // 表格选中项
     }
@@ -452,17 +461,24 @@ export default {
       * 弹框显示
       * */
     handleDialogShow(ident, row) {
-      let id
-      let channel_id = []
-      if (ident === 'publish') {
-        id = row.id
+      let id; let channel_id = []
+      const isPublish = ident === 'publish' // 是否为列表发布
+      if (isPublish) {
         channel_id = row.channel.map(n => n.id)
+        id = row.id
       } else {
         id = this.selection
       }
+      this.cascaderOption = {
+        checkStrictly: true, // 是否强制父子不关联
+        emitPath: false, // 返回值是否为数组
+        value: 'id', // 选项值
+        label: 'name', // 显示值
+        multiple: isPublish // 多选
+      }
       Object.assign(this.dialog, {
         show: true,
-        title: ident === 'publish' ? '发布栏目' : '批量发布栏目',
+        title: isPublish ? '发布栏目' : '批量发布栏目',
         form: {
           channel_id,
           ids: id
@@ -481,14 +497,33 @@ export default {
     enterDialog() {
       const ids = this.dialog.form.ids
       const isArray = Array.isArray(ids)
-      const channels = this.dialog.form.channel_id.join()
+      const channels = this.dialog.form.channel_id
       this.$refs.dialogForm.validate(val => {
         if (val) {
-          // 多个文稿关联到多个栏目
-          if (isArray) {} else {
+          // 多个文稿关联到单个栏目
+          if (isArray) {
+            batchPublishScript({
+              ids,
+              channel_id: channels
+            }).then(res => {
+              if (res.status_code >= 200 && res.status_code < 300) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.dialog.show = false
+                this.getList()
+              } else {
+                this.$message({
+                  message: res.message,
+                  type: 'warning'
+                })
+              }
+            })
+          } else {
             // 单个文稿关联到多个栏目
             PatchScript(ids, {
-              channels
+              channels: channels.join()
             }).then(() => {
               this.$message({
                 message: '发布成功',

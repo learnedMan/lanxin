@@ -26,6 +26,15 @@ export function PatchScript(id, data) {
   })
 }
 
+/* 批量发布到单个文稿 */
+export function batchPublishScript(data) {
+  return request({
+    url: `/api/scripts/pushScriptsToChannel`,
+    method: 'post',
+    params: data
+  })
+}
+
 /* 获取文稿详情 */
 export function getScriptDetail(id) {
   return request({
