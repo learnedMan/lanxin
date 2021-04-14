@@ -154,6 +154,40 @@ export const constantRoutes = [
             component: () => import('@/views/content/mediaAssets/my'),
             name: 'My',
             meta: { title: '我的媒资' }
+          },
+          {
+            path: 'recycleBox',
+            component: () => import('@/views/content/mediaAssets/recycleBox'),
+            name: 'RecycleBox',
+            meta: { title: '回收站' }
+          }
+        ]
+      },
+      {
+        path: 'mediaRepository',
+        component: () => import('@/views/content/index'), // Parent router-view
+        name: 'MediaRepository',
+        meta: { title: '媒体库' },
+        alwaysShow: true,
+        redirect: '/content/mediaRepository/allResources',
+        children: [
+          {
+            path: 'allResources',
+            component: () => import('@/views/content/mediaRepository/allResources'),
+            name: 'AllResources',
+            meta: { title: '全部图片' }
+          },
+          {
+            path: 'myResources',
+            component: () => import('@/views/content/mediaRepository/myResources'),
+            name: 'MyResources',
+            meta: { title: '我的图片' }
+          },
+          {
+            path: 'classmanage',
+            component: () => import('@/views/content/mediaRepository/classmanage'),
+            name: 'Classmanage',
+            meta: { title: '(媒体库)分类管理' }
           }
         ]
       }
