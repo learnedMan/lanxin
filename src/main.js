@@ -49,11 +49,20 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
+// import VueUeditorWrap from 'vue-ueditor-wrap';
+
 Vue.config.productionTip = false
+
+ 
+//富文本ue需要的js和css
+// import'./assets/UEditor/ueditor.config.js'
+// import'./assets/UEditor/ueditor.all.js'
+// import'./assets/UEditor/ueditor.parse.min.js'
 
 new Vue({
   el: '#app',
   router,
   store,
+  // VueUeditorWrap,
   render: h => h(App)
 })

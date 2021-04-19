@@ -128,23 +128,23 @@ export default({
             this.showtxt()
         },
         showtxt(){
-            console.log(this.userdata)
-            for(var i=0;i<this.listshowarr.length;i++){
+            // console.log(this.userdata)
+            for(var i=0;i<this.c_form.extra.multi_review.length;i++){
                 this.listshowarr[i] = [];
             }
             for(var i=0;i<this.c_form.extra.multi_review.length;i++){//外数组
                 for(var j=0;j<this.c_form.extra.multi_review[i].length;j++){//内数组
                     for(var k=0;k<this.userdata.length;k++){
                         if(this.c_form.extra.multi_review[i][j]==this.userdata[k].key){
-                            console.log(1)
+                            // console.log(1)
                             this.listshowarr[i][j] = this.userdata[k].label
                         }
                     }
                 }
             }
             this.$forceUpdate()
-            console.log(this.c_form.extra.multi_review)
-            console.log(this.listshowarr)
+            // console.log(this.c_form.extra.multi_review)
+            // console.log(this.listshowarr)
         },
     }
 })

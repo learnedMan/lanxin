@@ -317,3 +317,132 @@ export function editchannels(id,data) {
     data:data
   })
 }
+
+
+
+
+// 回收站
+export function getrecycleBin(query) {
+  return request({
+    url: '/api/news/recycleBin',
+    method: 'get',
+    params:query
+  })
+}
+
+export function restore(data) {
+  return request({
+    url: '/api/news/restore',
+    method: 'post',
+    params:{"ids":data}
+  })
+}
+
+
+
+// (媒体库)分类管理
+export function getgories(query) {
+  return request({
+    url: '/api/categories',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addgories(data) {
+  return request({
+    url: '/api/categories',
+    method: 'post',
+    data:data
+  })
+}
+export function editgories(id,data) {
+  return request({
+    url: '/api/categories/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+export function delgories(id) {
+  return request({
+    url: '/api/categories/'+id,
+    method: 'delete'
+  })
+}
+
+
+// 全部图片
+// getgories
+export function getresources(query) {
+  return request({
+    url: '/api/resources',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addresources(data) {
+  return request({
+    url: '/api/resources',
+    method: 'post',
+    data:data
+  })
+}
+export function editresources(id,data) {
+  return request({
+    url: '/api/resources/'+id,
+    method: 'post',
+    data:data
+  })
+}
+export function delresources(id) {
+  return request({
+    url: '/api/resources/'+id,
+    method: 'delete'
+  })
+}
+
+
+// 我的图片
+// getgories
+export function getmyresources(query) {
+  return request({
+    url: '/api/resources/myResources',
+    method: 'get',
+    params:query
+  })
+}
+
+
+// 广电管理
+// 电视频道
+export function gettv_channel(query) {
+  return request({
+    url: '/api/channels/getSpecialChannels',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addtv_channel(data) {
+  return request({
+    url: '/api/channels',
+    method: 'post',
+    data:data
+  })
+}
+
+export function deltv_channel(id) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'delete'
+  })
+}
+
+export function edittv_channel(id,data) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'patch',
+    data:data
+  })
+}

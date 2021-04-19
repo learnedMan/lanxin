@@ -27,7 +27,20 @@
       :tree-props="{children: 'children'}">
       <el-table-column label="栏目名称" align="center" prop="name" />
       <el-table-column label="栏目ID" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column label="(模板化)样式分类" align="center" prop="template_style" :show-overflow-tooltip="true" />
+      <!-- <el-table-column label="(模板化)样式分类" align="center" prop="template_style" :show-overflow-tooltip="true" /> -->
+      <el-table-column 
+        label="(模板化)样式分类" 
+        align="center" 
+        prop="template_style" 
+        :show-overflow-tooltip="true" >
+        <template slot-scope="scope">
+          <div v-if="scope.row.type=='product'">无</div>
+          <el-select v-else @change="statuschange(scope.row)" v-model="scope.row.template_style" placeholder="请选择">
+            <el-option v-for="item in columntypeoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </template>
+      </el-table-column>
       <el-table-column label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
       <el-table-column 
         label="状态" 
@@ -35,7 +48,7 @@
         prop="status" 
         :show-overflow-tooltip="true" >
         <template slot-scope="scope">
-          <el-select @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
+          <el-select :disabled="scope.row.type=='product'" @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
             <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
@@ -66,12 +79,12 @@
             icon="el-icon-document-add"
             @click="adddata(scope.row)"
           >新增</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-menu"
             v-if="scope.row.type!='product'"
-          >样式调整</el-button>
+          >样式调整</el-button> -->
           <el-button
             size="mini"
             type="text"
@@ -89,6 +102,7 @@
         </template>
       </el-table-column>
     </el-table>
+
     <!-- 新增/修改栏目弹窗 -->
     <el-dialog
       width="1200px"
@@ -271,7 +285,9 @@ import ChildPage1 from './pages/c_page1'
     data() {
       var mytoken = sessionStorage.getItem("token");
       return {
-        forceRefresh:false,//子组件
+
+        //子组件
+        forceRefresh:false,
         userdata:[],
 
         importHeaders: { Authorization: mytoken }, //传图片时的token
@@ -431,7 +447,8 @@ import ChildPage1 from './pages/c_page1'
         this.queryParams.product_id = "";
       },
       statuschange(data){
-        editsites(data.id,data).then(response => {
+        console.log(data)
+        editchannels(data.id,data).then(response => {
           this.$message({
             message: '修改成功',
             type: 'success'
@@ -539,7 +556,7 @@ import ChildPage1 from './pages/c_page1'
           var multi_review = this.form.extra.multi_review;
           for(var i=0;i<multi_review.length;i++){
             new_multi_review[i] = [];
-            console.log(multi_review[i].reviewer_ids)
+            // console.log(multi_review[i].reviewer_ids)
             new_multi_review[i] = multi_review[i].reviewer_ids.split(',');
             for(var k=0;k<new_multi_review[i].length;k++){
               new_multi_review[i][k] = parseInt(new_multi_review[i][k])
