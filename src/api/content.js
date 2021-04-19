@@ -11,6 +11,15 @@ export function getScripts(query) {
   })
 }
 
+/* 新增或修改文稿 */
+export function changeScripts(id, data) {
+  return request({
+    url: `/api/scripts/${id || ''}`,
+    method: id ? 'patch' : 'post',
+    data
+  })
+}
+
 /* 删除文稿 */
 export function deleteScript(id) {
   return request({
@@ -28,7 +37,7 @@ export function PatchScript(id, data) {
   })
 }
 
-/* 批量发布到单个文稿 */
+/* 批量发布到单个栏目 */
 export function batchPublishScript(data) {
   return request({
     url: `/api/scripts/pushScriptsToChannel`,
@@ -97,4 +106,8 @@ export function addLabels(data) {
     method: 'post',
     params: data
   })
+}
+
+export function uploadImg(option) {
+  return request(option)
 }

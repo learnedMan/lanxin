@@ -144,9 +144,16 @@ export const constantRoutes = [
             meta: { title: '查看栏目' }
           },
           {
+            path: 'add-media',
+            component: () => import('@/views/content/mediaAssets/add-media'),
+            hidden: true,
+            name: 'Add-media',
+            meta: { title: '新增内容' }
+          },
+          {
             path: 'labelManage',
             component: () => import('@/views/content/mediaAssets/labelManage'),
-            name: 'labelManage',
+            name: 'LabelManage',
             meta: { title: '标签管理' }
           },
           {

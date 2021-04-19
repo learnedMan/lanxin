@@ -174,6 +174,7 @@
               type="text"
               icon="el-icon-edit"
               size="small"
+              @click="handleEdit(scope.row)"
             >
               编辑
             </el-button>
@@ -384,7 +385,7 @@ export default {
       * 新增
       * */
     handleAdd() {
-
+      this.$router.push({ name: 'Add-media' })
     },
     /*
       * 批量发布
@@ -434,6 +435,13 @@ export default {
       * */
     handleListWatch(row) {
       this.$router.push(`/content/mediaAssets/watch-column?id=${row.id}`)
+    },
+    /*
+    * 编辑
+    * */
+    handleEdit(row) {
+      const { id } = row
+      this.$router.push({ name: 'Add-media', query: { id }})
     },
     /*
       * 列表删除

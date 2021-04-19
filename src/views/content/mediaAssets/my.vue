@@ -174,6 +174,7 @@
               type="text"
               icon="el-icon-edit"
               size="small"
+              @click="handleEdit(scope.row)"
             >
               编辑
             </el-button>
@@ -269,6 +270,7 @@ export default {
         type: '',
         startdate: '',
         enddate: '',
+        reviewer_id: '', // 用户id
         pageSize: 10,
         page: 1
       },
@@ -349,7 +351,14 @@ export default {
       selection: [] // 表格选中项
     }
   },
+  computed: {
+    /* 用户id */
+    reviewer_id() {
+      return this.$store.state.user.u_info.id
+    }
+  },
   created() {
+    this.queryParams.reviewer_id = this.reviewer_id
     this.getList()
     this.getChannels()
   },
@@ -357,8 +366,10 @@ export default {
     /*
         * 搜索时间变化
         * */
-    handleDateChange(e) {
-      console.log(e)
+    handleDateChange(val) {
+      const arr = val || ['', '']
+      this.queryParams.startdate = arr[0]
+      this.queryParams.enddate = arr[1]
     },
     /*
         * 重置搜索
@@ -382,7 +393,7 @@ export default {
         * 新增
         * */
     handleAdd() {
-
+      this.$router.push({ name: 'Add-media' })
     },
     /*
         * 批量发布
@@ -397,7 +408,8 @@ export default {
       this.loading = true
       this.selection = []
       this.tableData = []
-      getScripts(this.removePropertyOfNull(this.queryParams)).then(res => {
+      const params = { ...this.queryParams }
+      getScripts(this.removePropertyOfNull(params)).then(res => {
         this.tableData = (res.data || []).map(item => {
           const type = this.typeOptions.find(n => item.type === n.value)
           const cover = item.cover[0]
@@ -432,6 +444,13 @@ export default {
         * */
     handleListWatch(row) {
       this.$router.push(`/content/mediaAssets/watch-column?id=${row.id}`)
+    },
+    /*
+    * 列表编辑
+    * */
+    handleEdit(row) {
+      const { id } = row
+      this.$router.push({ name: 'Add-media', query: { id }})
     },
     /*
         * 列表删除
