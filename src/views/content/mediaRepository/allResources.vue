@@ -40,7 +40,7 @@
       </el-table-column>  
       <el-table-column label="作者" align="center" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-                <span>{{scope.row.author || '无'}}</span>
+                <span>{{scope.row.author.name || '无'}}</span>
             </template>
       </el-table-column>
       <el-table-column label="大小" align="center" prop="size" :show-overflow-tooltip="true" />
@@ -118,9 +118,9 @@
                 align="right">
             </el-date-picker>
         </el-form-item>
-        <el-form-item  label-width="100px" label="作者" prop="author">
+        <!-- <el-form-item  label-width="100px" label="作者" prop="author">
           <el-input style="width: 350px" autocomplete="off" placeholder="请输入作者" v-model="form.author"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item  label-width="100px" label="描述" prop="description">
           <el-input 
             type="textarea" 
@@ -203,29 +203,12 @@ import {
       this.initForm();
     },
     methods:{
-        downloadfn(src,name){
-            var canvas = document.createElement('canvas');
-            var img = document.createElement('img');
-            img.onload = function(e) {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                var context = canvas.getContext('2d');
-                context.drawImage(img, 0, 0, img.width, img.height);
-                // window.navigator.msSaveBlob(canvas.msToBlob(),'image.jpg');
-                // saveAs(imageDataUrl, '附件');
-                canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-                canvas.toBlob((blob)=>{
-                    let link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = name; 
-                    link.click();  
-                }, "image/jpeg");
-            }
-            img.setAttribute("crossOrigin",'Anonymous');
-            img.src = src||'http://pic.c-ctrip.com/VacationH5Pic/mice/wechat/ewm01.png';
-        },
       download(data){
-          this.downloadfn(data.url,data.title)
+          let link = document.createElement('a');
+          link.target = '_blank'
+          link.href = this.VUE_APP_BASE_API+'/api/resources/downloadResource?file_url='+data.url;
+          link.download = data.title; 
+          link.click();  
       },
       handleAvatarSuccess(name,res) {
         this.form[name] = res.path;
@@ -262,7 +245,7 @@ import {
       },
       getList(){
         getresources(this.queryParams).then(response => {
-        //   console.log(response)
+          console.log(response)
           this.loading = false;
           this.dataList = response.data;
           this.total = response.total;

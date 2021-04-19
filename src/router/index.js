@@ -188,6 +188,12 @@ export const constantRoutes = [
             component: () => import('@/views/content/mediaRepository/classmanage'),
             name: 'Classmanage',
             meta: { title: '(媒体库)分类管理' }
+          },
+          {
+            path: 'uedittest',
+            component: () => import('@/views/content/mediaRepository/uedittest'),
+            name: 'Uedittest',
+            meta: { title: '编辑器设置' }
           }
         ]
       }
@@ -296,6 +302,24 @@ export const constantRoutes = [
             meta: { title: '敏感词管理' }
           }
         ]
+      }
+    ]
+  },
+  {
+    path: '/radioTV/index',
+    component: Layout,
+    redirect: '/radioTV/radioTVIndex',
+    name: 'RadioTV',
+    meta: {
+      title: '广电管理',
+      icon: 'component'
+    },
+    children: [
+      {
+        path: 'radioTVIndex',
+        component: () => import('@/views/radioTV/radioTVIndex'), // Parent router-view
+        name: 'RadioTVIndex',
+        meta: { title: '广电管理' },
       }
     ]
   },

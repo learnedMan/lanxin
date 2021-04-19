@@ -391,7 +391,7 @@ export function addresources(data) {
 export function editresources(id,data) {
   return request({
     url: '/api/resources/'+id,
-    method: 'patch',
+    method: 'post',
     data:data
   })
 }
@@ -410,5 +410,39 @@ export function getmyresources(query) {
     url: '/api/resources/myResources',
     method: 'get',
     params:query
+  })
+}
+
+
+// 广电管理
+// 电视频道
+export function gettv_channel(query) {
+  return request({
+    url: '/api/channels/getSpecialChannels',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addtv_channel(data) {
+  return request({
+    url: '/api/channels',
+    method: 'post',
+    data:data
+  })
+}
+
+export function deltv_channel(id) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'delete'
+  })
+}
+
+export function edittv_channel(id,data) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'patch',
+    data:data
   })
 }
