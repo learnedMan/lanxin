@@ -148,7 +148,7 @@ export const constantRoutes = [
             component: () => import('@/views/content/mediaAssets/add-media'),
             hidden: true,
             name: 'Add-media',
-            meta: { title: '编辑内容' }
+            meta: { title: '新增内容' }
           },
           {
             path: 'labelManage',
@@ -326,7 +326,7 @@ export const constantRoutes = [
         path: 'radioTVIndex',
         component: () => import('@/views/radioTV/radioTVIndex'), // Parent router-view
         name: 'RadioTVIndex',
-        meta: { title: '广电管理' }
+        meta: { title: '广电管理' },
       }
     ]
   },

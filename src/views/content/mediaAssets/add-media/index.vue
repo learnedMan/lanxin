@@ -1,4 +1,4 @@
-<style type="text/scss" lang="scss">
+<style type="text/scss" lang="scss" scoped>
   .xl-add-media {
     &--header {
       display: flex;
@@ -23,33 +23,18 @@
         border-color: #409EFF;
       }
     }
-    &--btn {
-      margin-left: 60px;
-      .el-radio-button__inner {
-        border-radius: 36px!important;
-        border-left: 1px solid #DCDFE6;
-        padding: 10px 30px;
-      }
-    }
   }
 </style>
 <template>
   <el-container>
     <el-header class="xl-add-media--header">
       <el-radio-group v-model="from.extra.type" @change="handleTabChange">
-        <el-radio-button
-          v-for="item of tabs"
-          :key="item.value"
-          :label="item.value"
-          round
-          class="xl-add-media--btn"
-        >{{ item.label }}</el-radio-button>
+        <el-radio-button v-for="item of tabs" :key="item.value" :label="item.value">{{ item.label }}</el-radio-button>
       </el-radio-group>
       <div>
         <el-button
           type="primary"
           size="mini"
-          @click="handleSave('保存成功')"
         >
           保存草稿
         </el-button>
@@ -153,12 +138,6 @@
                 :src="parseObj(item)"
                 fit="cover"></el-image>-->
             </div>
-            <!-- 编辑器 -->
-            <editor
-              v-if="item.component === 'edit'"
-              :value="parseObj(item)"
-              @input="handleInput($event, item)"
-            />
           </el-form-item>
         </div>
       </el-form>
@@ -304,15 +283,13 @@ import { getLabels, getScriptDetail, changeScripts } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
-import Editor from './components/editor'
 
 export default {
   name: 'AddMedia',
   components: {
     Cropper,
     ImgTable,
-    Tag,
-    Editor
+    Tag
   },
   data() {
     const coverValidator = (rule, value, callback) => {
@@ -860,7 +837,7 @@ export default {
           keywords: '', // 关键词
           publish_timer: 0, // 定时发布
           set_created_at: '', // 发布时间
-          content: '', // 编辑器内容
+          content: '2fdsdfsfsd', // 编辑器内容
           is_original: 1, // 是否原创
           source: '', // 来源
           use_watermarks: 0, // 水印
@@ -1072,9 +1049,6 @@ export default {
         ...obj,
         [key]: this.formOptions[key].rule
       }), {})
-      this.$nextTick(() => {
-        this.$refs.submitForm?.clearValidate()
-      })
     },
     /* 获取标签列表 */
     getLabels() {

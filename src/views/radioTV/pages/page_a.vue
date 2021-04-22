@@ -234,8 +234,10 @@ import {
       this.initForm();
     },
     methods:{
-      program(){
+      program(data){
+        this.$refs.Pagedialog.getdata(data);
         this.$refs.Pagedialog.dialogFormVisible = true
+        this.$refs.Pagedialog.returndataList();
       },
       handleAvatarSuccess(response, file, fileList) {
         this.form.extra.logo = response.path;
