@@ -108,6 +108,18 @@ export function addLabels(data) {
   })
 }
 
+/* 上传图片 */
 export function uploadImg(option) {
   return request(option)
+}
+
+/* -------------------------编辑器资源--------------------------------*/
+
+/* 获取编辑器图库资源 */
+export function getEditImgLists(params, isMy) {
+  return request({
+    url: isMy ? '/api/resources/myResources' : '/api/resources',
+    method: 'get',
+    params
+  })
 }

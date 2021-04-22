@@ -1,4 +1,4 @@
-<style type="text/scss" lang="scss" scoped>
+<style type="text/scss" lang="scss">
   .xl-add-media {
     &--header {
       display: flex;
@@ -23,18 +23,33 @@
         border-color: #409EFF;
       }
     }
+    &--btn {
+      margin-left: 60px;
+      .el-radio-button__inner {
+        border-radius: 36px!important;
+        border-left: 1px solid #DCDFE6;
+        padding: 10px 30px;
+      }
+    }
   }
 </style>
 <template>
   <el-container>
     <el-header class="xl-add-media--header">
       <el-radio-group v-model="from.extra.type" @change="handleTabChange">
-        <el-radio-button v-for="item of tabs" :key="item.value" :label="item.value">{{ item.label }}</el-radio-button>
+        <el-radio-button
+          v-for="item of tabs"
+          :key="item.value"
+          :label="item.value"
+          round
+          class="xl-add-media--btn"
+        >{{ item.label }}</el-radio-button>
       </el-radio-group>
       <div>
         <el-button
           type="primary"
           size="mini"
+          @click="handleSave('保存成功')"
         >
           保存草稿
         </el-button>
@@ -138,6 +153,12 @@
                 :src="parseObj(item)"
                 fit="cover"></el-image>-->
             </div>
+            <!-- 编辑器 -->
+            <editor
+              v-if="item.component === 'edit'"
+              :value="parseObj(item)"
+              @input="handleInput($event, item)"
+            />
           </el-form-item>
         </div>
       </el-form>
@@ -283,13 +304,15 @@ import { getLabels, getScriptDetail, changeScripts } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
+import Editor from './components/editor'
 
 export default {
   name: 'AddMedia',
   components: {
     Cropper,
     ImgTable,
-    Tag
+    Tag,
+    Editor
   },
   data() {
     const coverValidator = (rule, value, callback) => {
@@ -837,7 +860,7 @@ export default {
           keywords: '', // 关键词
           publish_timer: 0, // 定时发布
           set_created_at: '', // 发布时间
-          content: '2fdsdfsfsd', // 编辑器内容
+          content: '', // 编辑器内容
           is_original: 1, // 是否原创
           source: '', // 来源
           use_watermarks: 0, // 水印
@@ -923,27 +946,27 @@ export default {
       }, this.from)
     },
     /*
-      * 显示选择视频弹框(未完成)
-      * */
+        * 显示选择视频弹框(未完成)
+        * */
     handleChangeVideo() {
       /* const { url, id } = this.from.video_extra.video_list;
-        let obj = {
-          show: true,
-          radio: id || '',
-          video: url
-        }
-        Object.assign(this.videoDialog, { ...obj });*/
+          let obj = {
+            show: true,
+            radio: id || '',
+            video: url
+          }
+          Object.assign(this.videoDialog, { ...obj });*/
     },
     /* 控制视频弹框 (未完成)*/
     videoDialogControl(val) {
       /* this.videoDialog.show = false;
-        if(val === 'confirm'){
-          this.from.extra.link = {
-            ...this.from.extra.link,
-            id: this.videoDialog.radio,
-            url: this.videoDialog.video
-          }
-        }*/
+          if(val === 'confirm'){
+            this.from.extra.link = {
+              ...this.from.extra.link,
+              id: this.videoDialog.radio,
+              url: this.videoDialog.video
+            }
+          }*/
     },
     /* 上传图片成功 */
     handleUploadImageSuccess(res) {
@@ -984,8 +1007,8 @@ export default {
       return arr
     },
     /*
-      * 确认发布
-      * */
+        * 确认发布
+        * */
     enterDialog() {
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
@@ -994,8 +1017,8 @@ export default {
       })
     },
     /*
-      * 保存数据
-      * */
+        * 保存数据
+        * */
     handleSave(tip) {
       const channel_id = this.dialog.form.channel_id
       const currentTabsFromItem = this.initFrom()
@@ -1023,8 +1046,8 @@ export default {
       })
     },
     /*
-      * 预览
-      * */
+        * 预览
+        * */
     handlePreview() {
       this.$refs.submitForm.validate(valid => {
         if (valid) {
@@ -1033,8 +1056,8 @@ export default {
       })
     },
     /*
-      * 发布
-      * */
+        * 发布
+        * */
     handlePublish() {
       this.$refs.submitForm.validate(valid => {
         if (valid) {
@@ -1049,6 +1072,9 @@ export default {
         ...obj,
         [key]: this.formOptions[key].rule
       }), {})
+      this.$nextTick(() => {
+          this.$refs.submitForm?.clearValidate()
+      })
     },
     /* 获取标签列表 */
     getLabels() {
@@ -1064,8 +1090,8 @@ export default {
       })
     },
     /*
-     * 获取栏目列表
-     * */
+       * 获取栏目列表
+       * */
     getChannels() {
       getChannels().then(res => {
         this.channelsList = res

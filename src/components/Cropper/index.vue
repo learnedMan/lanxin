@@ -100,7 +100,7 @@
             <el-image
               class="el-upload-list__item-thumbnail"
               :src="list.path"
-              fit="cover"
+              fit="contain"
             />
             <span v-show="list.status === 'success'" class="el-upload-list__item-actions">
               <span
@@ -314,14 +314,14 @@ export default {
   },
   methods: {
     /*
-      * 重新上传图片
-      * */
+        * 重新上传图片
+        * */
     handleUpload(index) {
       this.$refs.uploader[index].$refs['upload-inner'].$refs.input.click()
     },
     /*
-      * 上传图片
-      * */
+        * 上传图片
+        * */
     uploadImgFn(option) {
       const formData = new FormData()
       formData.append(option.filename, option.file, option.file.name)
@@ -332,14 +332,14 @@ export default {
       })
     },
     /*
-      * 图片上传超出限制
-      * */
+        * 图片上传超出限制
+        * */
     handleOnExceed() {
       this.$message.warning('图片上传超出限制!')
     },
     /*
-      * 图片上传之前
-      * */
+        * 图片上传之前
+        * */
     beforeUpload(file) {
       const isLt10M = file.size / 1024 / 1024 <= 3
       const imgType = ['jpeg', 'gif', 'png']
@@ -354,8 +354,8 @@ export default {
       return status
     },
     /*
-      * 图片上传成功
-      * */
+        * 图片上传成功
+        * */
     handleUploadImageSuccess(index) {
       return (res, file, fileList) => {
         if (res.status_code >= 200 && res.status_code < 300) {
@@ -385,8 +385,8 @@ export default {
       this.$emit('input', this.fileLists)
     },
     /*
-      * 查看大图
-      * */
+        * 查看大图
+        * */
     handlePictureCardPreview(list) {
       this.bigImgDialog = {
         show: true,
@@ -415,8 +415,8 @@ export default {
       })
     },
     /*
-      * 剪切图片
-      * */
+        * 剪切图片
+        * */
     handleShear(file, index) {
       this.option.img = file.path
       Object.assign(this.dialog, {
