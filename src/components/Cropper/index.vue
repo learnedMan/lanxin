@@ -100,7 +100,7 @@
             <el-image
               class="el-upload-list__item-thumbnail"
               :src="list.path"
-              fit="cover"
+              fit="contain"
             />
             <span v-show="list.status === 'success'" class="el-upload-list__item-actions">
               <span

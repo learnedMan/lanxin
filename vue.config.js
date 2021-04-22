@@ -27,7 +27,7 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  lintOnSave: false,//process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
     port: port,
@@ -52,6 +52,10 @@ module.exports = {
           // pathRewrite: { // 修改路径数据
           //     ['^' + process.env.VUE_APP_BASE_API_old]: '' // 举例 '^/api:""' 把路径中的/api字符串删除
           // }
+      },
+      '/laravel-u-editor-server/server': {
+        target: 'http://batrix-local.cztv.com/',
+        changeOrigin: true,
       }
     },
     before: require('./mock/mock-server.js')

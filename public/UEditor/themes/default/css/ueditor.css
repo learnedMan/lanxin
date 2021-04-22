@@ -524,6 +524,11 @@ div.edui-box {
 }
 
 /* toolbar icons */
+.edui-default .edui-for-videolist .edui-icon {
+  background-image: url('../images/gallery-icon.png') !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 .edui-default .edui-for-undo .edui-icon {
     background-position: -160px 0;
 }
