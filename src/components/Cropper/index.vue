@@ -29,15 +29,16 @@
       margin-right: 20px;
     }
     &-uploader {
+      line-height: 0;
       .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
         cursor: pointer;
         position: relative;
         overflow: hidden;
-        width: 148px;
-        height: 148px;
-        line-height: 146px;
+        width: 100px;
+        height: 100px;
+        line-height: 98px;
         .el-icon-plus {
           font-size: 28px;
           color: #8c939d;
@@ -74,6 +75,9 @@
       &:first-child {
         margin-left: 0;
       }
+    }
+    &-tip {
+      color: #ccc;
     }
   }
 </style>
@@ -132,6 +136,7 @@
         </el-upload>
       </li>
     </ul>
+    <div class="xl-cropper-tip">上传封面,建议尺寸 750*420,单个图片不超过10M!</div>
     <el-dialog
       width="600px"
       :title="dialog.title"
@@ -341,14 +346,14 @@ export default {
         * 图片上传之前
         * */
     beforeUpload(file) {
-      const isLt10M = file.size / 1024 / 1024 <= 3
+      const isLt10M = file.size / 1024 / 1024 <= 10
       const imgType = ['jpeg', 'gif', 'png']
       const type = imgType.find(n => file.type.includes(n))
       if (!type) {
         this.$message.error(`上传图片只能是 ${imgType.join()} 格式!`)
       }
       if (!isLt10M) {
-        this.$message.error('上传图片大小不能超过 3MB!')
+        this.$message.error('上传图片大小不能超过 10MB!')
       }
       const status = type && isLt10M
       return status

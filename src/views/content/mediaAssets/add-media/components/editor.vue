@@ -184,8 +184,8 @@ export default {
     return {
       config: {
         UEDITOR_HOME_URL: '/UEditor/', // 编辑器库的位置
-        initialFrameWidth: 800, // 编辑器宽度
-        initialFrameHeight: 400, // 编辑器高度
+        initialFrameWidth: '100%', // 编辑器宽度
+        initialFrameHeight: 200, // 编辑器高度
         serverUrl: `/laravel-u-editor-server/server`, // 上传图片以及视频的接口
         autoHeightEnabled: false // 防止内容撑高编辑器
       }, // 默认配置

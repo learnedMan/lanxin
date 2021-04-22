@@ -1,9 +1,29 @@
 <style type="text/scss" lang="scss">
   .xl-add-media {
+    background-color: #f9f9f9;
+    margin: -30px;
+    padding: 10px;
     &--header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
+      background-color: #fff;
+      margin-top: 10px;
+    }
+    &--tab {
+      background-color: #fff;
+      .el-tabs__header {
+        margin-bottom: 0;
+        .el-tabs__nav-wrap {
+          padding-left: 20px;
+          .el-tabs__item {
+            padding: 0 30px;
+          }
+          &::after {
+            background-color: #f4f4f5;
+          }
+        }
+      }
     }
     &--upload {
       border: 1px dashed #d9d9d9;
@@ -23,62 +43,456 @@
         border-color: #409EFF;
       }
     }
-    &--btn {
-      margin-left: 60px;
-      .el-radio-button__inner {
-        border-radius: 36px!important;
-        border-left: 1px solid #DCDFE6;
-        padding: 10px 30px;
-      }
+    &--bc {
+      background-color: #fff;
+      padding: 0 10px;
+      border-radius: 6px;
+    }
+    &--row {
+      padding: 0 10px 10px;
+      height: 100%;
+    }
+    &--title {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 60px;
+      padding-left: 10px;
     }
   }
 </style>
 <template>
-  <el-container>
-    <el-header class="xl-add-media--header">
-      <el-radio-group v-model="from.extra.type" @change="handleTabChange">
-        <el-radio-button
-          v-for="item of tabs"
-          :key="item.value"
-          :label="item.value"
-          round
-          class="xl-add-media--btn"
-        >{{ item.label }}</el-radio-button>
-      </el-radio-group>
+  <el-container class="xl-add-media">
+    <el-header class="xl-add-media--header" height="40px">
       <div>
         <el-button
           type="primary"
-          size="mini"
+          size="small"
           @click="handleSave('保存成功')"
         >
           保存草稿
         </el-button>
         <el-button
           type="primary"
-          size="mini"
+          size="small"
           @click="handlePreview"
         >
           保存并预览
         </el-button>
         <el-button
           type="primary"
-          size="mini"
+          size="small"
           @click="handlePublish"
         >
           保存并发布
         </el-button>
       </div>
     </el-header>
-    <el-main>
+    <el-main style="padding: 10px">
+      <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange">
+        <el-tab-pane
+          v-for="item of tabs"
+          :key="item.value"
+          :label="item.label"
+          :name="item.value"
+        />
+      </el-tabs>
       <el-form
         ref="submitForm"
         label-width="100px"
+        size="small"
         :model="from"
         :rules="currentTabsFromRules"
       >
-        <div v-for="(item, index) of currentTabsFromItem" :key="index">
+        <el-row class="xl-add-media--bc" style="margin-bottom: 20px">
+          <el-col :span="24">
+            <el-row class="xl-add-media--title">
+              <el-col :span="24">图文设置</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <!-- 标题 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.title')"
+                  v-bind="formOptions['extra.title'].item.props"
+                >
+                  <!-- 输入框 -->
+                  <el-input
+                    :value="parseObj(formOptions['extra.title'].item)"
+                    v-bind="formOptions['extra.title'].item.componentProps"
+                    clearable
+                    size="small"
+                    style="width: 200px"
+                    @input="handleInput($event, formOptions['extra.title'].item)"
+                  />
+                </el-form-item>
+                <!-- 简介 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.tags')"
+                  v-bind="formOptions['extra.tags'].item.props"
+                >
+                  <!-- 输入框 -->
+                  <el-input
+                    :value="parseObj(formOptions['extra.intro'].item)"
+                    :rows="6"
+                    v-bind="formOptions['extra.intro'].item.componentProps"
+                    clearable
+                    size="small"
+                    style="width: 400px"
+                    @input="handleInput($event, formOptions['extra.intro'].item)"
+                  />
+                </el-form-item>
+                <!-- 标签 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.tags')"
+                  v-bind="formOptions['extra.tags'].item.props"
+                >
+                  <el-select
+                    :value="parseObj(formOptions['extra.tags'].item)"
+                    size="small"
+                    style="width: 200px"
+                    clearable
+                    v-bind="formOptions['extra.tags'].item.componentProps"
+                    @input="handleInput($event, formOptions['extra.tags'].item)"
+                  >
+                    <el-option
+                      v-for="list in formOptions['extra.tags'].item.lists"
+                      :key="list.value"
+                      :label="list.label"
+                      :value="list.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <!-- 关键词 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.keywords')"
+                  v-bind="formOptions['extra.keywords'].item.props"
+                >
+                  <!-- 输入框 -->
+                  <el-input
+                    :value="parseObj(formOptions['extra.keywords'].item)"
+                    :rows="4"
+                    v-bind="formOptions['extra.keywords'].item.componentProps"
+                    clearable
+                    size="small"
+                    style="width: 200px"
+                    @input="handleInput($event, formOptions['extra.keywords'].item)"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <!-- 副标题 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.subtitle')"
+                  v-bind="formOptions['extra.subtitle'].item.props"
+                >
+                  <!-- 输入框 -->
+                  <el-input
+                    :value="parseObj(formOptions['extra.subtitle'].item)"
+                    :rows="4"
+                    v-bind="formOptions['extra.subtitle'].item.componentProps"
+                    clearable
+                    size="small"
+                    style="width: 200px"
+                    @input="handleInput($event, formOptions['extra.subtitle'].item)"
+                  />
+                </el-form-item>
+                <!-- 封面样式 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.cover_type')"
+                  v-bind="formOptions['extra.cover_type'].item.props"
+                >
+                  <el-radio-group
+                    size="small"
+                    :value="parseObj(formOptions['extra.cover_type'].item)"
+                    @input="handleInput($event, formOptions['extra.cover_type'].item)"
+                    @change="handleTabChange"
+                  >
+                    <el-radio
+                      v-for="list of formOptions['extra.cover_type'].item.lists"
+                      :key="list.value"
+                      :label="list.value"
+                      style="line-height: 32px"
+                    >{{ list.label }}</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <!-- 封面图片 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.cover')"
+                  v-bind="formOptions['extra.cover'].item.props"
+                >
+                  <cropper
+                    v-bind="formOptions['extra.cover'].item.componentProps"
+                    :value="parseObj(formOptions['extra.cover'].item)"
+                    @input="handleInput($event, formOptions['extra.cover'].item)"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <!-- 编辑器 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.content')"
+                  v-bind="formOptions['extra.content'].item.props"
+                >
+                  <editor
+                    :value="parseObj(formOptions['extra.content'].item)"
+                    @input="handleInput($event, formOptions['extra.content'].item)"
+                  />
+                </el-form-item>
+                <!-- 视频 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.video_extra.video_list')"
+                  v-bind="formOptions['extra.video_extra.video_list'].item.props"
+                >
+                  <div class="xl-add-media--upload" @click="handleChangeVideo">
+                    <!--<i class="el-icon-video-camera-solid"></i>
+                    <el-image
+                      class="el-upload-list__item-thumbnail"
+                      :src="parseObj(formOptions['extra.video_extra.video_list'].item)"
+                      fit="cover"></el-image>-->
+                  </div>
+                </el-form-item>
+                <!-- 图集的图片 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.album_extra.image_list')"
+                  v-bind="formOptions['extra.album_extra.image_list'].item.props"
+                >
+                  <img-table
+                    :value="parseObj(formOptions['extra.album_extra.image_list'].item)"
+                    @input="handleInput($event, formOptions['extra.album_extra.image_list'].item)"
+                  />
+                </el-form-item>
+                <!-- 链接类型 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.link.type')"
+                  v-bind="formOptions['extra.link.type'].item.props"
+                >
+                  <el-radio-group
+                    size="small"
+                    :value="parseObj(formOptions['extra.link.type'].item)"
+                    @input="handleInput($event, formOptions['extra.link.type'].item)"
+                    @change="handleTabChange"
+                  >
+                    <el-radio v-for="list of formOptions['extra.link.type'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <!-- 链接地址 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.link.url')"
+                  v-bind="formOptions['extra.link.url'].item.props"
+                >
+                  <el-input
+                    :value="parseObj(formOptions['extra.link.url'].item)"
+                    v-bind="formOptions['extra.link.url'].item.componentProps"
+                    clearable
+                    size="small"
+                    style="width: 200px"
+                    @input="handleInput($event, formOptions['extra.link.url'].item)"
+                  />
+                </el-form-item>
+                <!-- 链接对象 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.link.id')"
+                  v-bind="formOptions['extra.link.id'].item.props"
+                >
+                  <el-radio-group
+                    size="small"
+                    :value="parseObj(formOptions['extra.link.id'].item)"
+                    @input="handleInput($event, formOptions['extra.link.id'].item)"
+                    @change="handleTabChange"
+                  >
+                    <el-radio v-for="list of formOptions['extra.link.id'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20" type="flex">
+          <el-col :span="12">
+            <div class="xl-add-media--bc xl-add-media--row">
+              <el-row class="xl-add-media--title">
+                <el-col :span="24">发布设置</el-col>
+              </el-row>
+              <!-- 定时发布 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.publish_timer')"
+                v-bind="formOptions['extra.publish_timer'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.publish_timer'].item)"
+                  @input="handleInput($event, formOptions['extra.publish_timer'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.publish_timer'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <!-- 发布时间 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.set_created_at')"
+                v-bind="formOptions['extra.set_created_at'].item.props"
+              >
+                <el-date-picker
+                  type="datetime"
+                  size="small"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  placeholder="选择日期时间"
+                  :value="parseObj(formOptions['extra.set_created_at'].item)"
+                  @input="handleInput($event, formOptions['extra.set_created_at'].item)"
+                />
+              </el-form-item>
+              <!-- 作者 -->
+              <el-form-item
+                v-show="initFrom().includes('author_name')"
+                v-bind="formOptions['author_name'].item.props"
+              >
+                <tag
+                  :value="parseObj(formOptions['author_name'].item)"
+                  @input="handleInput($event, formOptions['author_name'].item)"
+                />
+              </el-form-item>
+              <!-- 编辑 -->
+              <el-form-item
+                v-show="initFrom().includes('editor_name')"
+                v-bind="formOptions['editor_name'].item.props"
+              >
+                <tag
+                  :value="parseObj(formOptions['editor_name'].item)"
+                  @input="handleInput($event, formOptions['editor_name'].item)"
+                />
+              </el-form-item>
+              <!-- 是否原创 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.is_original')"
+                v-bind="formOptions['extra.is_original'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.is_original'].item)"
+                  @input="handleInput($event, formOptions['extra.is_original'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.is_original'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <!-- 来源 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.source')"
+                v-bind="formOptions['extra.source'].item.props"
+              >
+                <!-- 输入框 -->
+                <el-input
+                  :value="parseObj(formOptions['extra.source'].item)"
+                  :rows="4"
+                  v-bind="formOptions['extra.source'].item.componentProps"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @input="handleInput($event, formOptions['extra.source'].item)"
+                />
+              </el-form-item>
+              <!-- 使用水印 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.use_watermarks')"
+                v-bind="formOptions['extra.use_watermarks'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.use_watermarks'].item)"
+                  @input="handleInput($event, formOptions['extra.use_watermarks'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.use_watermarks'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="xl-add-media--bc xl-add-media--row">
+              <el-row class="xl-add-media--title">
+                <el-col :span="24">推广设置</el-col>
+              </el-row>
+              <!-- 评论控制-->
+              <el-form-item
+                v-show="initFrom().includes('extra.allow_comment')"
+                v-bind="formOptions['extra.allow_comment'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.allow_comment'].item)"
+                  @input="handleInput($event, formOptions['extra.allow_comment'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.allow_comment'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <!-- 允许分享 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.allow_share')"
+                v-bind="formOptions['extra.allow_share'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.allow_share'].item)"
+                  @input="handleInput($event, formOptions['extra.allow_share'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.allow_share'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <!-- 点击量 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.view_base_num')"
+                v-bind="formOptions['extra.view_base_num'].item.props"
+              >
+                <el-input
+                  :value="parseObj(formOptions['extra.view_base_num'].item)"
+                  :rows="4"
+                  v-bind="formOptions['extra.view_base_num'].item.componentProps"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @input="handleInput($event, formOptions['extra.view_base_num'].item)"
+                />
+              </el-form-item>
+              <!-- 点赞量 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.praise_base_num')"
+                v-bind="formOptions['extra.praise_base_num'].item.props"
+              >
+                <el-input
+                  :value="parseObj(formOptions['extra.praise_base_num'].item)"
+                  :rows="4"
+                  v-bind="formOptions['extra.praise_base_num'].item.componentProps"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @input="handleInput($event, formOptions['extra.praise_base_num'].item)"
+                />
+              </el-form-item>
+              <!-- 转发量 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.post_base_num')"
+                v-bind="formOptions['extra.post_base_num'].item.props"
+              >
+                <el-input
+                  :value="parseObj(formOptions['extra.post_base_num'].item)"
+                  :rows="4"
+                  v-bind="formOptions['extra.post_base_num'].item.componentProps"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @input="handleInput($event, formOptions['extra.post_base_num'].item)"
+                />
+              </el-form-item>
+            </div>
+          </el-col>
+        </el-row>
+        <!--<div v-for="(item, index) of currentTabsFromItem" :key="index">
           <el-form-item v-show="initFrom().includes(item.key)" v-bind="item.props">
-            <!-- 输入框 -->
+            &lt;!&ndash; 输入框 &ndash;&gt;
             <el-input
               v-if="item.component === 'input'"
               :value="parseObj(item)"
@@ -89,7 +503,7 @@
               style="width: 200px"
               @input="handleInput($event, item)"
             />
-            <!-- 选择框 -->
+            &lt;!&ndash; 选择框 &ndash;&gt;
             <el-select
               v-if="item.component === 'select'"
               :value="parseObj(item)"
@@ -106,13 +520,13 @@
                 :value="list.value"
               />
             </el-select>
-            <!-- 可添加多个(作者, 编辑) -->
+            &lt;!&ndash; 可添加多个(作者, 编辑) &ndash;&gt;
             <tag
               v-if="item.component === 'tag'"
               :value="parseObj(item)"
               @input="handleInput($event, item)"
             />
-            <!-- 单选框 -->
+            &lt;!&ndash; 单选框 &ndash;&gt;
             <el-radio-group
               v-if="item.component === 'radio'"
               size="small"
@@ -122,20 +536,20 @@
             >
               <el-radio v-for="list of item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
             </el-radio-group>
-            <!-- 图片表格 -->
+            &lt;!&ndash; 图片表格 &ndash;&gt;
             <img-table
               v-if="item.component === 'table'"
               :value="parseObj(item)"
               @input="handleInput($event, item)"
             />
-            <!-- 剪切图片 -->
+            &lt;!&ndash; 剪切图片 &ndash;&gt;
             <cropper
               v-if="item.component === 'cropper'"
               v-bind="item.componentProps"
               :value="parseObj(item)"
               @input="handleInput($event, item)"
             />
-            <!-- 时间 -->
+            &lt;!&ndash; 时间 &ndash;&gt;
             <el-date-picker
               v-if="item.component === 'date'"
               :value="parseObj(item)"
@@ -145,22 +559,22 @@
               placeholder="选择日期时间"
               @input="handleInput($event, item)"
             />
-            <!-- 视频 -->
-            <div v-if="item.component === 'video'" class="xl-add-media--upload" @click="handleChangeVideo">
-              <!--<i class="el-icon-video-camera-solid"></i>
+            &lt;!&ndash; 视频 &ndash;&gt;
+            <div v-if="item.component === 'video'" class="xl-add-media&#45;&#45;upload" @click="handleChangeVideo">
+              &lt;!&ndash;<i class="el-icon-video-camera-solid"></i>
               <el-image
                 class="el-upload-list__item-thumbnail"
                 :src="parseObj(item)"
-                fit="cover"></el-image>-->
+                fit="cover"></el-image>&ndash;&gt;
             </div>
-            <!-- 编辑器 -->
+            &lt;!&ndash; 编辑器 &ndash;&gt;
             <editor
               v-if="item.component === 'edit'"
               :value="parseObj(item)"
               @input="handleInput($event, item)"
             />
           </el-form-item>
-        </div>
+        </div>-->
       </el-form>
     </el-main>
     <!-- 选择视频弹框 -->
@@ -335,6 +749,7 @@ export default {
       formOptions: Object.freeze({
         'extra.title': {
           item: {
+            key: 'extra.title',
             props: {
               label: '标题:',
               prop: 'extra.title'
@@ -350,6 +765,7 @@ export default {
         },
         'extra.subtitle': {
           item: {
+            key: 'extra.subtitle',
             props: {
               label: '副标题:'
             },
@@ -361,6 +777,7 @@ export default {
         },
         'extra.cover_type': {
           item: {
+            key: 'extra.cover_type',
             props: {
               label: '封面样式:',
               prop: 'extra.cover_type'
@@ -415,6 +832,7 @@ export default {
         },
         'extra.cover': {
           item: {
+            key: 'extra.cover',
             props: {
               label: '',
               prop: 'extra.cover'
@@ -430,6 +848,7 @@ export default {
         },
         'extra.intro': {
           item: {
+            key: 'extra.intro',
             props: {
               label: '简介:'
             },
@@ -443,6 +862,7 @@ export default {
         },
         'extra.tags': {
           item: {
+            key: 'extra.tags',
             props: {
               label: '标签:'
             },
@@ -456,6 +876,7 @@ export default {
         },
         'extra.keywords': {
           item: {
+            key: 'extra.keywords',
             props: {
               label: '关键词:'
             },
@@ -468,6 +889,7 @@ export default {
         },
         'extra.publish_timer': {
           item: {
+            key: 'extra.publish_timer',
             props: {
               label: '定时发布:',
               prop: 'extra.publish_timer'
@@ -490,6 +912,7 @@ export default {
         },
         'extra.set_created_at': {
           item: {
+            key: 'extra.set_created_at',
             props: {
               label: '发布时间:',
               prop: 'extra.set_created_at'
@@ -502,6 +925,7 @@ export default {
         },
         'extra.video_extra.video_list': {
           item: {
+            key: 'extra.video_extra.video_list',
             props: {
               label: '视频:',
               prop: 'extra.video_extra.video_list'
@@ -514,6 +938,7 @@ export default {
         }, // 待确认
         'extra.album_extra.image_list': {
           item: {
+            key: 'extra.album_extra.image_list',
             props: {
               label: '图片:',
               prop: 'extra.album_extra.image_list'
@@ -526,6 +951,7 @@ export default {
         },
         'extra.content': {
           item: {
+            key: 'extra.content',
             props: {
               label: '编辑器:'
             },
@@ -534,6 +960,7 @@ export default {
         },
         author_name: {
           item: {
+            key: 'author_name',
             props: {
               label: '作者:'
             },
@@ -542,6 +969,7 @@ export default {
         },
         editor_name: {
           item: {
+            key: 'editor_name',
             props: {
               label: '编辑:'
             },
@@ -550,6 +978,7 @@ export default {
         },
         'extra.is_original': {
           item: {
+            key: 'extra.is_original',
             props: {
               label: '是否原创:',
               prop: 'extra.is_original'
@@ -572,6 +1001,7 @@ export default {
         },
         'extra.source': {
           item: {
+            key: 'extra.source',
             props: {
               label: '来源:',
               prop: 'extra.source'
@@ -587,6 +1017,7 @@ export default {
         },
         'extra.use_watermarks': {
           item: {
+            key: 'extra.use_watermarks',
             props: {
               label: '使用水印:',
               prop: 'extra.use_watermarks'
@@ -609,6 +1040,7 @@ export default {
         },
         'extra.allow_comment': {
           item: {
+            key: 'extra.allow_comment',
             props: {
               label: '评论控制:',
               prop: 'extra.allow_comment'
@@ -635,6 +1067,7 @@ export default {
         },
         'extra.allow_share': {
           item: {
+            key: 'extra.allow_share',
             props: {
               label: '允许分享:',
               prop: 'extra.allow_share'
@@ -657,6 +1090,7 @@ export default {
         },
         'extra.view_base_num': {
           item: {
+            key: 'extra.view_base_num',
             props: {
               label: '点击量:'
             },
@@ -669,6 +1103,7 @@ export default {
         },
         'extra.praise_base_num': {
           item: {
+            key: 'extra.praise_base_num',
             props: {
               label: '点赞量:'
             },
@@ -681,6 +1116,7 @@ export default {
         },
         'extra.post_base_num': {
           item: {
+            key: 'extra.post_base_num',
             props: {
               label: '转发量:'
             },
@@ -693,6 +1129,7 @@ export default {
         },
         'extra.link.type': {
           item: {
+            key: 'extra.link.type',
             props: {
               label: '链接类型:',
               prop: 'extra.link.type'
@@ -719,6 +1156,7 @@ export default {
         },
         'extra.link.id': {
           item: {
+            key: 'extra.link.id',
             props: {
               label: '链接对象:',
               prop: 'extra.link.id'
@@ -745,6 +1183,7 @@ export default {
         },
         'extra.link.url': {
           item: {
+            key: 'extra.link.url',
             props: {
               label: '链接地址:',
               prop: 'extra.link.url'
@@ -844,7 +1283,7 @@ export default {
           ]
         }
       ], // tab按钮切换
-      currentTabsFromItem: [], // 当前激活tab的表单显示数据
+      /* currentTabsFromItem: [], // 当前激活tab的表单显示数据*/
       currentTabsFromRules: {}, // 当前激活tab的表单验证规则
       from: {
         author_name: '', // 作者
@@ -922,10 +1361,6 @@ export default {
     this.getChannels()
     await this.getLabels()
     await this.getList()
-    this.currentTabsFromItem = Object.keys(this.formOptions).map(key => ({
-      ...this.formOptions[key].item,
-      key
-    }))
     this.handleTabChange()
   },
   methods: {
@@ -1110,7 +1545,7 @@ export default {
             type: extra.type, // 类型
             title: extra.title, // 标题
             subtitle: extra.subtitle, // 副标题
-            cover_type: 1, // extra.cover_type || 1, // 封面样式 (正式数据需要修改)
+            cover_type: extra.cover_type || 1, // 封面样式 (正式数据需要修改)
             cover: extra.cover, // 封面样式的图片集合
             intro: extra.intro, // 简介
             tags: extra.tags, // 标签
