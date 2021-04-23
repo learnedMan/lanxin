@@ -70,6 +70,22 @@ export function deleteNews(id) {
     method: 'delete'
   })
 }
+/* 获取栏目下的新闻 */
+export function getNews(params) {
+  return request({
+    url: `/api/news`,
+    method: 'get',
+    params
+  })
+}
+/* 置顶和取消置顶新闻 */
+export function setTop(data) {
+  return request({
+    url: '/api/news/setTop',
+    method: 'post',
+    data
+  })
+}
 
 /* -------------------------标签管理--------------------------------*/
 

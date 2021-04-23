@@ -87,7 +87,7 @@ export const constantRoutes = [
   {
     path: '/workbench',
     component: Layout,
-    redirect: '/workbench/commentVerify/index',
+    redirect: '/workbench/commentVerify',
     name: 'Workbench',
     meta: {
       title: '工作台',
@@ -96,19 +96,15 @@ export const constantRoutes = [
     children: [
       {
         path: 'commentVerify',
-        component: () => import('@/views/workbench/index'), // Parent router-view
+        component: () => import('@/views/workbench/commentVerify/index'), // Parent router-view
         name: 'CommentVerify',
-        meta: { title: '评论审核' },
-        alwaysShow: true,
-        redirect: '/workbench/commentVerify/index',
-        children: [
-          {
-            path: 'index',
-            component: () => import('@/views/workbench/commentVerify/index'),
-            name: 'Index',
-            meta: { title: '首页' }
-          }
-        ]
+        meta: { title: '评论审核' }
+      },
+      {
+        path: 'seeSection',
+        component: () => import('@/views/workbench/seeSection'),
+        name: 'SeeSection',
+        meta: { title: '栏目查看' }
       }
     ]
   },
@@ -426,6 +422,7 @@ export const constantRoutes = [
 /**
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
+ * 需要根据用户角色动态加载的路由
  */
 export const asyncRoutes = [
   {

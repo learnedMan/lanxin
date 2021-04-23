@@ -6,7 +6,7 @@
     top: 0;
     bottom: 0;
     display: flex;
-    padding: 30px 0 20px;
+    padding: 30px 30px 20px;
     flex-direction: column;
     .verify-table {
       flex: 1;

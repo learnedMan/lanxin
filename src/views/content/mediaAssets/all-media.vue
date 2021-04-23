@@ -47,6 +47,7 @@
             v-model="dateValue"
             type="daterange"
             align="right"
+            size="small"
             unlink-panels
             range-separator="~"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -178,7 +179,7 @@
             >
               编辑
             </el-button>
-            <!-- 查看 -->
+            <!-- 删除 -->
             <el-button
               type="text"
               icon="el-icon-delete"
@@ -187,7 +188,7 @@
             >
               删除
             </el-button>
-            <!-- 复制 -->
+            <!-- 发布 -->
             <el-button
               type="text"
               icon="el-icon-document-copy"
