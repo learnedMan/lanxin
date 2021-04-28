@@ -446,3 +446,34 @@ export function edittv_channel(id,data) {
     data:data
   })
 }
+
+export function gettv_programs(query) {
+  return request({
+    url: '/api/programs',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addtv_programs(data) {
+  return request({
+    url: '/api/programs',
+    method: 'post',
+    data:data
+  })
+}
+
+export function editprograms(id,data) {
+  return request({
+    url: '/api/programs/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+
+export function delprograms(id) {
+  return request({
+    url: '/api/programs/'+id,
+    method: 'delete'
+  })
+}

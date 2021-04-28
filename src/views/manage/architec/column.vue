@@ -1,5 +1,6 @@
 <template>
   <div class="column">
+    <!-- 搜索 -->
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="产品：">
         <el-select v-model="queryParams.product_id" placeholder="请选择">
@@ -17,7 +18,9 @@
         <el-button type="primary" @click="adddata" size="mini">添加</el-button>
       </el-form-item>
     </el-form>
+    <!-- 搜索 -->
 
+    <!-- 表格列表 -->
     <el-table 
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border 
@@ -27,13 +30,13 @@
       :tree-props="{children: 'children'}">
       <el-table-column label="栏目名称" align="center" prop="name" />
       <el-table-column label="栏目ID" align="center" prop="id" :show-overflow-tooltip="true" />
-      <!-- <el-table-column label="(模板化)样式分类" align="center" prop="template_style" :show-overflow-tooltip="true" /> -->
       <el-table-column 
         label="(模板化)样式分类" 
         align="center" 
         prop="template_style" 
         :show-overflow-tooltip="true" >
         <template slot-scope="scope">
+          <!-- 如果是产品，那么没有样式分类，只有栏目有 -->
           <div v-if="scope.row.type=='product'">无</div>
           <el-select v-else @change="statuschange(scope.row)" v-model="scope.row.template_style" placeholder="请选择">
             <el-option v-for="item in columntypeoptions" :key="item.value" :label="item.label" :value="item.value">
@@ -79,12 +82,6 @@
             icon="el-icon-document-add"
             @click="adddata(scope.row)"
           >新增</el-button>
-          <!-- <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-menu"
-            v-if="scope.row.type!='product'"
-          >样式调整</el-button> -->
           <el-button
             size="mini"
             type="text"
@@ -102,12 +99,14 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 表格列表 -->
 
     <!-- 新增/修改栏目弹窗 -->
     <el-dialog
       width="1200px"
       :close-on-click-modal="false"
       :title="dialogTitle"
+      @close="dialogclose"
       top="10vh"
       :visible.sync="dialogFormVisible">
       <el-form
@@ -115,6 +114,7 @@
         :rules="rules"
         ref="dataForm"
         style="display: flex">
+        <!-- 左 -->
         <div class="fl" style="width: 50%">
           <el-form-item class="placeholderdiv" label-width="150px" label="上级栏目:" prop="father">
             <el-cascader
@@ -222,7 +222,7 @@
           </el-form-item>
         </div>
 
-
+        <!-- 右 -->
         <div class="fr" style="width: 50%">
             <el-form-item el-form-item label-width="150px" label="栏目类型:" prop="type">
               <el-select @change="changetype" v-model="form.type" placeholder="请选择">
@@ -231,8 +231,9 @@
               </el-select>
             </el-form-item>
 
-            <child-page1 v-if="forceRefresh" ref="c_page1" :userdata="userdata" v-show="form.type=='default'" :form="form" v-model="form" />
-
+            <!-- 默认 -->
+            <child-page1 v-if="forceRefresh" v-show="form.type=='default'" ref="c_page1" :userdata="userdata"  :form="form" v-model="form" />
+            <!-- 服务 -->
             <el-form-item v-show="form.type=='service'" label-width="150px" label="服务背景图:" prop="extra.background">
               <el-upload
                 class="avatar-uploader"
@@ -246,6 +247,7 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
+            <!-- 外链 -->
             <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'" 
               label-width="150px" label="链接地址:" prop="extra.link.url">
               <el-input
@@ -261,6 +263,7 @@
         <el-button @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 新增/修改栏目弹窗 -->
   </div>
 </template>
 
@@ -360,11 +363,10 @@ import ChildPage1 from './pages/c_page1'
       this.initForm();
       this.getList();
       this.getproductList();
-
       this.getuserfn();
     },
     methods:{
-      getuserfn(){//获取用户列表
+      getuserfn(){//获取系统用户列表
         var data={};
         data.model = 'User';
         var queryParams = {
@@ -386,10 +388,6 @@ import ChildPage1 from './pages/c_page1'
       },
       // 初始化表单
       initForm() {
-        // this.forceRefresh = false;
-        // this.$nextTick(()=>{
-        //   this.forceRefresh = true;
-        // })
         if (this.$refs.dataForm) {
           this.$refs.dataForm.resetFields();
         }
@@ -400,6 +398,7 @@ import ChildPage1 from './pages/c_page1'
           sort:0,
           status:'',
           extra:{
+            // 公共
             intro:'',
             cover:'',
             logo:'',
@@ -409,13 +408,13 @@ import ChildPage1 from './pages/c_page1'
             linked_channel_id:'',
             template_style:'',
             show_num:'',
-
+            // 默认
             multi_review:[],
             display_more:'',
             display_title:'',
-
+            // 服务
             background:'',
-
+            // 外链
             link:{
               type:'url',
               url:''
@@ -446,6 +445,7 @@ import ChildPage1 from './pages/c_page1'
       initcondition() {//重置搜索
         this.queryParams.product_id = "";
       },
+      // 修改状态
       statuschange(data){
         console.log(data)
         editchannels(data.id,data).then(response => {
@@ -461,11 +461,13 @@ import ChildPage1 from './pages/c_page1'
         this.loading = true;
         this.getList();
       },
+      // 获取产品列表
       getproductList(){
         getproduct({}).then((response) => {
           this.productList = response.data;
         });
       },
+      // 获取表格列表
       getList(){
         // console.log(this.queryParams)
         getChannels(this.queryParams).then(response => {
@@ -529,6 +531,10 @@ import ChildPage1 from './pages/c_page1'
         })
         
       },
+      // 弹窗消失的回调函数
+      dialogclose(){
+        this.$refs.c_page1.listshowarr = [];
+      },
       // 增加栏目
       adddata(data) {
         this.initForm();
@@ -552,16 +558,17 @@ import ChildPage1 from './pages/c_page1'
         this.dialogFormVisible = true;
         getchannelinfo(row.id).then(response => {
           this.form = JSON.parse(JSON.stringify(response)) ;
+          // 把拿到的多级审核的数据进行修改
           var new_multi_review = [];
           var multi_review = this.form.extra.multi_review;
           for(var i=0;i<multi_review.length;i++){
             new_multi_review[i] = [];
-            // console.log(multi_review[i].reviewer_ids)
             new_multi_review[i] = multi_review[i].reviewer_ids.split(',');
             for(var k=0;k<new_multi_review[i].length;k++){
               new_multi_review[i][k] = parseInt(new_multi_review[i][k])
             }
           }
+          // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
           this.$refs.c_page1.listnum = new_multi_review.length;
           this.$nextTick(()=>{

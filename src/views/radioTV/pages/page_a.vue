@@ -1,18 +1,12 @@
 <template>
   <div class="page_a">
     <el-form ref="queryForm" :model="queryParams" :inline="true">
-      <el-form-item label="所属产品：">
-        <el-select v-model="queryParams.product_id" placeholder="请选择">
-          <el-option v-for="item in productList" :key="item.id" :label="item.name" :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item>
-          <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
+          <!-- <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
           <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
       </el-form-item>
     </el-form>
-
+    <!-- 表格 -->
     <el-table 
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border v-loading="loading" :data="dataList">
@@ -143,6 +137,7 @@
         <el-button @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 模板管理弹窗 -->
     <Pagedialog ref="Pagedialog"></Pagedialog>
   </div>
 </template>
@@ -160,6 +155,16 @@ import {
     components: {
       Pagedialog
     },
+    props:{
+      productId:{
+        type:Number,
+        default:0
+      },
+      productList:{
+        type:Array,
+        default:[]
+      }
+    },
     name: 'page_a',
     data() {
       var mytoken = sessionStorage.getItem('token');
@@ -169,12 +174,12 @@ import {
         queryParams: {
           page: 1,
           pageSize: 10,
-          product_id:'',
+          product_id:0,
           type:'tv_channel'
         },
         loading:true,
         dataList:[],
-        productList:[],
+        // productList:[],
         // 总条数
         total: 0,
         statusoptions: [{
@@ -185,8 +190,7 @@ import {
           label: '禁用'
         }],
         dialogFormVisible: false,
-        form: {
-        },
+        form: {},
         rules: {
           name: [
             { required: true, message: "请输入频道姓名", trigger: "blur" }
@@ -227,13 +231,20 @@ import {
     computed: {
       VUE_APP_BASE_API(){
           return process.env.VUE_APP_BASE_API
-      }
+      },
+    },
+    watch:{
+      productId(val){//普通的watch监听
+        this.queryParams.product_id=val
+        this.getList();
+      },
     },
     created() {
-      this.getList();
+      // this.getList();
       this.initForm();
     },
     methods:{
+      // 点击模板管理
       program(data){
         this.$refs.Pagedialog.getdata(data);
         this.$refs.Pagedialog.dialogFormVisible = true
@@ -256,19 +267,8 @@ import {
         this.queryParams.page = 1;
         this.getList();
       },
-      getproductList(){
-          return new Promise((resolve, reject)=>{
-            getproduct({}).then((response) => {
-                this.productList = response.data;
-                if(this.queryParams.product_id==''){
-                    this.queryParams.product_id = this.productList[0].id;
-                }
-                resolve(this.productList)
-            });
-          })
-      },
-      async getList(){
-        let productList= await this.getproductList();
+      getList(){
+        this.loading = true;
         var data = JSON.parse(JSON.stringify(this.queryParams));
         gettv_channel(data).then(response => {
           this.loading = false;
@@ -277,8 +277,7 @@ import {
         })
       },
       statuschange(data){
-        // var data = JSON.parse(JSON.stringify(data));
-            data.father = data.father.id
+        data.father = data.father.id
         edittv_channel(data.id,data).then(response => {
           this.$message({
             message: '修改成功',
@@ -377,7 +376,7 @@ import {
           this.form.extra.has_replay = 0
         }
 
-        console.log(this.form);
+        // console.log(this.form);
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
           if (this.dialogType=='edit') {

@@ -1,5 +1,5 @@
 <template>
-  <div class="page_a_dialog">
+  <div class="page_d_dialog">
     <!-- 新增/修改频道弹窗 -->
     <el-dialog width="1200px" 
         :show-close= false
@@ -113,7 +113,7 @@ import {
   } from '@/api/manage'
 import { isArray } from '@/utils/validate';
   export default {
-    name: 'page_a_dialog',
+    name: 'page_d_dialog',
     data() {
       return {
           dialogFormVisible:false,

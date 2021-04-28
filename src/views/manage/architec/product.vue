@@ -104,7 +104,6 @@
             type="text"
             icon="el-icon-edit"
             style="color: #67c23a"
-            @click="editdata(scope.row)"
             >安卓</el-button
           >
           <el-button
@@ -112,7 +111,6 @@
             type="text"
             icon="el-icon-edit"
             style="color: #67c23a"
-            @click="editdata(scope.row)"
             >苹果</el-button
           >
         </template>

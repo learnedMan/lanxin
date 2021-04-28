@@ -499,7 +499,7 @@ export default {
     }
   },
   created() {
-    // this.getSourceList();
+    this.getSourceList();
     this.getList()
   },
   methods: {
