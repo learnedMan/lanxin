@@ -26,6 +26,8 @@
           <template slot-scope="scope">
             <el-popover
               title=""
+              placement="right"
+              popper-class="imgpopover"
               trigger="hover">
               <img :src="scope.row.url||noimg">
               <img slot="reference" :src="scope.row.url||noimg" :alt="scope.row.url||noimg" style="max-height: 50px;max-width: 50px">
@@ -440,7 +442,11 @@ import {
 
 
 <style scoped lang="scss">
-
+.imgpopover{
+  img{
+    max-width: 600px !important;
+  }
+}
 .clearflex {
   *zoom: 1;
 }

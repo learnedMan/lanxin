@@ -130,7 +130,7 @@ import { isArray } from '@/utils/validate';
 
           dataList:[],
           dayList:[],
-          weekList:[],
+          weekList:{},
           tableflag:true,
           weekday:"1",
           statusoptions: [{
@@ -165,26 +165,39 @@ import { isArray } from '@/utils/validate';
       // none:不启用,daily按日循环,weekly按周循环
         // 关闭窗口
         closeDialog() {
-            this.$confirm('此操作将不会保存已编辑的节目单, 是否继续?', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
+            // this.$confirm('此操作将不会保存已编辑的节目单, 是否继续?', '提示', {
+            //   confirmButtonText: '确定',
+            //   cancelButtonText: '取消',
+            //   type: 'warning'
+            // }).then(() => {
               this.dialogFormVisible = false;
-            }).catch(() => {
-            });
+            // }).catch(() => {
+            // });
         },
         enterDialog(){
+          // console.log(this.weekList)
+            if(this.data.extra.template.type=='weekly'){
+              if(this.weekList["1"]&&this.weekList["1"].length>0&&this.weekList["2"]&&this.weekList["2"].length>0&&this.weekList["3"]&&this.weekList["3"].length>0&&this.weekList["4"]&&this.weekList["4"].length>0&&this.weekList["5"]&&this.weekList["5"].length>0&&this.weekList["6"]&&this.weekList["6"].length>0&&this.weekList["7"]&&this.weekList["7"].length>0){
+
+              }else{
+                this.$message({
+                  message: '选择每周重复，请保证每天至少有一个节目',
+                  type: 'warning'
+                });
+                return;
+              }
+            }
+
             this.data.father = this.data.father.id;
             var template = {
               "list": {
                 "daily": [],
-                // "weekly": {},
+                "weekly": {},
               },
               "type": ""
             }
             template.list.daily = this.dayList;
-            // template.list.weekly = this.weekList;
+            template.list.weekly = this.weekList;
             template.type = this.data.extra.template.type;
             this.data.extra.template = template;
             edittv_channel(this.data.id,this.data).then(response => {
@@ -193,6 +206,8 @@ import { isArray } from '@/utils/validate';
                 type: 'success'
               });
               this.dialogFormVisible = false;
+              this.$parent.getList();
+              this.weekday = '1';
             })
             // console.log(this.data)
         },
@@ -352,11 +367,26 @@ import { isArray } from '@/utils/validate';
         },
         returndataList(){
           this.dataList = [];
+          if(!this.data.extra.template){
+            var template = {
+              "list": {
+                "daily": [],
+                "weekly": {},
+              },
+              "type": "none"
+            }
+            this.data.extra.template = template;
+          }
+
           if(this.data.extra.template.type=='daily'){
             this.dayList = this.data.extra.template.list.daily;
             this.dataList = this.dayList;
           }else if(this.data.extra.template.type=='weekly'){
             this.weekList = this.data.extra.template.list.weekly;
+            if(!this.weekList){
+              this.weekList = {}
+              this.weekList[this.weekday] = [];
+            }
             this.dataList = this.weekList[this.weekday];
           }else{
             this.dataList = [];
