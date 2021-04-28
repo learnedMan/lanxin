@@ -54,7 +54,7 @@ export function getScriptDetail(id) {
   })
 }
 
-/* 修改新闻 */
+/* 修改新闻内容 */
 export function changeNews(id, data) {
   return request({
     url: `/api/news/${id}`,
@@ -70,6 +70,14 @@ export function deleteNews(id) {
     method: 'delete'
   })
 }
+/* 获取指定新闻 */
+export function getNewDetail(id) {
+  return request({
+    url: `/api/news/${id}`,
+    method: 'get'
+  })
+}
+
 /* 获取栏目下的新闻 */
 export function getNews(params) {
   return request({
@@ -82,6 +90,15 @@ export function getNews(params) {
 export function setTop(data) {
   return request({
     url: '/api/news/setTop',
+    method: 'post',
+    data
+  })
+}
+
+/* 修改新闻状态 */
+export function changeNewsStatus(data) {
+  return request({
+    url: '/api/news/setStatus',
     method: 'post',
     data
   })

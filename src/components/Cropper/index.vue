@@ -57,7 +57,7 @@
           text-align: center;
           color: #fff;
           opacity: 0;
-          font-size: 20px;
+          font-size: 18px;
           background-color: rgba(0,0,0,.5);
           transition: opacity .3s;
         }
@@ -70,7 +70,7 @@
       }
     }
     &-icon {
-      margin-left: 14px;
+      margin-left: 6px;
       cursor: pointer;
       &:first-child {
         margin-left: 0;

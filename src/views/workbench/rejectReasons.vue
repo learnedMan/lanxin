@@ -1,10 +1,12 @@
+<!-- 审核拒绝原因 -->
 <style type="text/scss" lang="scss" scoped>
-  .xl-label-manage {
-
+  .xl-reject-reasons {
+    padding: 30px;
   }
 </style>
+
 <template>
-  <div class="xl-label-manage">
+  <div class="xl-reject-reasons">
     <div class="search">
       <el-form
         ref="queryForm"
@@ -12,7 +14,7 @@
         :inline="true"
       >
         <el-form-item
-          label="标签名称:"
+          label="原因名称:"
           prop="name"
         >
           <el-input
@@ -25,22 +27,37 @@
           />
         </el-form-item>
         <el-form-item
-          label="样式:"
-          prop="type"
+          label="适用场景:"
+          prop="apply_to"
         >
           <el-select
-            v-model="queryParams.type"
+            v-model="queryParams.apply_to"
             size="small"
-            placeholder="请选择样式"
+            placeholder="请选择类型"
             clearable
           >
             <el-option
-              v-for="item in typeOptions"
+              v-for="item in applyOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="创建日期:">
+          <el-date-picker
+            v-model="dateValue"
+            type="daterange"
+            align="right"
+            size="small"
+            unlink-panels
+            range-separator="~"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            @change="handleDateChange"
+          />
         </el-form-item>
         <el-form-item>
           <el-button
@@ -82,20 +99,21 @@
         prop="id"
       />
       <el-table-column
-        label="标签名称"
+        label="原因名称"
         align="center"
         prop="name"
         :show-overflow-tooltip="true"
       />
       <el-table-column
-        label="样式"
-        align="center"
-        prop="typeLabel"
-      />
-      <el-table-column
-        label="标签描述"
+        label="原因描述"
         align="center"
         prop="introduction"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="适用于"
+        align="center"
+        prop="applyLabel"
         :show-overflow-tooltip="true"
       />
       <el-table-column
@@ -153,12 +171,12 @@
       >
         <el-form-item
           label-width="120px"
-          label="标签名称:"
+          label="拒绝原因:"
           prop="name"
         >
           <el-input
             v-model="dialog.form.name"
-            placeholder="请输入标签名称"
+            placeholder="请输入拒绝原因"
             clearable
             size="small"
             style="width: 200px"
@@ -166,26 +184,26 @@
         </el-form-item>
         <el-form-item
           label-width="120px"
-          label="样式:"
-          prop="type"
-        >
-          <el-radio-group v-model="dialog.form.type">
-            <el-radio v-for="type of typeOptions" :key="type.value" :label="type.value">{{ type.label }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item
-          label-width="120px"
           label="描述:"
         >
           <el-input
             v-model="dialog.form.introduction"
-            placeholder="请输入标签描述"
+            placeholder="请输入描述"
             clearable
             type="textarea"
             style="width: 300px"
             rows="4"
             resize="none"
           />
+        </el-form-item>
+        <el-form-item
+          label-width="120px"
+          label="适用于:"
+          prop="apply_to"
+        >
+          <el-checkbox-group v-model="dialog.form.apply_to">
+            <el-checkbox v-for="type of applyOptions.slice(1)" :key="type.value" :label="type.value">{{ type.label }}</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
       </el-form>
       <div
@@ -200,31 +218,44 @@
 </template>
 
 <script>
-import { getLabels, deleteLabels, editLabels, addLabels } from '@/api/content'
+import { getReasons, addReasons, editReasons, deleteReasons } from '@/api/workbench'
 
 export default {
+  name: 'RejectReasons',
   data() {
     return {
       queryParams: {
         name: '',
-        type: '',
-        /* startdate: '',
-              enddate: '',*/
+        apply_to: '',
+        startdate: '',
+        enddate: '',
         pageSize: 10,
         page: 1
       },
-      total: 0, // 总数
-      loading: false,
-      typeOptions: [
+      applyOptions: [
         {
-          label: '高亮',
-          value: 'hightlight'
+          label: '全部',
+          value: ''
         },
         {
-          label: '普通',
-          value: 'dafault'
+          label: '稿件审核',
+          value: 1
+        },
+        {
+          label: '评论审核',
+          value: 2
+        },
+        {
+          label: '爆料审核',
+          value: 3
+        },
+        {
+          label: '提现审核',
+          value: 4
         }
-      ], // 样式集合
+      ], // 使用场景列表
+      total: 0, // 总数
+      loading: false,
       dateValue: '', // 时间区间
       pickerOptions: {
         shortcuts: [{
@@ -259,12 +290,12 @@ export default {
         show: false,
         form: {
           name: '',
-          type: '',
+          apply_to: [],
           introduction: ''
         },
         rules: {
           name: { required: true, message: '请输入标签名称', trigger: 'blur' },
-          type: { required: true, message: '请选择样式', trigger: 'change' }
+          apply_to: { type: 'array', required: true, message: '请选择使用场景', trigger: 'change' }
         }
       }
     }
@@ -274,13 +305,13 @@ export default {
   },
   methods: {
     /*
-          * 重置
-          * */
+      * 重置
+      * */
     handleReset() {
       this.dateValue = ''
       Object.assign(this.queryParams, {
-        /* startdate: '',
-              enddate: '',*/
+        startdate: '',
+        enddate: '',
         page: 1
       })
       this.resetForm('queryForm')
@@ -300,7 +331,7 @@ export default {
         title: '新增',
         form: {
           name: '',
-          type: '',
+          apply_to: [],
           introduction: ''
         }
       })
@@ -321,15 +352,16 @@ export default {
           * */
     getList() {
       this.loading = true
-      getLabels(this.removePropertyOfNull(this.queryParams)).then(res => {
+      const params = { ...this.queryParams }
+      getReasons(this.removePropertyOfNull(params)).then(res => {
         const { data, total } = res
-        const typeObj = this.typeOptions.reduce((obj, n) => ({
+        const typeObj = this.applyOptions.reduce((obj, n) => ({
           ...obj,
           [n.value]: n.label
         }), {})
         this.tableData = data.map(n => ({
           ...n,
-          typeLabel: typeObj[n.type]
+          applyLabel: n.apply_to.split(',').map(val => typeObj[val]).join()
         }))
         this.total = total
       }).finally(() => {
@@ -341,12 +373,12 @@ export default {
           * */
     handleListDelete(row) {
       const { id } = row
-      this.$confirm(`此操作将永久删除这条id为${id}的标签, 是否继续?`, '提示', {
+      this.$confirm(`此操作将永久删除这条id为${id}的拒绝原因, 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteLabels(id).then(() => {
+        deleteReasons(id).then(() => {
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -369,7 +401,7 @@ export default {
         title: '编辑',
         form: {
           name: row.name,
-          type: row.type,
+          apply_to: row.apply_to.split(',').map(val => Number(val)),
           introduction: row.introduction,
           id: row.id
         }
@@ -385,16 +417,22 @@ export default {
     /* 弹框确认 */
     enterDialog() {
       const id = this.dialog.form.id
+      let form = { ...this.dialog.form }
+      delete form.id
+      form = this.removePropertyOfNull({
+        ...form,
+        apply_to: form.apply_to.join()
+      })
       this.$refs.dialogForm.validate(val => {
         let promise
         if (val) {
           // 编辑
           if (id) {
             delete this.dialog.form.id
-            promise = editLabels(id, this.removePropertyOfNull(this.dialog.form))
+            promise = editReasons(id, form)
           } else {
             // 新增
-            promise = addLabels(this.removePropertyOfNull(this.dialog.form))
+            promise = addReasons(this.removePropertyOfNull(form))
           }
           promise.then(() => {
             this.$message({

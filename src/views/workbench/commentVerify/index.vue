@@ -101,7 +101,7 @@
       />
     </div>
     <el-dialog width="500px" :title="dialog.title" :visible.sync="dialog.show">
-      <el-form v-show="dialog.key === 'reply'" ref="reply" :model="dialog.reply" :rules="dialog.replyRules">
+      <el-form v-show="dialog.key === 'reply'" ref="reply" size="mini" :model="dialog.reply" :rules="dialog.replyRules">
         <el-form-item label-width="120px" label="回复昵称" prop="nikeName">
           <el-input v-model="dialog.reply.nikeName" style="width: 300px" autocomplete="off" placeholder="请输入昵称" />
         </el-form-item>
@@ -109,7 +109,7 @@
           <el-input v-model="dialog.reply.remark" style="width: 300px" type="textarea" autocomplete="off" />
         </el-form-item>
       </el-form>
-      <el-form v-show="dialog.key === 'refuse'" ref="refuse" :model="dialog.refuse" :rules="dialog.refuseRules">
+      <el-form v-show="dialog.key === 'refuse'" ref="refuse" size="mini" :model="dialog.refuse" :rules="dialog.refuseRules">
         <el-form-item label-width="120px" label="拒绝原因" prop="cause">
           <el-select v-model="dialog.refuse.cause" placeholder="请选择拒绝原因">
             <el-option v-for="item in dialog.refuse.causeOption" :key="item.value" :label="item.label" :value="item.value" />
@@ -120,6 +120,137 @@
         <el-button @click="closeDialog">取 消</el-button>
         <el-button type="primary" @click="enterDialog">确 定</el-button>
       </div>
+    </el-dialog>
+    <el-dialog
+      width="500px"
+      :title="addDialog.title"
+      :visible.sync="addDialog.show"
+    >
+      <el-dialog
+        width="30%"
+        title="选择媒资"
+        :visible.sync="innerDialog.show"
+        append-to-body
+      >
+        <el-form
+          ref="innerForm"
+          :model="innerDialog.queryParams"
+          :inline="true"
+          size="small"
+        >
+          <el-form-item
+            label="媒资标题:"
+            prop="title"
+          >
+            <el-input
+              v-model="innerDialog.queryParams.title"
+              placeholder="请输入姓名"
+              clearable
+              style="width: 200px"
+              @keyup.enter.native="handleInnerQuery"
+            />
+          </el-form-item>
+          <el-form-item label="创建时间:">
+            <el-date-picker
+              v-model="innerDialog.dateValue"
+              type="daterange"
+              align="right"
+              size="small"
+              unlink-panels
+              range-separator="~"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+              @change="handleInnerDateChange"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleInnerReset"
+            >
+              重置
+            </el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleInnerQuery"
+            >
+              搜索
+            </el-button>
+          </el-form-item>
+        </el-form>
+        <el-table
+          ref="multipleTable"
+          v-loading="innerDialog.loading"
+          :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
+          :data="tableData"
+          border
+          tooltip-effect="dark"
+          style="width: 100%"
+        >
+          <el-table-column
+            label="媒资"
+            align="center"
+            prop="id"
+          />
+          <el-table-column
+            label="媒资标题"
+            align="center"
+            prop="title"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="创建时间"
+            align="center"
+            prop="created_at"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="操作"
+            align="center"
+            width="280"
+          >
+            <template slot-scope="scope">
+              <!-- 选择 -->
+              <el-button
+                type="text"
+                icon="el-icon-check"
+                size="small"
+                @click="handleInnerChoose(scope.row)"
+              >
+                选择
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
+      <el-form ref="addComments" :model="addDialog.form" :rules="addDialog.rules" size="mini">
+        <el-form-item label-width="120px" label="媒资标题" prop="title">
+          <el-input
+            v-model="addDialog.form.title"
+            style="width: 300px"
+            disabled
+            autocomplete="off"
+            placeholder="请选择媒资标题"
+          />
+          <el-button type="primary">选择媒资</el-button>
+        </el-form-item>
+        <el-form-item label-width="120px" label="评论昵称" prop="nikeName">
+          <el-input v-model="addDialog.form.nikeName" style="width: 300px" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label-width="120px" label="评论内容" prop="remark">
+          <el-input
+            v-model="addDialog.form.remark"
+            style="width: 300px"
+            type="textarea"
+            rows="5"
+            autocomplete="off"
+          />
+        </el-form-item>
+      </el-form>
     </el-dialog>
   </div>
 </template>
@@ -438,7 +569,65 @@ export default {
         refuseRules: {
           cause: { required: true, message: '请选择拒绝原因', trigger: 'change' }
         } // 拒绝验证
-      }
+      },
+      addDialog: {
+        show: false,
+        title: '新增评论',
+        form: {
+          title: '',
+          nikeName: '',
+          remark: ''
+        },
+        rules: {
+          title: { required: true, message: '请选择媒资标题', trigger: 'change' },
+          nikeName: { required: true, message: '请输入评论昵称', trigger: 'blur' },
+          remark: { required: true, message: '请输入评论内容', trigger: 'blur' }
+        }
+      }, // 新增和编辑评论弹框
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      innerDialog: {
+        show: false,
+        dateValue: '',
+        loading: false,
+        queryParams: {
+          startdate: '',
+          enddate: '',
+          page: 1,
+          pageSize: 10
+        }
+      } // 选择媒资弹框
+    }
+  },
+  computed: {
+    /* 站点id */
+    site_id() {
+      return this.$store.state.u_info.site_id
     }
   },
   created() {
@@ -499,6 +688,30 @@ export default {
     * 审核通过(同意)
     * */
     handleAgree() {
+
+    },
+    /* 处理选择媒资时间 */
+    handleInnerDateChange(val) {
+      const arr = val || ['', '']
+      this.innerDialog.queryParams.startdate = arr[0]
+      this.innerDialog.queryParams.enddate = arr[1]
+    },
+    /* 获取媒资列表 */
+    handleInnerQuery() {
+
+    },
+    /* 重置媒资搜索条件 */
+    handleInnerReset() {
+      this.innerDialog.dateValue = ''
+      Object.assign(this.innerDialog.queryParams, {
+        startdate: '',
+        enddate: '',
+        page: 1
+      })
+      this.resetForm('innerForm')
+    },
+    /* 确认选择的媒资 */
+    handleInnerChoose(row) {
 
     }
   }

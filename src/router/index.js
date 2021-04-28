@@ -101,6 +101,30 @@ export const constantRoutes = [
         meta: { title: '评论审核' }
       },
       {
+        path: 'reviewNews',
+        component: () => import('@/views/workbench/reviewNews/index'),
+        name: 'ReviewNews',
+        meta: { title: '稿件审核' }
+      },
+      {
+        path: 'rejectReasons',
+        component: () => import('@/views/workbench/rejectReasons'),
+        name: 'RejectReasons',
+        meta: { title: '审核拒绝原因' }
+      },
+      {
+        path: 'userFeedback',
+        component: () => import('@/views/workbench/userFeedback/index'),
+        name: 'UserFeedback',
+        meta: { title: '用户反馈' }
+      },
+      {
+        path: 'report',
+        component: () => import('@/views/workbench/report/index'),
+        name: 'Report',
+        meta: { title: '举报处理' }
+      },
+      {
         path: 'seeSection',
         component: () => import('@/views/workbench/seeSection'),
         name: 'SeeSection',

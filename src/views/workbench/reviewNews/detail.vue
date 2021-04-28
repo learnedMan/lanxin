@@ -1,15 +1,8 @@
 <style type="text/scss" lang="scss">
   .xl-add-media {
     background-color: #f9f9f9;
-    margin: -30px;
     padding: 10px;
-    &--header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      background-color: #fff;
-      margin-top: 10px;
-    }
+    margin: 0;
     &--tab {
       background-color: #fff;
       .el-tabs__header {
@@ -58,35 +51,16 @@
       line-height: 60px;
       padding-left: 10px;
     }
+    &--footer {
+      text-align: center;
+      background-color: #fff;
+      margin-top: 10px;
+      line-height: 40px;
+    }
   }
 </style>
 <template>
   <el-container class="xl-add-media">
-    <el-header class="xl-add-media--header" height="40px">
-      <div>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleDraft"
-        >
-          保存草稿
-        </el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handlePreview"
-        >
-          保存并预览
-        </el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handlePublish"
-        >
-          保存并发布
-        </el-button>
-      </div>
-    </el-header>
     <el-main style="padding: 10px">
       <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange">
         <el-tab-pane
@@ -100,6 +74,7 @@
         ref="submitForm"
         label-width="100px"
         size="small"
+        style="max-height: 600px;overflow: auto"
         :model="from"
         :rules="currentTabsFromRules"
       >
@@ -349,6 +324,7 @@
                 v-bind="formOptions['author_name'].item.props"
               >
                 <tag
+                  disabled
                   :value="parseObj(formOptions['author_name'].item)"
                   @input="handleInput($event, formOptions['author_name'].item)"
                 />
@@ -359,6 +335,7 @@
                 v-bind="formOptions['editor_name'].item.props"
               >
                 <tag
+                  disabled
                   :value="parseObj(formOptions['editor_name'].item)"
                   @input="handleInput($event, formOptions['editor_name'].item)"
                 />
@@ -490,8 +467,109 @@
             </div>
           </el-col>
         </el-row>
+        <!--<div v-for="(item, index) of currentTabsFromItem" :key="index">
+          <el-form-item v-show="initFrom().includes(item.key)" v-bind="item.props">
+            &lt;!&ndash; 输入框 &ndash;&gt;
+            <el-input
+              v-if="item.component === 'input'"
+              :value="parseObj(item)"
+              :rows="4"
+              v-bind="item.componentProps"
+              clearable
+              size="small"
+              style="width: 200px"
+              @input="handleInput($event, item)"
+            />
+            &lt;!&ndash; 选择框 &ndash;&gt;
+            <el-select
+              v-if="item.component === 'select'"
+              :value="parseObj(item)"
+              size="small"
+              style="width: 200px"
+              clearable
+              v-bind="item.componentProps"
+              @input="handleInput($event, item)"
+            >
+              <el-option
+                v-for="list in item.lists"
+                :key="list.value"
+                :label="list.label"
+                :value="list.value"
+              />
+            </el-select>
+            &lt;!&ndash; 可添加多个(作者, 编辑) &ndash;&gt;
+            <tag
+              v-if="item.component === 'tag'"
+              :value="parseObj(item)"
+              @input="handleInput($event, item)"
+            />
+            &lt;!&ndash; 单选框 &ndash;&gt;
+            <el-radio-group
+              v-if="item.component === 'radio'"
+              size="small"
+              :value="parseObj(item)"
+              @input="handleInput($event, item)"
+              @change="handleTabChange"
+            >
+              <el-radio v-for="list of item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+            </el-radio-group>
+            &lt;!&ndash; 图片表格 &ndash;&gt;
+            <img-table
+              v-if="item.component === 'table'"
+              :value="parseObj(item)"
+              @input="handleInput($event, item)"
+            />
+            &lt;!&ndash; 剪切图片 &ndash;&gt;
+            <cropper
+              v-if="item.component === 'cropper'"
+              v-bind="item.componentProps"
+              :value="parseObj(item)"
+              @input="handleInput($event, item)"
+            />
+            &lt;!&ndash; 时间 &ndash;&gt;
+            <el-date-picker
+              v-if="item.component === 'date'"
+              :value="parseObj(item)"
+              type="datetime"
+              size="small"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期时间"
+              @input="handleInput($event, item)"
+            />
+            &lt;!&ndash; 视频 &ndash;&gt;
+            <div v-if="item.component === 'video'" class="xl-add-media&#45;&#45;upload" @click="handleChangeVideo">
+              &lt;!&ndash;<i class="el-icon-video-camera-solid"></i>
+              <el-image
+                class="el-upload-list__item-thumbnail"
+                :src="parseObj(item)"
+                fit="cover"></el-image>&ndash;&gt;
+            </div>
+            &lt;!&ndash; 编辑器 &ndash;&gt;
+            <editor
+              v-if="item.component === 'edit'"
+              :value="parseObj(item)"
+              @input="handleInput($event, item)"
+            />
+          </el-form-item>
+        </div>-->
       </el-form>
     </el-main>
+    <el-footer class="xl-add-media--footer" height="40px">
+      <el-button
+        type="primary"
+        size="small"
+        @click="handleClose"
+      >
+        关闭
+      </el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="handleSave"
+      >
+        保存
+      </el-button>
+    </el-footer>
     <!-- 选择视频弹框 -->
     <el-dialog
       width="600px"
@@ -584,68 +662,35 @@
         </el-button>
       </div>
     </el-dialog>
-    <!-- 发布到栏目 -->
-    <el-dialog
-      width="600px"
-      :title="dialog.title"
-      :visible.sync="dialog.show"
-    >
-      <el-form
-        ref="dialogForm"
-        :model="dialog.form"
-        :rules="dialogRules"
-      >
-        <el-form-item
-          label-width="120px"
-          label="栏目"
-          prop="channel_id"
-        >
-          <el-cascader
-            v-model="dialog.form.channel_id"
-            style="width: 350px"
-            :options="channelsList"
-            :props="cascaderOption"
-            clearable
-          />
-        </el-form-item>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialog.show = false">
-          取 消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="enterDialog"
-        >
-          确 定
-        </el-button>
-      </div>
-    </el-dialog>
   </el-container>
 </template>
 
 <script>
 import Cropper from '@/components/Cropper'
-import { getLabels, getScriptDetail, changeScripts } from '@/api/content'
-import { getChannels } from '@/api/manage'
+import { getLabels, getNewDetail, changeNews } from '@/api/content'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
 import Editor from './components/editor'
 
 export default {
-  name: 'AddMedia',
+  name: 'NewDetail',
   components: {
     Cropper,
     ImgTable,
     Tag,
     Editor
   },
+  props: {
+    /* 新闻id */
+    id: {
+      type: [Number, String],
+      required: true
+    }
+  },
   data() {
     const coverValidator = (rule, value, callback) => {
       const count = this.formOptions['extra.cover'].item.componentProps.count
+      console.log(value.slice(0, count).every(n => n.path))
       if (!Array.isArray(value) || value.length === 0) {
         callback(new Error('请上传图片'))
       } else if (!value.slice(0, count).every(n => n.path)) {
@@ -1181,25 +1226,13 @@ export default {
         height: ''
       }, // 选择视频弹框
       videoLists: [], // 视频列表
-      dialog: {
-        show: false,
-        multiple: false, // 批量单选  单个多选
-        title: '发布栏目',
-        form: {
-          channel_id: []
-        }
-      },
-      dialogRules: {
-        channel_id: { required: true, message: '请选择栏目', trigger: 'change' }
-      },
       cascaderOption: {
         checkStrictly: true, // 是否强制父子不关联
         emitPath: false, // 返回值是否为数组
         value: 'id', // 选项值
         label: 'name', // 显示值
         multiple: true // 多选
-      }, // 级联选择器配置
-      channelsList: [] // 栏目列表
+      } // 级联选择器配置
     }
   },
   computed: {
@@ -1208,11 +1241,17 @@ export default {
       return `${process.env.VUE_APP_BASE_API}/api/upload/image`
     }
   },
-  async created() {
-    this.getChannels()
-    await this.getLabels()
-    await this.getList()
-    this.handleTabChange()
+  watch: {
+    id: {
+      handler(val) {
+        if (val === '') return
+        this.getData()
+      },
+      immediate: true
+    }
+  },
+  created() {
+    this.getLabels()
   },
   methods: {
     /* 解析路径返回值 */
@@ -1232,27 +1271,27 @@ export default {
       }, this.from)
     },
     /*
-        * 显示选择视频弹框(未完成)
-        * */
+          * 显示选择视频弹框(未完成)
+          * */
     handleChangeVideo() {
       /* const { url, id } = this.from.video_extra.video_list;
-          let obj = {
-            show: true,
-            radio: id || '',
-            video: url
-          }
-          Object.assign(this.videoDialog, { ...obj });*/
+            let obj = {
+              show: true,
+              radio: id || '',
+              video: url
+            }
+            Object.assign(this.videoDialog, { ...obj });*/
     },
     /* 控制视频弹框 (未完成)*/
     videoDialogControl(val) {
       /* this.videoDialog.show = false;
-          if(val === 'confirm'){
-            this.from.extra.link = {
-              ...this.from.extra.link,
-              id: this.videoDialog.radio,
-              url: this.videoDialog.video
-            }
-          }*/
+            if(val === 'confirm'){
+              this.from.extra.link = {
+                ...this.from.extra.link,
+                id: this.videoDialog.radio,
+                url: this.videoDialog.video
+              }
+            }*/
     },
     /* 上传图片成功 */
     handleUploadImageSuccess(res) {
@@ -1266,7 +1305,7 @@ export default {
       let arr = []
       const cover_type = this.formOptions['extra.cover_type'].item.lists.find(n => n.value === this.from.extra.cover_type)
       // 确定图片显示个数
-      this.formOptions['extra.cover'].item.componentProps.count = cover_type.count
+      this.formOptions['extra.cover'].item.componentProps.count = cover_type?.count || 1
       // 基础显示的item
       const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.cover_type', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
       // 显示发布时间
@@ -1293,74 +1332,42 @@ export default {
       return arr
     },
     /*
-        * 确认发布
-        * */
-    enterDialog() {
-      this.$refs.dialogForm.validate(valid => {
+          * 保存数据
+          * */
+    handleSave() {
+      this.$refs.submitForm.validate(valid => {
         if (valid) {
-          this.handleSave('保存并发布成功')
-        }
-      })
-    },
-    /*
-        * 保存数据
-        * */
-    handleSave(tip) {
-      const channel_id = this.dialog.form.channel_id
-      const currentTabsFromItem = this.initFrom()
-      const type = this.from.extra.type
-      const { id } = this.$route.query
-      const count = this.formOptions['extra.cover'].item.componentProps.count
-      let arr, keyVal
-      const obj = {
-        ...currentTabsFromItem.reduce((obj, key) => {
-          arr = key.split('.')
-          if (arr[1]) {
-            keyVal = this.from[arr[0]][arr[1]]
-            obj[arr[0]][arr[1]] = arr[1] === 'cover' ? keyVal.slice(0, count) : keyVal
-          } else {
-            obj[arr[0]] = this.from[arr[0]]
+          const currentTabsFromItem = this.initFrom()
+          const type = this.from.extra.type
+          const count = this.formOptions['extra.cover'].item.componentProps.count
+          let arr, keyVal
+          const obj = {
+            ...currentTabsFromItem.reduce((obj, key) => {
+              arr = key.split('.')
+              if (arr[1]) {
+                keyVal = this.from[arr[0]][arr[1]]
+                obj[arr[0]][arr[1]] = arr[1] === 'cover' ? keyVal.slice(0, count) : keyVal
+              } else {
+                obj[arr[0]] = this.from[arr[0]]
+              }
+              return obj
+            }, {
+              extra: {
+                type
+              }
+            })
           }
-          return obj
-        }, {
-          extra: {
-            type
-          }
-        }),
-        channels: channel_id.join() // 关联到多个栏目
-      }
-      changeScripts(id, obj).then(() => {
-        this.$message.success(tip)
-        this.dialog.show = false
-      })
-    },
-    /* 保存草稿 */
-    handleDraft() {
-      this.$refs.submitForm.validate(valid => {
-        if (valid) {
-          this.handleSave('保存草稿成功!')
+          changeNews(this.id, obj).then(() => {
+            this.$message.success('保存草稿成功!')
+            this.$emit('refresh')
+            this.handleClose()
+          })
         }
       })
     },
-    /*
-        * 预览
-        * */
-    handlePreview() {
-      this.$refs.submitForm.validate(valid => {
-        if (valid) {
-          this.handleSave('保存成功')
-        }
-      })
-    },
-    /*
-        * 发布
-        * */
-    handlePublish() {
-      this.$refs.submitForm.validate(valid => {
-        if (valid) {
-          this.dialog.show = true
-        }
-      })
+    /* 关闭弹框 */
+    handleClose() {
+      this.$emit('update:visible', false)
     },
     /* tab变化 */
     handleTabChange() {
@@ -1386,19 +1393,9 @@ export default {
         }))
       })
     },
-    /*
-       * 获取栏目列表
-       * */
-    getChannels() {
-      getChannels().then(res => {
-        this.channelsList = res
-      })
-    },
     /* 获取详情数据 */
     getList() {
-      const { id } = this.$route.query
-      if (id == null) return
-      return getScriptDetail(id).then(res => {
+      return getNewDetail(this.id).then(res => {
         const extra = res.extra
         this.from = {
           author_name: res.author_name, // 作者
@@ -1436,8 +1433,11 @@ export default {
             } // 外链
           }
         }// 表单
-        this.dialog.form.channel_id = res.news.map(n => n.channel_id)
       })
+    },
+    async getData() {
+      await this.getList()
+      this.handleTabChange()
     }
   }
 }

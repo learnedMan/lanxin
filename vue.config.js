@@ -53,6 +53,10 @@ module.exports = {
           //     ['^' + process.env.VUE_APP_BASE_API_old]: '' // 举例 '^/api:""' 把路径中的/api字符串删除
           // }
       },
+      '/api': { //需要代理的路径   例如 '/api'
+        target: 'http://10.30.10.158', //代理到 目标路径 测试
+        changeOrigin: true
+      },
       '/laravel-u-editor-server/server': {
         target: 'http://batrix-local.cztv.com/',
         changeOrigin: true,

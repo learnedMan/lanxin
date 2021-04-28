@@ -20,9 +20,10 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 
-import {resetForm , removePropertyOfNull} from '@/utils/costum'
+import { resetForm, removePropertyOfNull, removePropertyOfNullFor0 } from '@/utils/costum'
 Vue.prototype.resetForm = resetForm
 Vue.prototype.removePropertyOfNull = removePropertyOfNull
+Vue.prototype.removePropertyOfNullFor0 = removePropertyOfNullFor0
 // 组件
 import Pagination from '@/components/Pagination'
 Vue.component('Pagination', Pagination)
@@ -53,8 +54,7 @@ Object.keys(filters).forEach(key => {
 
 Vue.config.productionTip = false
 
- 
-//富文本ue需要的js和css
+// 富文本ue需要的js和css
 // import'./assets/UEditor/ueditor.config.js'
 // import'./assets/UEditor/ueditor.all.js'
 // import'./assets/UEditor/ueditor.parse.min.js'
