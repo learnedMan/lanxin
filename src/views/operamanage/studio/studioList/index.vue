@@ -1,18 +1,23 @@
 <style type="text/scss" lang="scss" scoped>
-  .xl-studio-list {
 
-  }
 </style>
 <template>
-    <div class="xl-studio-list">
-
-    </div>
+  <keep-alive>
+    <component :is="component"></component>
+  </keep-alive>
 </template>
 
 <script>
+    import studioList from './list'
+
     export default {
-        data() {
-            return {}
+      components: {
+        studioList
+      },
+      data () {
+        return {
+          component: 'studioList'
         }
+      }
     }
 </script>
