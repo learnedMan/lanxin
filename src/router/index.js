@@ -351,6 +351,46 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/operaManage',
+    component: Layout,
+    name: 'OperaManage',
+    redirect: '/operaManage/studio/studioList',
+    meta: {
+      title: '运营管理',
+      icon: 'component'
+    },
+    children: [
+      {
+        path: 'studio',
+        component: () => import('@/views/operamanage/studio/index'),
+        name: 'Studio',
+        meta: { title: '直播间管理' },
+        alwaysShow: true,
+        redirect: '/operaManage/studio/studioList',
+        children: [
+          {
+            path: 'studioList',
+            component: () => import('@/views/operamanage/studio/studioList/index'),
+            name: 'StudioList',
+            meta: { title: '直播间列表' }
+          },
+          {
+            path: 'waterManage',
+            component: () => import('@/views/operamanage/studio/waterManage'),
+            name: 'WaterManage',
+            meta: { title: '平台流水管理' }
+          },
+          {
+            path: 'accountManage',
+            component: () => import('@/views/operamanage/studio/accountManage'),
+            name: 'AccountManage',
+            meta: { title: '平台账号管理' }
+          }
+        ]
+      }
+    ]
+  },
+  {
     path: '/mbh',
     component: Layout,
     redirect: '/mbh/index',
