@@ -161,6 +161,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="watchConsole(scope.row)"
           >
             控制台
           </el-button>
@@ -174,6 +175,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="watchChannel(scope.row)"
           >
             查看
           </el-button>
@@ -187,7 +189,7 @@
       <el-table-column
         label="操作"
         align="center"
-        width="280"
+        width="200"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
@@ -628,24 +630,24 @@
       /* 编辑 */
       handleEdit (row) {
         const { id } = row;
-        Object.assign(this.dialog, {
-          title: '编辑',
-          show: true,
-          id
-        });
         this.liveTime = '';
         getStudio(id).then(res => {
           const data = res.data;
           this.liveTime = [data.extra.start_time, data.extra.end_time];
           this.$refs.dialogForm?.resetFields();
           this.$nextTick(() => {
-            this.dialog.form = {
-              channels: data.channel.map(n => n.id),
-              extra: {
-                ...data.extra,
-                cover: data.extra.cover?.[0]?.path
+            Object.assign(this.dialog, {
+              title: '编辑',
+              show: true,
+              id,
+              form: {
+                channels: data.channel.map(n => n.id),
+                extra: {
+                  ...data.extra,
+                  cover: data.extra.cover?.[0]?.path
+                }
               }
-            }
+            });
           })
         })
       },
@@ -682,6 +684,16 @@
           }
         })
         this.$refs.publishForm?.clearValidate();
+      },
+      /* 查看栏目 */
+      watchChannel (row) {
+        const id = row.id;
+        this.$emit('watchChannel', id);
+      },
+      /* 查看控制台 */
+      watchConsole (row) {
+        const id = row.id;
+        this.$emit('watchConsole', id);
       },
       /* 直播时间变化 */
       handleDateChange (val, key) {
