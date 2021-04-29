@@ -555,8 +555,8 @@ import ChildPage1 from './pages/c_page1'
         this.initForm();
         this.dialogTitle = "编辑栏目";
         this.dialogType = "edit";
-        this.dialogFormVisible = true;
         getchannelinfo(row.id).then(response => {
+          
           this.form = JSON.parse(JSON.stringify(response)) ;
           // 把拿到的多级审核的数据进行修改
           var new_multi_review = [];
@@ -570,9 +570,10 @@ import ChildPage1 from './pages/c_page1'
           }
           // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
-          this.$refs.c_page1.listnum = new_multi_review.length;
+          this.dialogFormVisible = true;
           this.$nextTick(()=>{
             this.$refs.c_page1.showtxt()
+            this.$refs.c_page1.listnum = new_multi_review.length;
           })
         })
       },
