@@ -53,3 +53,38 @@ export function deleteStudio(id) {
     method: 'delete'
   })
 }
+
+/* 修改直播间 */
+export function changeStudio(id, data) {
+  return request({
+    url: `/api/broadcasts/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 删除机位 */
+export function deleteReservation(id) {
+  return request({
+    url: `/api/broadcastStreams/${id}`,
+    method: 'delete'
+  })
+}
+
+/* 修改机位 */
+export function editReservation(id, data) {
+  return request({
+    url: `/api/broadcastStreams/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 新增机位 */
+export function addReservation(data) {
+  return request({
+    url: '/api/broadcastStreams',
+    method: 'post',
+    data
+  })
+}

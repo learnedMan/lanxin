@@ -11,9 +11,9 @@
         :model="queryParams"
         :inline="true"
       >
-        <!--<el-form-item
+        <el-form-item
           label="直播间名称:"
-          prop="name"
+          prop="keyword"
         >
           <el-input
             v-model="queryParams.keyword"
@@ -26,16 +26,16 @@
         </el-form-item>
         <el-form-item
           label="类型:"
-          prop="apply_to"
+          prop="portrait"
         >
           <el-select
-            v-model="queryParams.apply_to"
+            v-model="queryParams.portrait"
             size="small"
             placeholder="请选择类型"
             clearable
           >
             <el-option
-              v-for="item in applyOptions"
+              v-for="item in portraitOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -44,25 +44,43 @@
         </el-form-item>
         <el-form-item
           label="直播状态:"
-          prop="apply_to"
+          prop="live"
         >
           <el-select
-            v-model="queryParams.apply_to"
+            v-model="queryParams.live"
             size="small"
             placeholder="请选择类型"
             clearable
           >
             <el-option
-              v-for="item in applyOptions"
+              v-for="item in liveOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="开播时间:">
+        <el-form-item
+          label="发布状态:"
+          prop="live"
+        >
+          <el-select
+            v-model="queryParams.status"
+            size="small"
+            placeholder="请选择状态"
+            clearable
+          >
+            <el-option
+              v-for="item in publishOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="创建时间:">
           <el-date-picker
-            v-model="dateValue"
+            v-model="createDate"
             type="daterange"
             align="right"
             size="small"
@@ -75,32 +93,14 @@
             @change="handleDateChange"
           />
         </el-form-item>
-        <el-form-item
-          label="发布状态:"
-          prop="apply_to"
-        >
-          <el-select
-            v-model="queryParams.apply_to"
-            size="small"
-            placeholder="请选择类型"
-            clearable
-          >
-            <el-option
-              v-for="item in applyOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>-->
         <el-form-item>
-          <!--<el-button
+          <el-button
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
-          </el-button>-->
+          </el-button>
           <el-button
             type="primary"
             size="mini"
@@ -164,20 +164,6 @@
             @click="watchConsole(scope.row)"
           >
             控制台
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="发布栏目"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-button
-            type="primary"
-            size="small"
-            @click="watchChannel(scope.row)"
-          >
-            查看
           </el-button>
         </template>
       </el-table-column>
@@ -331,8 +317,8 @@
             rows="5"
           />
         </el-form-item>
-        <el-form-item label="机器人数据" prop="extra.robot_settings.on">
-          <el-switch v-model="dialog.form.extra.robot_settings.on" :active-value="1"></el-switch>
+        <el-form-item label="机器人数据" prop="extra.robot_settings.enable">
+          <el-switch v-model="dialog.form.extra.robot_settings.enable" :active-value="1"></el-switch>
         </el-form-item>
         <el-form-item label="基础观看人数:">
           <el-row>
@@ -347,7 +333,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row style="margin-top: 10px" v-show="dialog.form.extra.robot_settings.on">
+          <el-row style="margin-top: 10px" v-show="dialog.form.extra.robot_settings.enable">
             <el-col :span="24">
               每分钟额外显示
               <el-form-item prop="extra.robot_settings.view.min" style="display: inline-block;margin-bottom: 0;">
@@ -387,7 +373,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row style="margin-top: 10px" v-show="dialog.form.extra.robot_settings.on">
+          <el-row style="margin-top: 10px" v-show="dialog.form.extra.robot_settings.enable">
             <el-col :span="24">
               每分钟增加
               <el-form-item prop="extra.robot_settings.praise.min" style="display: inline-block;margin-bottom: 0;">
@@ -480,6 +466,11 @@
         loading: false,
         queryParams: {
           keyword: '',
+          live: '',
+          portrait: '',
+          status: '',
+          startdate: '',
+          enddate: '',
           page: 1,
           pageSize: 10
         },
@@ -507,6 +498,34 @@
             value: 1
           }
         ], // 直播类型
+        liveOptions: [
+          {
+            label: '全部',
+            value: ''
+          },
+          {
+            label: '未开始',
+            value: 0
+          },
+          {
+            label: '进行中',
+            value: 1
+          }
+        ], // 直播状态
+        publishOptions: [
+          {
+            label: '全部',
+            value: ''
+          },
+          {
+            label: '未发布',
+            value: 0
+          },
+          {
+            label: '已发布',
+            value: 1
+          }
+        ], // 发布状态
         statementOptions: [
           {
             label: '关闭（关闭后客户端不展示图文直播间）',
@@ -549,6 +568,7 @@
           }]
         },
         liveTime: '', // 直播时间
+        createDate: '', // 创建时间
         dialog: {
           title: '新增',
           id: '',
@@ -567,7 +587,7 @@
               view_base_num: '', // 观看基础人数
               praise_base_num: '', // 点赞人数
               robot_settings: {
-                on: 0, // 机器人数据
+                enable: 0, // 机器人数据
                 view: {
                   min: '',
                   max: ''
@@ -597,7 +617,7 @@
             ],
             'extra.intro': [
               { required: true, message: '请输入直播间简介', trigger: 'blur' }
-            ]
+            ],
           }
         },
         publishDialog: {
@@ -614,6 +634,16 @@
       }
     },
     methods: {
+      /* 重置 */
+      handleReset () {
+        this.createDate = '';
+        Object.assign(this.queryParams, {
+          startdate: '',
+          enddate: '',
+          page: 1
+        })
+        this.resetForm('queryForm')
+      },
       /* 搜索 */
       handleQuery () {
         this.getList();
@@ -685,11 +715,6 @@
         })
         this.$refs.publishForm?.clearValidate();
       },
-      /* 查看栏目 */
-      watchChannel (row) {
-        const id = row.id;
-        this.$emit('watchChannel', id);
-      },
       /* 查看控制台 */
       watchConsole (row) {
         const id = row.id;
@@ -701,6 +726,9 @@
         if (key === 'liveTime') {
           this.dialog.form.extra.start_time = arr[0];
           this.dialog.form.extra.end_time = arr[1];
+        }else if(key === 'createDate') {
+          this.queryParams.startdate = arr[0];
+          this.queryParams.enddate = arr[1];
         }
       },
       /* 确认新增或编辑 */

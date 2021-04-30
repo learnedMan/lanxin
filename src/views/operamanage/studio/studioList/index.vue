@@ -7,7 +7,6 @@
       <component
         :is="component"
         :id="id"
-        @watchChannel="watchChannel"
         @watchConsole="watchConsole"
         @handleReturn="handleReturn"
       ></component>
@@ -17,13 +16,11 @@
 
 <script>
     import studioList from './list'
-    import watchChannel from './watchChannel'
     import watchConsole from './watchConsole'
 
     export default {
       components: {
         studioList,
-        watchChannel,
         watchConsole
       },
       data () {
@@ -39,11 +36,6 @@
         }
       },
       methods: {
-        /* 查看栏目 */
-        watchChannel (id) {
-          this.id = id;
-          this.component = 'watchChannel';
-        },
         /* 查看控制台 */
         watchConsole (id) {
           this.id = id;
