@@ -570,6 +570,7 @@ import ChildPage1 from './pages/c_page1'
           }
           // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
+          this.form.extra.cover = this.form.extra.cover[0].path;
           this.dialogFormVisible = true;
           this.$nextTick(()=>{
             this.$refs.c_page1.showtxt()
@@ -620,7 +621,7 @@ import ChildPage1 from './pages/c_page1'
           }
           data.extra.multi_review = new_multi_review;
 
-
+          data.extra.cover = [{'path':data.extra.cover,'intro':''}];
           // return
           if (this.dialogType=='edit') {
             //修改
