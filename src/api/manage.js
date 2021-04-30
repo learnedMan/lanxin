@@ -477,3 +477,29 @@ export function delprograms(id) {
     method: 'delete'
   })
 }
+
+
+
+// 图文直播
+// 获取直播详情
+export function getbroadcasts(id) {
+  return request({
+    url: `/api/broadcasts/${id}`,
+    method: 'get'
+  })
+}
+// 获取直播间发言列表
+export function getbroadcastStatement(id,stream_id) {
+  return request({
+    url: `/api/broadcastStatement?broadcast_id=${id}&stream_id=${stream_id}`,
+    method: 'get'
+  })
+}
+// 添加直播间发言
+export function addbroadcastStatement(data) {
+  return request({
+    url: '/api/broadcastStatement',
+    method: 'post',
+    data:data
+  })
+}
