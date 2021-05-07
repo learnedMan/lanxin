@@ -419,6 +419,21 @@
                   <el-radio v-for="list of formOptions['extra.allow_share'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
                 </el-radio-group>
               </el-form-item>
+              <!-- 同步生成语音稿件 -->
+              <el-form-item
+                label-width="150"
+                v-show="initFrom().includes('extra.trans_to_audio')"
+                v-bind="formOptions['extra.trans_to_audio'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.trans_to_audio'].item)"
+                  @input="handleInput($event, formOptions['extra.trans_to_audio'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.trans_to_audio'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
               <!-- 点击量 -->
               <el-form-item
                 v-show="initFrom().includes('extra.view_base_num')"
@@ -467,91 +482,6 @@
             </div>
           </el-col>
         </el-row>
-        <!--<div v-for="(item, index) of currentTabsFromItem" :key="index">
-          <el-form-item v-show="initFrom().includes(item.key)" v-bind="item.props">
-            &lt;!&ndash; 输入框 &ndash;&gt;
-            <el-input
-              v-if="item.component === 'input'"
-              :value="parseObj(item)"
-              :rows="4"
-              v-bind="item.componentProps"
-              clearable
-              size="small"
-              style="width: 200px"
-              @input="handleInput($event, item)"
-            />
-            &lt;!&ndash; 选择框 &ndash;&gt;
-            <el-select
-              v-if="item.component === 'select'"
-              :value="parseObj(item)"
-              size="small"
-              style="width: 200px"
-              clearable
-              v-bind="item.componentProps"
-              @input="handleInput($event, item)"
-            >
-              <el-option
-                v-for="list in item.lists"
-                :key="list.value"
-                :label="list.label"
-                :value="list.value"
-              />
-            </el-select>
-            &lt;!&ndash; 可添加多个(作者, 编辑) &ndash;&gt;
-            <tag
-              v-if="item.component === 'tag'"
-              :value="parseObj(item)"
-              @input="handleInput($event, item)"
-            />
-            &lt;!&ndash; 单选框 &ndash;&gt;
-            <el-radio-group
-              v-if="item.component === 'radio'"
-              size="small"
-              :value="parseObj(item)"
-              @input="handleInput($event, item)"
-              @change="handleTabChange"
-            >
-              <el-radio v-for="list of item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
-            </el-radio-group>
-            &lt;!&ndash; 图片表格 &ndash;&gt;
-            <img-table
-              v-if="item.component === 'table'"
-              :value="parseObj(item)"
-              @input="handleInput($event, item)"
-            />
-            &lt;!&ndash; 剪切图片 &ndash;&gt;
-            <cropper
-              v-if="item.component === 'cropper'"
-              v-bind="item.componentProps"
-              :value="parseObj(item)"
-              @input="handleInput($event, item)"
-            />
-            &lt;!&ndash; 时间 &ndash;&gt;
-            <el-date-picker
-              v-if="item.component === 'date'"
-              :value="parseObj(item)"
-              type="datetime"
-              size="small"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              placeholder="选择日期时间"
-              @input="handleInput($event, item)"
-            />
-            &lt;!&ndash; 视频 &ndash;&gt;
-            <div v-if="item.component === 'video'" class="xl-add-media&#45;&#45;upload" @click="handleChangeVideo">
-              &lt;!&ndash;<i class="el-icon-video-camera-solid"></i>
-              <el-image
-                class="el-upload-list__item-thumbnail"
-                :src="parseObj(item)"
-                fit="cover"></el-image>&ndash;&gt;
-            </div>
-            &lt;!&ndash; 编辑器 &ndash;&gt;
-            <editor
-              v-if="item.component === 'edit'"
-              :value="parseObj(item)"
-              @input="handleInput($event, item)"
-            />
-          </el-form-item>
-        </div>-->
       </el-form>
     </el-main>
     <el-footer class="xl-add-media--footer" height="40px">
@@ -670,7 +600,7 @@ import Cropper from '@/components/Cropper'
 import { getLabels, getNewDetail, changeNews } from '@/api/content'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
-import Editor from './components/editor'
+import Editor from '@/components/editor'
 
 export default {
   name: 'NewDetail',
@@ -1051,6 +981,29 @@ export default {
             { required: true, message: '请选择是否允许分享', trigger: 'change' }
           ]
         },
+        'extra.trans_to_audio': {
+          item: {
+            key: 'extra.trans_to_audio',
+            props: {
+              label: '同步生成语音稿件:',
+              prop: 'extra.trans_to_audio'
+            },
+            component: 'radio', // 组件名
+            lists: [
+              {
+                label: '是',
+                value: 1
+              },
+              {
+                label: '否',
+                value: 0
+              }
+            ]
+          },
+          rule: [
+            { required: true, message: '请选择是否同步生成语音稿件', trigger: 'change' }
+          ]
+        },
         'extra.view_base_num': {
           item: {
             key: 'extra.view_base_num',
@@ -1201,6 +1154,7 @@ export default {
           use_watermarks: 0, // 水印
           allow_comment: 0, // 评论控制
           allow_share: 1, // 允许分享
+          trans_to_audio: 1, // 同步生成语音稿件
           view_base_num: '', // 点击量
           praise_base_num: '', // 点赞量
           post_base_num: '', // 转发量
@@ -1310,7 +1264,7 @@ export default {
       const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.cover_type', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
       // 显示发布时间
       if (this.from.extra.publish_timer === 1) baseTopItem.push('extra.set_created_at')
-      const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
+      const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
       if (this.from.extra.is_original === 0) baseBottomItem.splice(2, 0, 'extra.source')
       switch (this.from.extra.type) {
@@ -1417,6 +1371,7 @@ export default {
             use_watermarks: extra.use_watermarks, // 水印
             allow_comment: extra.allow_comment, // 评论控制
             allow_share: extra.allow_share, // 允许分享
+            trans_to_audio: extra.trans_to_audio, // 同步生成语音稿件
             view_base_num: extra.view_base_num, // 点击量
             praise_base_num: extra.praise_base_num, // 点赞量
             post_base_num: extra.post_base_num, // 转发量

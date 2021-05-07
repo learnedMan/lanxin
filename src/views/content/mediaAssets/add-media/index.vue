@@ -442,6 +442,21 @@
                   <el-radio v-for="list of formOptions['extra.allow_share'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
                 </el-radio-group>
               </el-form-item>
+              <!-- 同步生成语音稿件 -->
+              <el-form-item
+                label-width="150"
+                v-show="initFrom().includes('extra.trans_to_audio')"
+                v-bind="formOptions['extra.trans_to_audio'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.trans_to_audio'].item)"
+                  @input="handleInput($event, formOptions['extra.trans_to_audio'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.trans_to_audio'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
               <!-- 点击量 -->
               <el-form-item
                 v-show="initFrom().includes('extra.view_base_num')"
@@ -633,7 +648,7 @@ import { getLabels, getScriptDetail, changeScripts } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
-import Editor from './components/editor'
+import Editor from '@/components/editor'
 
 export default {
   name: 'AddMedia',
@@ -1006,6 +1021,29 @@ export default {
             { required: true, message: '请选择是否允许分享', trigger: 'change' }
           ]
         },
+        'extra.trans_to_audio': {
+          item: {
+            key: 'extra.trans_to_audio',
+            props: {
+              label: '同步生成语音稿件:',
+              prop: 'extra.trans_to_audio'
+            },
+            component: 'radio', // 组件名
+            lists: [
+              {
+                label: '是',
+                value: 1
+              },
+              {
+                label: '否',
+                value: 0
+              }
+            ]
+          },
+          rule: [
+            { required: true, message: '请选择是否同步生成语音稿件', trigger: 'change' }
+          ]
+        },
         'extra.view_base_num': {
           item: {
             key: 'extra.view_base_num',
@@ -1156,6 +1194,7 @@ export default {
           use_watermarks: 0, // 水印
           allow_comment: 0, // 评论控制
           allow_share: 1, // 允许分享
+          trans_to_audio: 1, // 同步生成语音稿件
           view_base_num: '', // 点击量
           praise_base_num: '', // 点赞量
           post_base_num: '', // 转发量
@@ -1271,7 +1310,7 @@ export default {
       const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.cover_type', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
       // 显示发布时间
       if (this.from.extra.publish_timer === 1) baseTopItem.push('extra.set_created_at')
-      const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
+      const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
       if (this.from.extra.is_original === 0) baseBottomItem.splice(2, 0, 'extra.source')
       switch (this.from.extra.type) {
@@ -1420,6 +1459,7 @@ export default {
             use_watermarks: extra.use_watermarks, // 水印
             allow_comment: extra.allow_comment, // 评论控制
             allow_share: extra.allow_share, // 允许分享
+            trans_to_audio: extra.trans_to_audio, // 同步生成语音稿件
             view_base_num: extra.view_base_num, // 点击量
             praise_base_num: extra.praise_base_num, // 点赞量
             post_base_num: extra.post_base_num, // 转发量
