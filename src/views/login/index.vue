@@ -7,8 +7,8 @@
         <div class="title-container">
           <div class="title">管理后台登录</div>
         </div>
-        
-        <el-select class="pull-down-login" v-model="sitec.site_select" filterable placeholder="请选择站点" size='mini' @change='sites_change'> 
+
+        <el-select class="pull-down-login" v-model="sitec.site_select" filterable placeholder="请选择站点" size='mini' @change='sites_change'>
           <el-option v-for="item in sitec.site_data" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
@@ -25,6 +25,21 @@
             name="username"
             type="text"
             tabindex="1"
+            autocomplete="off"
+          />
+        </el-form-item>
+
+        <el-form-item prop="password" class="username">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            ref="password"
+            type="password"
+            v-model.trim="loginForm.password"
+            placeholder="请输入手机号码"
+            name="password"
+            tabindex="3"
             autocomplete="off"
           />
         </el-form-item>
@@ -47,9 +62,9 @@
           <div class="sendbtn" @click="getcodeFn">{{getcodeval}}</div>
         </el-form-item>
 
-        <el-button 
-          type="primary" 
-          style="width:100%;margin-bottom:30px;" 
+        <el-button
+          type="primary"
+          style="width:100%;margin-bottom:30px;"
           @click.native.prevent="handleLogin"
           class="loginbtn"
         >登录</el-button>
@@ -81,14 +96,22 @@ export default {
         callback()
       }
     }
+    const validatePassword = (rule, value, callback) => {
+      if(value === '') {
+        callback(new Error('请输入密码'))
+      }else {
+        callback()
+      }
+    }
     return {
       loginForm: {//登录绑定
         username: '',
-        password:123456,
+        password: 123456,
         yzcode: ''
       },
       loginRules: {//表单校验
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
         yzcode: [{ required: true, trigger: 'blur', validator: validateyzcode }]
       },
       redirect: undefined,
@@ -210,6 +233,7 @@ export default {
         if (valid) {
           let formData = new FormData()
             formData.append( "username",this.loginForm.username )
+            formData.append( "password",this.loginForm.password )
             formData.append( "verification_code",this.loginForm.yzcode )
             formData.append( "verification_key",this.verification_key )
             formData.append( "zone_id",this.sitec.site_select_all.zone_id )
@@ -253,12 +277,12 @@ $w:#fff;
 .login-container {
   min-height: 100%;
   width: 100%;
-  overflow: hidden; 
+  overflow: hidden;
   background: url($images+'/login_images/loginbg.jpg') no-repeat center;
   background-size: cover;
   .loginbox{
     width: 320px;
-    height: 469px;
+    height: 520px;
     background: url($images+'/login_images/loginBlur.png') no-repeat center;
     position: absolute;
     right: 15%;
@@ -340,7 +364,7 @@ $w:#fff;
         bottom: 10px;
       }
     }
-    
+
     .el-input__inner{
 			background-color: $t;
 			color:#fff;
