@@ -1,8 +1,9 @@
 
 <template>
     <div class="xl-direct-seeding">
+      <div v-if="statement!='none'">
         <el-tabs style="width:80%;" v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane v-for="(item,index) in streamlist" :key="index"  :label="item.extra.name" :name="item.extra.name">
+          <el-tab-pane v-for="(item,index) in streamlist" :key="index" :label="statement=='stream'?item.extra.name:''" :name="item.extra.name">
               <div style="height:400px;margin-bottom:30px;">
                     <el-table
                       :data="dataList"
@@ -27,53 +28,43 @@
                       </el-table-column>
                     </el-table>
               </div>
-
-              <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="文字" prop="content">
-                  <el-input :autosize="{ minRows:4 }" type="textarea" v-model="ruleForm.content"></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="图片/视频" prop="file">
-                  <el-upload
-                    class="avatar-uploader"
-                    :action="VUE_APP_BASE_API + '/api/upload/image'"
-                    :headers="importHeaders"
-                    name="image"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess.bind(this,'file')"
-                    :before-upload="beforeAvatarUpload"
-                  >
-                    <img v-if="ruleForm.file" :src="ruleForm.file" class="avatar" />
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  </el-upload>
-                </el-form-item> -->
-                
-                <el-form-item>
-                  <el-button type="primary" @click="submitForm('ruleForm')">发送</el-button>
-                  <el-button @click="resetForm('ruleForm')">重置</el-button>
-                </el-form-item>
-              </el-form>
           </el-tab-pane>
-          <!-- <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane> -->
         </el-tabs>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="文字" prop="content">
+              <el-input :autosize="{ minRows:4 }" type="textarea" v-model="ruleForm.content"></el-input>
+            </el-form-item>
+            <el-form-item label="图片/视频" prop="file">
+              <upload-file ref="cupload" v-model="ruleForm.file"></upload-file>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitForm('ruleForm')">发送</el-button>
+              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+          </div>
     </div>
 </template>
 
 <script>
   import {parseTime} from '@/utils/costum'
   import { getbroadcasts , getbroadcastStatement , addbroadcastStatement } from '@/api/manage'
-    export default {
+  import uploadFile from '../uploadFile/uploadFile.vue'
+  export default {
         data() {
           var mytoken = sessionStorage.getItem("token");
             return {
               importHeaders: { Authorization: mytoken }, //传图片时的token
               activeName: '',
+              statement:'',
               ruleForm: {
                 broadcast_id: '',
                 host_name: '',
                 content: '',
                 stream_id: '',
                 time: '',
-                file:''
+                file:'',
+                image:''
               },
               rules: {
                 content: [
@@ -88,17 +79,20 @@
               streamlist:[]
             }
         },
+        components: {
+          uploadFile
+        },
         props:{
           id:Number
         },
         created(){
           // console.log(this.id)
-          // this.id = 6;
           this.statementquery.id = this.id;
-          this.getbroadcasts();
+          // this.getbroadcasts();
           this.getbroadcastStatement();
         },
         updated () {
+          // 滚动条
           this.downscroll()
         },
         computed: {
@@ -107,6 +101,7 @@
           },
         },
         methods: {
+          //图片
           handleAvatarSuccess(name,res) {
             this.ruleForm[name] = res.path;
           },
@@ -117,37 +112,57 @@
             }
             return isLt;
           },
+          // 滚动条
           downscroll(){
-            // console.log(this.$refs.tableList)
             try {
-              this.$refs.tableList.bodyWrapper.scrollTop =this.$refs.tableList.bodyWrapper. scrollHeight;
+              this.$refs.tableList.forEach(element => {
+                element.bodyWrapper.scrollTop = element.bodyWrapper.scrollHeight
+              });
             } catch (error) {
-              
+              // console.log('滚动失败')
             }
           },  
           // 获取直播间发言列表
-          getbroadcastStatement(){
+          async getbroadcastStatement(){
+            var data = await this.getbroadcasts();
+            // console.log(this.statementquery)
+            this.getdatalist();
+          },
+          getdatalist(){
+            this.dataList = [];
             getbroadcastStatement(this.statementquery.id,this.statementquery.stream_id).then(res => {
-              // console.log(res)
               this.dataList = res.data.reverse();
+              console.log(this.dataList)
             })
           },
           // 获取直播详情
           getbroadcasts() {
-            getbroadcasts(this.id).then(res => {
-              console.log(res)
-              this.streamlist = res.data.extra.stream;
-              if(this.streamlist.length>0){
-                this.activeName = this.streamlist[0].extra.name
-              }
-              console.log(this.streamlist)
+            return new Promise((resolve,reject)=>{
+              getbroadcasts(this.id).then(res => {
+                // console.log(res)
+                this.streamlist = res.data.extra.stream;
+                if(this.streamlist&&this.streamlist.length>0){
+                  this.activeName = this.streamlist[0].extra.name
+                  this.statementquery.stream_id = this.streamlist[0].id
+                  this.statement = res.data.extra.statement;
+                  // console.log(this.statementquery)
+                }
+                // console.log(this.streamlist)
+                resolve(this.streamlist)
+              })
             })
+            
           },
+          //切换机位
           handleClick(tab, event) {
-            console.log(tab, event);
+            var index = parseInt(tab.index);
+            this.statementquery.stream_id = this.streamlist[index].id
+            this.getdatalist();
           },
+          //发送文字
           submitForm(formName) {
-            this.ruleForm.broadcast_id = this.id;
+            this.ruleForm.broadcast_id = this.statementquery.id;
+            this.ruleForm.stream_id = this.statementquery.stream_id;
             this.ruleForm.host_name = '测试';
             this.ruleForm.time = parseTime(new Date());
             this.$refs[formName].validate((valid) => {
@@ -158,7 +173,7 @@
                       type: 'success'
                     });
                     this.resetForm('ruleForm');
-                    this.getbroadcastStatement();
+                    this.getdatalist();
 
                     this.downscroll()
                 })
@@ -168,8 +183,10 @@
               }
             });
           },
+          //重置表单
           resetForm(formName) {
             this.$refs[formName].resetFields();
+            this.$refs.cupload.fileList = [];
           }
         }
     }
