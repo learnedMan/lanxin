@@ -648,7 +648,7 @@ import { getLabels, getScriptDetail, changeScripts } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
-import Editor from './components/editor'
+import Editor from '@/components/editor'
 
 export default {
   name: 'AddMedia',

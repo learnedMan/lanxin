@@ -600,7 +600,7 @@ import Cropper from '@/components/Cropper'
 import { getLabels, getNewDetail, changeNews } from '@/api/content'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
-import Editor from './components/editor'
+import Editor from '@/components/editor'
 
 export default {
   name: 'NewDetail',
