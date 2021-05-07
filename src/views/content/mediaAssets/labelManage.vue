@@ -203,6 +203,7 @@
 import { getLabels, deleteLabels, editLabels, addLabels } from '@/api/content'
 
 export default {
+  name: 'labelManage',
   data() {
     return {
       queryParams: {

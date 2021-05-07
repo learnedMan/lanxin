@@ -11,8 +11,9 @@
 
 <script>
     export default {
-        data() {
-            return {}
-        }
+      name: 'Studio',
+      data() {
+          return {}
+      }
     }
 </script>
