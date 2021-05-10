@@ -556,11 +556,15 @@ import ChildPage1 from './pages/c_page1'
         this.dialogTitle = "编辑栏目";
         this.dialogType = "edit";
         getchannelinfo(row.id).then(response => {
-          
+          var extradata = this.form.extra;
           this.form = JSON.parse(JSON.stringify(response)) ;
+          // this.form = Object.assign(this.form,response);
+          this.form.extra = Object.assign(this.form.extra,extradata)
+          console.log(this.form)
           // 把拿到的多级审核的数据进行修改
           var new_multi_review = [];
-          var multi_review = this.form.extra.multi_review;
+          var multi_review = this.form.extra.multi_review||[];
+          // console.log(this.form)
           for(var i=0;i<multi_review.length;i++){
             new_multi_review[i] = [];
             new_multi_review[i] = multi_review[i].reviewer_ids.split(',');
@@ -570,7 +574,7 @@ import ChildPage1 from './pages/c_page1'
           }
           // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
-          this.form.extra.cover = this.form.extra.cover[0].path;
+          this.form.extra.cover = this.form.extra.cover? this.form.extra.cover[0].path:'';
           this.dialogFormVisible = true;
           this.$nextTick(()=>{
             this.$refs.c_page1.showtxt()
@@ -609,8 +613,12 @@ import ChildPage1 from './pages/c_page1'
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
           var data = JSON.parse(JSON.stringify(this.form))
-          data.father = data.father[data.father.length-1];
-
+          data.father = Number(data.father)
+          // if(!data.father){
+          //   data.father = data.father[data.father.length-1];
+          // }else{
+          //   data.father = data.father.join('')
+          // }
           var multi_review = data.extra.multi_review;
           var new_multi_review = [];
           for(var i=0;i<multi_review.length;i++){

@@ -2,7 +2,7 @@
 <template>
     <div class="xl-direct-seeding">
       <div v-if="statement!='none'">
-        <el-tabs style="width:80%;" v-model="activeName" @tab-click="handleClick">
+        <el-tabs style="width:100%;" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane v-for="(item,index) in streamlist" :key="index" :label="statement=='stream'?item.extra.name:''" :name="item.extra.name">
               <div style="height:400px;margin-bottom:30px;">
                     <el-table
@@ -15,27 +15,22 @@
                         label="时间">
                       </el-table-column>
                       <el-table-column
-                        prop="content"
                         label="内容">
-                      </el-table-column>
-                      <el-table-column
-                        prop="address"
-                        label="图片">
-                      </el-table-column>
-                      <el-table-column
-                        prop="address"
-                        label="视频">
+                        <template slot-scope="scope">
+                          <div v-html="scope.row.content"></div>
+                      </template>
                       </el-table-column>
                     </el-table>
               </div>
           </el-tab-pane>
         </el-tabs>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="文字" prop="content">
+            <!-- <el-form-item label="文字" prop="content">
               <el-input :autosize="{ minRows:4 }" type="textarea" v-model="ruleForm.content"></el-input>
-            </el-form-item>
-            <el-form-item label="图片/视频" prop="file">
-              <upload-file ref="cupload" v-model="ruleForm.file"></upload-file>
+            </el-form-item> -->
+            <el-form-item label="图片/视频" prop="content">
+              <!-- <upload-file ref="cupload" v-model="ruleForm.file"></upload-file> -->
+              <editor v-model="ruleForm.content" />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')">发送</el-button>
@@ -50,6 +45,7 @@
   import {parseTime} from '@/utils/costum'
   import { getbroadcasts , getbroadcastStatement , addbroadcastStatement } from '@/api/manage'
   import uploadFile from '../uploadFile/uploadFile.vue'
+  import Editor from '@/components/editor'
   export default {
         data() {
           var mytoken = sessionStorage.getItem("token");
@@ -76,11 +72,12 @@
                 stream_id:''
               },
               dataList: [],
-              streamlist:[]
+              streamlist:[],
             }
         },
         components: {
-          uploadFile
+          uploadFile,
+          Editor
         },
         props:{
           id:Number
@@ -186,7 +183,7 @@
           //重置表单
           resetForm(formName) {
             this.$refs[formName].resetFields();
-            this.$refs.cupload.fileList = [];
+            // this.$refs.cupload.fileList = [];
           }
         }
     }
