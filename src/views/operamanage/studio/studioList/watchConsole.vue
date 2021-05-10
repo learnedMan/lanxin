@@ -223,16 +223,6 @@
           }
         };
         return {
-          lists: [
-            {
-              label: '机位管理',
-              name: 'reservation'
-            },
-            {
-              label: '图文直播',
-              name: 'directSeeding'
-            }
-          ],
           detail: {
             cover: '',
             extra: {}
@@ -266,6 +256,21 @@
               ]
             }
           }
+        }
+      },
+      computed: {
+        lists () {
+          const arr = [
+            {
+              label: '机位管理',
+              name: 'reservation'
+            }
+          ]
+          if(this.detail.extra.statement !== 'none') arr.splice(1, 0, {
+            label: '图文直播',
+            name: 'directSeeding'
+          })
+          return arr
         }
       },
       methods: {

@@ -37,7 +37,7 @@
             ref="password"
             type="password"
             v-model.trim="loginForm.password"
-            placeholder="请输入手机号码"
+            placeholder="请输入密码"
             name="password"
             tabindex="3"
             autocomplete="off"
