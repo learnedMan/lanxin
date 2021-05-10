@@ -21,14 +21,17 @@
           <router-link to="/">
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
+          <router-link to="/admin">
+            <el-dropdown-item>账号管理</el-dropdown-item>
+          </router-link>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">登出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      
+
       <!-- 切换频道 -->
-      <el-dialog 
+      <el-dialog
         :close-on-click-modal="false"
         :close-on-press-escape="false"
         width="600px" title="切换频道" :visible.sync="dialogFormVisible">
@@ -55,18 +58,13 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
+
 
 export default {
   components: {
     Breadcrumb,
     Hamburger,
     ErrorLog,
-    Screenfull,
-    SizeSelect,
-    Search
   },
   data(){
     return {

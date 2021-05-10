@@ -21,3 +21,11 @@ export function login(data) {
     data
   })
 }
+
+export function changePassword(data) {
+  return request({
+    url: '/api/user/resetPassword',
+    method: 'patch',
+    data
+  })
+}
