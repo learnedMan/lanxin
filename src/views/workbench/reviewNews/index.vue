@@ -94,7 +94,7 @@
             批量通过
           </el-button>
           <el-button
-            type="success"
+            type="warning"
             size="mini"
             :disabled="selection.length === 0"
             @click="handleBatchReject"
