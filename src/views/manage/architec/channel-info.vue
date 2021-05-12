@@ -44,7 +44,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { 
-  getchannelinfo,
+  getsitesinfo,
   editsites
   } from '@/api/manage'
   export default {
@@ -102,7 +102,8 @@ import {
     },
     methods:{
         getinfo(){
-            getchannelinfo(this.u_info.site_id).then(response=>{
+            getsitesinfo(this.u_info.site_id).then(response=>{
+              console.log(response)
                 this.form = JSON.parse(JSON.stringify(response.data));
                 this.$set(this.form,'site_manager_name',this.form.user.name);
                 this.$set(this.form,'site_manager_phone',this.form.user.phone);

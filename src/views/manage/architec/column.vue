@@ -178,11 +178,15 @@
 
           <el-form-item el-form-item  label-width="150px" label="加载子栏目:" prop="extra.load_child">
             <el-switch
+              :active-value="0"
+              :inactive-value="1"
               v-model="form.extra.load_child">
             </el-switch>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="加载新闻:" prop="extra.load_news">
             <el-switch
+              :active-value="0"
+              :inactive-value="1"
               v-model="form.extra.load_news">
             </el-switch>
           </el-form-item>
@@ -403,8 +407,8 @@ import ChildPage1 from './pages/c_page1'
             cover:'',
             logo:'',
             allow_news_types:[],
-            load_child:false,
-            load_news:false,
+            load_child:0,
+            load_news:0,
             linked_channel_id:'',
             template_style:'',
             show_num:'',
@@ -559,8 +563,8 @@ import ChildPage1 from './pages/c_page1'
           var extradata = this.form.extra;
           this.form = JSON.parse(JSON.stringify(response)) ;
           // this.form = Object.assign(this.form,response);
-          this.form.extra = Object.assign(this.form.extra,extradata)
-          console.log(this.form)
+          this.form.extra = Object.assign(extradata,this.form.extra)
+          // console.log(this.form)
           // 把拿到的多级审核的数据进行修改
           var new_multi_review = [];
           var multi_review = this.form.extra.multi_review||[];
@@ -580,6 +584,8 @@ import ChildPage1 from './pages/c_page1'
             this.$refs.c_page1.showtxt()
             this.$refs.c_page1.listnum = new_multi_review.length;
           })
+
+          console.log(this.form)
         })
       },
       //删除栏目
