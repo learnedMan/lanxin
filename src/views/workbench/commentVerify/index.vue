@@ -1,3 +1,4 @@
+<!-- 评论审核 -->
 <style type="text/scss" lang="scss" scoped>
   .xl-comment-verify {
     position: absolute;
@@ -26,20 +27,15 @@
 </style>
 <template>
   <div class="xl-comment-verify">
-    <search ref="search" v-model="search" :lists="searchLists" />
-    <div class="verify-action">
-      <el-row>
-        <el-col :span="12">
-          <el-button size="small" type="primary">添加评论</el-button>
-          <el-button size="small" type="primary">批量通过</el-button>
-          <el-button size="small" type="primary">批量拒绝</el-button>
-        </el-col>
-        <el-col :span="12" style="text-align: right">
-          <el-button size="small" type="primary" @click="resetSearch">重置</el-button>
-          <el-button size="small" type="primary">搜索</el-button>
-        </el-col>
-      </el-row>
-    </div>
+    <search ref="search" v-model="search" :lists="searchLists">
+      <div slot="action">
+        <el-button size="small" type="primary" @click="resetSearch">重置</el-button>
+        <el-button size="small" type="primary" @click="getList">搜索</el-button>
+        <el-button size="small" type="primary">添加评论</el-button>
+        <el-button size="small" type="success">批量通过</el-button>
+        <el-button size="small" type="warning">批量拒绝</el-button>
+      </div>
+    </search>
     <div ref="table" class="verify-table">
       <el-table
         ref="multipleTable"
@@ -49,6 +45,7 @@
         :max-height="tableHeight"
         tooltip-effect="dark"
         style="width: 100%"
+        v-loading="loading"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -62,30 +59,17 @@
         >
           <template slot-scope="scope">
             {{ scope.row[head.prop] }}
-            <el-popover
-              v-if="head.tip"
-              placement="top"
-              width="200"
-              trigger="click"
-              content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
-            >
-              <i slot="reference" class="el-icon-info" style="color: #ccc;" />
-            </el-popover>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="280">
+        <el-table-column label="操作" align="center" width="120">
           <template slot-scope="scope">
             <div class="verify-table-action">
-              <!-- 不清楚 -->
-              <el-button type="text" icon="el-icon-edit" size="small">按钮</el-button>
-              <!-- 查看 -->
-              <el-button type="text" icon="el-icon-view" size="small" @click="watchDetail">查看</el-button>
               <!-- 回复 -->
-              <el-button type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('reply', '回复', scope.row)">回复</el-button>
+              <!--<el-button type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('回复', scope.row)">回复</el-button>-->
               <!-- 审批通过 -->
-              <el-button type="text" icon="el-icon-circle-check" size="small" @click="handleAgree">同意</el-button>
+              <el-button type="text" icon="el-icon-circle-check" size="small" @click="handleAgreeOrRefused(scope.row, 'approve')" v-if="scope.row.status != 1">通过</el-button>
               <!-- 拒绝 -->
-              <el-button type="text" icon="el-icon-circle-close" size="small" @click="handleDialogShow('refuse', '拒绝', scope.row)">拒绝</el-button>
+              <el-button type="text" icon="el-icon-circle-close" size="small" @click="handleAgreeOrRefused(scope.row, 'reject')" v-if="scope.row.status != 2">拒绝</el-button>
             </div>
           </template>
         </el-table-column>
@@ -97,23 +81,16 @@
         :total="page.total"
         :page.sync="search.pageNo"
         :limit.sync="search.pageSize"
-        @pagination="getListData"
+        @pagination="getList"
       />
     </div>
     <el-dialog width="500px" :title="dialog.title" :visible.sync="dialog.show">
-      <el-form v-show="dialog.key === 'reply'" ref="reply" size="mini" :model="dialog.reply" :rules="dialog.replyRules">
+      <el-form ref="reply" size="mini" :model="dialog.reply" :rules="dialog.replyRules">
         <el-form-item label-width="120px" label="回复昵称" prop="nikeName">
           <el-input v-model="dialog.reply.nikeName" style="width: 300px" autocomplete="off" placeholder="请输入昵称" />
         </el-form-item>
         <el-form-item label-width="120px" label="回复内容" prop="nikeName">
           <el-input v-model="dialog.reply.remark" style="width: 300px" type="textarea" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-      <el-form v-show="dialog.key === 'refuse'" ref="refuse" size="mini" :model="dialog.refuse" :rules="dialog.refuseRules">
-        <el-form-item label-width="120px" label="拒绝原因" prop="cause">
-          <el-select v-model="dialog.refuse.cause" placeholder="请选择拒绝原因">
-            <el-option v-for="item in dialog.refuse.causeOption" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -257,77 +234,89 @@
 
 <script>
 import search from './components/search'
+import {
+  getproduct
+} from '@/api/manage'
+import { getCommentLists, commentAction } from '@/api/workbench'
+import { getNews } from '@/api/content'
 
 export default {
+  name: 'CommentVerify',
   components: {
     search
   },
   data() {
     return {
       search: {
-        critics: '', // 评论人
-        content: '', // 评论内容
-        commentType: '', // 评论类型
-        title: '', // 媒资标题
-        status: '', // 状态
-        aduitTime: '', // 审核时间
-        submitDate: '', // 提交时间
+        sourceId: '', // 产品
+        dataId: '', // 媒资ID
+        userId: '', // 评论人ID
+        status: 'all', // 状态
+        aduitStartTime: '', // 审核时间
+        aduitEndTime: '', // 审核结束时间
+        startTime: '', // 提交时间
+        endTime: '', // 提交时间
+        aduitTime: '',
+        submitDate: '',
         pageSize: 10, // 页码
         pageNo: 1 // 当前页
       },
       searchLists: [
         {
-          component: 'input',
-          componentSize: 'small',
-          placeholder: '请输入姓名',
-          label: '评论人',
-          span: 6,
-          key: 'critics'
-        },
-        {
-          component: 'input',
-          componentSize: 'small',
-          placeholder: '请输入关键字',
-          label: '评论内容',
-          span: 6,
-          key: 'content'
-        },
-        {
           component: 'select',
           componentSize: 'small',
-          placeholder: '请选择',
-          selectOption: [{
-            label: '全部',
-            value: 1
-          }],
-          label: '评论类型',
+          placeholder: '请选择产品',
+          label: '所属产品',
+          selectOption: [],
           span: 6,
-          key: 'commentType'
+          key: 'sourceId'
         },
         {
           component: 'input',
           componentSize: 'small',
-          placeholder: '请输入关键字',
-          label: '媒资标题',
+          placeholder: '请输入ID',
+          label: '评论人ID',
           span: 6,
-          key: 'title'
+          key: 'userId'
+        },
+        {
+          component: 'input',
+          componentSize: 'small',
+          placeholder: '请输入媒资ID',
+          label: '媒资ID',
+          span: 6,
+          key: 'dataId'
         },
         {
           component: 'select',
           componentSize: 'small',
           placeholder: '请输入关键字',
           label: '状态',
-          selectOption: [{
-            label: '全部',
-            value: 1
-          }],
+          selectOption: [
+            {
+              label: '全部',
+              value: 'all'
+            },
+            {
+              label: '待审核',
+              value: 0
+            },
+            {
+              label: '审核通过',
+              value: 1
+            },
+            {
+              label: '审核不通过',
+              value: 2
+            }
+          ],
           span: 6,
           key: 'status'
         },
         {
           component: 'daterange',
           componentSize: 'small',
-          placeholder: '请输入关键字',
+          placeholder: '请选择日期',
           label: '审核时间',
           span: 8,
           key: 'aduitTime'
@@ -335,7 +324,7 @@ export default {
         {
           component: 'daterange',
           componentSize: 'small',
-          placeholder: '请输入关键字',
+          placeholder: '请选择日期',
           label: '提交时间',
           span: 8,
           key: 'submitDate'
@@ -350,7 +339,7 @@ export default {
         },
         {
           label: '评论人',
-          prop: 'critics',
+          prop: 'nickname',
           width: 120,
           showOverflowTooltip: false // 超出省略号
         },
@@ -366,186 +355,25 @@ export default {
         },
         {
           label: '状态',
-          prop: 'status',
+          prop: 'statusLabel',
           width: 80,
-          tip: true,
           showOverflowTooltip: false // 超出省略号
         },
         {
           label: '审核时间',
-          prop: 'checkDate',
+          prop: 'aduitTime',
           width: 120,
           showOverflowTooltip: false // 超出省略号
         },
         {
           label: '提交时间',
-          prop: 'submitDate',
+          prop: 'creatTime',
           width: 120,
           showOverflowTooltip: false // 超出省略号
         }
       ],
-      tableData: [
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        },
-        {
-          id: 111,
-          critics: '12341',
-          content: '123211231',
-          commentType: '评论',
-          title: '123123',
-          status: '1231',
-          checkDate: '1234234',
-          submitDate: '2341234'
-        }
-      ],
+      tableData: [],
+      loading: false, // 列表加载
       page: {
         total: 10
       },
@@ -553,7 +381,6 @@ export default {
       dialog: {
         show: false,
         title: '回复',
-        key: '',
         reply: {
           nikeName: '',
           remark: ''
@@ -562,13 +389,6 @@ export default {
           nikeName: { required: true, message: '请输入昵称', trigger: 'blur' },
           remark: { required: true, message: '请输入备注', trigger: 'blur' }
         }, // 回复验证
-        refuse: {
-          cause: '',
-          causeOption: [] // 选择框列表数据
-        }, // 拒绝
-        refuseRules: {
-          cause: { required: true, message: '请选择拒绝原因', trigger: 'change' }
-        } // 拒绝验证
       },
       addDialog: {
         show: false,
@@ -630,10 +450,12 @@ export default {
       return this.$store.state.u_info.site_id
     }
   },
-  created() {
+  async created() {
+    await this.getProductList();
+    this.getList();
     this.$nextTick(() => {
-      const table = this.$refs.table
-      this.tableHeight = table.clientHeight
+      const table = this.$refs.table;
+      this.tableHeight = table.clientHeight;
     })
   },
   methods: {
@@ -642,7 +464,7 @@ export default {
     * */
     resetSearch() {
       const form = this.$refs.search.$refs.ruleForm
-      form.resetFields()
+      form.resetFields();
     },
     /*
     * 选择项发生变化时
@@ -653,8 +475,30 @@ export default {
     /*
     * 获取列表数据
     * */
-    getListData() {
-
+    getList() {
+      let params = { ...this.search };
+      if(params.aduitTime) params.aduitStartTime = params.aduitTime[0],params.aduitEndTime = params.aduitTime[1];
+      if(params.submitDate) params.startTime = params.submitDate[0],params.endTime = params.submitDate[1];
+      delete params.aduitTime, delete params.submitDate;
+      this.loading = true;
+      getCommentLists(params).then(res => {
+        const { totalCount, list } = res.data;
+        this.page.total = totalCount;
+        const ids = list.map(n => n.id);
+        getNews({ ids }).then(news => {
+          const newMap = news.data.reduce((data, n) => {
+            data[n.id] = n.title;
+            return data
+          }, {})
+          this.tableData = list.map(n => ({
+            ...n,
+            statusLabel: this.searchLists[3].selectOption.find(k => k.value === n.status)?.label,
+            title: newMap[n.dataId]
+          }))
+        })
+      }).finally(() => {
+        this.loading = false;
+      })
     },
     /*
     * 关闭弹框
@@ -669,26 +513,23 @@ export default {
 
     },
     /*
-    * 查看详情
-    * */
-    watchDetail() {
-
-    },
-    /*
     * 显示回复和拒绝的弹框
     * */
-    handleDialogShow(key, title, row) {
+    handleDialogShow(title, row) {
       Object.assign(this.dialog, {
         title,
-        key,
         show: true
       })
     },
     /*
-    * 审核通过(同意)
+    * 审核通过或拒绝
     * */
-    handleAgree() {
-
+    handleAgreeOrRefused(row, status) {
+      const str = `${status}/${row.comment_sn}`
+      commentAction(str).then(res => {
+        this.$message.success(res.message);
+        this.getList();
+      })
     },
     /* 处理选择媒资时间 */
     handleInnerDateChange(val) {
@@ -713,7 +554,18 @@ export default {
     /* 确认选择的媒资 */
     handleInnerChoose(row) {
 
-    }
+    },
+    /* 获取产品列表 */
+    getProductList(){
+      return getproduct({}).then(res => {
+        const data = res.data || []
+        this.searchLists[0].selectOption = data.map(n => ({
+          label: n.name,
+          value: n.id
+        }));
+        this.search.sourceId = data?.[0]?.id;
+      });
+    },
   }
 }
 </script>

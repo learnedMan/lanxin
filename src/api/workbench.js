@@ -107,3 +107,21 @@ export function reportReply(data) {
   })
 }
 
+/*-------------------------评论审核--------------------------------*/
+
+/* 获取列表 */
+export function getCommentLists(data) {
+  return $http({
+    url: 'http://10.30.10.161:8080/api/intranet/comment/listConsole',
+    method: 'post',
+    data
+  })
+}
+
+/* 通过或拒绝评论 */
+export function commentAction(str) {
+  return $http({
+    url: `http://10.30.10.161:8080/api/intranet/comment/manage/${str}`,
+    method: 'get'
+  })
+}
