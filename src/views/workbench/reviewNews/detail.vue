@@ -221,11 +221,13 @@
                   v-bind="formOptions['extra.video_extra.video_list'].item.props"
                 >
                   <div class="xl-add-media--upload" @click="handleChangeVideo">
-                    <!--<i class="el-icon-video-camera-solid"></i>
+                    <i class="el-icon-video-camera-solid" v-if="!from.extra.video_extra.video_list[0]"></i>
                     <el-image
+                      v-else
+                      style="width: 100%;height: 100%"
                       class="el-upload-list__item-thumbnail"
-                      :src="parseObj(formOptions['extra.video_extra.video_list'].item)"
-                      fit="cover"></el-image>-->
+                      :src="from.extra.video_extra.video_list[0].cover"
+                      fit="contain"></el-image>
                   </div>
                 </el-form-item>
                 <!-- 图集的图片 -->
@@ -502,95 +504,13 @@
     </el-footer>
     <!-- 选择视频弹框 -->
     <el-dialog
-      width="600px"
+      width="1000px"
+      top="4vh"
+      append-to-body
       :title="videoDialog.title"
       :visible.sync="videoDialog.show"
     >
-      <el-tabs type="border-card">
-        <el-tab-pane label="蓝云视频">
-          <div>
-            <ul>
-              <li v-for="(list, index) of videoLists" :key="index">
-                <el-image
-                  style="width: 100px; height: 100px"
-                  :src="list.url"
-                  fit="cover"
-                />
-                <el-radio v-model="videoDialog.radio" :label="list.value">{{ list.name }}</el-radio>
-              </li>
-            </ul>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="在线视频">
-          <el-row align="middle" type="flex" style="margin-bottom: 20px">
-            <el-col :span="4">视频地址</el-col>
-            <el-col :span="12">
-              <el-input
-                v-model="videoDialog.video"
-                placeholder="请输入视频地址"
-                clearable
-                size="small"
-              />
-            </el-col>
-            <el-col :span="8" style="text-align: center">
-              <el-upload
-                class="upload-demo"
-                :action="actionUrl"
-                :limit="1"
-                :show-file-list="false"
-                :on-success="handleUploadImageSuccess"
-              >
-                <el-button size="small" type="primary">添加缩略图</el-button>
-              </el-upload>
-            </el-col>
-          </el-row>
-          <el-row align="middle" type="flex">
-            <el-col :span="16">
-              <el-image
-                style="width: 300px; height: 300px;margin-left: 20px"
-                :src="videoDialog.video"
-                fit="cover"
-              />
-            </el-col>
-            <el-col :span="8">
-              <div style="margin-bottom: 20px">
-                宽度(px):
-                <el-input
-                  v-model="videoDialog.width"
-                  placeholder="数值"
-                  clearable
-                  size="mini"
-                  style="width: 100px"
-                />
-              </div>
-              <div>
-                高度(px):
-                <el-input
-                  v-model="videoDialog.height"
-                  placeholder="数值"
-                  clearable
-                  size="mini"
-                  style="width: 100px"
-                />
-              </div>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
-      </el-tabs>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="videoDialogControl('cancel')">
-          取 消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="videoDialogControl('confirm')"
-        >
-          确 定
-        </el-button>
-      </div>
+      <xl-video @choose="videoDialogControl"></xl-video>
     </el-dialog>
   </el-container>
 </template>
@@ -600,6 +520,7 @@ import Cropper from '@/components/Cropper'
 import { getLabels, getNewDetail, changeNews } from '@/api/content'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
+import xlVideo from '@/components/video'
 import Editor from '@/components/editor'
 
 export default {
@@ -608,6 +529,7 @@ export default {
     Cropper,
     ImgTable,
     Tag,
+    xlVideo,
     Editor
   },
   props: {
@@ -1212,7 +1134,7 @@ export default {
     parseObj(item) {
       const arr = item.key.split('.')
       const val = arr.reduce((obj, key) => obj[key], this.from)
-      return item.component === 'select' ? val && val.split(',') : val
+      return item.component === 'select' ? val && val.toString().split(',') : val
     },
     /* 值变化 */
     handleInput(val, item) {
@@ -1225,27 +1147,15 @@ export default {
       }, this.from)
     },
     /*
-          * 显示选择视频弹框(未完成)
-          * */
+    * 显示选择视频弹框
+    * */
     handleChangeVideo() {
-      /* const { url, id } = this.from.video_extra.video_list;
-            let obj = {
-              show: true,
-              radio: id || '',
-              video: url
-            }
-            Object.assign(this.videoDialog, { ...obj });*/
+      this.videoDialog.show = true;
     },
-    /* 控制视频弹框 (未完成)*/
+    /* 控制视频弹框*/
     videoDialogControl(val) {
-      /* this.videoDialog.show = false;
-            if(val === 'confirm'){
-              this.from.extra.link = {
-                ...this.from.extra.link,
-                id: this.videoDialog.radio,
-                url: this.videoDialog.video
-              }
-            }*/
+      this.videoDialog.show = false;
+      this.from.extra.video_extra.video_list = [val];
     },
     /* 上传图片成功 */
     handleUploadImageSuccess(res) {

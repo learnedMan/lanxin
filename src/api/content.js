@@ -159,6 +159,7 @@ export function getEditImgLists(params, isMy) {
 
 
 /*-------------------------获取视频资源--------------------------------*/
+
 /* 获取vms或新蓝云的栏目 */
 export function getVideoChannel(params) {
   return request({
@@ -167,3 +168,13 @@ export function getVideoChannel(params) {
     params
   })
 }
+
+/* 获取视频列表 */
+export function getVideos(params) {
+  return request({
+    url: '/api/videos',
+    method: 'get',
+    params
+  })
+}
+

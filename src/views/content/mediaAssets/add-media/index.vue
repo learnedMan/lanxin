@@ -246,11 +246,13 @@
                   v-bind="formOptions['extra.video_extra.video_list'].item.props"
                 >
                   <div class="xl-add-media--upload" @click="handleChangeVideo">
-                    <!--<i class="el-icon-video-camera-solid"></i>
+                    <i class="el-icon-video-camera-solid" v-if="!from.extra.video_extra.video_list[0]"></i>
                     <el-image
+                      v-else
+                      style="width: 100%;height: 100%"
                       class="el-upload-list__item-thumbnail"
-                      :src="parseObj(formOptions['extra.video_extra.video_list'].item)"
-                      fit="cover"></el-image>-->
+                      :src="from.extra.video_extra.video_list[0].cover"
+                      fit="contain"></el-image>
                   </div>
                 </el-form-item>
                 <!-- 图集的图片 -->
@@ -510,10 +512,11 @@
     <!-- 选择视频弹框 -->
     <el-dialog
       width="1000px"
+      top="4vh"
       :title="videoDialog.title"
       :visible.sync="videoDialog.show"
     >
-      <xl-video></xl-video>
+      <xl-video @choose="videoDialogControl"></xl-video>
     </el-dialog>
     <!-- 发布到栏目 -->
     <el-dialog
@@ -1185,21 +1188,15 @@ export default {
       }, this.from)
     },
     /*
-        * 显示选择视频弹框(未完成)
-        * */
+    * 显示选择视频弹框
+    * */
     handleChangeVideo() {
-       this.videoDialog.show = true;
+      this.videoDialog.show = true;
     },
-    /* 控制视频弹框 (未完成)*/
+    /* 控制视频弹框*/
     videoDialogControl(val) {
-       this.videoDialog.show = false;
-       if(val === 'confirm'){
-          this.from.extra.link = {
-            ...this.from.extra.link,
-            id: this.videoDialog.radio,
-            url: this.videoDialog.video
-          }
-       }
+      this.videoDialog.show = false;
+      this.from.extra.video_extra.video_list = [val];
     },
     /* 处理需要传给后台的数据 */
     initFrom() {
