@@ -1,4 +1,4 @@
-<!-- 稿件审核 -->
+<!-- 新闻审核 -->
 <style type="text/scss" lang="scss" scoped>
   .xl-review-news {
     padding: 30px;
@@ -13,7 +13,7 @@
         :inline="true"
       >
         <el-form-item
-          label="媒资标题:"
+          label="新闻标题:"
           prop="keyword"
         >
           <el-input
@@ -119,12 +119,12 @@
         width="55"
       />
       <el-table-column
-        label="媒资ID"
+        label="新闻ID"
         align="center"
         prop="id"
       />
       <el-table-column
-        label="媒资标题"
+        label="新闻标题"
         align="center"
         prop="title"
         :show-overflow-tooltip="true"

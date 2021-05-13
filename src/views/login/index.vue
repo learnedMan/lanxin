@@ -25,7 +25,6 @@
             name="username"
             type="text"
             tabindex="1"
-            autocomplete="off"
           />
         </el-form-item>
 
@@ -39,8 +38,7 @@
             v-model.trim="loginForm.password"
             placeholder="请输入密码"
             name="password"
-            tabindex="3"
-            autocomplete="off"
+            tabindex="2"
           />
         </el-form-item>
 
@@ -55,8 +53,7 @@
             maxlength="8"
             type="text"
             name="yzcode"
-            tabindex="2"
-            autocomplete="off"
+            tabindex="3"
             @keyup.enter.native="handleLogin"
           />
           <div class="sendbtn" @click="getcodeFn">{{getcodeval}}</div>
@@ -106,7 +103,7 @@ export default {
     return {
       loginForm: {//登录绑定
         username: '',
-        password: 123456,
+        password: '',
         yzcode: ''
       },
       loginRules: {//表单校验

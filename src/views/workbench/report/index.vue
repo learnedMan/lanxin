@@ -246,7 +246,7 @@
         :show-overflow-tooltip="true"
       />
       <el-table-column
-        label="所属媒资"
+        label="所属新闻"
         align="center"
         prop="mediaTitle"
       />
@@ -355,7 +355,7 @@
             <el-form-item label="举报类型:">{{ baseInfo.reportTypeLabel }}</el-form-item>
             <el-form-item label="举报对象类型:">{{ baseInfo.mediaTypeLabel }}</el-form-item>
             <el-form-item label="举报对象:">{{ baseInfo.newTitle }}</el-form-item>
-            <el-form-item label="所属媒资:">{{ baseInfo.newTitle }}</el-form-item>
+            <el-form-item label="所属新闻:">{{ baseInfo.newTitle }}</el-form-item>
             <el-form-item label="举报时间:">{{ baseInfo.reportTime }}</el-form-item>
             <el-form-item label="处理状态:">{{ baseInfo.handleStatusLabel }}</el-form-item>
           </el-form>
@@ -463,7 +463,7 @@ export default {
           value: ''
         },
         {
-          label: '媒资',
+          label: '新闻',
           value: 1
         },
         {
@@ -517,7 +517,7 @@ export default {
         reportNickname: '', // 用户
         reportTypeLabel: '', // 举报类型
         mediaTypeLabel: '', // 举报对象类型
-        newTitle: '', // 举报对象/所属媒资
+        newTitle: '', // 举报对象/所属新闻
         reportTime: '', // 举报时间
         handleStatusLabel: '' // 处理状态
       },

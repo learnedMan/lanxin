@@ -69,7 +69,7 @@
           size="small"
           @click="handleDraft"
         >
-          保存草稿
+          保存稿件
         </el-button>
         <el-button
           type="primary"
@@ -509,95 +509,11 @@
     </el-main>
     <!-- 选择视频弹框 -->
     <el-dialog
-      width="600px"
+      width="1000px"
       :title="videoDialog.title"
       :visible.sync="videoDialog.show"
     >
-      <el-tabs type="border-card">
-        <el-tab-pane label="蓝云视频">
-          <div>
-            <ul>
-              <li v-for="(list, index) of videoLists" :key="index">
-                <el-image
-                  style="width: 100px; height: 100px"
-                  :src="list.url"
-                  fit="cover"
-                />
-                <el-radio v-model="videoDialog.radio" :label="list.value">{{ list.name }}</el-radio>
-              </li>
-            </ul>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="在线视频">
-          <el-row align="middle" type="flex" style="margin-bottom: 20px">
-            <el-col :span="4">视频地址</el-col>
-            <el-col :span="12">
-              <el-input
-                v-model="videoDialog.video"
-                placeholder="请输入视频地址"
-                clearable
-                size="small"
-              />
-            </el-col>
-            <el-col :span="8" style="text-align: center">
-              <el-upload
-                class="upload-demo"
-                :action="actionUrl"
-                :limit="1"
-                :show-file-list="false"
-                :on-success="handleUploadImageSuccess"
-              >
-                <el-button size="small" type="primary">添加缩略图</el-button>
-              </el-upload>
-            </el-col>
-          </el-row>
-          <el-row align="middle" type="flex">
-            <el-col :span="16">
-              <el-image
-                style="width: 300px; height: 300px;margin-left: 20px"
-                :src="videoDialog.video"
-                fit="cover"
-              />
-            </el-col>
-            <el-col :span="8">
-              <div style="margin-bottom: 20px">
-                宽度(px):
-                <el-input
-                  v-model="videoDialog.width"
-                  placeholder="数值"
-                  clearable
-                  size="mini"
-                  style="width: 100px"
-                />
-              </div>
-              <div>
-                高度(px):
-                <el-input
-                  v-model="videoDialog.height"
-                  placeholder="数值"
-                  clearable
-                  size="mini"
-                  style="width: 100px"
-                />
-              </div>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
-      </el-tabs>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="videoDialogControl('cancel')">
-          取 消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="videoDialogControl('confirm')"
-        >
-          确 定
-        </el-button>
-      </div>
+      <xl-video></xl-video>
     </el-dialog>
     <!-- 发布到栏目 -->
     <el-dialog
@@ -648,6 +564,7 @@ import { getLabels, getScriptDetail, changeScripts } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
+import xlVideo from '@/components/video'
 import Editor from '@/components/editor'
 
 export default {
@@ -655,6 +572,7 @@ export default {
   components: {
     Cropper,
     ImgTable,
+    xlVideo,
     Tag,
     Editor
   },
@@ -689,11 +607,11 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资标题'
+              placeholder: '请输入稿件标题'
             }
           },
           rule: [
-            { required: true, message: '请输入媒资标题', trigger: 'blur' }
+            { required: true, message: '请输入稿件标题', trigger: 'blur' }
           ]
         },
         'extra.subtitle': {
@@ -704,7 +622,7 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资副标题'
+              placeholder: '请输入稿件副标题'
             }
           }
         },
@@ -787,7 +705,7 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资简介',
+              placeholder: '请输入稿件简介',
               type: 'textarea',
               maxlength: 200
             }
@@ -1169,7 +1087,7 @@ export default {
         },
         {
           label: '外链',
-          value: 'outerlink'
+          value: 'outer_link'
         }
       ], // tab按钮切换
       /* currentTabsFromItem: [], // 当前激活tab的表单显示数据*/
@@ -1214,10 +1132,6 @@ export default {
       videoDialog: {
         title: '选择视频',
         show: false,
-        radio: '', // 选择的视频
-        video: '', // 填写的视频
-        width: '',
-        height: ''
       }, // 选择视频弹框
       videoLists: [], // 视频列表
       dialog: {
@@ -1274,31 +1188,18 @@ export default {
         * 显示选择视频弹框(未完成)
         * */
     handleChangeVideo() {
-      /* const { url, id } = this.from.video_extra.video_list;
-          let obj = {
-            show: true,
-            radio: id || '',
-            video: url
-          }
-          Object.assign(this.videoDialog, { ...obj });*/
+       this.videoDialog.show = true;
     },
     /* 控制视频弹框 (未完成)*/
     videoDialogControl(val) {
-      /* this.videoDialog.show = false;
-          if(val === 'confirm'){
-            this.from.extra.link = {
-              ...this.from.extra.link,
-              id: this.videoDialog.radio,
-              url: this.videoDialog.video
-            }
-          }*/
-    },
-    /* 上传图片成功 */
-    handleUploadImageSuccess(res) {
-      if (res.status_code >= 200 && res.status_code < 300) {
-        this.$message.success('图片上传成功!')
-        this.videoDialog.video = res.path
-      }
+       this.videoDialog.show = false;
+       if(val === 'confirm'){
+          this.from.extra.link = {
+            ...this.from.extra.link,
+            id: this.videoDialog.radio,
+            url: this.videoDialog.video
+          }
+       }
     },
     /* 处理需要传给后台的数据 */
     initFrom() {
@@ -1323,7 +1224,7 @@ export default {
         case 'album':
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
           break
-        case 'outerlink':
+        case 'outer_link':
           arr = [...baseTopItem, 'extra.link.type']
           if (this.from.extra.link.type === 'outerlink') arr.push('extra.link.id')
           else arr.push('extra.link.url')

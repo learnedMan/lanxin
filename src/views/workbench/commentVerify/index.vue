@@ -31,7 +31,7 @@
       <div slot="action">
         <el-button size="small" type="primary" @click="resetSearch">重置</el-button>
         <el-button size="small" type="primary" @click="getList">搜索</el-button>
-        <el-button size="small" type="primary">添加评论</el-button>
+        <!--<el-button size="small" type="primary">添加评论</el-button>-->
         <el-button size="small" type="success">批量通过</el-button>
         <el-button size="small" type="warning">批量拒绝</el-button>
       </div>
@@ -105,7 +105,7 @@
     >
       <el-dialog
         width="30%"
-        title="选择媒资"
+        title="选择新闻"
         :visible.sync="innerDialog.show"
         append-to-body
       >
@@ -116,7 +116,7 @@
           size="small"
         >
           <el-form-item
-            label="媒资标题:"
+            label="新闻标题:"
             prop="title"
           >
             <el-input
@@ -169,12 +169,12 @@
           style="width: 100%"
         >
           <el-table-column
-            label="媒资"
+            label="新闻ID"
             align="center"
             prop="id"
           />
           <el-table-column
-            label="媒资标题"
+            label="新闻标题"
             align="center"
             prop="title"
             :show-overflow-tooltip="true"
@@ -205,15 +205,15 @@
         </el-table>
       </el-dialog>
       <el-form ref="addComments" :model="addDialog.form" :rules="addDialog.rules" size="mini">
-        <el-form-item label-width="120px" label="媒资标题" prop="title">
+        <el-form-item label-width="120px" label="新闻标题" prop="title">
           <el-input
             v-model="addDialog.form.title"
             style="width: 300px"
             disabled
             autocomplete="off"
-            placeholder="请选择媒资标题"
+            placeholder="请选择新闻标题"
           />
-          <el-button type="primary">选择媒资</el-button>
+          <el-button type="primary">选择新闻</el-button>
         </el-form-item>
         <el-form-item label-width="120px" label="评论昵称" prop="nikeName">
           <el-input v-model="addDialog.form.nikeName" style="width: 300px" autocomplete="off" />
@@ -249,7 +249,7 @@ export default {
     return {
       search: {
         sourceId: '', // 产品
-        dataId: '', // 媒资ID
+        dataId: '', // 新闻ID
         userId: '', // 评论人ID
         status: 'all', // 状态
         aduitStartTime: '', // 审核时间
@@ -282,8 +282,8 @@ export default {
         {
           component: 'input',
           componentSize: 'small',
-          placeholder: '请输入媒资ID',
-          label: '媒资ID',
+          placeholder: '请输入新闻ID',
+          label: '新闻ID',
           span: 6,
           key: 'dataId'
         },
@@ -349,7 +349,7 @@ export default {
           showOverflowTooltip: true // 超出省略号
         },
         {
-          label: '所属媒资/帖子',
+          label: '所属新闻/帖子',
           prop: 'title',
           showOverflowTooltip: true // 超出省略号
         },
@@ -399,7 +399,7 @@ export default {
           remark: ''
         },
         rules: {
-          title: { required: true, message: '请选择媒资标题', trigger: 'change' },
+          title: { required: true, message: '请选择新闻标题', trigger: 'change' },
           nikeName: { required: true, message: '请输入评论昵称', trigger: 'blur' },
           remark: { required: true, message: '请输入评论内容', trigger: 'blur' }
         }
@@ -441,7 +441,7 @@ export default {
           page: 1,
           pageSize: 10
         }
-      } // 选择媒资弹框
+      } // 选择新闻弹框
     }
   },
   computed: {
@@ -531,17 +531,17 @@ export default {
         this.getList();
       })
     },
-    /* 处理选择媒资时间 */
+    /* 处理选择新闻时间 */
     handleInnerDateChange(val) {
       const arr = val || ['', '']
       this.innerDialog.queryParams.startdate = arr[0]
       this.innerDialog.queryParams.enddate = arr[1]
     },
-    /* 获取媒资列表 */
+    /* 获取新闻列表 */
     handleInnerQuery() {
 
     },
-    /* 重置媒资搜索条件 */
+    /* 重置新闻搜索条件 */
     handleInnerReset() {
       this.innerDialog.dateValue = ''
       Object.assign(this.innerDialog.queryParams, {
@@ -551,7 +551,7 @@ export default {
       })
       this.resetForm('innerForm')
     },
-    /* 确认选择的媒资 */
+    /* 确认选择的新闻 */
     handleInnerChoose(row) {
 
     },
