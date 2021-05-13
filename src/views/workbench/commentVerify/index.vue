@@ -32,8 +32,8 @@
         <el-button size="small" type="primary" @click="resetSearch">重置</el-button>
         <el-button size="small" type="primary" @click="getList">搜索</el-button>
         <!--<el-button size="small" type="primary">添加评论</el-button>-->
-        <el-button size="small" type="success">批量通过</el-button>
-        <el-button size="small" type="warning">批量拒绝</el-button>
+        <el-button size="small" type="success" @click="batchAgreeOrRefused('approve')" :diasbled="disabledBatchAction">批量通过</el-button>
+        <el-button size="small" type="warning" @click="batchAgreeOrRefused('reject')" :diasbled="disabledBatchAction">批量拒绝</el-button>
       </div>
     </search>
     <div ref="table" class="verify-table">
@@ -64,6 +64,8 @@
         <el-table-column label="操作" align="center" width="120">
           <template slot-scope="scope">
             <div class="verify-table-action">
+              <!-- 禁言-->
+              <el-button type="text" :icon="scope.row.noTalkUser? 'el-icon-microphone' : 'el-icon-turn-off-microphone'" size="small" @click="handleMsgAction(scope.row)">{{ scope.row.noTalkUser? '取消禁言' : '禁言' }}</el-button>
               <!-- 回复 -->
               <!--<el-button type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('回复', scope.row)">回复</el-button>-->
               <!-- 审批通过 -->
@@ -237,7 +239,7 @@ import search from './components/search'
 import {
   getproduct
 } from '@/api/manage'
-import { getCommentLists, commentAction } from '@/api/workbench'
+import { getCommentLists, commentAction, batchCommentAction, disableSendMsg, releaseShutup } from '@/api/workbench'
 import { getNews } from '@/api/content'
 
 export default {
@@ -373,6 +375,7 @@ export default {
         }
       ],
       tableData: [],
+      selection: [], // 选中项
       loading: false, // 列表加载
       page: {
         total: 10
@@ -448,6 +451,9 @@ export default {
     /* 站点id */
     site_id() {
       return this.$store.state.u_info.site_id
+    },
+    disabledBatchAction () {
+      return this.selection.length === 0
     }
   },
   async created() {
@@ -469,8 +475,8 @@ export default {
     /*
     * 选择项发生变化时
     * */
-    handleSelectionChange(selection) {
-
+    handleSelectionChange(arr) {
+      this.selection = arr.map(n => n.comment_sn);
     },
     /*
     * 获取列表数据
@@ -481,6 +487,7 @@ export default {
       if(params.submitDate) params.startTime = params.submitDate[0],params.endTime = params.submitDate[1];
       delete params.aduitTime, delete params.submitDate;
       this.loading = true;
+      this.selection = [];
       getCommentLists(params).then(res => {
         const { totalCount, list } = res.data;
         this.page.total = totalCount;
@@ -521,6 +528,25 @@ export default {
         show: true
       })
     },
+    /* 禁烟或取消禁言 */
+    handleMsgAction (row) {
+      const { userId, noTalkUser } = row;
+      const data = {
+        sourceId: this.search.sourceId,
+        userId: userId
+      }
+      let promise;
+      if(noTalkUser) {
+        // 取消禁言
+        promise = releaseShutup(data);
+      }else {
+        promise = disableSendMsg(data);
+      }
+      promise.then(res => {
+        this.$message.success(res.message);
+        this.getList();
+      })
+    },
     /*
     * 审核通过或拒绝
     * */
@@ -529,6 +555,15 @@ export default {
       commentAction(str).then(res => {
         this.$message.success(res.message);
         this.getList();
+      })
+    },
+    /* 批量审核通过或拒绝 */
+    batchAgreeOrRefused (status) {
+      batchCommentAction({
+        operateType: status,
+        commentSnList: this.selection
+      }).then(res => {
+        this.$message.success(res.message);
       })
     },
     /* 处理选择新闻时间 */
