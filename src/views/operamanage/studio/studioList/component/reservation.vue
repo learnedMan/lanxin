@@ -1,3 +1,4 @@
+<!-- 机位管理 -->
 <style type="text/scss" lang="scss" scoped>
   .xl-reservation {
     &-add {
@@ -34,7 +35,7 @@
         <el-tab-pane
           v-for="item of lists"
           :key="item.extra.sort"
-          :label="item.extra.name"
+          :label="item.oldName"
           :name="`${item.extra.sort}`"
         >
           <el-form
@@ -193,9 +194,11 @@
           }).then(({ value }) => {
             this.lists.push({
               broadcast_id: this.id,
+              oldName: value,
               extra: {
                 sort,
                 name: value,
+                oldName: value,
                 cover: '',
                 is_valid: 0,
                 stream_url: '',
@@ -275,6 +278,7 @@
             const data = res.data;
             this.lists = (data.extra.stream || []).sort((a, b) => a.extra.sort - b.extra.sort).map(n => ({
               ...n,
+              oldName: n.extra.name.toString(),
               guide: !!(n.extra.guide_video && n.extra.guide_play_time)
             }));
           })

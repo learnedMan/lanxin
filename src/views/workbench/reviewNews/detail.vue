@@ -419,7 +419,7 @@
                   <el-radio v-for="list of formOptions['extra.allow_share'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <!-- 同步生成语音稿件 -->
+              <!-- 同步生成语音新闻 -->
               <el-form-item
                 label-width="150"
                 v-show="initFrom().includes('extra.trans_to_audio')"
@@ -649,11 +649,11 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资标题'
+              placeholder: '请输入新闻标题'
             }
           },
           rule: [
-            { required: true, message: '请输入媒资标题', trigger: 'blur' }
+            { required: true, message: '请输入新闻标题', trigger: 'blur' }
           ]
         },
         'extra.subtitle': {
@@ -664,7 +664,7 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资副标题'
+              placeholder: '请输入新闻副标题'
             }
           }
         },
@@ -747,7 +747,7 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资简介',
+              placeholder: '请输入新闻简介',
               type: 'textarea',
               maxlength: 200
             }
@@ -985,7 +985,7 @@ export default {
           item: {
             key: 'extra.trans_to_audio',
             props: {
-              label: '同步生成语音稿件:',
+              label: '同步生成语音新闻:',
               prop: 'extra.trans_to_audio'
             },
             component: 'radio', // 组件名
@@ -1001,7 +1001,7 @@ export default {
             ]
           },
           rule: [
-            { required: true, message: '请选择是否同步生成语音稿件', trigger: 'change' }
+            { required: true, message: '请选择是否同步生成语音新闻', trigger: 'change' }
           ]
         },
         'extra.view_base_num': {
@@ -1129,7 +1129,7 @@ export default {
         },
         {
           label: '外链',
-          value: 'outerlink'
+          value: 'outer_link'
         }
       ], // tab按钮切换
       /* currentTabsFromItem: [], // 当前激活tab的表单显示数据*/
@@ -1154,7 +1154,7 @@ export default {
           use_watermarks: 0, // 水印
           allow_comment: 0, // 评论控制
           allow_share: 1, // 允许分享
-          trans_to_audio: 1, // 同步生成语音稿件
+          trans_to_audio: 1, // 同步生成语音新闻
           view_base_num: '', // 点击量
           praise_base_num: '', // 点赞量
           post_base_num: '', // 转发量
@@ -1277,7 +1277,7 @@ export default {
         case 'album':
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
           break
-        case 'outerlink':
+        case 'outer_link':
           arr = [...baseTopItem, 'extra.link.type']
           if (this.from.extra.link.type === 'outerlink') arr.push('extra.link.id')
           else arr.push('extra.link.url')
@@ -1371,7 +1371,7 @@ export default {
             use_watermarks: extra.use_watermarks, // 水印
             allow_comment: extra.allow_comment, // 评论控制
             allow_share: extra.allow_share, // 允许分享
-            trans_to_audio: extra.trans_to_audio, // 同步生成语音稿件
+            trans_to_audio: extra.trans_to_audio, // 同步生成语音新闻
             view_base_num: extra.view_base_num, // 点击量
             praise_base_num: extra.praise_base_num, // 点赞量
             post_base_num: extra.post_base_num, // 转发量

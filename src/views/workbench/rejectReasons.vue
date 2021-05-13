@@ -238,7 +238,7 @@ export default {
           value: ''
         },
         {
-          label: '稿件审核',
+          label: '新闻审核',
           value: 1
         },
         {

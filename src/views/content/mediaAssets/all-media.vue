@@ -12,7 +12,7 @@
         :inline="true"
       >
         <el-form-item
-          label="媒资名称:"
+          label="稿件名称:"
           prop="keyword"
         >
           <el-input
@@ -25,7 +25,7 @@
           />
         </el-form-item>
         <el-form-item
-          label="媒资类型:"
+          label="稿件类型:"
           prop="type"
         >
           <el-select
@@ -105,12 +105,12 @@
         width="55"
       />
       <el-table-column
-        label="媒资ID"
+        label="稿件ID"
         align="center"
         prop="id"
       />
       <el-table-column
-        label="媒资封面"
+        label="稿件封面"
         align="center"
         prop="id"
         width="120"
@@ -126,13 +126,13 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="媒资标题"
+        label="稿件标题"
         align="center"
         prop="title"
         :show-overflow-tooltip="true"
       />
       <el-table-column
-        label="媒资类型"
+        label="稿件类型"
         align="center"
         prop="type"
       />
@@ -296,9 +296,9 @@ export default {
         },
         {
           label: '外链',
-          value: 'outerlink'
+          value: 'outer_link'
         }
-      ], // 媒资类型
+      ], // 稿件类型
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -406,9 +406,9 @@ export default {
           const type = this.typeOptions.find(n => item.type === n.value)
           const cover = item.cover[0]
           /* {
-              title: '', // 媒资标题
-              type: '', // 媒资类型
-              id: '', // 媒资id
+              title: '', // 稿件标题
+              type: '', // 稿件类型
+              id: '', // 稿件id
               cover: '', // 图片(Array)
               author_name: '', // 作者
               status: '', // 状态
@@ -449,7 +449,7 @@ export default {
       * */
     handleListDelete(row) {
       const { id } = row
-      this.$confirm(`此操作将永久删除这条媒资id为${id}的明细, 是否继续?`, '提示', {
+      this.$confirm(`此操作将永久删除这条稿件id为${id}的明细, 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -511,7 +511,7 @@ export default {
       const channels = this.dialog.form.channel_id
       this.$refs.dialogForm.validate(val => {
         if (val) {
-          // 多个文稿关联到单个栏目
+          // 多个稿件关联到单个栏目
           if (isArray) {
             batchPublishScript({
               ids,
@@ -532,7 +532,7 @@ export default {
               }
             })
           } else {
-            // 单个文稿关联到多个栏目
+            // 单个稿件关联到多个栏目
             PatchScript(ids, {
               channels: channels.join()
             }).then(() => {

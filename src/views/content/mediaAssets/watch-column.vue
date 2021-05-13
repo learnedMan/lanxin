@@ -50,18 +50,18 @@
       style="width: 100%"
     >
       <el-table-column
-        label="媒资ID"
+        label="稿件ID"
         align="center"
         prop="mediaId"
       />
       <el-table-column
-        label="媒资名称"
+        label="稿件名称"
         align="center"
         prop="mediaTitle"
         :show-overflow-tooltip="true"
       />
       <el-table-column
-        label="媒资类型"
+        label="稿件类型"
         align="center"
         prop="type"
       />
@@ -191,9 +191,9 @@ export default {
         },
         {
           label: '外链',
-          value: 'outerlink'
+          value: 'outer_link'
         }
-      ], // 媒资类型
+      ], // 稿件类型
       commentOption: [
         {
           label: '先审后发',
