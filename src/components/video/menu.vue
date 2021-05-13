@@ -1,6 +1,7 @@
 <style type="text/scss" lang="scss" scoped>
 .xl-component-menu {
-  width: 240px;
+  width: 200px;
+  margin-right: 10px;
 }
 </style>
 <template>
@@ -35,7 +36,7 @@
       },
       methods: {
         handleSelect (key) {
-          console.log(key)
+          this.$emit('select', key);
         }
       }
     }
