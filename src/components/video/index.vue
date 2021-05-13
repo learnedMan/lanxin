@@ -11,7 +11,7 @@
       }
       &-li {
         display: inline-block;
-        width: 30%;
+        width: 300px;
         margin-bottom: 10px;
         margin-right: 30px;
         box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
@@ -40,7 +40,7 @@
     <div class="xl-video">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="vms视频库" name="0" class="xl-video-tab">
-          <xl-menu :menus="vmsChannel" :active-menu="vmsParams.defaultActive" v-if="showVmsChannel"></xl-menu>
+          <xl-menu :menus="vmsChannel" :active-menu="vmsParams.defaultActive" v-if="showVmsChannel" @select="menuChange($event, 'vmsParams')"></xl-menu>
           <div class="xl-video-tab--content">
             <el-form
               :model="vmsParams"
@@ -114,8 +114,80 @@
             />
           </div>
         </el-tab-pane>
-        <el-tab-pane label="蓝云视频库" name="1">
-          <xl-menu :menus="xlChannel" :active-menu="xlParams.defaultActive" v-if="showXlChannel"></xl-menu>
+        <el-tab-pane label="蓝云视频库" name="1" class="xl-video-tab">
+          <xl-menu :menus="xlChannel" :active-menu="xlParams.defaultActive" v-if="showXlChannel" @select="menuChange($event, 'xlParams')"></xl-menu>
+          <div class="xl-video-tab--content">
+            <el-form
+              :model="xlParams"
+              :inline="true"
+            >
+              <el-form-item prop="keyword">
+                <el-input
+                  v-model="xlParams.keyword"
+                  placeholder="请输入关键字"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @keyup.enter.native="getVideoList('xlParams')"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-date-picker
+                  v-model="xlParams.dateValue"
+                  type="daterange"
+                  align="right"
+                  size="small"
+                  unlink-panels
+                  range-separator="~"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :picker-options="pickerOptions"
+                  @change="handleDateChange($event, 'xlParams')"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="getVideoList('xlParams')"
+                >
+                  搜索
+                </el-button>
+              </el-form-item>
+            </el-form>
+            <ul class="xl-video-tab--content-ul">
+              <li v-for="(list, index) of xlVideo" :key="index" class="xl-video-tab--content-li">
+                <h4>{{ list.title }}</h4>
+                <video height="200" controls preload="metadata">
+                  <source :src="list.customObj.url" :type="`video/${list.customObj.type}`">
+                  您的浏览器不支持 HTML5 video 标签。
+                </video>
+                <div class="bottom">
+                  <el-button type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
+                  <el-dropdown size="mini" @command="changeVideo($event, list)">
+                    <el-button type="primary" size="mini">
+                      {{ list.customObj.label }}<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown" style="width: 60px;text-align: center">
+                      <el-dropdown-item
+                        v-for="(item, k) of list.customObj.arr"
+                        :key="k"
+                        :command="item"
+                      >{{ item.label }}</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
+              </li>
+            </ul>
+            <pagination
+              v-show="vmsParams.total > 0"
+              :total="vmsParams.total"
+              :page.sync="vmsParams.page"
+              :limit.sync="vmsParams.pageSize"
+              @pagination="getVideoList('vmsParams')"
+            />
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -217,8 +289,9 @@
           this[identifier].enddate = arr[1];
         },
         /* 获取视频列表数据 */
-        menuChange () {
-
+        menuChange (val, status) {
+          this[status].vms_channel_id = val;
+          this.getVideoList(status);
         },
         /* 视频库切换 */
         handleClick (tag) {
@@ -258,21 +331,20 @@
           params = { ...this[identifier] };
           delete params.dateValue, delete params.total, delete params.defaultActive;
           params.site_id = this.site_id;
-          const rateMap = {
-            1000: '超清',
-            800: '高清',
-            500: '普清'
-          }
+          const rateMap = ['超清', '高清', '普清', '模糊'];
           getVideos(params).then(res => {
-            const arr = res.data.map(n => ({
-              ...n,
-              customObj: {
-                url: n.item_list[0]?.path,
-                type: n.item_list[0]?.format,
-                label: rateMap[n.item_list[0]?.rate ?? 1000],
-                arr: n.item_list.map(item => ({ ...item, label: rateMap[item.rate] }))
+            const arr = res.data.map(n => {
+              const arr = n.item_list.sort((a, b) => b.rate - a.rate).map((item, index) => ({ ...item, label: rateMap[index] }));
+              return {
+                ...n,
+                customObj: {
+                  url: arr[0]?.path,
+                  type: arr[0]?.format,
+                  label: '超清',
+                  arr
+                }
               }
-            }));
+            });
             const total = res.total;
             if(identifier === 'vmsParams') {
               this.vmsVideo = [...arr];
