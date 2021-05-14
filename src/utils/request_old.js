@@ -1,5 +1,6 @@
 import axios from 'axios'; // 引入axios
 import { Message } from 'element-ui';
+import router from '@/router'
 // create an axios instance
 const service = axios.create({
     baseURL: 'http://10.30.10.158/adm/fusion', // url = base url + request url
@@ -36,7 +37,7 @@ service.interceptors.response.use(
             })
             if (response.data.data && response.data.data.reload) {
                 sessionStorage.removeItem('token');
-                location.href = '/login';
+                router.push('/login')
             }
             return Promise.reject(response.data.msg)
         }

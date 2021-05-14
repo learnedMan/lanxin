@@ -95,6 +95,13 @@ div:focus {
     height: 0;
   }
 }
+/*input:-webkit-autofill , textarea:-webkit-autofill, select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  border: 1px solid transparent !important;
+}
+input:-internal-autofill-selected {
+  background-color: transparent!important;
+}*/
 
 aside {
   background: #eef1f6;
