@@ -1,18 +1,6 @@
 <!-- 评论审核 -->
 <style type="text/scss" lang="scss" scoped>
   .xl-comment-verify {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    padding: 30px 30px 20px;
-    flex-direction: column;
-    .verify-table {
-      flex: 1;
-      margin-top: 10px;
-    }
     .verify-table-action {
       display: flex;
       align-items: center;
@@ -26,7 +14,7 @@
   }
 </style>
 <template>
-  <div class="xl-comment-verify">
+  <div class="xl-comment-verify" :style="{ padding: newsId? 0 : '30px' }">
     <search ref="search" v-model="search" :lists="searchLists">
       <div slot="action">
         <el-button size="small" type="primary" @click="resetSearch">重置</el-button>
@@ -36,47 +24,44 @@
         <el-button size="small" type="warning" @click="batchAgreeOrRefused('reject')" :diasbled="disabledBatchAction">批量拒绝</el-button>
       </div>
     </search>
-    <div ref="table" class="verify-table">
-      <el-table
-        ref="multipleTable"
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-        :data="tableData"
-        border
-        :max-height="tableHeight"
-        tooltip-effect="dark"
-        style="width: 100%"
-        v-loading="loading"
-        @selection-change="handleSelectionChange"
+    <el-table
+      ref="multipleTable"
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      :data="tableData"
+      border
+      tooltip-effect="dark"
+      style="width: 100%"
+      v-loading="loading"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+        type="selection"
+        width="55"
+      />
+      <el-table-column
+        v-for="(head, index) of tableDead"
+        :key="index"
+        v-bind="[head, { align: 'center' }]"
       >
-        <el-table-column
-          type="selection"
-          width="55"
-        />
-        <el-table-column
-          v-for="(head, index) of tableDead"
-          :key="index"
-          v-bind="[head, { align: 'center' }]"
-        >
-          <template slot-scope="scope">
-            {{ scope.row[head.prop] }}
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" width="120">
-          <template slot-scope="scope">
-            <div class="verify-table-action">
-              <!-- 禁言-->
-              <el-button type="text" :icon="scope.row.noTalkUser? 'el-icon-microphone' : 'el-icon-turn-off-microphone'" size="small" @click="handleMsgAction(scope.row)">{{ scope.row.noTalkUser? '取消禁言' : '禁言' }}</el-button>
-              <!-- 回复 -->
-              <!--<el-button type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('回复', scope.row)">回复</el-button>-->
-              <!-- 审批通过 -->
-              <el-button type="text" icon="el-icon-circle-check" size="small" @click="handleAgreeOrRefused(scope.row, 'approve')" v-if="scope.row.status != 1">通过</el-button>
-              <!-- 拒绝 -->
-              <el-button type="text" icon="el-icon-circle-close" size="small" @click="handleAgreeOrRefused(scope.row, 'reject')" v-if="scope.row.status != 2">拒绝</el-button>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+        <template slot-scope="scope">
+          {{ scope.row[head.prop] }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="120">
+        <template slot-scope="scope">
+          <div class="verify-table-action">
+            <!-- 禁言-->
+            <el-button type="text" :icon="scope.row.noTalkUser? 'el-icon-microphone' : 'el-icon-turn-off-microphone'" size="small" @click="handleMsgAction(scope.row)">{{ scope.row.noTalkUser? '取消禁言' : '禁言' }}</el-button>
+            <!-- 回复 -->
+            <!--<el-button type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('回复', scope.row)">回复</el-button>-->
+            <!-- 审批通过 -->
+            <el-button type="text" icon="el-icon-circle-check" size="small" @click="handleAgreeOrRefused(scope.row, 'approve')" v-if="scope.row.status != 1">通过</el-button>
+            <!-- 拒绝 -->
+            <el-button type="text" icon="el-icon-circle-close" size="small" @click="handleAgreeOrRefused(scope.row, 'reject')" v-if="scope.row.status != 2">拒绝</el-button>
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
     <div class="verify-page">
       <pagination
         v-show="page.total > 0"
@@ -247,11 +232,18 @@ export default {
   components: {
     search
   },
+  props: {
+    // 新闻id
+    newsId: {
+      type: [ String, Number ],
+      default: ''
+    }
+  },
   data() {
     return {
       search: {
         sourceId: '', // 产品
-        dataId: '', // 新闻ID
+        dataId: this.newsId, // 新闻ID
         userId: '', // 评论人ID
         status: 'all', // 状态
         aduitStartTime: '', // 审核时间
@@ -280,14 +272,6 @@ export default {
           label: '评论人ID',
           span: 6,
           key: 'userId'
-        },
-        {
-          component: 'input',
-          componentSize: 'small',
-          placeholder: '请输入新闻ID',
-          label: '新闻ID',
-          span: 6,
-          key: 'dataId'
         },
         {
           component: 'select',
@@ -380,7 +364,6 @@ export default {
       page: {
         total: 10
       },
-      tableHeight: 200,
       dialog: {
         show: false,
         title: '回复',
@@ -459,10 +442,6 @@ export default {
   async created() {
     await this.getProductList();
     this.getList();
-    this.$nextTick(() => {
-      const table = this.$refs.table;
-      this.tableHeight = table.clientHeight;
-    })
   },
   methods: {
     /*
@@ -488,7 +467,7 @@ export default {
       delete params.aduitTime, delete params.submitDate;
       this.loading = true;
       this.selection = [];
-      getCommentLists(params).then(res => {
+      getCommentLists(params/*this.removePropertyOfNullFor0(params)*/).then(res => {
         const { totalCount, list } = res.data;
         this.page.total = totalCount;
         const ids = list.map(n => n.id);

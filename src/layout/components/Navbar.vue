@@ -5,6 +5,9 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
+      <div style="margin-right: 10px">
+        <el-button type="primary" size="mini" v-for="btn of btns" @click="$router.push(btn.url)">{{btn.label}}</el-button>
+      </div>
       <el-button
         style="color:#999;margin-right:30px;"
         type="text"
@@ -76,7 +79,21 @@ export default {
         id:[
           { required: true, message: "请选择频道", trigger: "blur" }
         ]
-      }
+      },
+      btns: [
+        {
+          label: '新闻审核',
+          url: '/workbench/reviewNews'
+        },
+        {
+          label: '我的稿件',
+          url: '/content/mediaAssets/my'
+        },
+        {
+          label: '直播间',
+          url: '/operaManage/studio/studioList'
+        }
+      ]
     }
   },
   computed: {

@@ -137,7 +137,7 @@ export function batchCommentAction(data) {
 
 /* 禁言用户 */
 export function disableSendMsg(data) {
-  return request({
+  return $http({
     url: '/api/intranet/comment/isNoTalkUser',
     method: 'post',
     data
@@ -146,7 +146,7 @@ export function disableSendMsg(data) {
 
 /* 取消禁言 */
 export function releaseShutup(data) {
-  return request({
+  return $http({
     url: '/api/intranet/comment/cancelNoTalkUser',
     method: 'post',
     data
