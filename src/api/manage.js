@@ -508,13 +508,20 @@ export function addbroadcastStatement(data) {
 // 模板化样式接口
 export function cateloglist() {
   return request2({
-    url: '/catelog/list?layout=',
+    url: '/catalog/list',
     method: 'get'
   })
 }
-export function stylelist() {
+export function stylelist(data) {
   return request2({
     url: '/styleByCode/list',
-    method: 'post'
+    method: 'post',
+    data
+  })
+}
+export function styleinfo(id) {
+  return request2({
+    url: `/style/info/${id}`,
+    method: 'get',
   })
 }

@@ -31,6 +31,7 @@
       <el-table-column label="栏目名称" align="center" prop="name" />
       <el-table-column label="栏目ID" align="center" prop="id" :show-overflow-tooltip="true" />
       <el-table-column 
+      v-if="false"
         label="(模板化)样式分类" 
         align="center" 
         prop="template_style" 
@@ -38,10 +39,7 @@
         <template slot-scope="scope">
           <!-- 如果是产品，那么没有样式分类，只有栏目有 -->
           <div v-if="scope.row.type=='product'">无</div>
-          <el-select v-else @change="statuschange(scope.row)" v-model="scope.row.template_style" placeholder="请选择">
-            <el-option v-for="item in columntypeoptions" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
+          <div v-else>{{scope.row.template_style}}</div>
         </template>
       </el-table-column>
       <el-table-column label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
@@ -198,9 +196,15 @@
             :props="{ checkStrictly: true ,value:'id',label:'name'}"
             clearable></el-cascader>
           </el-form-item>
-          <el-form-item el-form-item  label-width="150px" label="(模板化)样式:" prop="extra.template_style">
+          <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">
+            <el-select v-model="catalogid" placeholder="请选择" @change="catalogchange">
+              <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.catalogCode">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item el-form-item label-width="150px" label="(模板化)样式:" prop="extra.template_style">
             <el-select v-model="form.extra.template_style" placeholder="请选择">
-              <el-option v-for="item in columntypeoptions" :key="item.value" :label="item.label" :value="item.value">
+              <el-option v-for="item in styleoptions" :key="item.id" :label="item.styleName" :value="''+item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -288,7 +292,8 @@ import {
   editchannels,
   getUser,
   stylelist,
-  cateloglist} from '@/api/manage'
+  cateloglist,
+  styleinfo} from '@/api/manage'
 
 import ChildPage1 from './pages/c_page1'
 
@@ -310,7 +315,10 @@ import ChildPage1 from './pages/c_page1'
         queryParams: {
           product_id: "",
         },
+        catalogid:'',//栏目id
+
         productList:{},
+        sourceId:'',
         statusoptions: [{
           value: 1,
           label: '启用'
@@ -325,6 +333,8 @@ import ChildPage1 from './pages/c_page1'
           value: 'video',
           label: '视频'
         }],
+        catalogoptions:[],
+        styleoptions:[],
         columntypeoptions:[
           {
             value: 'default',
@@ -375,7 +385,16 @@ import ChildPage1 from './pages/c_page1'
       },
       productId(){
         return this.queryParams.product_id
-      }
+      },
+      // stylefilter(){
+      //   return (val)=>{
+      //     for(var i=0;i<this.catalogoptions.length;i++){
+      //       if(val==this.catalogoptions[i].id){
+      //         return this.catalogoptions[i].catalogName
+      //       }
+      //     }
+      //   }
+      // }
     },
     created() {
       this.initForm();
@@ -384,16 +403,51 @@ import ChildPage1 from './pages/c_page1'
       this.getuserfn();
 
       cateloglist().then(response => {
-          console.log(response)
+          // console.log(response)
+          this.catalogoptions = response.data.list
       })
     },
     watch:{
       productId(val){//普通的watch监听
         // this.initForm();
+        this.productList.forEach((item)=>{
+          if(val==item.id){
+            this.sourceId = item.source_id
+          }
+        })
         this.getList();
       },
     },
     methods:{
+      // getinfo(val){
+      //   return new Promise((resolve, reject)=>{
+      //     styleinfo(val).then(response=>{
+      //        resolve(response.data.styleName)
+      //     })
+      //   })
+      // },
+      // async gettemplate_styletxt(val){
+      //   if(val){
+      //     var a = await this.getinfo(val);
+      //     console.log(a)
+      //     return a;
+      //   }else{
+      //     return '无'
+      //   }
+      // },
+
+      catalogchange(){
+        this.styleoptions = [];
+        this.form.extra.template_style = '';
+          var data = {
+              "catalogCode":this.catalogid,
+              "sourceId":this.sourceId
+          }
+          stylelist(data).then(response => {
+              console.log(response)
+              this.styleoptions = response.data||[];
+          })
+      },
       getuserfn(){//获取系统用户列表
         var data={};
         data.model = 'User';
@@ -519,7 +573,7 @@ import ChildPage1 from './pages/c_page1'
             }
           }
           addstatus(this.dataList)
-          console.log(this.dataList)
+          // console.log(this.dataList)
         })
       },
       //上移下移
@@ -585,6 +639,7 @@ import ChildPage1 from './pages/c_page1'
       // 编辑栏目
       editdata(row) {
         this.initForm();
+        this.catalogid = '';
         this.dialogTitle = "编辑栏目";
         this.dialogType = "edit";
         getchannelinfo(row.id).then(response => {
@@ -607,6 +662,7 @@ import ChildPage1 from './pages/c_page1'
           // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
           this.form.extra.cover = this.form.extra.cover? this.form.extra.cover[0].path:'';
+          // this.form.extra.template_style = Number(this.form.extra.template_style) ;
           this.dialogFormVisible = true;
           this.$nextTick(()=>{
             this.$refs.c_page1.showtxt()
@@ -614,6 +670,17 @@ import ChildPage1 from './pages/c_page1'
           })
 
           console.log(this.form)
+          let styleid = this.form.extra.template_style;
+          if(styleid){
+            styleinfo(styleid).then(response=>{
+              this.catalogid = ''+response.data.catalogCode;
+              var v = this.form.extra.template_style;
+              this.catalogchange()
+              this.form.extra.template_style =''+ v;
+            })
+          }
+          
+
         })
       },
       //删除栏目
@@ -644,9 +711,10 @@ import ChildPage1 from './pages/c_page1'
       },
       // 确定弹窗
       enterDialog() {
+        // console.log(this.form)
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
-          var data = JSON.parse(JSON.stringify(this.form))
+          var data = this.form
           data.father = Number(data.father)
           // if(!data.father){
           //   data.father = data.father[data.father.length-1];
