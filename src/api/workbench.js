@@ -112,7 +112,7 @@ export function reportReply(data) {
 /* 获取列表 */
 export function getCommentLists(data) {
   return $http({
-    url: 'http://10.30.10.161:8080/api/intranet/comment/listConsole',
+    url: '/api/intranet/comment/listConsole',
     method: 'post',
     data
   })
@@ -121,7 +121,34 @@ export function getCommentLists(data) {
 /* 通过或拒绝评论 */
 export function commentAction(str) {
   return $http({
-    url: `http://10.30.10.161:8080/api/intranet/comment/manage/${str}`,
+    url: `/api/intranet/comment/manage/${str}`,
     method: 'get'
+  })
+}
+
+/* 批量通过或拒绝 */
+export function batchCommentAction(data) {
+  return $http({
+    url: '/api/intranet/comment/operate',
+    method: 'post',
+    data
+  })
+}
+
+/* 禁言用户 */
+export function disableSendMsg(data) {
+  return request({
+    url: '/api/intranet/comment/isNoTalkUser',
+    method: 'post',
+    data
+  })
+}
+
+/* 取消禁言 */
+export function releaseShutup(data) {
+  return request({
+    url: '/api/intranet/comment/cancelNoTalkUser',
+    method: 'post',
+    data
   })
 }

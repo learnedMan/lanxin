@@ -3,16 +3,22 @@
 
     <div class="loginbox">
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="off" label-position="left">
-
         <div class="title-container">
           <div class="title">管理后台登录</div>
         </div>
-
+        <!-- 这两个input解决自动填充问题 -->
+        <el-input
+          type="text"
+          style="position: fixed;z-index: -9999;width: 0;height: 0;overflow: hidden"
+        ></el-input>
+        <el-input
+          style="position: fixed;z-index: -9999;width: 0;height: 0;overflow: hidden"
+          type="password"
+        ></el-input>
         <el-select class="pull-down-login" v-model="sitec.site_select" filterable placeholder="请选择站点" size='mini' @change='sites_change'>
           <el-option v-for="item in sitec.site_data" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
-
         <el-form-item prop="username" class="username">
           <span class="svg-container">
             <svg-icon icon-class="user" />
@@ -22,13 +28,10 @@
             v-model="loginForm.username"
             placeholder="请输入手机号码"
             maxlength="11"
-            name="username"
             type="text"
             tabindex="1"
-            autocomplete="off"
           />
         </el-form-item>
-
         <el-form-item prop="password" class="username">
           <span class="svg-container">
             <svg-icon icon-class="password" />
@@ -39,8 +42,7 @@
             v-model.trim="loginForm.password"
             placeholder="请输入密码"
             name="password"
-            tabindex="3"
-            autocomplete="off"
+            tabindex="2"
           />
         </el-form-item>
 
@@ -55,8 +57,7 @@
             maxlength="8"
             type="text"
             name="yzcode"
-            tabindex="2"
-            autocomplete="off"
+            tabindex="3"
             @keyup.enter.native="handleLogin"
           />
           <div class="sendbtn" @click="getcodeFn">{{getcodeval}}</div>
@@ -70,6 +71,7 @@
         >登录</el-button>
       </el-form>
     </div>
+    <change-pass :phone="loginForm.username" ref="changePass" tip="为确保您的账号信息安全，请尽快修改您的登录密码"></change-pass>
   </div>
 </template>
 
@@ -77,8 +79,13 @@
 import { validUsername  } from '@/utils/validate'
 
 import { getcode , getSiteList , login} from '@/api/login'
+import changePass from '@/views/dashboard/user/changePass.vue'
+
 export default {
   name: 'Login',
+  components: {
+    changePass
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       if(!value){
@@ -106,7 +113,7 @@ export default {
     return {
       loginForm: {//登录绑定
         username: '',
-        password: 123456,
+        password: '',
         yzcode: ''
       },
       loginRules: {//表单校验
@@ -243,7 +250,17 @@ export default {
             .then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             })
-            .catch(() => {
+            .catch((err) => {
+              const errData = err.response.data;
+              // 重置密码
+              if(errData && errData.status_code === 406) {
+                const changePass = this.$refs.changePass;
+                changePass.dialog.show = true;
+              }
+              Object.assign(this.loginForm, {
+                password: '',
+                yzcode: ''
+              })
             })
           // login(formData).then(response => {
           //   console.log(response)

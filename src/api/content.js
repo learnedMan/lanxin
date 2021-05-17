@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-/* -------------------------媒资--------------------------------*/
+/* -------------------------新闻--------------------------------*/
 
-/* 获取文稿列表 */
+/* 获取新闻列表 */
 export function getScripts(query) {
   return request({
     url: '/api/scripts/',
@@ -11,7 +11,7 @@ export function getScripts(query) {
   })
 }
 
-/* 新增或修改文稿 */
+/* 新增或修改稿件 */
 export function changeScripts(id, data) {
   return request({
     url: `/api/scripts/${id || ''}`,
@@ -20,7 +20,7 @@ export function changeScripts(id, data) {
   })
 }
 
-/* 删除文稿 */
+/* 删除稿件 */
 export function deleteScript(id) {
   return request({
     url: `/api/scripts/${id}`,
@@ -28,7 +28,7 @@ export function deleteScript(id) {
   })
 }
 
-/* 发布文稿到多个栏目 */
+/* 发布稿件到多个栏目 */
 export function PatchScript(id, data) {
   return request({
     url: `/api/scripts/${id}`,
@@ -46,7 +46,7 @@ export function batchPublishScript(data) {
   })
 }
 
-/* 获取文稿详情 */
+/* 获取稿件详情 */
 export function getScriptDetail(id) {
   return request({
     url: `/api/scripts/${id}`,
@@ -156,3 +156,25 @@ export function getEditImgLists(params, isMy) {
     params
   })
 }
+
+
+/*-------------------------获取视频资源--------------------------------*/
+
+/* 获取vms或新蓝云的栏目 */
+export function getVideoChannel(params) {
+  return request({
+    url: '/api/videos/vms_channels',
+    method: 'get',
+    params
+  })
+}
+
+/* 获取视频列表 */
+export function getVideos(params) {
+  return request({
+    url: '/api/videos',
+    method: 'get',
+    params
+  })
+}
+

@@ -221,11 +221,13 @@
                   v-bind="formOptions['extra.video_extra.video_list'].item.props"
                 >
                   <div class="xl-add-media--upload" @click="handleChangeVideo">
-                    <!--<i class="el-icon-video-camera-solid"></i>
+                    <i class="el-icon-video-camera-solid" v-if="!from.extra.video_extra.video_list[0]"></i>
                     <el-image
+                      v-else
+                      style="width: 100%;height: 100%"
                       class="el-upload-list__item-thumbnail"
-                      :src="parseObj(formOptions['extra.video_extra.video_list'].item)"
-                      fit="cover"></el-image>-->
+                      :src="from.extra.video_extra.video_list[0].cover"
+                      fit="contain"></el-image>
                   </div>
                 </el-form-item>
                 <!-- 图集的图片 -->
@@ -419,7 +421,7 @@
                   <el-radio v-for="list of formOptions['extra.allow_share'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <!-- 同步生成语音稿件 -->
+              <!-- 同步生成语音新闻 -->
               <el-form-item
                 label-width="150"
                 v-show="initFrom().includes('extra.trans_to_audio')"
@@ -502,95 +504,13 @@
     </el-footer>
     <!-- 选择视频弹框 -->
     <el-dialog
-      width="600px"
+      width="1000px"
+      top="4vh"
+      append-to-body
       :title="videoDialog.title"
       :visible.sync="videoDialog.show"
     >
-      <el-tabs type="border-card">
-        <el-tab-pane label="蓝云视频">
-          <div>
-            <ul>
-              <li v-for="(list, index) of videoLists" :key="index">
-                <el-image
-                  style="width: 100px; height: 100px"
-                  :src="list.url"
-                  fit="cover"
-                />
-                <el-radio v-model="videoDialog.radio" :label="list.value">{{ list.name }}</el-radio>
-              </li>
-            </ul>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="在线视频">
-          <el-row align="middle" type="flex" style="margin-bottom: 20px">
-            <el-col :span="4">视频地址</el-col>
-            <el-col :span="12">
-              <el-input
-                v-model="videoDialog.video"
-                placeholder="请输入视频地址"
-                clearable
-                size="small"
-              />
-            </el-col>
-            <el-col :span="8" style="text-align: center">
-              <el-upload
-                class="upload-demo"
-                :action="actionUrl"
-                :limit="1"
-                :show-file-list="false"
-                :on-success="handleUploadImageSuccess"
-              >
-                <el-button size="small" type="primary">添加缩略图</el-button>
-              </el-upload>
-            </el-col>
-          </el-row>
-          <el-row align="middle" type="flex">
-            <el-col :span="16">
-              <el-image
-                style="width: 300px; height: 300px;margin-left: 20px"
-                :src="videoDialog.video"
-                fit="cover"
-              />
-            </el-col>
-            <el-col :span="8">
-              <div style="margin-bottom: 20px">
-                宽度(px):
-                <el-input
-                  v-model="videoDialog.width"
-                  placeholder="数值"
-                  clearable
-                  size="mini"
-                  style="width: 100px"
-                />
-              </div>
-              <div>
-                高度(px):
-                <el-input
-                  v-model="videoDialog.height"
-                  placeholder="数值"
-                  clearable
-                  size="mini"
-                  style="width: 100px"
-                />
-              </div>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
-      </el-tabs>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="videoDialogControl('cancel')">
-          取 消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="videoDialogControl('confirm')"
-        >
-          确 定
-        </el-button>
-      </div>
+      <xl-video @choose="videoDialogControl"></xl-video>
     </el-dialog>
   </el-container>
 </template>
@@ -600,6 +520,7 @@ import Cropper from '@/components/Cropper'
 import { getLabels, getNewDetail, changeNews } from '@/api/content'
 import Tag from './components/tag'
 import ImgTable from './components/imgTable'
+import xlVideo from '@/components/video'
 import Editor from '@/components/editor'
 
 export default {
@@ -608,6 +529,7 @@ export default {
     Cropper,
     ImgTable,
     Tag,
+    xlVideo,
     Editor
   },
   props: {
@@ -649,11 +571,11 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资标题'
+              placeholder: '请输入新闻标题'
             }
           },
           rule: [
-            { required: true, message: '请输入媒资标题', trigger: 'blur' }
+            { required: true, message: '请输入新闻标题', trigger: 'blur' }
           ]
         },
         'extra.subtitle': {
@@ -664,7 +586,7 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资副标题'
+              placeholder: '请输入新闻副标题'
             }
           }
         },
@@ -747,7 +669,7 @@ export default {
             },
             component: 'input', // 组件名
             componentProps: {
-              placeholder: '请输入媒资简介',
+              placeholder: '请输入新闻简介',
               type: 'textarea',
               maxlength: 200
             }
@@ -985,7 +907,7 @@ export default {
           item: {
             key: 'extra.trans_to_audio',
             props: {
-              label: '同步生成语音稿件:',
+              label: '同步生成语音新闻:',
               prop: 'extra.trans_to_audio'
             },
             component: 'radio', // 组件名
@@ -1001,7 +923,7 @@ export default {
             ]
           },
           rule: [
-            { required: true, message: '请选择是否同步生成语音稿件', trigger: 'change' }
+            { required: true, message: '请选择是否同步生成语音新闻', trigger: 'change' }
           ]
         },
         'extra.view_base_num': {
@@ -1129,7 +1051,7 @@ export default {
         },
         {
           label: '外链',
-          value: 'outerlink'
+          value: 'outer_link'
         }
       ], // tab按钮切换
       /* currentTabsFromItem: [], // 当前激活tab的表单显示数据*/
@@ -1154,7 +1076,7 @@ export default {
           use_watermarks: 0, // 水印
           allow_comment: 0, // 评论控制
           allow_share: 1, // 允许分享
-          trans_to_audio: 1, // 同步生成语音稿件
+          trans_to_audio: 1, // 同步生成语音新闻
           view_base_num: '', // 点击量
           praise_base_num: '', // 点赞量
           post_base_num: '', // 转发量
@@ -1212,7 +1134,7 @@ export default {
     parseObj(item) {
       const arr = item.key.split('.')
       const val = arr.reduce((obj, key) => obj[key], this.from)
-      return item.component === 'select' ? val && val.split(',') : val
+      return item.component === 'select' ? val && val.toString().split(',') : val
     },
     /* 值变化 */
     handleInput(val, item) {
@@ -1225,27 +1147,15 @@ export default {
       }, this.from)
     },
     /*
-          * 显示选择视频弹框(未完成)
-          * */
+    * 显示选择视频弹框
+    * */
     handleChangeVideo() {
-      /* const { url, id } = this.from.video_extra.video_list;
-            let obj = {
-              show: true,
-              radio: id || '',
-              video: url
-            }
-            Object.assign(this.videoDialog, { ...obj });*/
+      this.videoDialog.show = true;
     },
-    /* 控制视频弹框 (未完成)*/
+    /* 控制视频弹框*/
     videoDialogControl(val) {
-      /* this.videoDialog.show = false;
-            if(val === 'confirm'){
-              this.from.extra.link = {
-                ...this.from.extra.link,
-                id: this.videoDialog.radio,
-                url: this.videoDialog.video
-              }
-            }*/
+      this.videoDialog.show = false;
+      this.from.extra.video_extra.video_list = [val];
     },
     /* 上传图片成功 */
     handleUploadImageSuccess(res) {
@@ -1277,7 +1187,7 @@ export default {
         case 'album':
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
           break
-        case 'outerlink':
+        case 'outer_link':
           arr = [...baseTopItem, 'extra.link.type']
           if (this.from.extra.link.type === 'outerlink') arr.push('extra.link.id')
           else arr.push('extra.link.url')
@@ -1371,7 +1281,7 @@ export default {
             use_watermarks: extra.use_watermarks, // 水印
             allow_comment: extra.allow_comment, // 评论控制
             allow_share: extra.allow_share, // 允许分享
-            trans_to_audio: extra.trans_to_audio, // 同步生成语音稿件
+            trans_to_audio: extra.trans_to_audio, // 同步生成语音新闻
             view_base_num: extra.view_base_num, // 点击量
             praise_base_num: extra.praise_base_num, // 点赞量
             post_base_num: extra.post_base_num, // 转发量

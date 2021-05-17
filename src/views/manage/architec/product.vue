@@ -240,7 +240,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label-width="150px" label="用户协议" prop="extra.user_policy">
+          <!--<el-form-item label-width="150px" label="用户协议" prop="extra.user_policy">
             <el-input
               type="textarea"
               style="width: 350px"
@@ -269,7 +269,7 @@
               placeholder="请输入朋友圈用户协议"
               v-model="form.extra.moment_policy"
             ></el-input>
-          </el-form-item>
+          </el-form-item>-->
         </div>
       </el-form>
 
@@ -377,19 +377,19 @@ export default {
             comment_control:"",
             watermark:"",
             watermark_position:"",
-            user_policy:"",
+            /*user_policy:"",
             privacy_policy:"",
-            moment_policy:""
+            moment_policy:""*/
         }
       },
       rules: {
         name: [{ required: true, message: "请输入产品姓名", trigger: "blur" }],
         type: [{ required: true, message: "请选择产品类型", trigger: "blur" }],
         'extra.logo': [{ required: true, message: "请选择产品logo", trigger: "blur" }],
-        'extra.watermark': [{ required: true, message: "请选择水印", trigger: "blur" }],
+        /*'extra.watermark': [{ required: true, message: "请选择水印", trigger: "blur" }],
         'extra.watermark_position': [{ required: true, message: "请选择水印位置", trigger: "blur" }],
         'extra.user_policy': [{ required: true, message: "请输入用户协议", trigger: "blur" }],
-        'extra.privacy_policy': [{ required: true, message: "请输入隐私政策", trigger: "blur" }],
+        'extra.privacy_policy': [{ required: true, message: "请输入隐私政策", trigger: "blur" }],*/
       },
       dialogType: "add",
       dialogTitle: ""
@@ -456,9 +456,9 @@ export default {
             comment_control:"",
             watermark:"",
             watermark_position:"",
-            user_policy:"",
+            /*user_policy:"",
             privacy_policy:"",
-            moment_policy:""
+            moment_policy:""*/
         }
       };
     },
@@ -495,7 +495,7 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
     },
     // 关闭窗口

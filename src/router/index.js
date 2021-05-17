@@ -91,7 +91,7 @@ export const constantRoutes = [
         path: 'reviewNews',
         component: () => import('@/views/workbench/reviewNews/index'),
         name: 'ReviewNews',
-        meta: { title: '稿件审核' }
+        meta: { title: '新闻审核' }
       },
       {
         path: 'rejectReasons',
@@ -133,7 +133,7 @@ export const constantRoutes = [
         path: 'mediaAssets',
         component: () => import('@/views/content/index'), // Parent router-view
         name: 'MediaAssets',
-        meta: { title: '媒资管理' },
+        meta: { title: '稿件管理' },
         alwaysShow: true,
         redirect: '/content/mediaAssets/all-media',
         children: [
@@ -141,7 +141,7 @@ export const constantRoutes = [
             path: 'all-media',
             component: () => import('@/views/content/mediaAssets/all-media'),
             name: 'All-media',
-            meta: { title: '所有媒资' }
+            meta: { title: '所有稿件' }
           },
           {
             path: 'watch-column',
@@ -167,7 +167,7 @@ export const constantRoutes = [
             path: 'my',
             component: () => import('@/views/content/mediaAssets/my'),
             name: 'My',
-            meta: { title: '我的媒资' }
+            meta: { title: '我的稿件' }
           },
           {
             path: 'recycleBox',

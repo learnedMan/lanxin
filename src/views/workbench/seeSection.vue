@@ -70,7 +70,7 @@
           :inline="true"
         >
           <el-form-item
-            label="媒资名称:"
+            label="新闻名称:"
             prop="keyword"
           >
             <el-input
@@ -83,7 +83,7 @@
             />
           </el-form-item>
           <el-form-item
-            label="媒资类型:"
+            label="新闻类型:"
             prop="type"
           >
             <el-select
@@ -143,12 +143,12 @@
         style="width: 100%"
       >
         <el-table-column
-          label="媒资ID"
+          label="新闻ID"
           align="center"
           prop="id"
         />
         <el-table-column
-          label="媒资封面"
+          label="新闻封面"
           align="center"
           prop="id"
           width="120"
@@ -164,13 +164,13 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="媒资标题"
+          label="新闻标题"
           align="center"
           prop="title"
           :show-overflow-tooltip="true"
         />
         <el-table-column
-          label="媒资类型"
+          label="新闻类型"
           align="center"
           prop="type"
         />
@@ -270,9 +270,9 @@ export default {
         },
         {
           label: '外链',
-          value: 'outerlink'
+          value: 'outer_link'
         }
-      ], // 媒资类型
+      ], // 新闻类型
       props: Object.freeze({
         label: 'name'
       }),
@@ -378,14 +378,14 @@ export default {
       })
     },
     /*
-      * 编辑媒资
+      * 编辑新闻
       * */
     handleEdit(row) {
       const { id } = row
       this.$router.push({ name: 'Add-media', query: { id }})
     },
     /*
-      * 删除媒资
+      * 删除新闻
       * */
     handleListDelete(row) {
       const { id } = row
@@ -425,9 +425,9 @@ export default {
           const type = this.typeOptions.find(n => item.type === n.value)
           const cover = item.cover[0]
           /* {
-                title: '', // 媒资标题
-                type: '', // 媒资类型
-                id: '', // 媒资id
+                title: '', // 新闻标题
+                type: '', // 新闻类型
+                id: '', // 新闻id
                 cover: '', // 图片(Array)
                 author_name: '', // 作者
                 status: '', // 状态
