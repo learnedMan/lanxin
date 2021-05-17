@@ -1,15 +1,14 @@
 <template>
-<!-- type 电视：tv_channel || 1 广播：radio_channel || 2 -->
     <div class="page_c">
-        <div class="pbox" style="display:flex;padding-top:20px;width:1530px;">
-            <el-tabs  @tab-click="tabsClick" v-model="queryParams.channel_id" class="left" tab-position="left" style="height:500px;margin-right:20px;width:180px;">
-                <el-tab-pane v-for="(item,index) in tvList" :label="item.name" :name="''+ item.id"></el-tab-pane>
+        <div v-show="returntvList.length>0" class="pbox" style="display:flex;padding-top:20px;width:1530px;">
+            <el-tabs @tab-click="tabsClick" v-model="queryParams.channel_id" class="left" tab-position="left" style="height:500px;margin-right:20px;width:180px;">
+                <el-tab-pane v-for="(item,index) in returntvList" :label="item.name" :name="''+ item.id"></el-tab-pane>
             </el-tabs>
             <div class="right" style="width:1400px;">
                 <div>
                     <div class="top" style="display:inline;">
                         <el-form ref="queryForm" :model="queryParams" :inline="true">
-                            <!-- <el-form-item label="节目名称：">
+                            <el-form-item label="节目名称：">
                                 <el-input
                                 v-model="queryParams.name"
                                 placeholder="请输入关键字"
@@ -37,7 +36,7 @@
                                     end-placeholder="结束日期"
                                     :picker-options="pickerOptions"
                                 />
-                            </el-form-item> -->
+                            </el-form-item>
                             <el-form-item>
                                 <el-button type="info"  size="mini">重置</el-button>
                                 <el-button type="primary" size="mini">搜索</el-button>
@@ -147,6 +146,7 @@ export default {
             loading:true,
             dataList:[],
             tvList:[],
+            dateValue:'',
             // 查询参数
             tvqueryParams: {
                 page: 1,
@@ -216,6 +216,11 @@ export default {
             return (index)=>{
                 return this.getDay(index);
             }
+        },
+        returntvList:function(){
+            return this.tvList.filter(function (item) {
+                return item.status==1
+            })
         }
     },
     methods: {

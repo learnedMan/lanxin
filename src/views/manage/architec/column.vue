@@ -13,8 +13,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="info" @click="initcondition" size="mini">重置</el-button>
-        <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
+        <!-- <el-button type="info" @click="initcondition" size="mini">重置</el-button> -->
+        <!-- <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
         <el-button type="primary" @click="adddata" size="mini">添加</el-button>
       </el-form-item>
     </el-form>
@@ -211,12 +211,18 @@
               v-model="form.sort"
             ></el-input>
           </el-form-item>
+          <el-form-item el-form-item  label-width="150px" label="菜单分组:" prop="extra.group">
+            <el-select v-model="form.extra.group" placeholder="请选择">
+              <el-option v-for="item in groupoptions" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label-width="150px" label="展示条数:" prop="extra.show_num">
             <el-input
               style="width: 350px"
               placeholder="请输入栏目名称"
               v-model="form.extra.show_num"
-            ></el-input>
+              ></el-input>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="是否启用:" prop="status">
             <el-select v-model="form.status" placeholder="请选择">
@@ -280,7 +286,9 @@ import {
   setSortchannels,
   getchannelinfo,
   editchannels,
-  getUser} from '@/api/manage'
+  getUser,
+  stylelist,
+  cateloglist} from '@/api/manage'
 
 import ChildPage1 from './pages/c_page1'
 
@@ -310,6 +318,13 @@ import ChildPage1 from './pages/c_page1'
           value: 2,
           label: '禁用'
         }],
+        groupoptions: [{
+          value: 'home',
+          label: '首页'
+        },{
+          value: 'video',
+          label: '视频'
+        }],
         columntypeoptions:[
           {
             value: 'default',
@@ -318,10 +333,6 @@ import ChildPage1 from './pages/c_page1'
             value: 'service',
             label: '服务'
           },
-          // {
-          //   value: 'link',
-          //   label: '链接'
-          // },
           {
             value: 'outer_link',
             label: '外链'
@@ -362,12 +373,25 @@ import ChildPage1 from './pages/c_page1'
       VUE_APP_BASE_API() {
         return process.env.VUE_APP_BASE_API;
       },
+      productId(){
+        return this.queryParams.product_id
+      }
     },
     created() {
       this.initForm();
-      this.getList();
+      // this.getList();
       this.getproductList();
       this.getuserfn();
+
+      cateloglist().then(response => {
+          console.log(response)
+      })
+    },
+    watch:{
+      productId(val){//普通的watch监听
+        // this.initForm();
+        this.getList();
+      },
     },
     methods:{
       getuserfn(){//获取系统用户列表
@@ -412,6 +436,7 @@ import ChildPage1 from './pages/c_page1'
             linked_channel_id:'',
             template_style:'',
             show_num:'',
+            group:'',
             // 默认
             multi_review:[],
             display_more:'',
@@ -446,9 +471,9 @@ import ChildPage1 from './pages/c_page1'
         }
         return isLt;
       },
-      initcondition() {//重置搜索
-        this.queryParams.product_id = "";
-      },
+      // initcondition() {//重置搜索
+      //   this.queryParams.product_id = "";
+      // },
       // 修改状态
       statuschange(data){
         console.log(data)
@@ -461,19 +486,21 @@ import ChildPage1 from './pages/c_page1'
         })
       },
       /** 搜索按钮操作 */
-      handleQuery() {
-        this.loading = true;
-        this.getList();
-      },
+      // handleQuery() {
+      //   this.loading = true;
+      //   this.getList();
+      // },
       // 获取产品列表
       getproductList(){
         getproduct({}).then((response) => {
           this.productList = response.data;
+          this.queryParams.product_id = this.productList[0].id;
         });
       },
       // 获取表格列表
       getList(){
         // console.log(this.queryParams)
+        this.loading = true;
         getChannels(this.queryParams).then(response => {
           this.loading = false;
           this.dataList = response;
@@ -492,6 +519,7 @@ import ChildPage1 from './pages/c_page1'
             }
           }
           addstatus(this.dataList)
+          console.log(this.dataList)
         })
       },
       //上移下移
