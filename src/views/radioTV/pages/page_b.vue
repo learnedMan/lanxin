@@ -226,7 +226,7 @@ export default {
         getList(){
             this.loading = true;
             var data = JSON.parse(JSON.stringify(this.queryParams));
-            console.log(data)
+            // console.log(data)
             gettv_programs(data).then(response => {
                 this.loading = false;
                 this.dataList = response.data;

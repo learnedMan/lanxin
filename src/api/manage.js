@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import request2 from '@/utils/request_old'
 
 // 权限
 export function getAllPermissions() {
@@ -501,5 +502,26 @@ export function addbroadcastStatement(data) {
     url: '/api/broadcastStatement',
     method: 'post',
     data:data
+  })
+}
+
+// 模板化样式接口
+export function cateloglist() {
+  return request2({
+    url: '/catalog/list',
+    method: 'get'
+  })
+}
+export function stylelist(data) {
+  return request2({
+    url: '/styleByCode/list',
+    method: 'post',
+    data
+  })
+}
+export function styleinfo(id) {
+  return request2({
+    url: `/style/info/${id}`,
+    method: 'get',
   })
 }

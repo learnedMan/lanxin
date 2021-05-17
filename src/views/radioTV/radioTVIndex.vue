@@ -1,4 +1,5 @@
 <template>
+<!-- type 电视：tv_channel || 1 广播：radio_channel || 2 -->
   <div class="radioTV" style="padding: 30px">
     <el-form>
       <el-form-item label="所属产品：">

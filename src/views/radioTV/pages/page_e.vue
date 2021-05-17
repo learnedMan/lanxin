@@ -235,7 +235,7 @@ export default {
         gettvList(){
             var data = this.tvqueryParams;
             gettv_channel(data).then(response => {
-                console.log(response)
+                // console.log(response)
                 this.tvList = response.data;
                 // console.log(this.tvList)
                 this.queryParams.channel_id ='' + this.tvList[0].id || '';

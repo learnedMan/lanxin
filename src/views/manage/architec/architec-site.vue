@@ -104,7 +104,7 @@
         <el-form-item  label-width="120px" label="简介" prop="introduction">
           <el-input type="textarea" style="width: 300px" autocomplete="off" placeholder="请输入简介" v-model="form.introduction"></el-input>
         </el-form-item>
-        <el-form-item v-if="dialogType=='edit'" el-form-item  label-width="120px" label="是否启用" prop="status">
+        <el-form-item el-form-item  label-width="120px" label="是否启用" prop="status">
           <el-select v-model="form.status" placeholder="请选择">
             <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
@@ -161,7 +161,7 @@ import { validUsername , validEmail } from '@/utils/validate'
           name: "",
           en_name: "",
           logo: "",
-          status:"",
+          status:1,
           introduction:"",
           site_manager_name:'',
           site_manager_phone:''
