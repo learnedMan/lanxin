@@ -31,7 +31,6 @@
       <el-table-column label="栏目名称" align="center" prop="name" />
       <el-table-column label="栏目ID" align="center" prop="id" :show-overflow-tooltip="true" />
       <el-table-column 
-      v-if="false"
         label="(模板化)样式分类" 
         align="center" 
         prop="template_style" 
@@ -39,7 +38,7 @@
         <template slot-scope="scope">
           <!-- 如果是产品，那么没有样式分类，只有栏目有 -->
           <div v-if="scope.row.type=='product'">无</div>
-          <div v-else>{{scope.row.template_style}}</div>
+          <div v-else>{{getstyle(scope.row.template_style)}}</div>
         </template>
       </el-table-column>
       <el-table-column label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
@@ -197,17 +196,17 @@
             clearable></el-cascader>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">
-            <el-select v-model="catalogid" placeholder="请选择" @change="catalogchange">
-              <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.catalogCode">
+            <el-select v-model="form.extra.template_style" prop="extra.template_style" placeholder="请选择">
+              <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.id">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item el-form-item label-width="150px" label="(模板化)样式:" prop="extra.template_style">
+          <!-- <el-form-item el-form-item label-width="150px" label="(模板化)样式:" prop="extra.template_style">
             <el-select v-model="form.extra.template_style" placeholder="请选择">
               <el-option v-for="item in styleoptions" :key="item.id" :label="item.styleName" :value="''+item.id">
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label-width="150px" label="排序(权重):" prop="sort">
             <el-input
               style="width: 350px"
@@ -436,17 +435,25 @@ import ChildPage1 from './pages/c_page1'
       //   }
       // },
 
-      catalogchange(){
-        this.styleoptions = [];
-        this.form.extra.template_style = '';
-          var data = {
-              "catalogCode":this.catalogid,
-              "sourceId":this.sourceId
+      // catalogchange(){
+      //   this.styleoptions = [];
+      //   this.form.extra.template_style = '';
+      //     var data = {
+      //         "catalogCode":this.catalogid,
+      //         "sourceId":this.sourceId
+      //     }
+      //     stylelist(data).then(response => {
+      //         console.log(response)
+      //         this.styleoptions = response.data||[];
+      //     })
+      // },
+      getstyle(val){
+        // console.log(this.catalogoptions)
+        for(var i=0;i<this.catalogoptions.length;i++){
+          if(val==this.catalogoptions[i].id){
+            return this.catalogoptions[i].catalogName
           }
-          stylelist(data).then(response => {
-              console.log(response)
-              this.styleoptions = response.data||[];
-          })
+        }
       },
       getuserfn(){//获取系统用户列表
         var data={};
@@ -670,15 +677,15 @@ import ChildPage1 from './pages/c_page1'
           })
 
           console.log(this.form)
-          let styleid = this.form.extra.template_style;
-          if(styleid){
-            styleinfo(styleid).then(response=>{
-              this.catalogid = ''+response.data.catalogCode;
-              var v = this.form.extra.template_style;
-              this.catalogchange()
-              this.form.extra.template_style =''+ v;
-            })
-          }
+          // let styleid = this.form.extra.template_style;
+          // if(styleid){
+          //   styleinfo(styleid).then(response=>{
+          //     this.catalogid = ''+response.data.catalogCode;
+          //     var v = this.form.extra.template_style;
+          //     this.catalogchange()
+          //     this.form.extra.template_style =''+ v;
+          //   })
+          // }
           
 
         })
