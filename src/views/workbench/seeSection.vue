@@ -240,14 +240,28 @@
         @pagination="getList"
       />
     </div>
+    <!-- 编辑新闻 -->
+    <el-dialog
+      width="1200px"
+      title="查看"
+      top="20px"
+      :visible.sync="detailDialog.show"
+      v-if="detailDialog.show"
+    >
+      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" @refresh="refresh" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getChannels } from '@/api/manage'
 import { getNews, deleteNews, setTop } from '@/api/content'
+import NewDetail from './reviewNews/detail'
 
 export default {
+  components: {
+    NewDetail
+  },
   data() {
     return {
       channelsList: [], // 栏目
@@ -317,7 +331,11 @@ export default {
       currentKey: '', // 树节点默认选中项
       defaultExpandedKeys: [], // 默认展开的节点
       total: 0,
-      loading: false
+      loading: false,
+      detailDialog: {
+        show: false,
+        id: ''
+      }
     }
   },
   async created() {
@@ -382,7 +400,10 @@ export default {
       * */
     handleEdit(row) {
       const { id } = row
-      this.$router.push({ name: 'Add-media', query: { id }})
+      this.detailDialog = {
+        id,
+        show: true
+      }
     },
     /*
       * 删除新闻
@@ -442,7 +463,12 @@ export default {
       }).finally(() => {
         this.loading = false
       })
-    }
+    },
+    /* 刷新视图 */
+    refresh () {
+      this.getList();
+      this.dialog.id = '';
+    },
   }
 }
 </script>
