@@ -105,13 +105,13 @@
             </el-checkbox-group>
         </el-form-item>
         <el-form-item v-if="form.forway.indexOf('电视直播')>-1" label-width="120px" label="流地址">
-            <el-input style="width: 400px" placeholder="请输入内容" v-model="form.extra.stream_urls.hd">
+            <el-input style="width: 400px" placeholder="请输入内容" v-model="form.extra.stream_urls[0].url">
                 <template slot="prepend">超清</template>
             </el-input>
-            <el-input style="width: 400px;margin:15px 0;" placeholder="请输入内容" v-model="form.extra.stream_urls.fhd">
+            <el-input style="width: 400px;margin:15px 0;" placeholder="请输入内容" v-model="form.extra.stream_urls[1].url">
                 <template slot="prepend">高清</template>
             </el-input>
-            <el-input style="width: 400px" placeholder="请输入内容" v-model="form.extra.stream_urls.sd">
+            <el-input style="width: 400px" placeholder="请输入内容" v-model="form.extra.stream_urls[2].url">
                 <template slot="prepend">标清</template>
             </el-input>
         </el-form-item>
@@ -309,11 +309,25 @@ import {
               has_replay:'',
               intro:"",
               logo:'',
-              stream_urls:{
-                hd:'',
-                fhd:'',
-                sd:''
-              }
+              // stream_urls:{
+              //   hd:'',
+              //   fhd:'',
+              //   sd:''
+              // },
+              stream_urls:[
+                {
+                  "name":'超清',
+                  "url":""
+                },
+                {
+                  "name":'高清',
+                  "url":""
+                },
+                {
+                  "name":'标清',
+                  "url":""
+                },
+              ]
             },
             status:""
           }

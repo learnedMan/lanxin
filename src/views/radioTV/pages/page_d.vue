@@ -111,7 +111,7 @@
             <el-input style="width: 400px;margin:15px 0;" placeholder="请输入内容" v-model="form.extra.stream_urls.fhd">
                 <template slot="prepend">高清</template>
             </el-input> -->
-            <el-input style="width: 400px" placeholder="请输入内容" v-model="form.extra.stream_urls.sd">
+            <el-input style="width: 400px" placeholder="请输入内容" v-model="form.extra.stream_urls[0].url">
                 <!-- <template slot="prepend">标清</template> -->
             </el-input>
         </el-form-item>
@@ -320,11 +320,17 @@ import {
               has_replay:'',
               intro:"",
               logo:'',
-              stream_urls:{
-                hd:'',
-                fhd:'',
-                sd:''
-              }
+              // stream_urls:{
+              //   hd:'',
+              //   fhd:'',
+              //   sd:''
+              // }
+              stream_urls:[
+                {
+                  "name":'标清',
+                  "url":""
+                }
+              ]
             },
             status:""
           }

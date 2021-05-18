@@ -322,7 +322,7 @@ import ChildPage1 from './pages/c_page1'
           value: 1,
           label: '启用'
         },{
-          value: 2,
+          value: 0,
           label: '禁用'
         }],
         groupoptions: [{
