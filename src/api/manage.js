@@ -555,3 +555,20 @@ export function editDetail(data) {
   })
 }
 
+/*邀请码列表 */
+export function getInvited(data) {
+  return request2({
+    url: '/internal/uc/queryInvitationcodeList',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取登录日志 */
+export function getLoginLists(data) {
+  return request2({
+    url: '/internal/uc/queryLoginLogList',
+    method: 'post',
+    data
+  })
+}

@@ -173,17 +173,17 @@
                 </el-form-item>
                 <!-- 封面样式 -->
                 <el-form-item
-                  v-show="initFrom().includes('extra.cover_type')"
-                  v-bind="formOptions['extra.cover_type'].item.props"
+                  v-show="initFrom().includes('extra.template_style')"
+                  v-bind="formOptions['extra.template_style'].item.props"
                 >
                   <el-radio-group
                     size="small"
-                    :value="parseObj(formOptions['extra.cover_type'].item)"
-                    @input="handleInput($event, formOptions['extra.cover_type'].item)"
+                    :value="parseObj(formOptions['extra.template_style'].item)"
+                    @input="handleInput($event, formOptions['extra.template_style'].item)"
                     @change="handleTabChange"
                   >
                     <el-radio
-                      v-for="list of formOptions['extra.cover_type'].item.lists"
+                      v-for="list of formOptions['extra.template_style'].item.lists"
                       :key="list.value"
                       :label="list.value"
                       style="line-height: 32px"
@@ -617,12 +617,12 @@ export default {
             }
           }
         },
-        'extra.cover_type': {
+        'extra.template_style': {
           item: {
-            key: 'extra.cover_type',
+            key: 'extra.template_style',
             props: {
               label: '封面样式:',
-              prop: 'extra.cover_type'
+              prop: 'extra.template_style'
             },
             component: 'radio', // 组件名
             lists: [
@@ -1169,7 +1169,7 @@ export default {
           type: 'news', // 类型
           title: '', // 标题
           subtitle: '', // 副标题
-          cover_type: '240', // 封面样式
+          template_style: '240', // 封面样式
           cover: [], // 封面样式的图片集合
           intro: '', // 简介
           tags: '', // 标签
@@ -1274,11 +1274,11 @@ export default {
     /* 处理需要传给后台的数据 */
     initFrom() {
       let arr = []
-      const cover_type = this.formOptions['extra.cover_type'].item.lists.find(n => n.value === this.from.extra.cover_type)
+      const template_style = this.formOptions['extra.template_style'].item.lists.find(n => n.value === this.from.extra.template_style)
       // 确定图片显示个数
-      this.formOptions['extra.cover'].item.componentProps.count = cover_type?.count || 1
+      this.formOptions['extra.cover'].item.componentProps.count = template_style?.count || 1
       // 基础显示的item
-      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.cover_type', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
+      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
       // 显示发布时间
       if (this.from.extra.publish_timer === '1') baseTopItem.push('extra.set_created_at')
       const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
@@ -1396,7 +1396,7 @@ export default {
             type: extra.type, // 类型
             title: extra.title, // 标题
             subtitle: extra.subtitle, // 副标题
-            cover_type: extra.cover_type || '240', // 封面样式 (正式数据需要修改)
+            template_style: extra.template_style || '240', // 封面样式 (正式数据需要修改)
             cover: extra.cover, // 封面样式的图片集合
             intro: extra.intro, // 简介
             tags: extra.tags, // 标签
