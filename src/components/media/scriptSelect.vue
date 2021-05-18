@@ -20,6 +20,14 @@
         padding: 0;
         margin: 0 10px 0 0;
       }
+      .el-icon-circle-close {
+        cursor: pointer;
+        color: #ccc;
+        transition: all .2s;
+        &:hover {
+          color: #575757;
+        }
+      }
     }
   }
 </style>
@@ -27,9 +35,9 @@
     <div class="xl-script-select">
       <el-button type="primary" size="small" @click="showDialog">添加新闻</el-button>
       <ul class="xl-script-select--lists">
-        <li v-for="list of lists" :key="list.id">
+        <li v-for="(list, index) of lists" :key="list.id">
           <p>{{ list.title }}</p>
-          <i class="el-icon-circle-close"></i>
+          <i class="el-icon-circle-close" @click="deleteScript(index)"></i>
         </li>
       </ul>
       <!-- 选择关联新闻 -->
@@ -245,6 +253,11 @@
               this.lists.splice(this.lists.findIndex(n => n.id === row.id), 1);
             }
           })
+          this.$emit('input', this.lists.map(n => n.id))
+        },
+        /* 删除某一项 */
+        deleteScript (index) {
+          this.lists.splice(index, 1);
           this.$emit('input', this.lists.map(n => n.id))
         },
         /* 获取新闻列表 */

@@ -612,43 +612,83 @@ export default {
             component: 'radio', // 组件名
             lists: [
               {
-                label: '纯文字',
-                value: 1,
+                label: '纯文本',
+                value: '240',
                 count: 1
               },
               {
-                label: '左图右文字',
-                value: 2,
-                count: 1
-              },
-              {
-                label: '右图左文字',
-                value: 3,
-                count: 1
-              },
-              {
-                label: '三图上文字',
-                value: 4,
+                label: '三图下文本',
+                value: '230',
                 count: 3
               },
               {
-                label: '三图下文字',
-                value: 5,
+                label: '三图上文本',
+                value: '231',
                 count: 3
               },
               {
-                label: '大图模式+上文字',
-                value: 6,
+                label: '左图+标题1',
+                value: '220',
                 count: 1
               },
               {
-                label: '大图模式+下文字',
-                value: 7,
+                label: '作图+标题2',
+                value: '222',
                 count: 1
               },
               {
-                label: '大图模式+图上文字',
-                value: 8,
+                label: '右图+标题',
+                value: '221',
+                count: 1
+              },
+              {
+                label: '播放器1',
+                value: '210',
+                count: 1
+              },
+              {
+                label: '播放器2',
+                value: '211',
+                count: 1
+              },
+              {
+                label: '播放器3',
+                value: '212',
+                count: 1
+              },
+              {
+                label: '大图1',
+                value: '200',
+                count: 1
+              },
+              {
+                label: '大图2',
+                value: '201',
+                count: 1
+              },
+              {
+                label: '大图3',
+                value: '202',
+                count: 1
+              },
+              {
+                label: '大图4',
+                value: '203',
+                count: 1
+              },
+              {
+                label: '大图5',
+                value: '204',
+                count: 1
+              },
+              {
+                label: '大图6',
+                value: '205',
+                count: 1
+              },
+              {
+                label: '大图7',
+                value: '206',
                 count: 1
               }
             ]
@@ -725,11 +765,11 @@ export default {
             lists: [
               {
                 label: '是',
-                value: 1
+                value: '1'
               },
               {
                 label: '否',
-                value: 0
+                value: '0'
               }
             ]
           },
@@ -814,11 +854,11 @@ export default {
             lists: [
               {
                 label: '原创',
-                value: 1
+                value: '1'
               },
               {
                 label: '来源',
-                value: 0
+                value: '0'
               }
             ]
           },
@@ -853,11 +893,11 @@ export default {
             lists: [
               {
                 label: '是',
-                value: 1
+                value: '1'
               },
               {
                 label: '否',
-                value: 0
+                value: '0'
               }
             ]
           },
@@ -876,15 +916,15 @@ export default {
             lists: [
               {
                 label: '先审后发',
-                value: 0
+                value: '0'
               },
               {
                 label: '先发后审',
-                value: 1
+                value: '1'
               },
               {
                 label: '禁止评论',
-                value: 2
+                value: '2'
               }
             ]
           },
@@ -903,11 +943,11 @@ export default {
             lists: [
               {
                 label: '是',
-                value: 1
+                value: '1'
               },
               {
                 label: '否',
-                value: 0
+                value: '0'
               }
             ]
           },
@@ -926,11 +966,11 @@ export default {
             lists: [
               {
                 label: '是',
-                value: 1
+                value: '1'
               },
               {
                 label: '否',
-                value: 0
+                value: '0'
               }
             ]
           },
@@ -1084,20 +1124,20 @@ export default {
           type: 'news', // 类型
           title: '', // 标题
           subtitle: '', // 副标题
-          cover_type: 1, // 封面样式
+          cover_type: '240', // 封面样式
           cover: [], // 封面样式的图片集合
           intro: '', // 简介
           tags: '', // 标签
           keywords: '', // 关键词
-          publish_timer: 0, // 定时发布
+          publish_timer: '0', // 定时发布
           set_created_at: '', // 发布时间
           content: '', // 编辑器内容
-          is_original: 1, // 是否原创
+          is_original: '1', // 是否原创
           source: '', // 来源
-          use_watermarks: 0, // 水印
-          allow_comment: 0, // 评论控制
-          allow_share: 1, // 允许分享
-          trans_to_audio: 1, // 同步生成语音新闻
+          use_watermarks: '0', // 水印
+          allow_comment: '0', // 评论控制
+          allow_share: '1', // 允许分享
+          trans_to_audio: '1', // 同步生成语音新闻
           view_base_num: '', // 点击量
           praise_base_num: '', // 点赞量
           post_base_num: '', // 转发量
@@ -1189,16 +1229,16 @@ export default {
     /* 处理需要传给后台的数据 */
     initFrom() {
       let arr = []
-      const cover_type = this.formOptions['extra.cover_type'].item.lists.find(n => n.value == this.from.extra.cover_type)
+      const cover_type = this.formOptions['extra.cover_type'].item.lists.find(n => n.value === this.from.extra.cover_type)
       // 确定图片显示个数
       this.formOptions['extra.cover'].item.componentProps.count = cover_type?.count || 1
       // 基础显示的item
       const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.cover_type', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
       // 显示发布时间
-      if (this.from.extra.publish_timer === 1) baseTopItem.push('extra.set_created_at')
+      if (this.from.extra.publish_timer === '1') baseTopItem.push('extra.set_created_at')
       const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
-      if (this.from.extra.is_original === 0) baseBottomItem.splice(2, 0, 'extra.source')
+      if (this.from.extra.is_original === '0') baseBottomItem.splice(2, 0, 'extra.source')
       switch (this.from.extra.type) {
         case 'news':
           arr = [...baseTopItem, 'extra.content', 'extra.custom_rec', ...baseBottomItem]
@@ -1290,20 +1330,20 @@ export default {
             type: extra.type, // 类型
             title: extra.title, // 标题
             subtitle: extra.subtitle, // 副标题
-            cover_type: extra.cover_type || 1, // 封面样式 (正式数据需要修改)
+            cover_type: extra.cover_type || '240', // 封面样式 (正式数据需要修改)
             cover: extra.cover, // 封面样式的图片集合
             intro: extra.intro, // 简介
             tags: extra.tags, // 标签
             keywords: extra.keywords, // 关键词
-            publish_timer: extra.publish_timer, // 定时发布
+            publish_timer: (extra.publish_timer || '1').toString(), // 定时发布
             set_created_at: extra.set_created_at, // 发布时间
             content: extra.content, // 编辑器内容
-            is_original: extra.is_original, // 是否原创
+            is_original: (extra.is_original || '1').toString(), // 是否原创
             source: extra.source, // 来源
-            use_watermarks: extra.use_watermarks, // 水印
-            allow_comment: extra.allow_comment, // 评论控制
-            allow_share: extra.allow_share, // 允许分享
-            trans_to_audio: extra.trans_to_audio, // 同步生成语音新闻
+            use_watermarks: (extra.use_watermarks || '0').toString(), // 水印
+            allow_comment: (extra.allow_comment || '0').toString(), // 评论控制
+            allow_share: (extra.allow_share || '1').toString(), // 允许分享
+            trans_to_audio: (extra.trans_to_audio || '1').toString(), // 同步生成语音新闻
             view_base_num: extra.view_base_num, // 点击量
             praise_base_num: extra.praise_base_num, // 点赞量
             post_base_num: extra.post_base_num, // 转发量
