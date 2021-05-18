@@ -66,7 +66,7 @@
           <el-tab-pane v-for="item of lists" :key="item.name" :label="item.label" :name="item.name"></el-tab-pane>
         </el-tabs>
       </el-aside>
-      <el-main>
+      <el-main style="position: relative">
         <component :is="currentView" v-bind="[$props]"></component>
       </el-main>
     </el-container>
@@ -193,6 +193,7 @@
   import { getStudio, changeStudio } from '@/api/operamanage'
   import reservation from './component/reservation'
   import directSeeding from './component/directSeeding'
+  import comment from './component/comment'
 
     export default {
       props: {
@@ -200,7 +201,8 @@
       },
       components: {
         reservation,
-        directSeeding
+        directSeeding,
+        comment
       },
       data() {
         const validatorStart = (rule, value, callback) => {
@@ -264,6 +266,10 @@
             {
               label: '机位管理',
               name: 'reservation'
+            },
+            {
+              label: '评论审核',
+              name: 'comment'
             }
           ]
           if(this.detail.extra.statement !== 'none') arr.splice(1, 0, {

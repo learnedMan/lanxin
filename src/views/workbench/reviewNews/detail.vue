@@ -102,8 +102,8 @@
                 </el-form-item>
                 <!-- 简介 -->
                 <el-form-item
-                  v-show="initFrom().includes('extra.tags')"
-                  v-bind="formOptions['extra.tags'].item.props"
+                  v-show="initFrom().includes('extra.intro')"
+                  v-bind="formOptions['extra.intro'].item.props"
                 >
                   <!-- 输入框 -->
                   <el-input
@@ -205,6 +205,16 @@
             </el-row>
             <el-row>
               <el-col :span="24">
+                <!-- 相关文稿 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.custom_rec')"
+                  v-bind="formOptions['extra.custom_rec'].item.props"
+                >
+                  <script-select
+                    :value="parseObj(formOptions['extra.custom_rec'].item)"
+                    @input="handleInput($event, formOptions['extra.custom_rec'].item)"
+                  ></script-select>
+                </el-form-item>
                 <!-- 编辑器 -->
                 <el-form-item
                   v-show="initFrom().includes('extra.content')"
@@ -518,8 +528,9 @@
 <script>
 import Cropper from '@/components/Cropper'
 import { getLabels, getNewDetail, changeNews } from '@/api/content'
-import Tag from './components/tag'
-import ImgTable from './components/imgTable'
+import Tag from '@/components/media/tag'
+import ImgTable from '@/components/media/imgTable'
+import scriptSelect from '@/components/media/scriptSelect.vue'
 import xlVideo from '@/components/video'
 import Editor from '@/components/editor'
 
@@ -530,6 +541,7 @@ export default {
     ImgTable,
     Tag,
     xlVideo,
+    scriptSelect,
     Editor
   },
   props: {
@@ -965,6 +977,15 @@ export default {
             }
           }
         },
+        'extra.custom_rec': {
+          item: {
+            key: 'extra.custom_rec',
+            props: {
+              label: '相关文稿:'
+            },
+            component: 'scriptSelect', // 组件名
+          }
+        },
         'extra.link.type': {
           item: {
             key: 'extra.link.type',
@@ -1080,6 +1101,7 @@ export default {
           view_base_num: '', // 点击量
           praise_base_num: '', // 点赞量
           post_base_num: '', // 转发量
+          custom_rec: [], // 关联文稿
           video_extra: {
             video_list: []
           }, // 视频
@@ -1167,7 +1189,7 @@ export default {
     /* 处理需要传给后台的数据 */
     initFrom() {
       let arr = []
-      const cover_type = this.formOptions['extra.cover_type'].item.lists.find(n => n.value === this.from.extra.cover_type)
+      const cover_type = this.formOptions['extra.cover_type'].item.lists.find(n => n.value == this.from.extra.cover_type)
       // 确定图片显示个数
       this.formOptions['extra.cover'].item.componentProps.count = cover_type?.count || 1
       // 基础显示的item
@@ -1179,10 +1201,10 @@ export default {
       if (this.from.extra.is_original === 0) baseBottomItem.splice(2, 0, 'extra.source')
       switch (this.from.extra.type) {
         case 'news':
-          arr = [...baseTopItem, 'extra.content', ...baseBottomItem]
+          arr = [...baseTopItem, 'extra.content', 'extra.custom_rec', ...baseBottomItem]
           break
         case 'video':
-          arr = [...baseTopItem, 'extra.video_extra.video_list', ...baseBottomItem]
+          arr = [...baseTopItem, 'extra.video_extra.video_list', 'extra.custom_rec', ...baseBottomItem]
           break
         case 'album':
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
@@ -1285,6 +1307,7 @@ export default {
             view_base_num: extra.view_base_num, // 点击量
             praise_base_num: extra.praise_base_num, // 点赞量
             post_base_num: extra.post_base_num, // 转发量
+            custom_rec: extra.custom_rec || [], // 相关文稿
             video_extra: {
               video_list: extra.video_extra && extra.video_extra.video_list || []
             }, // 视频
