@@ -274,6 +274,7 @@
 
 <script>
   import { getproduct, getUserLists, getUserDetail, editDetail } from '@/api/manage'
+  import { disableSendMsg, releaseShutup /* 拉黑用户 */} from '@/api/workbench'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
     export default {
@@ -376,14 +377,17 @@
         /* 查看邀请记录 */
         invitedRecord (row) {
           const { id } = row;
+          this.$emit('invitedRecord', id);
         },
         /* 查看积分值 */
         integralValue (row) {
           const { id } = row;
+          this.$emit('integralValue', id);
         },
         /* 查看登录记录 */
         loginRecord (row) {
           const { id } = row;
+          this.$emit('loginRecord', id);
         },
         /* 编辑 */
         handleEdit (row) {
@@ -431,7 +435,7 @@
             if(res.code == 200) {
               const data = res.data;
               this.total = data.totalCount;
-              this.tableData = data.list;
+              this.tableData = data.list || [];
             }
           }).finally(() => {
             this.loading = false;

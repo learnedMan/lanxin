@@ -65,6 +65,23 @@
         size="small"
       >
         <el-form-item
+          label="所属产品:"
+          prop="sourceId"
+        >
+          <el-select
+            v-model="queryParams.sourceId"
+            placeholder="请选择所属产品"
+            clearable
+          >
+            <el-option
+              v-for="item in productLists"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
           label="反馈人:"
           prop="feedbackNickname"
         >
@@ -382,6 +399,7 @@
 
 <script>
 import { getSourceList, getFeedback, getFeedbackDetail, reply } from '@/api/workbench.js'
+import { getproduct } from '@/api/manage'
 import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
 export default {
@@ -391,6 +409,7 @@ export default {
   },
   data() {
     return {
+      productLists: [],
       queryParams: {
         feedback_nickname: '', // 反馈人
         feedback_mobile: '', // 联系人
@@ -402,7 +421,7 @@ export default {
         end_reply_time: '', // 回复结束时间
         begin_feedback_time: '', // 反馈开始时间
         end_feedback_time: '', // 反馈结束时间
-        sourceId: 6, // 来源id
+        sourceId: '', // 来源id
         page: 1,
         limit: 10
       },
@@ -498,11 +517,23 @@ export default {
       }
     }
   },
-  created() {
+  async created() {
+    await this.getProductList();
     this.getSourceList();
     this.getList()
   },
   methods: {
+    /* 获取产品列表 */
+    getProductList () {
+      return getproduct({}).then(res => {
+        const data = res.data || []
+        this.productLists = data.map(n => ({
+          label: n.name,
+          value: n.source_id
+        }));
+        this.queryParams.sourceId = data?.[0]?.source_id;
+      });
+    },
     /* 重置 */
     handleReset() {
       this.feedbackDate = ''
