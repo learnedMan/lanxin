@@ -74,9 +74,9 @@
         prop="mobile"
       />
       <el-table-column
-        label="注册时间"
+        label="登录时间"
         align="center"
-        prop="date"
+        prop="createdTime"
       />
     </el-table>
     <pagination
@@ -150,7 +150,7 @@
           if(res.code == 200) {
             const data = res.data;
             Object.assign(this.queryParams, {
-              userId: 23923735,//data.userId,
+              userId: data.userId,
               sourceId: data.sourceId,
             })
           }
