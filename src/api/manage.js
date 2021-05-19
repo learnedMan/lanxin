@@ -572,3 +572,12 @@ export function getLoginLists(data) {
     data
   })
 }
+
+/* 积分变更日志 */
+export function getIntegral(data) {
+  return request2({
+    url: '/internal/points/queryPointsLog',
+    method: 'post',
+    data
+  })
+}

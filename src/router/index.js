@@ -94,6 +94,12 @@ export const constantRoutes = [
         meta: { title: '新闻审核' }
       },
       {
+        path: 'gossip',
+        component: () => import('@/views/workbench/gossip/index'),
+        name: 'Gossip',
+        meta: { title: '爆料审核' }
+      },
+      {
         path: 'rejectReasons',
         component: () => import('@/views/workbench/rejectReasons'),
         name: 'RejectReasons',
