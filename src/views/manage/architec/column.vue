@@ -260,6 +260,15 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
+
+            <el-form-item v-show="form.type=='service'"
+              label-width="150px" label="模块类型:" prop="extra.template">
+              <el-select clearable="" v-model="form.extra.template" placeholder="请选择">
+                <el-option v-for="item in moduleoption" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
             <el-form-item v-show="form.type=='service'"
               label-width="150px" label="链接类型:" prop="extra.link.type">
               <el-select v-model="form.extra.link.type" placeholder="请选择">
@@ -347,6 +356,20 @@ import ChildPage1 from './pages/c_page1'
           value: 0,
           label: '禁用'
         }],
+        moduleoption:[
+          {
+            value: 'top',
+            label: '顶部卡片'
+          },
+          {
+            value: 'recommend',
+            label: '推荐'
+          },
+          {
+            value: 'category',
+            label: '分类'
+          },
+        ],
         linktypeoption:[
           {
             value: 'outer_link',
@@ -418,7 +441,6 @@ import ChildPage1 from './pages/c_page1'
           name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
           'extra.cover': [{ required: true, message: "请选择栏目封面", trigger: "blur" }],
           'extra.show_num': [{ required: true, message: "请输入展示条数", trigger: "blur" }],
-          'extra.link.url': [{ required: true, message: "请输入链接地址", trigger: "blur" }],
           type: [{ required: true, message: "请选择栏目类型", trigger: "blur" }],
           status: [{ required: true, message: "请选择是否启用", trigger: "blur" }],
         },
@@ -557,7 +579,8 @@ import ChildPage1 from './pages/c_page1'
               type:'outer_link',
               url:'',
               id:''
-            }
+            },
+            template:''
           }
         };
       },
