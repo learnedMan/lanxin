@@ -575,9 +575,9 @@ export default {
         const data = res.data || []
         this.searchLists[0].selectOption = data.map(n => ({
           label: n.name,
-          value: n.id
+          value: n.source_id
         }));
-        this.search.sourceId = data?.[0]?.id;
+        this.search.sourceId = data?.[0]?.source_id;
       });
     },
   }

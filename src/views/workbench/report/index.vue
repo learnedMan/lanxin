@@ -65,6 +65,23 @@
         size="small"
       >
         <el-form-item
+          label="所属产品:"
+          prop="sourceId"
+        >
+          <el-select
+            v-model="queryParams.sourceId"
+            placeholder="请选择所属产品"
+            clearable
+          >
+            <el-option
+              v-for="item in productLists"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
           label="举报人:"
           prop="report_nickname"
         >
@@ -404,6 +421,7 @@
 
 <script>
 import { getReport, getReportDetail, reportReply } from '@/api/workbench.js'
+import { getproduct } from '@/api/manage'
 import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
 export default {
@@ -412,6 +430,7 @@ export default {
   },
   data() {
     return {
+      productLists: [],
       queryParams: {
         report_nickname: '',
         report_mobile: '',
@@ -424,7 +443,7 @@ export default {
         begin_report_time: '',
         end_report_time: '',
         mediaId: '',
-        sourceId: 6, // 来源id
+        sourceId: '', // 来源id
         page: 1,
         limit: 10
       },
@@ -532,10 +551,22 @@ export default {
       }
     }
   },
-  created() {
-    this.getList()
+  async created() {
+    await this.getProductList();
+    this.getList();
   },
   methods: {
+    /* 获取产品列表 */
+    getProductList () {
+      return getproduct({}).then(res => {
+        const data = res.data || []
+        this.productLists = data.map(n => ({
+          label: n.name,
+          value: n.source_id
+        }));
+        this.queryParams.sourceId = data?.[0]?.source_id;
+      });
+    },
     /* 重置 */
     handleReset() {
       this.reportDate = ''

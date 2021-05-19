@@ -577,3 +577,50 @@ export function styleinfo(id) {
     method: 'get',
   })
 }
+
+/*--------------------用户管理-用户列表---------------------------*/
+
+/* 列表 */
+export function getUserLists(data) {
+  return request2({
+    url: '/internal/uc/queryUserList',
+    method: 'post',
+    data
+  })
+}
+
+/* 详情 */
+export function getUserDetail(params) {
+  return request2({
+    url: '/internal/uc/queryUserInfo',
+    method: 'get',
+    params
+  })
+}
+
+/* 修改详情 */
+export function editDetail(data) {
+  return request2({
+    url: '/internal/uc/updateUserInfo',
+    method: 'post',
+    data
+  })
+}
+
+/*邀请码列表 */
+export function getInvited(data) {
+  return request2({
+    url: '/internal/uc/queryInvitationcodeList',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取登录日志 */
+export function getLoginLists(data) {
+  return request2({
+    url: '/internal/uc/queryLoginLogList',
+    method: 'post',
+    data
+  })
+}

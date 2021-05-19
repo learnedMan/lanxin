@@ -173,17 +173,17 @@
                 </el-form-item>
                 <!-- 封面样式 -->
                 <el-form-item
-                  v-show="initFrom().includes('extra.cover_type')"
-                  v-bind="formOptions['extra.cover_type'].item.props"
+                  v-show="initFrom().includes('extra.template_style')"
+                  v-bind="formOptions['extra.template_style'].item.props"
                 >
                   <el-radio-group
                     size="small"
-                    :value="parseObj(formOptions['extra.cover_type'].item)"
-                    @input="handleInput($event, formOptions['extra.cover_type'].item)"
+                    :value="parseObj(formOptions['extra.template_style'].item)"
+                    @input="handleInput($event, formOptions['extra.template_style'].item)"
                     @change="handleTabChange"
                   >
                     <el-radio
-                      v-for="list of formOptions['extra.cover_type'].item.lists"
+                      v-for="list of formOptions['extra.template_style'].item.lists"
                       :key="list.value"
                       :label="list.value"
                       style="line-height: 32px"
@@ -280,17 +280,32 @@
                 </el-form-item>
                 <!-- 链接对象 -->
                 <el-form-item
-                  v-show="initFrom().includes('extra.link.id')"
-                  v-bind="formOptions['extra.link.id'].item.props"
+                  v-show="initFrom().includes('target_obj')"
+                  v-bind="formOptions['target_obj'].item.props"
                 >
                   <el-radio-group
                     size="small"
-                    :value="parseObj(formOptions['extra.link.id'].item)"
-                    @input="handleInput($event, formOptions['extra.link.id'].item)"
+                    :value="parseObj(formOptions['target_obj'].item)"
+                    @input="handleInput($event, formOptions['target_obj'].item)"
                     @change="handleTabChange"
                   >
-                    <el-radio v-for="list of formOptions['extra.link.id'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                    <el-radio v-for="list of formOptions['target_obj'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
                   </el-radio-group>
+                </el-form-item>
+                <!-- 栏目id,活动id,内部其他功能id -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.link.id')"
+                  v-bind="formOptions['extra.link.id'].item.props"
+                  label-width="auto"
+                >
+                  <el-input
+                    :value="parseObj(formOptions['extra.link.id'].item)"
+                    v-bind="formOptions['extra.link.id'].item.componentProps"
+                    clearable
+                    size="small"
+                    style="width: 200px"
+                    @input="handleInput($event, formOptions['extra.link.id'].item)"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -602,12 +617,12 @@ export default {
             }
           }
         },
-        'extra.cover_type': {
+        'extra.template_style': {
           item: {
-            key: 'extra.cover_type',
+            key: 'extra.template_style',
             props: {
               label: '封面样式:',
-              prop: 'extra.cover_type'
+              prop: 'extra.template_style'
             },
             component: 'radio', // 组件名
             lists: [
@@ -1037,7 +1052,7 @@ export default {
             lists: [
               {
                 label: '目标对象',
-                value: 'outerlink'
+                value: 'target_obj'
               },
               {
                 label: '外链',
@@ -1046,6 +1061,21 @@ export default {
               {
                 label: '授权外链',
                 value: 'auth_link'
+              },
+              {
+                label: '乡镇首页',
+                value: 'matrix',
+                relatedLabel: '对应矩阵栏目ID'
+              },
+              {
+                label: '活动',
+                value: 'activity',
+                relatedLabel: '活动ID'
+              },
+              {
+                label: '内部其他功能',
+                value: 'internal_link',
+                relatedLabel: '对应功能ID'
               }
             ]
           },
@@ -1053,32 +1083,46 @@ export default {
             { required: true, message: '请选择链接类型', trigger: 'change' }
           ]
         },
-        'extra.link.id': {
+        target_obj: {
           item: {
-            key: 'extra.link.id',
+            key: 'target_obj',
             props: {
               label: '链接对象:',
-              prop: 'extra.link.id'
+              prop: 'target_obj'
             },
             component: 'radio', // 组件名
             lists: [
               {
-                label: '广电',
-                value: '1'
+                label: '看电视',
+                value: 'tv'
               },
               {
-                label: '兑吧',
-                value: '2'
+                label: '听广播',
+                value: 'radio'
               },
               {
-                label: '其他',
-                value: '3'
+                label: '看报纸',
+                value: 'newspaper'
               }
             ]
           },
           rule: [
             { required: true, message: '请选择链接对象', trigger: 'change' }
           ]
+        },
+        'extra.link.id': {
+          item: {
+            key: 'extra.link.id',
+            props: {
+              label: 'ID:',
+              prop: 'extra.link.id'
+            },
+            component: 'input', // 组件名
+            componentProps: {
+              placeholder: '请输入ID'
+            }
+          },
+          rule: { required: true, message: '请选择链接对象', trigger: 'change' }
         },
         'extra.link.url': {
           item: {
@@ -1120,11 +1164,12 @@ export default {
       from: {
         author_name: '', // 作者
         editor_name: '', // 编辑
+        target_obj: 'tv', // 和链接类型关联
         extra: {
           type: 'news', // 类型
           title: '', // 标题
           subtitle: '', // 副标题
-          cover_type: '240', // 封面样式
+          template_style: '240', // 封面样式
           cover: [], // 封面样式的图片集合
           intro: '', // 简介
           tags: '', // 标签
@@ -1149,7 +1194,7 @@ export default {
             image_list: []
           }, // 图片
           link: {
-            type: 'outerlink', // 链接类型
+            type: 'target_obj', // 链接类型
             id: '', // 链接对象
             url: '' // 链接地址
           } // 外链
@@ -1229,11 +1274,11 @@ export default {
     /* 处理需要传给后台的数据 */
     initFrom() {
       let arr = []
-      const cover_type = this.formOptions['extra.cover_type'].item.lists.find(n => n.value === this.from.extra.cover_type)
+      const template_style = this.formOptions['extra.template_style'].item.lists.find(n => n.value === this.from.extra.template_style)
       // 确定图片显示个数
-      this.formOptions['extra.cover'].item.componentProps.count = cover_type?.count || 1
+      this.formOptions['extra.cover'].item.componentProps.count = template_style?.count || 1
       // 基础显示的item
-      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.cover_type', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
+      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
       // 显示发布时间
       if (this.from.extra.publish_timer === '1') baseTopItem.push('extra.set_created_at')
       const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
@@ -1251,8 +1296,17 @@ export default {
           break
         case 'outer_link':
           arr = [...baseTopItem, 'extra.link.type']
-          if (this.from.extra.link.type === 'outerlink') arr.push('extra.link.id')
-          else arr.push('extra.link.url')
+          const type = this.from.extra.link.type;
+          if (type === 'target_obj'){
+            arr.push('target_obj');
+          } else if(['outer_link', 'auth_link'].includes(type)) {
+            arr.push('extra.link.url')
+          } else {
+            const current = this.formOptions['extra.link.type'].item.lists.find(n => n.value === type);
+            this.formOptions['extra.link.id'].item.props.label = `${current.relatedLabel}:`;
+            this.formOptions['extra.link.id'].rule.message = `请输入${current.relatedLabel}`;
+            arr.push('extra.link.id');
+          }
           break
       }
       return arr
@@ -1283,6 +1337,11 @@ export default {
               }
             })
           }
+          if(obj.extra.link.type === 'target_obj') obj.extra.link = {
+            ...obj.extra.link,
+            type: obj.target_obj
+          }
+          delete obj.target_obj;
           changeNews(this.id, obj).then(() => {
             this.$message.success('保存草稿成功!')
             this.$emit('refresh')
@@ -1322,15 +1381,22 @@ export default {
     /* 获取详情数据 */
     getList() {
       return getNewDetail(this.id).then(res => {
-        const extra = res.extra
+        const extra = res.extra;
+        let link_type = extra.link && extra.link.type || '';
+        let target_obj = '';
+        if(this.formOptions.target_obj.item.lists.find(n => n.value === link_type)) {
+          target_obj = link_type;
+          link_type = 'target_obj';
+        }
         this.from = {
           author_name: res.author_name, // 作者
           editor_name: res.editor_name, // 编辑
+          target_obj,
           extra: {
             type: extra.type, // 类型
             title: extra.title, // 标题
             subtitle: extra.subtitle, // 副标题
-            cover_type: extra.cover_type || '240', // 封面样式 (正式数据需要修改)
+            template_style: extra.template_style || '240', // 封面样式 (正式数据需要修改)
             cover: extra.cover, // 封面样式的图片集合
             intro: extra.intro, // 简介
             tags: extra.tags, // 标签
@@ -1355,7 +1421,7 @@ export default {
               image_list: extra.album_extra && extra.album_extra.image_list || []
             }, // 图片
             link: {
-              type: extra.link && extra.link.type || '', // 链接类型
+              type: link_type, // 链接类型
               id: extra.link && extra.link.id || '', // 链接对象
               url: extra.link && extra.link.url || '' // 链接地址
             } // 外链
