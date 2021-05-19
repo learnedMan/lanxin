@@ -260,15 +260,37 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
-            <!-- 外链 -->
-            <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'" 
-              label-width="150px" label="链接地址:" prop="extra.link.url">
-              <el-input
-                style="width: 350px"
-                placeholder="请输入栏目名称"
-                v-model="form.extra.link.url"
-              ></el-input>
+            <el-form-item v-show="form.type=='service'"
+              label-width="150px" label="链接类型:" prop="extra.link.type">
+              <el-select v-model="form.extra.link.type" placeholder="请选择">
+                <el-option v-for="item in linktypeoption" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
+            <!-- 外链 -->
+            <div v-if="form.type=='service'&&form.extra.link.type=='app_redirect'">
+              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'" 
+                label-width="150px" label="链接地址:" prop="extra.link.url">
+                <el-input
+                  style="width: 350px"
+                  placeholder="请输入栏目名称"
+                  v-model="form.extra.link.id"
+                ></el-input>
+              </el-form-item>
+              <div v-else></div>
+            </div>
+            <div v-else>
+              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'" 
+                label-width="150px" label="链接地址:" prop="extra.link.url">
+                <el-input
+                  style="width: 350px"
+                  placeholder="请输入栏目名称"
+                  v-model="form.extra.link.url"
+                ></el-input>
+              </el-form-item>
+            </div>
+
+            
         </div>
       </el-form>
       <div class="dialog-footer" slot="footer">
@@ -325,6 +347,32 @@ import ChildPage1 from './pages/c_page1'
           value: 0,
           label: '禁用'
         }],
+        linktypeoption:[
+          {
+            value: 'outer_link',
+            label: '外链'
+          },
+          {
+            value: 'auth_link',
+            label: '授权外链'
+          },
+          {
+            value: 'app_redirect',
+            label: 'app跳转'
+          },
+          {
+            value: 'third_party_app_redirect',
+            label: '三方app跳转'
+          },
+          {
+            value: 'hyg_auth',
+            label: '好易购授权'
+          },
+          {
+            value: 'hyg_force_auth',
+            label: '好易购强制授权'
+          },
+        ],
         groupoptions: [{
           value: 'home',
           label: '首页'
@@ -506,8 +554,9 @@ import ChildPage1 from './pages/c_page1'
             background:'',
             // 外链
             link:{
-              type:'url',
-              url:''
+              type:'outer_link',
+              url:'',
+              id:''
             }
           }
         };
@@ -718,7 +767,6 @@ import ChildPage1 from './pages/c_page1'
       },
       // 确定弹窗
       enterDialog() {
-        // console.log(this.form)
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
           var data = this.form
@@ -739,6 +787,8 @@ import ChildPage1 from './pages/c_page1'
           data.extra.multi_review = new_multi_review;
 
           data.extra.cover = [{'path':data.extra.cover,'intro':''}];
+
+          console.log(data)
           // return
           if (this.dialogType=='edit') {
             //修改

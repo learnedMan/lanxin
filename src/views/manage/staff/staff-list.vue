@@ -267,10 +267,10 @@ import { validUsername , validEmail } from '@/utils/validate'
           label: '启用'
         },{
           value: '2',
-          label: '禁用'
+          label: '冻结'
         },{
           value: '0',
-          label: '冻结'
+          label: '禁用'
         }],
         dialogFormVisible: false,
         form: {
