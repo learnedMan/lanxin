@@ -1,66 +1,44 @@
 <template>
     <div class="page_c">
         <div v-show="returntvList.length>0" class="pbox" style="display:flex;padding-top:20px;width:1530px;">
-            <el-tabs @tab-click="tabsClick" v-model="queryParams.channel_id" class="left" tab-position="left" style="height:500px;margin-right:20px;width:180px;">
+            <el-tabs  @tab-click="tabsClick" v-model="queryParams.channel_id" class="left" tab-position="left" style="height:500px;margin-right:20px;width:180px;">
                 <el-tab-pane v-for="(item,index) in returntvList" :label="item.name" :name="''+ item.id"></el-tab-pane>
             </el-tabs>
             <div class="right" style="width:1400px;">
-                <div>
-                    <div class="top" style="display:inline;">
-                        <el-form ref="queryForm" :model="queryParams" :inline="true">
-                            <el-form-item label="节目名称：">
-                                <el-input
-                                v-model="queryParams.name"
-                                placeholder="请输入关键字"
-                                clearable
-                                size="small"
-                                style="width: 200px"
-                                @keyup.enter.native="handleQuery"
-                                />
-                            </el-form-item>
-                            <el-form-item label="状态：">
-                                <el-select clearable="" v-model="queryParams.status" placeholder="请选择">
-                                <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
-                                </el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="创建日期:">
-                                <el-date-picker
-                                    v-model="dateValue"
-                                    type="daterange"
-                                    align="right"
-                                    unlink-panels
-                                    range-separator="~"
-                                    value-format="yyyy-MM-dd HH:mm:ss"
-                                    start-placeholder="开始日期"
-                                    end-placeholder="结束日期"
-                                    :picker-options="pickerOptions"
-                                />
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="info"  size="mini">重置</el-button>
-                                <el-button type="primary" size="mini">搜索</el-button>
-                                <el-button type="primary" size="mini">添加</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </div>
+                <div v-if="!showlist">
+                    <el-button style="margin-left:20px;" @click="adddata" type="primary" size="small" >添加</el-button>
                 </div>
-                <el-table 
+                <el-table
+                    v-if="!showlist" 
                     style="margin-top:20px;"
                     :header-cell-style="{background:'#eef1f6',color:'#606266'}"
                     border 
                     v-loading="loading"
                     :data="dataList">
+                    <el-table-column label="id" align="center" prop="id" :show-overflow-tooltip="true" />
                     <el-table-column label="节目名称" align="center" prop="name" :show-overflow-tooltip="true" />
-                    <el-table-column label="开始时间" align="center" prop="time" :show-overflow-tooltip="true" />
-                    <!-- <el-table-column label="播放时长" align="center" prop="extra.duration" :show-overflow-tooltip="true" /> -->
-                    <el-table-column label="允许回看" align="center" :show-overflow-tooltip="true" >
+                    <el-table-column label="权重" align="center" prop="sort" :show-overflow-tooltip="true" />
+                    <el-table-column 
+                        label="状态" 
+                        align="center" 
+                        prop="name" 
+                        :show-overflow-tooltip="true" >
                         <template slot-scope="scope">
-                            {{scope.row.extra.allow_replay|formatallow_replay}}
+                        <el-select @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
+                            <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
                         </template>
                     </el-table-column>
-                    <el-table-column width="150px" label="操作" align="center">
+                    <el-table-column label="创建时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
+                    <el-table-column width="200px" label="操作" align="center">
                         <template slot-scope="scope">
+                        <el-button
+                            size="mini"
+                            type="text"
+                            icon="el-icon-tickets"
+                            style="color:#67C23A;"
+                            @click="golist(scope.row)">节目单</el-button>
                         <el-button
                             size="mini"
                             type="text"
@@ -77,6 +55,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <Pageclist :_channel_id="_channel_id" v-if="showlist" />
             </div>
         </div>
         <el-dialog
@@ -91,24 +70,40 @@
             :rules="rules"
             ref="dataForm">
                 <el-form-item label-width="120px" label="节目名称:" prop="name">
-                <el-input
-                    style="width: 350px"
-                    placeholder="请输入节目名称"
-                    v-model="form.name"
-                ></el-input>
+                    <el-input
+                        style="width: 350px"
+                        placeholder="请输入节目名称"
+                        v-model="form.name"
+                    ></el-input>
                 </el-form-item>
-                <el-form-item label-width="120px" label="开始时间:" prop="time">
-                <el-time-picker
-                    v-model="form.time"
-                    value-format="HH:mm:ss"
-                    placeholder="请选择时间">
-                </el-time-picker>
+                <el-form-item label-width="120px" label="节目Logo/封面:" prop="extra.cover[0].path">
+                    <el-upload
+                    class="avatar-uploader"
+                    :action="VUE_APP_BASE_API + '/api/upload/image'"
+                    :headers="importHeaders"
+                    name="image"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess.bind(this,'cover')"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="form.extra.cover[0].path" :src="form.extra.cover[0].path" class="avatar" />
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
                 </el-form-item>
-                <el-form-item label-width="120px" label="是否允许回看:" prop="extra.allow_replay">
-                <el-select v-model="form.extra.allow_replay" placeholder="请选择">
-                    <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>
-                </el-select>
+                <el-form-item label-width="120px" label="权重(排序):" prop="sort">
+                    <el-input
+                        style="width: 350px"
+                        placeholder="请输入权重"
+                        v-model="form.sort"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label-width="120px" label="绑定视频栏目:" prop="extra.vms_channel">
+                    <el-cascader v-model="form.extra.vms_channel" :props="{value:'code',label:'name',emitPath:false}" :options="videocatalogoptions" :show-all-levels="false"></el-cascader>
+                </el-form-item>
+                <el-form-item label-width="120px" label="是否启用:" prop="status">
+                    <el-select v-model="form.status" placeholder="请选择">
+                        <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <div class="dialog-footer" slot="footer">
@@ -125,8 +120,15 @@ import {
   gettv_programs,
   addtv_programs,
   editprograms,
-  delprograms
+  delprograms,
+  getReplaysByChannel,
+  getvms_channels,
+  addtvchannels,
+  getChildcatalog,
+  editChildcatalog,
+  delcatalog
   } from '@/api/manage'
+import Pageclist from './page_c/page_c_list'
 export default {
     name:"page_c",
     props:{
@@ -135,18 +137,19 @@ export default {
         default:0
       }
     },
+    components: {
+        Pageclist
+    },
     data () {
-        var nowday = this.getDay(0)
+        var mytoken = sessionStorage.getItem("token");
         return {
-            pickerOptions:{
-                disabledDate(time) {
-                    return time.getTime()-3600 * 1000 * 24 * 7 > Date.now()||time.getTime()+3600 * 1000 * 24 * 7 < Date.now();
-                },
-            },
+            showlist:false,
+            _channel_id:'',
+            importHeaders: { Authorization: mytoken }, //传图片时的token
             loading:true,
             dataList:[],
             tvList:[],
-            dateValue:'',
+            videocatalogoptions:[],
             // 查询参数
             tvqueryParams: {
                 page: 1,
@@ -158,100 +161,93 @@ export default {
                 page: 1,
                 pageSize: 999,
                 channel_id:'',
-                date:nowday
+                type:"tv_replay"
             },
             //内部
             innerVisible: false,
             dialogTitle:'',
             form:{},
             rules: {
-                time: [{ required: true, message: "请选择时间", trigger: "blur" }],
-                "extra.allow_replay": [{ required: true, message: "请选择是否允许回看", trigger: "blur" }]
+                sort: [{ required: true, message: "请输入权重", trigger: "blur" }],
+                status: [{ required: true, message: "请选择是否允许回看", trigger: "blur" }],
+                "extra.cover[0].path": [{ required: true, message: "请选择节目Logo/封面", trigger: "blur" }],
+                "extra.vms_channel": [{ required: true, message: "请选择绑定视频栏目", trigger: "blur" }]
             },
             dialogType: "add",
             statusoptions: [{
                 value: 1,
-                label: '是'
+                label: '启用'
                 },{
-                value: 2,
-                label: '否'
+                value: 0,
+                label: '禁用'
             }],
         }
     },
     created () {
-        this.getList() 
-        this.initForm(); 
+        this.getList()
+        this.initForm();
+        this.getvms_channels()
     },
     watch:{
       productId(val){
         this.tvqueryParams.product_id=val
         this.gettvList();
-        this.getList()
+        // this.getList()
       },
     },
-    filters: {
-        dateformat(val,str){
-            var val = new Date(val);
-            let wk = val.getDay()
-            let weeks = ['(周日)', '(周一)', '(周二)', '(周三)', '(周四)', '(周五)', '(周六)']
-            let week = weeks[wk];
-            let mm = val.getMonth() + 1
-            let dd = String(val.getDate() < 10 ? '0' + val.getDate() : val.getDate())
-            if(str){
-                return mm+'.'+dd+ ' (今天)'
-            }else{
-                return  mm+'.'+dd+' '+ week
-            }
-        },
-        formatallow_replay(val){
-            if(val==1){
-              return '是'
-            }else{
-              return '否'
-            }
-        }
-    },
     computed:{
-        nowDate(){
-            return (index)=>{
-                return this.getDay(index);
-            }
+        VUE_APP_BASE_API() {
+            return process.env.VUE_APP_BASE_API;
         },
         returntvList:function(){
             return this.tvList.filter(function (item) {
                 return item.status==1
             })
+            // return this.tvList
         }
     },
     methods: {
-        pickerdatechange(){
-            this.getList()
+        golist(res){
+            this._channel_id = res.id;
+            this.showlist = true;
+            // console.log(res)
         },
-        getDay(day) {　　
-            var today = new Date();　　
-            var targetday_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;　　
-            today.setTime(targetday_milliseconds); //注意，这行是关键代码
-            var tYear = today.getFullYear();　　
-            var tMonth = today.getMonth();　　
-            var tDate = today.getDate();　　
-            tMonth = this.doHandleMonth(tMonth + 1);　　
-            tDate = this.doHandleMonth(tDate);　　
-            return tYear + "-" + tMonth + "-" + tDate;
+        statuschange(data){
+            // data.father = data.father.id
+            editChildcatalog(data.id,data).then(response => {
+            this.$message({
+                message: '修改成功',
+                type: 'success'
+            });
+            this.getList();
+            })
         },
-        doHandleMonth (month) {
-            var m = month
-            if (month.toString().length === 1) {
-                m = '0' + month
+        getvms_channels(){
+            getvms_channels().then(response => {
+                this.videocatalogoptions = response
+            })
+        },
+        handleAvatarSuccess(name,res) {
+            this.form.extra.cover[0].path = res.path;
+            this.$forceUpdate();
+        },
+        beforeAvatarUpload(file) {
+            const isLt = file.size / 1024 / 1024 < 20;
+            if (!isLt) {
+            this.$message.error("上传头像图片大小不能超过 20MB!");
             }
-            return m
+            return isLt;
         },
         getList(){
+            this.showlist = false;
             this.loading = true;
-            var data = JSON.parse(JSON.stringify(this.queryParams));
-            gettv_programs(data).then(response => {
-                this.loading = false;
-                this.dataList = response.data;
-            })
+            var data = this.queryParams.channel_id;
+            if(data){
+                getChildcatalog(data).then(response => {
+                    this.loading = false;
+                    this.dataList = response;
+                })
+            }
         },
         gettvList(){
             var data = this.tvqueryParams;
@@ -263,20 +259,31 @@ export default {
             })
         },
         tabsClick(){
+            // this.initForm()
             this.getList()
         },
         initForm() {
           if (this.$refs.dataForm) {
             this.$refs.dataForm.resetFields();
           }
-          this.form = {
-              name: "",
-              time: "",
-              extra: {
-                //   duration: "",
-                  allow_replay: ''
-              }
-          };
+            this.form = {
+                "name": "",
+                "product_id": this.productId,
+                "father": this.queryParams.channel_id,
+                "sort": 0,
+                "status": 1,
+                "type": "tv_replay",
+                "extra": {
+                    "cover": [
+                        {
+                            "path": "",
+                            "intro": ""
+                        }
+                    ],
+                    "vms_channel":""
+                }
+            }
+            console.log(this.form)
         },
         adddata(){
           this.initForm();
@@ -298,12 +305,12 @@ export default {
         },
         // 删除节目
         deldata(row){
-            this.$confirm('此操作将永久删除节目名称为'+row.name+'的节目, 是否继续?', '提示', {
+            this.$confirm('此操作将永久删除栏目id为'+row.id+'的节目, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                delprograms(row.id).then(response => {
+                delcatalog(row.id).then(response => {
                     this.$message({
                     message: '删除成功',
                     type: 'success'
@@ -325,23 +332,26 @@ export default {
             this.$refs["dataForm"].validate((valid) => {
                 if (!valid) return;
                 var obj = {}
-                obj.type = '1';
                 obj.channel_id = this.queryParams.channel_id;
-                obj.date = this.queryParams.date;
                 var data = Object.assign(obj,this.form)
+                // data = JSON.parse(JSON.stringify(data))
+                // if(data.extra.vms_channel){
+                //     data.extra.vms_channel = data.extra.vms_channel[data.extra.vms_channel.length-1];
+                // }
                 if (this.dialogType=='edit') {
-                    editprograms(data.id,data).then(response => {
+                    editChildcatalog(data.id,data).then(response => {
                         this.$message({
                             message: '修改成功',
                             type: 'success'
                         });
                         this.innerVisible = false;
                         this.getList();
+
                     })
                 }else{
                     // console.log('新增')
                     // 新增
-                    addtv_programs(data).then(response => {
+                    addtvchannels(data).then(response => {
                         this.$message({
                             message: '新建成功',
                             type: 'success'
@@ -355,5 +365,103 @@ export default {
     }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
+}
+
+.role-box {
+  .el-tabs__content {
+    height: calc(100vh - 150px);
+    overflow: auto;
+  }
+}
+
+.placeholderdiv input::-webkit-input-placeholder {
+  color:#717171 !important;
+}
+.placeholderdiv input::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color:#717171 !important;
+}
+.placeholderdiv input:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color:#717171 !important;
+}
+.placeholderdiv input:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color:#717171 !important;
+}
+</style>
+
+
+
+<style scoped lang="scss">
+
+.clearflex {
+  *zoom: 1;
+}
+
+.clearflex:after {
+  content: "";
+  display: block;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+}
+
+.fl-right {
+  float: right;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
+}
+
+.role-box {
+  .el-tabs__content {
+    height: calc(100vh - 150px);
+    overflow: auto;
+  }
+}
 </style>

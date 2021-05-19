@@ -479,6 +479,58 @@ export function delprograms(id) {
   })
 }
 
+// 点播
+export function getvms_channels() {
+  return request({
+    url: '/api/videos/vms_channels/?cloud=1',
+    method: 'get'
+  })
+}
+
+export function addtvchannels(data) {
+  return request({
+    url: '/api/channels',
+    method: 'post',
+    data:data
+  })
+}
+
+export function getChildcatalog(id) {
+  return request({
+    url: `/api/channels/${id}/getChild`,
+    method: 'get',
+  })
+}
+export function editChildcatalog(id,data) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+export function delcatalog(id) {
+  return request({
+    url: '/api/channels/'+id,
+    method: 'delete'
+  })
+}
+
+// 通过栏目获取点播列表
+export function getReplaysByChannel(query) {
+  return request({
+    url: '/api/replays/getReplaysByChannel',
+    method: 'get',
+    params:query
+  })
+}
+
+export function delreplays(id) {
+  return request({
+    url: '/api/replays/'+id,
+    method: 'delete'
+  })
+}
+
 
 
 // 图文直播

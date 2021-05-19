@@ -17,7 +17,7 @@
         <pageb ref="page_b" :productId="product_id"  />
       </el-tab-pane>
       <el-tab-pane label="电视点播" name="page_c">
-        <pagec :productId="product_id" />
+        <pagec ref="page_c" :productId="product_id" />
       </el-tab-pane>
       <el-tab-pane label="广播频道" name="page_d">
         <paged :productId="product_id" :productList="productList" />
@@ -26,7 +26,7 @@
         <pagee ref="page_e" :productId="product_id" />
       </el-tab-pane>
       <el-tab-pane label="广播点播" name="page_f">
-        <pagef />
+        <pagef ref="page_f" :productId="product_id" />
       </el-tab-pane>
     </el-tabs>
 
@@ -69,9 +69,17 @@ export default {
         this.$refs.page_b.gettvList();
         this.$refs.page_b.initForm();
       }
+      if(tab.index==2){
+        this.$refs.page_c.initForm();
+        this.$refs.page_c.gettvList();
+      }
       if(tab.index==4){
         this.$refs.page_e.gettvList();
         this.$refs.page_e.initForm();
+      }
+      if(tab.index==5){
+        this.$refs.page_f.initForm();
+        this.$refs.page_f.gettvList();
       }
     },
     getproductList(){

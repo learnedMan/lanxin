@@ -100,11 +100,11 @@
         </el-form-item>
         <el-form-item label-width="120px" label="适用于" prop="forway">
             <el-checkbox-group @change="$forceUpdate()" v-model="form.forway">
-                <el-checkbox label="电视直播"></el-checkbox>
-                <el-checkbox label="电视点播"></el-checkbox>
+                <el-checkbox label="直播"></el-checkbox>
+                <el-checkbox label="点播"></el-checkbox>
             </el-checkbox-group>
         </el-form-item>
-        <el-form-item v-if="form.forway.indexOf('电视直播')>-1" label-width="120px" label="流地址">
+        <el-form-item v-if="form.forway.indexOf('直播')>-1" label-width="120px" label="流地址">
             <el-input style="width: 400px" placeholder="请输入内容" v-model="form.extra.stream_urls[0].url">
                 <template slot="prepend">超清</template>
             </el-input>
@@ -340,11 +340,11 @@ import {
         this.$nextTick(() => { 
           this.form = JSON.parse(JSON.stringify(row))
           this.form.forway = [];
-          if(this.form.extra.has_replay){
-            this.form.forway.push('电视点播')
+          if(this.form.extra.has_replay==1){
+            this.form.forway.push('点播')
           }
-          if(this.form.extra.has_live){
-            this.form.forway.push('电视直播')
+          if(this.form.extra.has_live==1){
+            this.form.forway.push('直播')
           }
           console.log(this.form)
         })
@@ -378,18 +378,18 @@ import {
       },
       // 确定弹窗
       enterDialog() {
-        if(this.form.forway.indexOf('电视直播')>-1){
+        if(this.form.forway.indexOf('直播')>-1){
           this.form.extra.has_live = 1
         }else{
           this.form.extra.has_live = 0
         }
 
-        if(this.form.forway.indexOf('电视点播')>-1){
+        if(this.form.forway.indexOf('点播')>-1){
           this.form.extra.has_replay = 1
         }else{
           this.form.extra.has_replay = 0
         }
-
+        console.log(this.form)
         // console.log(this.form);
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;

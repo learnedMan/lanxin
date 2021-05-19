@@ -222,7 +222,7 @@ import { isArray } from '@/utils/validate';
               time: "",
               extra: {
                   duration: "",
-                  allow_replay: ''
+                  allow_replay: 1
               }
           };
         },
