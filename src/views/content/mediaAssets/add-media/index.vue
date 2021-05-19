@@ -874,10 +874,14 @@ export default {
           item: {
             key: 'extra.content',
             props: {
-              label: '编辑器:'
+              label: '编辑器:',
+              prop: 'extra.content'
             },
             component: 'edit' // 组件名
-          }
+          },
+          rule: [
+            { required: true, message: '请输入编辑器内容', trigger: 'blur' }
+          ]
         },
         author_name: {
           item: {
@@ -1382,7 +1386,7 @@ export default {
         }),
         channels: channel_id.join() // 关联到多个栏目
       };
-      if(obj.extra.link.type === 'target_obj') obj.extra.link = {
+      if(obj.extra.link && obj.extra.link.type === 'target_obj') obj.extra.link = {
         ...obj.extra.link,
         type: obj.target_obj
       }

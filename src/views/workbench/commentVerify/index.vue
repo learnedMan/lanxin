@@ -17,11 +17,11 @@
   <div class="xl-comment-verify" :style="{ padding: newsId? 0 : '30px' }">
     <search ref="search" v-model="search" :lists="searchLists">
       <div slot="action">
-        <el-button size="small" type="primary" @click="resetSearch">重置</el-button>
-        <el-button size="small" type="primary" @click="getList">搜索</el-button>
-        <!--<el-button size="small" type="primary">添加评论</el-button>-->
-        <el-button size="small" type="success" @click="batchAgreeOrRefused('approve')" :diasbled="disabledBatchAction">批量通过</el-button>
-        <el-button size="small" type="warning" @click="batchAgreeOrRefused('reject')" :diasbled="disabledBatchAction">批量拒绝</el-button>
+        <el-button size="mini" type="primary" @click="resetSearch">重置</el-button>
+        <el-button size="mini" type="primary" @click="getList">搜索</el-button>
+        <!--<el-button size="mini" type="primary">添加评论</el-button>-->
+        <el-button size="mini" type="success" @click="batchAgreeOrRefused('approve')" :disabled="disabledBatchAction">批量通过</el-button>
+        <el-button size="mini" type="warning" @click="batchAgreeOrRefused('reject')" :disabled="disabledBatchAction">批量拒绝</el-button>
       </div>
     </search>
     <el-table
@@ -467,7 +467,7 @@ export default {
       delete params.aduitTime, delete params.submitDate;
       this.loading = true;
       this.selection = [];
-      getCommentLists(params/*this.removePropertyOfNullFor0(params)*/).then(res => {
+      getCommentLists(this.removePropertyOfNullFor0(params)).then(res => {
         const { totalCount, list } = res.data;
         this.page.total = totalCount;
         const ids = list.map(n => n.id);
@@ -507,7 +507,7 @@ export default {
         show: true
       })
     },
-    /* 禁烟或取消禁言 */
+    /* 禁言或取消禁言 */
     handleMsgAction (row) {
       const { userId, noTalkUser } = row;
       const data = {
@@ -519,7 +519,10 @@ export default {
         // 取消禁言
         promise = releaseShutup(data);
       }else {
-        promise = disableSendMsg(data);
+        promise = disableSendMsg({
+          ...data,
+          expiresIn: 100 * 365 * 24 * 60 * 60
+        });
       }
       promise.then(res => {
         this.$message.success(res.message);
