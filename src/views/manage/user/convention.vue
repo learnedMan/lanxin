@@ -139,13 +139,24 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <!-- 审批通过 -->
+            <!-- 编辑 -->
             <el-button
               type="text"
-              icon="el-icon-circle-check"
+              icon="el-icon-edit"
               size="small"
-              @click="handleRestore(scope.row)"
-            >恢复</el-button>
+              @click="handleEdit(scope.row)"
+            >
+              编辑
+            </el-button>
+            <!-- 删除 -->
+            <el-button
+              type="text"
+              icon="el-icon-delete"
+              size="small"
+              @click="handleDelete(scope.row)"
+            >
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -217,6 +228,14 @@
         },
         /* 添加 */
         handleAdd () {
+
+        },
+        /* 编辑 */
+        handleEdit () {
+
+        },
+        /* 删除 */
+        handleDelete () {
 
         },
         /* 获取列表数据 */
