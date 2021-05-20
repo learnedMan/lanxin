@@ -656,10 +656,59 @@ export function blacklistRestore(data) {
   })
 }
 
+/*--------------------用户管理-常规积分规则---------------------------*/
 
+/* 获取列表数据 */
+export function getRuleList(data) {
+  return request2({
+    url: '/internal/points/getRuleList',
+    method: 'post',
+    data
+  })
+}
 
+/* 新增 */
+export function addRule(data) {
+  return request2({
+    url: '/internal/points/ruleSave',
+    method: 'post',
+    data
+  })
+}
 
+/* 编辑 */
+export function editRule(data) {
+  return request2({
+    url: '/internal/points/ruleUpdate',
+    method: 'post',
+    data
+  })
+}
 
+/* 删除 */
+export function deleteRule(data) {
+  return request2({
+    url: '/internal/points/ruleDelete',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取type集合 */
+export function getTypeList() {
+  return request2({
+    url: '/internal/points/rule/typelist',
+    method: 'get'
+  })
+}
+
+/* 获取行为集合 */
+export function getActionList() {
+  return request2({
+    url: '/internal/points/rule/actionlist',
+    method: 'get'
+  })
+}
 
 
 
