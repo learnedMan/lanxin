@@ -107,6 +107,14 @@
           type: [ String, Number ],
           required: true
         },
+        zone_id: {
+          type: [ String, Number ],
+          required: true
+        },
+        site_id: {
+          type: [ String, Number ],
+          required: true
+        },
         /* 提示 */
         tip: {
           type: String,
@@ -200,7 +208,7 @@
         },
         /* 确认修改 */
         enterDialog () {
-          const data = { ...this.form, phone: this.phone };
+          const data = { ...this.form, phone: this.phone, zone_id: this.zone_id, site_id: this.site_id };
           delete data.confirmPassword;
           changePassword(data).then(res => {
             this.dialog.show = false;

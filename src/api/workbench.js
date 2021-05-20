@@ -164,6 +164,23 @@ export function getGossipLists(data) {
   })
 }
 
+/* 修改状态 */
+export function changeGossipStatus(data) {
+  return request2({
+    url: '/internal/baoliao/modifyState',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取详情 */
+export function getGossipDetail(params) {
+  return request2({
+    url: '/internal/baoliao/getData',
+    method: 'post',
+    params
+  })
+}
 
 
 
