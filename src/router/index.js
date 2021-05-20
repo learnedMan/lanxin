@@ -254,6 +254,12 @@ export const constantRoutes = [
             component: () => import('@/views/manage/architec/column'),
             name: 'Column',
             meta: { title: '栏目管理' }
+          },
+          {
+            path: 'app-menu',
+            component: () => import('@/views/manage/architec/app-menu'),
+            name: 'App-menu',
+            meta: { title: 'APP用户中心菜单' }
           }
         ]
       },
