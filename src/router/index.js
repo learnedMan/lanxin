@@ -298,6 +298,18 @@ export const constantRoutes = [
             component: () => import('@/views/manage/user/user-list/index'),
             name: 'User-list',
             meta: { title: '用户列表' }
+          },
+          {
+            path: 'blacklist',
+            component: () => import('@/views/manage/user/blacklist'),
+            name: 'Blacklist',
+            meta: { title: '黑名单' }
+          },
+          {
+            path: 'convention',
+            component: () => import('@/views/manage/user/convention'),
+            name: 'Convention',
+            meta: { title: '常规积分规则' }
           }
         ]
       },

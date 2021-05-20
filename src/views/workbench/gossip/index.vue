@@ -1,6 +1,13 @@
 <style type="text/scss" lang="scss" scoped>
   .xl-gossip {
     padding: 30px;
+    &-file {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      margin-right: 10px;
+      background-color: #409eff;
+    }
   }
 </style>
 <template>
@@ -69,7 +76,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="提交时间:">
+        <el-form-item label="提交时间:" prop="submitTime">
           <el-date-picker
             v-model="queryParams.submitTime"
             type="daterange"
@@ -84,7 +91,7 @@
             @change="handleDateChange($event, 'submitTime')"
           />
         </el-form-item>
-        <el-form-item label="审核时间:">
+        <el-form-item label="审核时间:" prop="auditTime">
           <el-date-picker
             v-model="queryParams.auditTime"
             type="daterange"
@@ -114,18 +121,18 @@
           >
             搜索
           </el-button>
-          <el-button
+          <!--<el-button
             size="mini"
             type="success"
-            @click="batchAgreeOrRefused('approve')"
+            @click="batchAgreeOrRefused(1)"
             :disabled="disabledBatchAction"
           >批量通过</el-button>
           <el-button
             size="mini"
             type="warning"
-            @click="batchAgreeOrRefused('reject')"
+            @click="batchAgreeOrRefused(3)"
             :disabled="disabledBatchAction"
-          >批量拒绝</el-button>
+          >批量拒绝</el-button>-->
         </el-form-item>
       </el-form>
       <el-table
@@ -166,29 +173,83 @@
         <el-table-column
           label="审核时间"
           align="center"
-          prop="aduitTime"
+          prop="auditAt"
         />
         <el-table-column
           label="提交时间"
           align="center"
-          prop="creatTime"
+          prop="createdAt"
         />
-        <el-table-column label="操作" align="center" width="120">
+        <el-table-column label="操作" align="center" width="180">
           <template slot-scope="scope">
             <div class="verify-table-action">
+              <!-- 查看 -->
+              <el-button
+                type="text"
+                icon="el-icon-view"
+                size="small"
+                @click="watchDetail(scope.row)"
+              >
+                查看
+              </el-button>
               <!-- 审批通过 -->
-              <el-button type="text" icon="el-icon-circle-check" size="small" @click="handleAgreeOrRefused(scope.row, 'approve')" v-if="scope.row.status != 1">通过</el-button>
+              <el-button type="text" icon="el-icon-circle-check" size="small" @click="handleAgreeOrRefused(scope.row, 1)" v-if="scope.row.status != 1">通过</el-button>
               <!-- 拒绝 -->
-              <el-button type="text" icon="el-icon-circle-close" size="small" @click="handleAgreeOrRefused(scope.row, 'reject')" v-if="scope.row.status != 3">拒绝</el-button>
+              <el-button type="text" icon="el-icon-circle-close" size="small" @click="handleAgreeOrRefused(scope.row, 3)" v-if="scope.row.status != 3">拒绝</el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        :page.sync="queryParams.page"
+        :limit.sync="queryParams.limit"
+        @pagination="getList"
+      />
+      <!-- 详情 -->
+      <el-dialog
+        width="600px"
+        title="详情"
+        :visible.sync="dialog.show"
+      >
+        <el-form size="small" label-width="120px">
+          <el-form-item label="爆料人:">{{ detail.userName }}</el-form-item>
+          <el-form-item label="爆料账号:">{{ detail.userId }}</el-form-item>
+          <el-form-item label="爆料时间:">{{ detail.createdAt }}</el-form-item>
+          <el-form-item label="爆料标题:">{{ detail.title }}</el-form-item>
+          <el-form-item label="状态:">{{ detail.statusLabel }}</el-form-item>
+          <el-form-item label="爆料内容:">{{ detail.content }}</el-form-item>
+          <el-form-item label="图片/视频:">
+            <span class="xl-gossip-file" v-for="list of detail.files">
+              <el-image
+                v-if="list.type === 2"
+                style="width: 100%; height: 100%"
+                :src="list.path"
+                fit="cover"
+                :preview-src-list="imgLists"
+              ></el-image>
+              <video controls preload="metadata" style="width: 100%;height: 100%" v-else>
+                <source :src="list.path">
+                您的浏览器不支持 HTML5 video 标签。
+              </video>
+            </span>
+          </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialog.show = false">
+            关 闭
+          </el-button>
+        </div>
+      </el-dialog>
     </div>
 </template>
 
 <script>
-  import { getGossipLists } from '@/api/workbench.js'
+  import { getGossipLists, changeGossipStatus, getGossipDetail } from '@/api/workbench.js'
   import { getproduct } from '@/api/manage'
 
     export default {
@@ -247,9 +308,24 @@
             title: '',
             type: 0,
             userName: '',
-            //client: 'web',
+            startCreateAt: '',
+            endCreateAt: '',
             submitTime: '',
-            auditTime: ''
+            startAuditAt: '',
+            endAuditAt: '',
+            auditTime: '',
+            page: 1,
+            limit: 10
+          },
+          dialog: {
+            show: false
+          },
+          detail: {
+            title: '',
+            content: '',
+            userName: '',
+            statusLabel: '',
+            files: []
           },
           loading: false,
           total: 0,
@@ -260,6 +336,10 @@
       computed: {
         disabledBatchAction () {
           return this.selection.length === 0;
+        },
+        /* 详情图片集合 */
+        imgLists () {
+          return this.detail.files.filter(n => n.type === 2).map(n => n.path);
         }
       },
       methods: {
@@ -278,14 +358,20 @@
         handleDateChange (val, key) {
           const arr = val || ['', ''];
           if(key === 'submitTime') {
-
+            this.queryParams.startCreateAt = arr[0];
+            this.queryParams.endCreateAt = arr[1];
           }else {
-
+            this.queryParams.startAuditAt = arr[0];
+            this.queryParams.endAuditAt = arr[1];
           }
         },
         /* 重置 */
         handleReset () {
           Object.assign(this.queryParams, {
+            startCreateAt: '',
+            endCreateAt: '',
+            startAuditAt: '',
+            endAuditAt: '',
             page: 1
           })
           this.resetForm('queryForm');
@@ -294,9 +380,36 @@
         handleQuery () {
           this.getList();
         },
+        /* 查看爆料详情 */
+        watchDetail (row) {
+          const { id, statusLabel } = row;
+          getGossipDetail({ id }).then(res => {
+            if(res.code == 200) {
+              this.detail = {
+                ...(res.data || {}),
+                statusLabel,
+                files: (res.data?.files || []).filter(n => n.type !== 0)
+              };
+              this.dialog.show = true;
+            }
+          })
+        },
         /* 批量通过或拒绝 */
-        batchAgreeOrRefused () {
+        batchAgreeOrRefused (status) {
 
+        },
+        /* 通过或拒绝 */
+        handleAgreeOrRefused (row, status) {
+          const { id } = row;
+          changeGossipStatus({
+            id,
+            status
+          }).then(res => {
+            if(res.code == 200) {
+              this.$message.success(res.msg);
+              this.getList();
+            }
+          })
         },
         /* 修改选中项 */
         handleSelectionChange (arr) {

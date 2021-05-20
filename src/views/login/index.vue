@@ -71,7 +71,13 @@
         >登录</el-button>
       </el-form>
     </div>
-    <change-pass :phone="loginForm.username" ref="changePass" tip="为确保您的账号信息安全，请尽快修改您的登录密码"></change-pass>
+    <change-pass
+      :phone="loginForm.username"
+      :zone_id="sitec.site_select_all.zone_id || ''"
+      :site_id="sitec.site_select_all.id || ''"
+      ref="changePass"
+      tip="为确保您的账号信息安全，请尽快修改您的登录密码"
+    ></change-pass>
   </div>
 </template>
 
@@ -126,7 +132,7 @@ export default {
       sitec:{
         site_select:'', //选择的站点
         site_data:[], //可供选择的站点
-        site_select_all:'',//选择站点的全部信息
+        site_select_all: {},//选择站点的全部信息
       },
       getcodeval:'获取验证码',
       getcodeflag:true,

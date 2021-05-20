@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import request2 from '@/utils/request_old'
+import $http from '@/utils/$http'
 
 // 权限
 export function getAllPermissions() {
@@ -633,3 +634,39 @@ export function getIntegral(data) {
     data
   })
 }
+
+
+/*--------------------用户管理-黑名单---------------------------*/
+
+/* 获取列表 */
+export function getBlacklist(data) {
+  return $http({
+    url: '/api/intranet/comment/getNoTalkUserList/page',
+    method: 'post',
+    data
+  })
+}
+
+/* 恢复黑名单 */
+export function blacklistRestore(data) {
+  return $http({
+    url: '/api/intranet/comment/cancelNoTalkUser',
+    method: 'post',
+    data
+  })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
