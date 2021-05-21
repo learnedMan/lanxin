@@ -1,121 +1,118 @@
 <template>
   <div class="product">
-    <el-form ref="queryForm" :model="queryParams" :inline="true">
-      <el-form-item label="产品名称：">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入关键字"
-          clearable
-          size="small"
-          style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品类型：">
-        <el-select v-model="queryParams.type" placeholder="请选择">
-          <el-option
-            v-for="item in productoptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleQuery" size="mini"
-          >搜索</el-button
-        >
-        <el-button type="info" @click="initcondition" size="mini"
-          >重置</el-button
-        >
-        <el-button type="primary" @click="adddata" size="mini">添加</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-table
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      border
-      v-loading="loading"
-      :data="dataList"
-    >
-      <el-table-column label="产品id" width="100px" align="center" prop="id" />
-
-      <el-table-column
-        label="产品LOGO"
-        width="150px"
-        align="center"
-        prop="extra.logo"
-        :show-overflow-tooltip="true"
-      >
-        <template slot-scope="scope">
-          <img
-            :src="scope.row.extra.logo || productavatar"
-            alt=""
-            style="width: 50px; height: 50px; border-radius: 50%"
+    <div v-show="showpage==1">
+      <el-form ref="queryForm" :model="queryParams" :inline="true">
+        <el-form-item label="产品名称：">
+          <el-input
+            v-model="queryParams.name"
+            placeholder="请输入关键字"
+            clearable
+            size="small"
+            style="width: 200px"
+            @keyup.enter.native="handleQuery"
           />
-        </template>
-      </el-table-column>
+        </el-form-item>
+        <el-form-item label="产品类型：">
+          <el-select v-model="queryParams.type" placeholder="请选择">
+            <el-option
+              v-for="item in productoptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleQuery" size="mini"
+            >搜索</el-button
+          >
+          <el-button type="info" @click="initcondition" size="mini"
+            >重置</el-button
+          >
+          <el-button type="primary" @click="adddata" size="mini">添加</el-button>
+        </el-form-item>
+      </el-form>
 
-      <el-table-column
-        label="产品名称"
-        align="center"
-        prop="name"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        label="产品类型"
-        align="center"
-        prop="type"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="created_at"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        label="上次登录时间"
-        align="center"
-        prop="updated_at"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column width="240px" label="操作" align="left">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            style="color: #e6a23c"
-            @click="editdata(scope.row)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            style="color: #f56c6c"
-            @click="deldata(scope.row)"
-            >删除</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            style="color: #67c23a"
-            >安卓</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            style="color: #67c23a"
-            >苹果</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
+      <el-table
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+        border
+        v-loading="loading"
+        :data="dataList"
+      >
+        <el-table-column label="产品id" width="100px" align="center" prop="id" />
+
+        <el-table-column
+          label="产品LOGO"
+          width="150px"
+          align="center"
+          prop="extra.logo"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">
+            <img
+              :src="scope.row.extra.logo || productavatar"
+              alt=""
+              style="width: 50px; height: 50px; border-radius: 50%"
+            />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          label="产品名称"
+          align="center"
+          prop="name"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          label="产品类型"
+          align="center"
+          prop="type"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="created_at"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          label="上次登录时间"
+          align="center"
+          prop="updated_at"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column width="240px" label="操作" align="left">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              style="color: #e6a23c"
+              @click="editdata(scope.row)"
+              >修改</el-button
+            >
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              style="color: #f56c6c"
+              @click="deldata(scope.row)"
+              >删除</el-button
+            >
+            <el-button
+              v-if="scope.row.type=='app'"
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              style="color: #67c23a"
+              @click="changepage(scope.row)"
+              >客户端配置</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    
     <pagination
       v-show="total > 0"
       :total="total"
@@ -123,6 +120,8 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+    </div>
+    <Appversion :page2id="page2id" v-if="showpage==2" />  
     <!-- 新增/修改产品弹窗 -->
     <el-dialog
       width="1200px"
@@ -240,39 +239,76 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!--<el-form-item label-width="150px" label="用户协议" prop="extra.user_policy">
+          <el-form-item label-width="150px" label="协议版本" prop="extra.policy.version">
             <el-input
-              type="textarea"
-              style="width: 350px"
-              :autosize="{ minRows: 4}"
+              style="width: 200px"
               autocomplete="off"
-              placeholder="请输入用户协议"
-              v-model="form.extra.user_policy"
+              placeholder="请输入（版本由数字与点组成，如1.0.1）"
+              v-model="form.extra.policy.version"
+            ></el-input>
+            <el-button v-show="dialogType!='add'" @click="innerVisible = true" style="margin-left:20px;" type="primary" size="small">查看历史版本</el-button>
+          </el-form-item>
+          <el-form-item label-width="150px" label="弹窗详情" prop="extra.policy.intro">
+            <el-input
+              style="width: 350px"
+              autocomplete="off"
+              placeholder="请输入"
+              v-model="form.extra.policy.intro"
+              :autosize="{ minRows: 4}"
+              type="textarea"
             ></el-input>
           </el-form-item>
-          <el-form-item label-width="150px" label="隐私政策" prop="extra.privacy_policy">
+          <el-form-item label-width="150px" label="用户协议链接" prop="extra.policy.privacy_policy">
             <el-input
-              type="textarea"
-              :autosize="{ minRows: 4}"
               style="width: 350px"
               autocomplete="off"
-              placeholder="请输入隐私政策"
-              v-model="form.extra.privacy_policy"
+              placeholder="请输入链接"
+              v-model="form.extra.policy.privacy_policy"
             ></el-input>
           </el-form-item>
-          <el-form-item label-width="150px" label="朋友圈用户协议" prop="extra.moment_policy">
+          <el-form-item label-width="150px" label="隐私政策链接" prop="extra.policy.user_policy">
             <el-input
-              type="textarea"
-              :autosize="{ minRows: 4}"
               style="width: 350px"
               autocomplete="off"
-              placeholder="请输入朋友圈用户协议"
-              v-model="form.extra.moment_policy"
+              placeholder="请输入链接"
+              v-model="form.extra.policy.user_policy"
             ></el-input>
-          </el-form-item>-->
+          </el-form-item>
         </div>
       </el-form>
+      <el-dialog
+        width="1000px"
+        title="历史版本"
+        :visible.sync="innerVisible"
+        append-to-body>
+        <el-table
+          :data="innertableData"
+          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+          border
+          style="width: 100%">
+          <el-table-column
+            prop="version"
+            align="center"
+            label="协议版本">
+          </el-table-column>
+          <el-table-column
+            align="center"
+            prop="intro"
+            label="弹窗详情">
+          </el-table-column>
+          <el-table-column
+            align="center"
+            prop="user_policy"
+            label="user_policy">
+          </el-table-column>
+          <el-table-column
+            align="center"
+            prop="privacy_policy"
+            label="隐私政策协议接口">
+          </el-table-column>
+        </el-table>
 
+      </el-dialog>
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeDialog">取 消</el-button>
         <el-button @click="enterDialog" type="primary">确 定</el-button>
@@ -282,14 +318,23 @@
 </template>
 
 <script>
+import Appversion from './product/appversion'
 import { getproduct , addproducts , editproducts , delproducts } from "@/api/manage";
 export default {
   name: "product",
+  components: {
+      Appversion
+  },
   data() {
     var mytoken = sessionStorage.getItem("token");
     return {
+      showpage:1,
+      page2id:0,
       importHeaders: { Authorization: mytoken }, //传图片时的token
       productavatar: require("@/assets/c_images/product.png"), //默认logo
+      // 内层dialog
+      innerVisible:false,
+      innertableData:[],
       // 查询参数
       queryParams: {
         page: 1,
@@ -377,19 +422,16 @@ export default {
             comment_control:"",
             watermark:"",
             watermark_position:"",
-            /*user_policy:"",
-            privacy_policy:"",
-            moment_policy:""*/
         }
       },
       rules: {
         name: [{ required: true, message: "请输入产品姓名", trigger: "blur" }],
         type: [{ required: true, message: "请选择产品类型", trigger: "blur" }],
         'extra.logo': [{ required: true, message: "请选择产品logo", trigger: "blur" }],
-        /*'extra.watermark': [{ required: true, message: "请选择水印", trigger: "blur" }],
-        'extra.watermark_position': [{ required: true, message: "请选择水印位置", trigger: "blur" }],
-        'extra.user_policy': [{ required: true, message: "请输入用户协议", trigger: "blur" }],
-        'extra.privacy_policy': [{ required: true, message: "请输入隐私政策", trigger: "blur" }],*/
+        'extra.policy.version': [{ required: true, message: "请输入协议版本", trigger: "blur" }],
+        'extra.policy.intro': [{ required: true, message: "请输入弹窗详情", trigger: "blur" }],
+        'extra.policy.privacy_policy': [{ required: true, message: "请输入用户协议链接", trigger: "blur" }],
+        'extra.policy.user_policy': [{ required: true, message: "请输入隐私政策链接", trigger: "blur" }],
       },
       dialogType: "add",
       dialogTitle: ""
@@ -405,6 +447,10 @@ export default {
     this.initForm()
   },
   methods: {
+    changepage(row){
+      this.page2id = row.id;
+      this.showpage = 2;
+    },
     handleAvatarSuccess(name,res) {
       this.form.extra[name] = res.path;
     },
@@ -456,9 +502,13 @@ export default {
             comment_control:"",
             watermark:"",
             watermark_position:"",
-            /*user_policy:"",
-            privacy_policy:"",
-            moment_policy:""*/
+            policy: {
+                version: "",
+                intro: "",
+                privacy_policy:"",
+                user_policy:"",
+                time:''
+            }
         }
       };
     },
@@ -467,18 +517,16 @@ export default {
       this.initForm();
       this.dialogTitle = "编辑产品";
       this.dialogType = "edit";
-      // this.$nextTick(() => {
-      //   for (let key in row) {
-      //     this.form[key] = row[key];
-      //   }
-      // });
-      console.log(row)
+      // console.log(row)
       this.form = JSON.parse(JSON.stringify(row))
-
+      if(this.form.extra.policy_history){
+       this.innertableData = this.form.extra.policy_history.slice(0,5);
+      }
       this.dialogFormVisible = true;
     },
     // 删除产品
     deldata(row){
+      console.log(row)
       this.$confirm('此操作将永久删除id为'+row.id+'的产品, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -511,6 +559,8 @@ export default {
           //修改
           // console.log(this.form)
           var data = JSON.parse(JSON.stringify(this.form));
+          console.log(data)
+          data.extra.policy.time = new Date().getTime();
           editproducts(data.id, data).then((response) => {
             this.$message({
               message: "修改成功",
@@ -523,6 +573,7 @@ export default {
           // 新增
           var data = JSON.parse(JSON.stringify(this.form));
           this.removePropertyOfNull(data);
+          data.extra.policy.time = new Date().getTime();
           addproducts(data).then((response) => {
             this.$message({
               message: "新建成功",

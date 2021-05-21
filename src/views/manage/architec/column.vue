@@ -271,7 +271,7 @@
 
             <el-form-item v-show="form.type=='service'"
               label-width="150px" label="链接类型:" prop="extra.link.type">
-              <el-select v-model="form.extra.link.type" placeholder="请选择">
+              <el-select clearable="" v-model="form.extra.link.type" placeholder="请选择">
                 <el-option v-for="item in linktypeoption" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>

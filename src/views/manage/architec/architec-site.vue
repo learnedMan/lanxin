@@ -95,6 +95,9 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
+        <el-form-item  label-width="120px" label="蓝云租户" prop="extra.uni_site">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入蓝云租户" v-model="form.extra.uni_site"></el-input>
+        </el-form-item>
         <el-form-item label-width="120px" label="负责人姓名" prop="site_manager_name">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入负责人姓名"  v-model="form.site_manager_name" ></el-input>
         </el-form-item>
@@ -161,6 +164,9 @@ import { validUsername , validEmail } from '@/utils/validate'
           name: "",
           en_name: "",
           logo: "",
+          extra:{
+            uni_site:''
+          },
           status:1,
           introduction:"",
           site_manager_name:'',
@@ -278,6 +284,12 @@ import { validUsername , validEmail } from '@/utils/validate'
           this.form = JSON.parse(JSON.stringify(row))
           this.form.site_manager_name = this.form.user.name
           this.form.site_manager_phone = this.form.user.phone;
+
+          if(!this.form.extra){
+            this.form.extra={};
+            this.form.extra.uni_site = '';
+          }
+
         })
         
 
