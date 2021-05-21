@@ -553,6 +553,18 @@ export default {
       if(this.form.extra.policy_history){
        this.innertableData = this.form.extra.policy_history.slice(0,5);
       }
+      console.log(this.form)
+      if(!this.form.extra.policy){
+        this.form.extra.policy = {}
+        this.form.extra.policy = {
+            version: "",
+            intro: "",
+            privacy_policy:"",
+            user_policy:"",
+            time:''
+        }
+      }
+
       this.dialogFormVisible = true;
     },
     // 删除产品
