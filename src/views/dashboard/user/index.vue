@@ -47,7 +47,12 @@
           </div>
         </el-form-item>
       </el-form>
-      <change-pass :phone="info.phone" ref="changePass"></change-pass>
+      <change-pass
+        :phone="info.phone"
+        :zone_id="info.zone_id"
+        :site_id="info.site_id"
+        ref="changePass"
+      ></change-pass>
     </div>
 </template>
 
@@ -77,7 +82,9 @@
             avatar: user.avatar || '',
             name: user.u_info?.name || '',
             phone: user.u_info?.phone || '',
-            site: user.u_info?.site?.name || ''
+            site: user.u_info?.site?.name || '',
+            zone_id: user.u_info?.zone_id || '',
+            site_id: user.u_info?.site_id || '',
           }
         }
       }

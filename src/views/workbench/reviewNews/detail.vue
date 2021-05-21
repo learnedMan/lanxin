@@ -1067,6 +1067,10 @@ export default {
                 value: 'auth_link'
               },
               {
+                label: '看报纸',
+                value: 'newspaper'
+              },
+              {
                 label: '乡镇首页',
                 value: 'matrix',
                 relatedLabel: '对应矩阵栏目ID'
@@ -1103,10 +1107,6 @@ export default {
               {
                 label: '听广播',
                 value: 'radio'
-              },
-              {
-                label: '看报纸',
-                value: 'newspaper'
               }
             ]
           },
@@ -1303,7 +1303,7 @@ export default {
           const type = this.from.extra.link.type;
           if (type === 'target_obj'){
             arr.push('target_obj');
-          } else if(['outer_link', 'auth_link'].includes(type)) {
+          } else if(['outer_link', 'auth_link', 'newspaper'].includes(type)) {
             arr.push('extra.link.url')
           } else {
             const current = this.formOptions['extra.link.type'].item.lists.find(n => n.value === type);

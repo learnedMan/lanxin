@@ -44,7 +44,7 @@ module.exports = {
       //     ['^' + process.env.VUE_APP_BASE_API]: ''
       //   }
       // },
-      [process.env.VUE_APP_IM_BASE_API]: { //需要代理的路径   例如 '/api'
+      /*[process.env.VUE_APP_IM_BASE_API]: { //需要代理的路径   例如 '/api'
           target: 'http://10.30.10.158', //代理到 目标路径 测试
           // target: 'http://10.30.10.125', //代理到 目标路径    正式
           // target: `http://127.0.0.1`, //代理到 目标路径
@@ -52,7 +52,7 @@ module.exports = {
           // pathRewrite: { // 修改路径数据
           //     ['^' + process.env.VUE_APP_BASE_API_old]: '' // 举例 '^/api:""' 把路径中的/api字符串删除
           // }
-      },
+      },*/
       '/api': { //需要代理的路径   例如 '/api'
         target: 'http://10.30.10.158', //代理到 目标路径 测试
         changeOrigin: true

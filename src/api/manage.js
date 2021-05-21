@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import request2 from '@/utils/request_old'
+import $http from '@/utils/$http'
 
 // 权限
 export function getAllPermissions() {
@@ -633,3 +634,88 @@ export function getIntegral(data) {
     data
   })
 }
+
+
+/*--------------------用户管理-黑名单---------------------------*/
+
+/* 获取列表 */
+export function getBlacklist(data) {
+  return $http({
+    url: '/api/intranet/comment/getNoTalkUserList/page',
+    method: 'post',
+    data
+  })
+}
+
+/* 恢复黑名单 */
+export function blacklistRestore(data) {
+  return $http({
+    url: '/api/intranet/comment/cancelNoTalkUser',
+    method: 'post',
+    data
+  })
+}
+
+/*--------------------用户管理-常规积分规则---------------------------*/
+
+/* 获取列表数据 */
+export function getRuleList(data) {
+  return request2({
+    url: '/internal/points/getRuleList',
+    method: 'post',
+    data
+  })
+}
+
+/* 新增 */
+export function addRule(data) {
+  return request2({
+    url: '/internal/points/ruleSave',
+    method: 'post',
+    data
+  })
+}
+
+/* 编辑 */
+export function editRule(data) {
+  return request2({
+    url: '/internal/points/ruleUpdate',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除 */
+export function deleteRule(data) {
+  return request2({
+    url: '/internal/points/ruleDelete',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取type集合 */
+export function getTypeList() {
+  return request2({
+    url: '/internal/points/rule/typelist',
+    method: 'get'
+  })
+}
+
+/* 获取行为集合 */
+export function getActionList() {
+  return request2({
+    url: '/internal/points/rule/actionlist',
+    method: 'get'
+  })
+}
+
+
+
+
+
+
+
+
+
+
