@@ -99,15 +99,16 @@
       width="800px"
       :close-on-click-modal="false"
       :title="dialogTitle"
-      top="10vh"
+      top="2vh"
       :visible.sync="dialogFormVisible"
     >
         <el-form
             :model="form"
             :rules="rules"
             ref="dataForm">
-            <el-form-item label-width="150px" label="应用名称" prop="name">
+            <el-form-item label-width="150px" label="应用名称：" prop="name">
                 <el-input
+                disabled
                 style="width: 350px"
                 autocomplete="off"
                 placeholder="请输入产品名称"
@@ -127,13 +128,13 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <el-form-item el-form-item  label-width="150px" label="终端:" prop="name">
-                <el-select v-model="form.name" placeholder="请选择">
+            <el-form-item el-form-item  label-width="150px" label="终端：" prop="platform">
+                <el-select v-model="form.platform" placeholder="请选择">
                 <el-option v-for="item in platformoptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label-width="150px" label="安卓版本" prop="name">
+            <el-form-item label-width="150px" :label="form.platform=='Android'?'安卓版本：':'ios版本：'" prop="name">
                 <el-input
                 style="width: 350px"
                 autocomplete="off"
@@ -141,7 +142,7 @@
                 v-model="form.name"
                 ></el-input>
             </el-form-item>
-            <el-form-item label-width="150px" label="应用介绍" prop="name">
+            <el-form-item label-width="150px" label="应用介绍：" prop="name">
                 <el-input
                 style="width: 350px"
                 autocomplete="off"
@@ -151,7 +152,7 @@
                 type="textarea"
                 ></el-input>
             </el-form-item>
-            <el-form-item label-width="150px" label="新特性" prop="name">
+            <el-form-item label-width="150px" label="新特性：" prop="name">
                 <el-input
                 style="width: 350px"
                 autocomplete="off"
@@ -160,6 +161,31 @@
                 :autosize="{ minRows: 4}"
                 type="textarea"
                 ></el-input>
+            </el-form-item>
+            <el-form-item label-width="150px" label="是否强制更新：" prop="name">
+                <el-radio-group v-model="form.name">
+                    <el-radio :label="0">不启用</el-radio>
+                    <el-radio :label="1">不强更</el-radio>
+                    <el-radio :label="2">强更</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label-width="150px" label="APP Store链接：" prop="name">
+                <el-input
+                style="width: 350px"
+                autocomplete="off"
+                placeholder="请输入"
+                v-model="form.name"
+                ></el-input>
+            </el-form-item>
+            <el-form-item v-show="form.platform=='Android'" label-width="150px" label="Android APK包：" prop="name">
+                <el-input
+                style="width: 350px"
+                autocomplete="off"
+                placeholder=""
+                disabled
+                v-model="form.name"
+                ></el-input>
+                <el-button style="margin-left:20px;" type="primary" @click="adddata" size="small">添加</el-button>
             </el-form-item>
         </el-form>
       <div class="dialog-footer" slot="footer">
@@ -178,6 +204,10 @@ export default {
     page2id: {
       type: Number,
       default: 0,
+    },
+    appname: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -201,7 +231,7 @@ export default {
         },
         {
           value: 'iOS',
-          label: "苹果",
+          label: "ios",
         },
       ],
       loading: false,
@@ -249,10 +279,18 @@ export default {
       if (this.$refs.dataForm) {
         this.$refs.dataForm.resetFields();
       }
-      this.form= {
-        name: "",
-        type:"",
-      };
+        this.form= {
+            product_id:this.page2id,
+            name: this.appname,
+            platform: "Android",
+            version_code: "",
+            logo:"",
+            status:"0",
+            url:"",
+            apk:"",
+            new_features:"",
+            intro:""
+        }
     },
     adddata() {
       this.initForm();

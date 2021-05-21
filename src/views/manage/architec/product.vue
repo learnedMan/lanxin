@@ -121,7 +121,7 @@
       @pagination="getList"
     />
     </div>
-    <Appversion :page2id="page2id" v-if="showpage==2" />  
+    <Appversion :appname="appname" :page2id="page2id" v-if="showpage==2" />  
     <!-- 新增/修改产品弹窗 -->
     <el-dialog
       width="1200px"
@@ -239,6 +239,32 @@
               </el-option>
             </el-select>
           </el-form-item>
+
+          <el-form-item label-width="150px" label="个推秘钥" prop="bluecore_mastersecret">
+            <el-input
+              style="width: 200px"
+              autocomplete="off"
+              placeholder="请输入个推秘钥"
+              v-model="form.bluecore_mastersecret"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label-width="150px" label="蓝核APPkey" prop="bluecore_appkey">
+            <el-input
+              style="width: 200px"
+              autocomplete="off"
+              placeholder="请输入蓝核APPkey"
+              v-model="form.bluecore_appkey"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label-width="150px" label="蓝核APPID" prop="bluecore_appid">
+            <el-input
+              style="width: 200px"
+              autocomplete="off"
+              placeholder="请输入蓝核APPID"
+              v-model="form.bluecore_appid"
+            ></el-input>
+          </el-form-item>
+
           <el-form-item label-width="150px" label="协议版本" prop="extra.policy.version">
             <el-input
               style="width: 200px"
@@ -330,6 +356,7 @@ export default {
     return {
       showpage:1,
       page2id:0,
+      appname:'',
       importHeaders: { Authorization: mytoken }, //传图片时的token
       productavatar: require("@/assets/c_images/product.png"), //默认logo
       // 内层dialog
@@ -449,6 +476,7 @@ export default {
   methods: {
     changepage(row){
       this.page2id = row.id;
+      this.appname = row.name;
       this.showpage = 2;
     },
     handleAvatarSuccess(name,res) {
@@ -495,6 +523,9 @@ export default {
       this.form= {
         name: "",
         type:"",
+        bluecore_mastersecret:"",
+        bluecore_appkey:"",
+        bluecore_appid:"",
         extra:{
             logo:"",
             logo_dark:"",
