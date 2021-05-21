@@ -267,6 +267,7 @@
 
           <el-form-item label-width="150px" label="协议版本" prop="extra.policy.version">
             <el-input
+              @input="updateView($event)"
               style="width: 200px"
               autocomplete="off"
               placeholder="请输入（版本由数字与点组成，如1.0.1）"
@@ -276,6 +277,7 @@
           </el-form-item>
           <el-form-item label-width="150px" label="弹窗详情" prop="extra.policy.intro">
             <el-input
+            @input="updateView($event)"
               style="width: 350px"
               autocomplete="off"
               placeholder="请输入"
@@ -286,6 +288,7 @@
           </el-form-item>
           <el-form-item label-width="150px" label="用户协议链接" prop="extra.policy.privacy_policy">
             <el-input
+            @input="updateView($event)"
               style="width: 350px"
               autocomplete="off"
               placeholder="请输入链接"
@@ -294,6 +297,7 @@
           </el-form-item>
           <el-form-item label-width="150px" label="隐私政策链接" prop="extra.policy.user_policy">
             <el-input
+            @input="updateView($event)"
               style="width: 350px"
               autocomplete="off"
               placeholder="请输入链接"
@@ -474,6 +478,9 @@ export default {
     this.initForm()
   },
   methods: {
+    updateView(e) {
+        this.$forceUpdate()
+    },
     changepage(row){
       this.page2id = row.id;
       this.appname = row.name;
