@@ -31,6 +31,9 @@
         <el-form-item   label-width="120px" label="简介" prop="introduction">
           <el-input :disabled="editflag" type="textarea" style="width: 300px" autocomplete="off" placeholder="请输入简介" v-model="form.introduction"></el-input>
         </el-form-item>
+        <el-form-item  label-width="120px" label="蓝云租户" prop="extra.uni_site">
+          <el-input v-model="form.extra.uni_site" @input="updateView($event)" :disabled="editflag" style="width: 300px" autocomplete="off" placeholder="请输入简介" ></el-input>
+        </el-form-item>
       </el-form>
         <div style="padding-top:30px;padding-left:50px;">
             <el-button @click="editfn" :disabled="!editflag" type="success" size="mini">编辑</el-button>
@@ -55,13 +58,6 @@ import {
             importHeaders: {Authorization: mytoken},//传图片时的token
             editflag:true,
             form: {
-                name: "",
-                en_name: "",
-                logo: "",
-                status:"",
-                introduction:"",
-                site_manager_name:'',
-                site_manager_phone:''
             },
             recordform:{},
             rules: {
@@ -98,9 +94,24 @@ import {
         ])
     },
     created() {
+        this.form={
+                name: "",
+                en_name: "",
+                logo: "",
+                status:"",
+                introduction:"",
+                site_manager_name:'',
+                site_manager_phone:'',
+                extra:{
+                  uni_site:''
+                },
+            };
         this.getinfo();
     },
     methods:{
+        updateView(e) {
+            this.$forceUpdate()
+        },
         getinfo(){
             getsitesinfo(this.u_info.site_id).then(response=>{
               console.log(response)
@@ -111,6 +122,11 @@ import {
                 this.recordform = JSON.parse(JSON.stringify(response.data));
                 this.$set(this.recordform,'site_manager_name',this.recordform.user.name);
                 this.$set(this.recordform,'site_manager_phone',this.recordform.user.phone);
+
+                if(!this.form.extra){
+                  this.form.extra={};
+                  this.form.extra.uni_site = '';
+                }
             })
         },
         reset(){
