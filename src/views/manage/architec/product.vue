@@ -212,6 +212,27 @@
                     <el-radio :label="0">禁止评论</el-radio>
                 </el-radio-group>
           </el-form-item>
+          <el-form-item label-width="150px" label="热门搜索词" prop="extra.hot_search">
+            <el-tag
+              v-for="(tag,index) in form.extra.hot_search"
+              :key="tag+index"
+              closable
+              :disable-transitions="false"
+              @close="handleClose(tag)">
+              {{tag}}
+            </el-tag>
+            <el-input
+              class="input-new-tag"
+              v-if="inputVisible"
+              v-model="inputValue"
+              ref="saveTagInput"
+              size="small"
+              @keyup.enter.native="handleInputConfirm"
+              @blur="handleInputConfirm"
+            >
+            </el-input>
+            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加</el-button>
+          </el-form-item>
         </div>
 
         <div class="fr" style="width: 50%">
@@ -358,6 +379,11 @@ export default {
   data() {
     var mytoken = sessionStorage.getItem("token");
     return {
+      inputVisible: false,
+      inputValue: '',
+
+
+
       showpage:1,
       page2id:0,
       appname:'',
@@ -453,6 +479,7 @@ export default {
             comment_control:"",
             watermark:"",
             watermark_position:"",
+            hot_search:[]
         }
       },
       rules: {
@@ -478,6 +505,32 @@ export default {
     this.initForm()
   },
   methods: {
+    handleClose(tag) {
+      this.form.extra.hot_search.splice(this.form.extra.hot_search.indexOf(tag), 1);
+    },
+
+    showInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+
+    handleInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        if(!this.form.extra.hot_search){
+          this.form.extra.hot_search = [];  
+        }
+        this.form.extra.hot_search.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = '';
+    },
+
+
+
+
     updateView(e) {
         this.$forceUpdate()
     },
@@ -540,6 +593,7 @@ export default {
             comment_control:"",
             watermark:"",
             watermark_position:"",
+            hot_search:[],
             policy: {
                 version: "",
                 intro: "",
@@ -611,6 +665,10 @@ export default {
           var data = JSON.parse(JSON.stringify(this.form));
           console.log(data)
           data.extra.policy.time = new Date().getTime();
+
+
+          // console.log(data)
+          // return
           editproducts(data.id, data).then((response) => {
             this.$message({
               message: "修改成功",
@@ -624,6 +682,8 @@ export default {
           var data = JSON.parse(JSON.stringify(this.form));
           this.removePropertyOfNull(data);
           data.extra.policy.time = new Date().getTime();
+          console.log(data)
+          return
           addproducts(data).then((response) => {
             this.$message({
               message: "新建成功",
@@ -638,7 +698,23 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+.el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
+
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

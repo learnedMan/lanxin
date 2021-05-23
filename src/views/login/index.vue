@@ -153,6 +153,8 @@ export default {
     }
   },
   created() {
+    sessionStorage.removeItem('TempZone')
+    sessionStorage.removeItem('TempSite')
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
