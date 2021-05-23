@@ -340,7 +340,7 @@ export const constantRoutes = [
   {
     path: '/radioTV/index',
     component: Layout,
-    redirect: '/radioTV/radioTVIndex',
+    redirect: 'radioTVIndex',
     name: 'RadioTV',
     meta: {
       title: '广电管理',

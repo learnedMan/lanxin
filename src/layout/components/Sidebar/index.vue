@@ -1,7 +1,7 @@
 <template>
   <div :class="{'has-logo':showLogo}">
-    <logo :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
+    <logo :collapse="isCollapse" />
       <el-menu
         :default-active="activeMenu"
         :collapse="isCollapse"
