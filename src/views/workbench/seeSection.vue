@@ -175,6 +175,11 @@
           prop="type"
         />
         <el-table-column
+          label="状态"
+          align="center"
+          prop="statusLabel"
+        />
+        <el-table-column
           label="作者"
           align="center"
           prop="author_name"
@@ -287,6 +292,20 @@ export default {
           value: 'outer_link'
         }
       ], // 新闻类型
+      statusOptions: [
+        {
+          label: '已审核',
+          value: 1
+        },
+        {
+          label: '待审核',
+          value: 0
+        },
+        {
+          label: '已拒绝',
+          value: 2
+        }
+      ], // 状态集合
       props: Object.freeze({
         label: 'name'
       }),
@@ -456,6 +475,7 @@ export default {
               }*/
           return {
             ...item,
+            statusLabel: this.statusOptions.find(n => item.status === n.value)?.label ?? '',
             type: type && type.label || '',
             cover: cover && cover.path || '' // 图片
           }

@@ -121,7 +121,7 @@
           >
             搜索
           </el-button>
-          <!--<el-button
+          <el-button
             size="mini"
             type="success"
             @click="batchAgreeOrRefused(1)"
@@ -132,7 +132,7 @@
             type="warning"
             @click="batchAgreeOrRefused(3)"
             :disabled="disabledBatchAction"
-          >批量拒绝</el-button>-->
+          >批量拒绝</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -249,7 +249,7 @@
 </template>
 
 <script>
-  import { getGossipLists, changeGossipStatus, getGossipDetail } from '@/api/workbench.js'
+  import { getGossipLists, changeGossipStatus, batchChangeGossipStatus, getGossipDetail } from '@/api/workbench.js'
   import { getproduct } from '@/api/manage'
 
     export default {
@@ -396,7 +396,15 @@
         },
         /* 批量通过或拒绝 */
         batchAgreeOrRefused (status) {
-
+          batchChangeGossipStatus({
+            ids: [...this.selection],
+            status
+          }).then(res => {
+            if(res.code == 200) {
+              this.$message.success(res.msg);
+              this.getList();
+            }
+          })
         },
         /* 通过或拒绝 */
         handleAgreeOrRefused (row, status) {
