@@ -658,8 +658,24 @@ export function getActionList() {
   })
 }
 
+/*--------------------架构管理-APP用户菜单中心---------------------------*/
 
+/* 获取产品菜单详情 */
+export function getAppMenu(id) {
+  return request({
+    url: `/api/products/${id}`,
+    method: 'get'
+  })
+}
 
+/* 修改自定义菜单 */
+export function changeAppMenu(id, data) {
+  return request({
+    url: `/api/products/${id}`,
+    method: 'patch',
+    data
+  })
+}
 
 
 
