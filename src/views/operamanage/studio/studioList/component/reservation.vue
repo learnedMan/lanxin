@@ -165,9 +165,9 @@
             'extra.cover': [
               { required: true, message: '请上传机位头图', trigger: 'change' }
             ],
-            'extra.stream_url': [
+            /*'extra.stream_url': [
               { required: true, message: '请输入机位流地址', trigger: 'blur' }
-            ],
+            ],*/
             'extra.replay_stream': [
               { required: true, message: '请输入回放流地址', trigger: 'blur' }
             ],

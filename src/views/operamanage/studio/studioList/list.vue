@@ -144,6 +144,11 @@
         prop="portraitLabel"
       />
       <el-table-column
+        label="直播状态"
+        align="center"
+        prop="liveLabel"
+      />
+      <el-table-column
         label="开播时间"
         align="center"
         prop="start_time"
@@ -510,6 +515,10 @@
           {
             label: '进行中',
             value: 1
+          },
+          {
+            label: '已结束',
+            value: 2
           }
         ], // 直播状态
         publishOptions: [
@@ -674,6 +683,7 @@
                 channels: data.channel.map(n => n.id),
                 extra: {
                   ...data.extra,
+                  portrait: Number(data.extra.portrait),
                   cover: data.extra.cover?.[0]?.path
                 }
               }
@@ -785,7 +795,8 @@
         getStudioList(this.removePropertyOfNullFor0(params)).then(res => {
           this.tableData = (res.data || []).map(n => ({
             ...n,
-            portraitLabel: this.portraitOptions.find(item => item.value === n.portrait)?.label ?? ''
+            portraitLabel: this.portraitOptions.find(item => item.value === n.portrait)?.label ?? '',
+            liveLabel: this.liveOptions.find(item => item.value === n.live)?.label ?? ''
           }));
           this.total = res.total;
         }).finally(() => {

@@ -173,6 +173,15 @@ export function changeGossipStatus(data) {
   })
 }
 
+/* 批量修改状态 */
+export function batchChangeGossipStatus(data) {
+  return request2({
+    url: '/internal/baoliao/batchModifyState',
+    method: 'post',
+    data
+  })
+}
+
 /* 获取详情 */
 export function getGossipDetail(params) {
   return request2({
