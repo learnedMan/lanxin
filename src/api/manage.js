@@ -276,6 +276,39 @@ export function delproducts(id) {
   })
 }
 
+// 产品管理--app版本管理
+export function getproduct_versions(query) {
+  return request({
+    url: '/api/product_versions',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addproduct_versions(data) {
+  return request({
+    url: '/api/product_versions',
+    method: 'post',
+    data:data
+  })
+}
+export function editproduct_versions(id,data) {
+  return request({
+    url: '/api/product_versions/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+
+export function delproduct_versions(id) {
+  return request({
+    url: '/api/product_versions/'+id,
+    method: 'delete',
+  })
+}
+
+
+
 // 栏目管理
 
 // getChannels
