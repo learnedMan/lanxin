@@ -565,6 +565,7 @@
         },
         /* 新增自定义菜单 */
         addCustom (key) {
+          if(key === 'main' && this.main.length === 4) return this.$message.warning('最多添加4个菜单!');
           this.resetForm('dialogForm');
           this.dialog = {
             title: '添加自定义菜单',
