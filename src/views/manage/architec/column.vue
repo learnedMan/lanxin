@@ -28,7 +28,7 @@
       :data="dataList" 
       row-key="id"
       :tree-props="{children: 'children'}">
-      <el-table-column label="栏目名称" align="center" prop="name" />
+      <el-table-column label="栏目名称" align="left" prop="name" />
       <el-table-column label="栏目ID" align="center" prop="id" :show-overflow-tooltip="true" />
       <el-table-column 
         label="(模板化)样式分类" 
@@ -175,15 +175,15 @@
 
           <el-form-item el-form-item  label-width="150px" label="加载子栏目:" prop="extra.load_child">
             <el-switch
-              :active-value="0"
-              :inactive-value="1"
+              :active-value="'1'"
+              :inactive-value="'0'"
               v-model="form.extra.load_child">
             </el-switch>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="加载新闻:" prop="extra.load_news">
             <el-switch
-              :active-value="0"
-              :inactive-value="1"
+              :active-value="'1'"
+              :inactive-value="'0'"
               v-model="form.extra.load_news">
             </el-switch>
           </el-form-item>
@@ -562,8 +562,8 @@ import ChildPage1 from './pages/c_page1'
             cover:'',
             logo:'',
             allow_news_types:[],
-            load_child:0,
-            load_news:0,
+            load_child:'0',
+            load_news:'0',
             linked_channel_id:'',
             template_style:'',
             show_num:'',
@@ -576,7 +576,7 @@ import ChildPage1 from './pages/c_page1'
             background:'',
             // 外链
             link:{
-              type:'outer_link',
+              type:'',
               url:'',
               id:''
             },
