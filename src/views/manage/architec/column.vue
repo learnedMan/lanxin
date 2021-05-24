@@ -28,7 +28,7 @@
       :data="dataList" 
       row-key="id"
       :tree-props="{children: 'children'}">
-      <el-table-column label="栏目名称" align="center" prop="name" />
+      <el-table-column label="栏目名称" align="left" prop="name" />
       <el-table-column label="栏目ID" align="center" prop="id" :show-overflow-tooltip="true" />
       <el-table-column 
         label="(模板化)样式分类" 
@@ -576,7 +576,7 @@ import ChildPage1 from './pages/c_page1'
             background:'',
             // 外链
             link:{
-              type:'outer_link',
+              type:'',
               url:'',
               id:''
             },
