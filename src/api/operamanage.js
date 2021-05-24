@@ -88,3 +88,24 @@ export function addReservation(data) {
     data
   })
 }
+
+
+/*-------------------------广告推送--------------------------------*/
+
+/* 获取广告位列表 */
+export function getAdvertList(params) {
+  return request({
+    url: '/api/ad_places',
+    method: 'get',
+    params
+  })
+}
+
+/*添加广告位*/
+export function addAdvertList(data) {
+  return request({
+    url: '/api/ad_places',
+    method: 'post',
+    data
+  })
+}

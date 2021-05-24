@@ -437,6 +437,7 @@
           this.dialog = {
             title: '新增广告位',
             show: true,
+            isAdd: true
           };
           this.dialogForm = {
 
@@ -444,7 +445,12 @@
         },
         /* 确认修改或添加 */
         enterDialog () {
+          let promise;
+          if(this.dialog.isAdd) {
+            //promise =
+          }else {
 
+          }
         },
         /* 删除广告位列表 */
         handleListDelete (row) {
