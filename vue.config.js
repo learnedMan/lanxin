@@ -54,7 +54,7 @@ module.exports = {
           // }
       },*/
       '/api': { //需要代理的路径   例如 '/api'
-        target: 'http://10.30.10.158', //代理到 目标路径 测试
+        target: 'http://10.30.10.71:8080', //代理到 目标路径 测试
         changeOrigin: true
       },
       '/laravel-u-editor-server/server': {
