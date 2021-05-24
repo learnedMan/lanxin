@@ -683,7 +683,6 @@ export default {
           this.removePropertyOfNull(data);
           data.extra.policy.time = new Date().getTime();
           console.log(data)
-          return
           addproducts(data).then((response) => {
             this.$message({
               message: "新建成功",
