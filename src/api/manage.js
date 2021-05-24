@@ -764,7 +764,14 @@ export function changeAppMenu(id, data) {
 
 
 
-
+// 敏感词白名单
+export function getWhitelist(params) {
+  return request2({
+    url: '/sensitive/whitetxt/list',
+    method: 'get',
+    params
+  })
+}
 
 
 

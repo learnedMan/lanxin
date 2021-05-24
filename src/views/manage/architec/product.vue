@@ -206,10 +206,10 @@
           </el-form-item>
           <el-form-item label-width="150px" label="评论控制" prop="extra.comment_control">
                 <el-radio-group v-model="form.extra.comment_control">
-                    <el-radio :label="3">不做控制</el-radio>
-                    <el-radio :label="1">先发后审</el-radio>
-                    <el-radio :label="2">先审后发</el-radio>
-                    <el-radio :label="0">禁止评论</el-radio>
+                    <el-radio :label="'3'">不做控制</el-radio>
+                    <el-radio :label="'1'">先发后审</el-radio>
+                    <el-radio :label="'2'">先审后发</el-radio>
+                    <el-radio :label="'0'">禁止评论</el-radio>
                 </el-radio-group>
           </el-form-item>
           <el-form-item label-width="150px" label="热门搜索词" prop="extra.hot_search">
