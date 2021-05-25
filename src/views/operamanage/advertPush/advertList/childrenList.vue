@@ -240,8 +240,8 @@
             prop="extra.allow_skip"
           >
             <el-radio-group v-model="dialogForm.extra.allow_skip">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0">否</el-radio>
+              <el-radio label="1">是</el-radio>
+              <el-radio label="0">否</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item
@@ -259,7 +259,7 @@
             label="广告角标:"
             prop="extra.corner_mark"
           >
-            <el-checkbox v-model="dialogForm.extra.corner_mark" :true-label="1" :false-label="0">显示广告角标,客户端开机广告倒计时或顶部图片是否展示</el-checkbox>
+            <el-checkbox v-model="dialogForm.extra.corner_mark" true-label="1" false-label="0">显示广告角标,客户端开机广告倒计时或顶部图片是否展示</el-checkbox>
           </el-form-item>
           <el-form-item
             :label="`广告${dialogForm.type === 1? '图片' : '视频'}:`"
@@ -430,9 +430,9 @@
             end_time: '',
             unlimited: false, // 没有限制
             extra: {
-              allow_skip: 1,
+              allow_skip: '1',
               introduction: '',
-              corner_mark: 1,
+              corner_mark: '1',
               url: '',
               duration: '',
               link: {
@@ -589,6 +589,7 @@
             type: row.type,
             start_time: row.start_time,
             end_time: row.end_time ?? '',
+            status: row.status,
             extra: {
               allow_skip: row.extra.allow_skip,
               introduction: row.extra.introduction,
