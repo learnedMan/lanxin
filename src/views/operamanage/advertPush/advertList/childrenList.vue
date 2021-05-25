@@ -581,7 +581,32 @@
         },
         /* 修改状态 */
         changeStatus (row) {
-
+          const { id } = row;
+          const params = {
+            product_id: this.params.product_id,
+            ad_place_id: this.params.ad_place_id,
+            title: row.title,
+            type: row.type,
+            start_time: row.start_time,
+            end_time: row.end_time ?? '',
+            extra: {
+              allow_skip: row.extra.allow_skip,
+              introduction: row.extra.introduction,
+              corner_mark: row.extra.corner_mark,
+              url: row.extra.url,
+              duration: row.extra.duration,
+              link: {
+                type: row.extra.link.type,
+                url: row.extra.link.url ?? '',
+                text: row.extra.link.text ?? '',
+                id: row.extra.link.id ?? ''
+              }
+            }
+          }
+          changeAdvertChild(id, params).then(() => {
+            this.$message.success('修改成功');
+            this.getList();
+          })
         },
         /* 根据字段显示相应文字 */
         getLabel (val) {
