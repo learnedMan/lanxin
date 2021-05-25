@@ -419,84 +419,84 @@
               logo: '',
               sort: 1,
               type: 'app_redirect',
-              app_redirect: '1'
+              link: '1'
             },
             {
               name: '积分',
               logo: '',
               sort: 2,
               type: 'app_redirect',
-              app_redirect: '2'
+              link: '2'
             },
             {
               name: '评论',
               logo: '',
               sort: 3,
               type: 'app_redirect',
-              app_redirect: '3'
+              link: '3'
             },
             {
               name: '活动',
               logo: '',
               sort: 4,
               type: 'app_redirect',
-              app_redirect: '4'
+              link: '4'
             },
             {
               name: '爆料',
               logo: '',
               sort: 5,
               type: 'app_redirect',
-              app_redirect: '5'
+              link: '5'
             },
             {
               name: '意见反馈',
               logo: '',
               sort: 6,
               type: 'app_redirect',
-              app_redirect: '6'
+              link: '6'
             },
             {
               name: '邀请好友',
               logo: '',
               sort: 7,
               type: 'app_redirect',
-              app_redirect: '7'
+              link: '7'
             },
             {
               name: '邀请码',
               logo: '',
               sort: 8,
               type: 'app_redirect',
-              app_redirect: '8'
+              link: '8'
             },
             {
               name: '我的奖品',
               logo: '',
               sort: 9,
               type: 'app_redirect',
-              app_redirect: '9'
+              link: '9'
             },
             {
               name: '发布',
               logo: '',
               sort: 10,
               type: 'app_redirect',
-              app_redirect: '10'
+              link: '10'
             },
             {
               name: '我的钱包',
               logo: '',
               sort: 11,
               type: 'app_redirect',
-              app_redirect: '11'
+              link: '11'
             },
             {
               name: '关于我们',
               logo: '',
               sort: 12,
               type: 'app_redirect',
-              app_redirect: '12'
+              link: '12'
             }
           ], // 默认菜单集合
           allMenuSelect: [], // 当前选中项

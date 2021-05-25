@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import request2 from '@/utils/request_old'
+import request3 from '@/utils/request_old2'
 import $http from '@/utils/$http'
 
 // 权限
@@ -766,12 +767,19 @@ export function changeAppMenu(id, data) {
 
 // 敏感词白名单
 export function getWhitelist(params) {
-  return $http({
-    url: '/api/sensitive/whitetxt/list',
+  return request3({
+    url: '/sensitive/whitetxt/list',
     method: 'get',
     params
   })
 }
 
+export function addWhitelist(data) {
+  return request3({
+    url: '/sensitive/whitetxt/add',
+    method: 'post',
+    data
+  })
+}
 
 

@@ -21,9 +21,8 @@
     <el-table 
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border v-loading="loading" :data="dataList">
-      <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="白名单" align="center" prop="name" :show-overflow-tooltip="true" />
-      <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
+      <el-table-column label="ID" align="center" prop="Id" />
+      <el-table-column label="白名单" align="center" prop="Keywords" :show-overflow-tooltip="true" />
       <el-table-column width="160px" label="操作" align="center">
         <template slot-scope="scope">
           <el-button
@@ -44,10 +43,10 @@
       </el-table-column>
     </el-table>
     <pagination
-      v-show="total>0"
-      :total="total"
+      v-show="totalCount>0"
+      :total="totalCount"
       :page.sync="queryParams.page"
-      :limit.sync="queryParams.pageSize"
+      :limit.sync="queryParams.limit"
       @pagination="getList"
     />
     <!-- 新增/修改白名单弹窗 -->
@@ -55,8 +54,8 @@
     :close-on-click-modal = false
     :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="dataForm">
-        <el-form-item  label-width="80px" label="白名单" prop="name">
-          <el-input style="width: 350px" autocomplete="off" placeholder="请输入白名单词汇" v-model="form.name"></el-input>
+        <el-form-item  label-width="80px" label="白名单" prop="keyword">
+          <el-input style="width: 350px" autocomplete="off" placeholder="请输入白名单词汇" v-model="form.keyword"></el-input>
         </el-form-item>
       </el-form>
       
@@ -77,7 +76,8 @@ import {
   delgories,
 
 
-  getWhitelist
+  getWhitelist,
+  addWhitelist
   } from '@/api/manage'
   export default {
     name: 'system-whiteList',
@@ -86,13 +86,13 @@ import {
         // 查询参数
         queryParams: {
           page: 1,
-          pageSize: 10,
+          limit: 10,
           name:"",
         },
         loading:true,
         dataList:[],
         // 总条数
-        total: 0,
+        totalCount: 0,
         dialogFormVisible: false,
         form: {},
         rules: {
@@ -119,11 +119,12 @@ import {
         this.getList();
       },
       getList(){
+          this.loading = true;
         getWhitelist(this.queryParams).then(response => {
           // console.log(response)
           this.loading = false;
-          this.dataList = response.data;
-          this.total = response.total;
+          this.dataList = response.page.list;
+          this.totalCount = response.page.totalCount;
         })
       },
       adddata(){
@@ -135,7 +136,7 @@ import {
       // 初始化表单
       initForm() {
           this.form={
-            name: "",
+            keyword: "",
           }
           if (this.$refs.dataForm) {
             this.$refs.dataForm.resetFields();
@@ -195,7 +196,7 @@ import {
             })
           }else{
             // 新增
-            addgories(this.form).then(response => {
+            addWhitelist(this.form).then(response => {
                   this.$message({
                     message: '新建成功',
                     type: 'success'
