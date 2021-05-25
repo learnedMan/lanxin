@@ -782,4 +782,12 @@ export function addWhitelist(data) {
   })
 }
 
+/* 删除 */
+export function delWhitelist(data) {
+  return request3({
+    url: `/sensitive/whitetxt/del`,
+    method: 'DELETE',
+    data
+  })
+}
 

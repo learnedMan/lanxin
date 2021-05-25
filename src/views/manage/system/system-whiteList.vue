@@ -3,7 +3,7 @@
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="白名单：">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.keyword"
           placeholder="请输入关键字"
           clearable
           size="small"
@@ -25,13 +25,13 @@
       <el-table-column label="白名单" align="center" prop="Keywords" :show-overflow-tooltip="true" />
       <el-table-column width="160px" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             style="color:#E6A23C;"
             @click="editdata(scope.row)"
-          >修改</el-button>
+          >修改</el-button> -->
           <el-button
             size="mini"
             type="text"
@@ -77,7 +77,8 @@ import {
 
 
   getWhitelist,
-  addWhitelist
+  addWhitelist,
+  delWhitelist
   } from '@/api/manage'
   export default {
     name: 'system-whiteList',
@@ -87,7 +88,7 @@ import {
         queryParams: {
           page: 1,
           limit: 10,
-          name:"",
+          keyword:"",
         },
         loading:true,
         dataList:[],
@@ -96,7 +97,7 @@ import {
         dialogFormVisible: false,
         form: {},
         rules: {
-          name: [
+          keyword: [
             { required: true, message: "请输入白名单词汇", trigger: "blur" }
           ],
         },
@@ -107,10 +108,15 @@ import {
     created() {
       this.getList();
       this.initForm();
+      var a = 0;
+      var b = a||2
+      var c = a??2
+      console.log(b)
+      console.log(c)
     },
     methods:{
       initcondition(){
-        this.queryParams.name="";
+        this.queryParams.keyword="";
       },
       /** 搜索按钮操作 */
       handleQuery() {
@@ -159,12 +165,15 @@ import {
       },
       //删除白名单
       handleDelete(row){
-        this.$confirm('此操作将永久删除id为'+row.id+'的白名单, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除id为'+row.Id+'的白名单, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delgories(row.id,row).then(response => {
+          console.log(row.Id)
+          var arr = []
+          arr.push(row.Id)
+          delWhitelist(arr).then(response => {
                 this.$message({
                   message: '删除成功',
                   type: 'success'
