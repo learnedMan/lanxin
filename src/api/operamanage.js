@@ -90,7 +90,7 @@ export function addReservation(data) {
 }
 
 
-/*-------------------------广告推送--------------------------------*/
+/*-------------------------广告--------------------------------*/
 
 /* 获取广告位列表 */
 export function getAdvertList(params) {
@@ -159,5 +159,25 @@ export function deleteAdvertChild(id) {
   return request({
     url: `/api/ads/${id}`,
     method: 'delete'
+  })
+}
+
+/*-------------------------推送--------------------------------*/
+
+/* 获取推送列表 */
+export function getPushList(params) {
+  return request({
+    url: '/api/push',
+    method: 'get',
+    params
+  })
+}
+
+/* 添加推送信息 */
+export function addPushDetail(data) {
+  return request({
+    url: '/api/push',
+    method: 'post',
+    data
   })
 }
