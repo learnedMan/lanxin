@@ -100,7 +100,6 @@
         <el-table-column
           label="广告位类型"
           align="center"
-          prop="title"
           showOverflowTooltip
         >
           <template slot-scope="scope">{{ getLabel(scope.row.type) }}</template>
@@ -117,6 +116,7 @@
           <template slot-scope="scope">
             <el-select
               v-model="scope.row.status"
+              @change="changeStatus(scope.row)"
               clearable
             >
               <el-option
@@ -128,7 +128,7 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="180">
+        <el-table-column label="操作" align="center" width="240">
           <template slot-scope="scope">
             <!-- 查看 -->
             <el-button
@@ -213,7 +213,7 @@
           >
             <el-select
               v-model="dialogForm.type"
-              placeholder="请选择所属产品"
+              placeholder="请选择广告位类型"
               clearable
             >
               <el-option
@@ -244,6 +244,7 @@
                 placeholder="请输入左边距"
                 clearable
                 style="width: 100px"
+                @change="numberChange($event, dialogForm.extra.layout, 'margin-left')"
               />
               px
             </el-form-item>
@@ -304,6 +305,7 @@
 
 <script>
   import { getproduct } from '@/api/manage'
+  import { addAdvertList, getAdvertList, changeAdvert, deleteAdvert } from '@/api/operamanage'
 
     export default {
       name: 'list',
@@ -395,7 +397,7 @@
               { required: true, message: '请输入广告位名称', trigger: 'blur' }
             ],
             type: [
-              { required: true, message: '请选择所属产品', trigger: 'change' }
+              { required: true, message: '请选择类型', trigger: 'change' }
             ]
           }
         }
@@ -428,37 +430,109 @@
           this.resetForm('dialogForm');
           this.dialog = {
             title: '新增广告位',
-            show: true
+            show: true,
+            isAdd: true
           }
+        },
+        /* 修改数字 */
+        numberChange (val, target, key) {
+          val = Number.parseInt(val)
+          target[key] = Number.isNaN(val)? '' : val;
+        },
+        /* 修改状态 */
+        changeStatus (row) {
+          const params = {
+            product_id: row.product_id,
+            name: row.name,
+            type: row.type,
+            status: row.status,
+            intro: row.intro,
+            extra: {
+              layout: {
+                'margin-left': row.extra.layout['margin-left'] ?? '',
+                'margin-right': row.extra.layout['margin-right'] ?? '',
+                height: row.extra.layout.height ?? '',
+                width: row.extra.layout.width ?? ''
+              }
+            }
+          }
+          changeAdvert(row.id, params).then(() => {
+            this.$message.success('修改成功');
+            this.getList();
+          })
         },
         /* 编辑广告位 */
         handleEdit (row) {
           this.resetForm('dialogForm');
           this.dialog = {
-            title: '新增广告位',
+            title: '编辑广告位',
             show: true,
-            isAdd: true
+            id: row.id
           };
           this.dialogForm = {
-
+            product_id: row.product_id,
+            name: row.name,
+            type: row.type,
+            status: row.status,
+            intro: row.intro,
+            extra: {
+              layout: {
+                'margin-left': row.extra.layout['margin-left'] ?? '',
+                'margin-right': row.extra.layout['margin-right'] ?? '',
+                height: row.extra.layout.height ?? '',
+                width: row.extra.layout.width ?? ''
+              }
+            }
           }
         },
         /* 确认修改或添加 */
         enterDialog () {
-          let promise;
-          if(this.dialog.isAdd) {
-            //promise =
-          }else {
-
-          }
+          this.$refs.dialogForm?.validate(val => {
+            const { isAdd, id } = this.dialog;
+            if(val) {
+              let promise;
+              if(isAdd) {
+                promise = addAdvertList(this.dialogForm);
+              }else {
+                promise = changeAdvert(id, this.dialogForm);
+              }
+              promise.then(() => {
+                this.$message.success(isAdd? '新增成功' : '修改成功');
+                this.dialog.show = false;
+                this.getList();
+              })
+            }
+          })
         },
         /* 删除广告位列表 */
         handleListDelete (row) {
-
+          const { id, name } = row;
+          this.$confirm(`此操作将永久删除这条名称为${name}的广告位, 是否继续?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            deleteAdvert(id).then(() => {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.getList();
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
         },
         /* 查看广告列表 */
         watchList (row) {
-
+          this.$emit('watchList', {
+            product_id: row.product_id,
+            ad_place_id: row.id,
+            name: row.name
+          })
         },
         /* 根据字段显示相应文字 */
         getLabel (val) {
@@ -466,7 +540,14 @@
         },
         /* 获取列表信息 */
         getList () {
-
+          const params = { ...this.queryParams };
+          this.loading = true;
+          getAdvertList(this.removePropertyOfNullFor0(params)).then(res => {
+            this.tableData = res.data || [];
+            this.total = res.total;
+          }).finally(() => {
+            this.loading = false;
+          })
         }
       },
       async created() {
