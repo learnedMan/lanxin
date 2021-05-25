@@ -398,6 +398,28 @@ export const constantRoutes = [
             meta: { title: '平台账号管理' }
           }
         ]
+      },
+      {
+        path: 'advertPush',
+        component: () => import('@/views/operamanage/advertPush/index'),
+        name: 'AdvertPush',
+        meta: { title: '广告推送' },
+        alwaysShow: true,
+        redirect: '/operaManage/advertPush/advertList',
+        children: [
+          {
+            path: 'advertList',
+            component: () => import('@/views/operamanage/advertPush/advertList/index'),
+            name: 'AdvertList',
+            meta: { title: '广告管理' }
+          },
+          {
+            path: 'push',
+            component: () => import('@/views/operamanage/advertPush/push'),
+            name: 'Push',
+            meta: { title: '推送管理' }
+          }
+        ]
       }
     ]
   },

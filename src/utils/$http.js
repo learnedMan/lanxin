@@ -3,9 +3,9 @@ import { Message } from 'element-ui'
 import router from '@/router'
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://10.30.10.158', // url = base url + request url
+  baseURL: 'http://10.30.10.71:8080', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 60000 // request timeout
 })
 // 请求拦截器，拦截请求前对数据进行处理
 service.interceptors.request.use(config => {

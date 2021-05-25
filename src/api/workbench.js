@@ -44,7 +44,7 @@ export function deleteReasons(id) {
 /* 获取sourceId列表 */
 export function getSourceList() {
   return request2({
-    url: '/intranet/uc/querySourceIdData',
+    url: '/intranet/querySourceIdData',
     method: 'get'
   })
 }
@@ -54,7 +54,7 @@ export function getSourceList() {
 /* 反馈列表 */
 export function getFeedback(params) {
   return request2({
-    url: '/intranet/uc/report/pageList',
+    url: '/internal/report/pageList',
     method: 'get',
     params
   })
@@ -63,7 +63,7 @@ export function getFeedback(params) {
 /* 反馈详情 */
 export function getFeedbackDetail(params) {
   return request2({
-    url: '/intranet/uc/feedback/info',
+    url: '/internal/feedback/info',
     method: 'get',
     params
   })
@@ -72,7 +72,7 @@ export function getFeedbackDetail(params) {
 /* 回复反馈 */
 export function reply(data) {
   return request2({
-    url: '/intranet/uc/feedback/reply',
+    url: '/internal/feedback/reply',
     method: 'post',
     data
   })
@@ -83,7 +83,7 @@ export function reply(data) {
 /* 获取举报列表 */
 export function getReport(params) {
   return request2({
-    url: '/intranet/uc/report/pageList',
+    url: '/internal/report/pageList',
     method: 'get',
     params
   })
@@ -92,7 +92,7 @@ export function getReport(params) {
 /* 举报详情 */
 export function getReportDetail(params) {
   return request2({
-    url: '/intranet/uc/report/info',
+    url: '/internal/report/info',
     method: 'get',
     params
   })
@@ -101,7 +101,7 @@ export function getReportDetail(params) {
 /* 举报回复 */
 export function reportReply(data) {
   return request2({
-    url: '/intranet/uc/report/reply',
+    url: '/internal/report/reply',
     method: 'post',
     data
   })
@@ -111,8 +111,8 @@ export function reportReply(data) {
 
 /* 获取列表 */
 export function getCommentLists(data) {
-  return request2({
-    url: '/intranet/comment/listConsole',
+  return $http({
+    url: '/api/intranet/comment/listConsole',
     method: 'post',
     data
   })
@@ -120,16 +120,16 @@ export function getCommentLists(data) {
 
 /* 通过或拒绝评论 */
 export function commentAction(str) {
-  return request2({
-    url: `/intranet/comment/manage/${str}`,
+  return $http({
+    url: `/api/intranet/comment/manage/${str}`,
     method: 'get'
   })
 }
 
 /* 批量通过或拒绝 */
 export function batchCommentAction(data) {
-  return request2({
-    url: '/intranet/comment/operate',
+  return $http({
+    url: '/api/intranet/comment/operate',
     method: 'post',
     data
   })
@@ -137,8 +137,8 @@ export function batchCommentAction(data) {
 
 /* 禁言用户 */
 export function disableSendMsg(data) {
-  return request2({
-    url: '/intranet/comment/noTalkUser',
+  return $http({
+    url: '/api/intranet/comment/noTalkUser',
     method: 'post',
     data
   })
@@ -146,8 +146,8 @@ export function disableSendMsg(data) {
 
 /* 取消禁言 */
 export function releaseShutup(data) {
-  return request2({
-    url: '/intranet/comment/cancelNoTalkUser',
+  return $http({
+    url: '/api/intranet/comment/cancelNoTalkUser',
     method: 'post',
     data
   })

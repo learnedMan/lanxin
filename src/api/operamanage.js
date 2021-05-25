@@ -88,3 +88,76 @@ export function addReservation(data) {
     data
   })
 }
+
+
+/*-------------------------广告推送--------------------------------*/
+
+/* 获取广告位列表 */
+export function getAdvertList(params) {
+  return request({
+    url: '/api/ad_places',
+    method: 'get',
+    params
+  })
+}
+
+/*添加广告位*/
+export function addAdvertList(data) {
+  return request({
+    url: '/api/ad_places',
+    method: 'post',
+    data
+  })
+}
+
+/* 修改广告位 */
+export function changeAdvert(id, data) {
+  return request({
+    url: `/api/ad_places/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 删除广告位 */
+export function deleteAdvert(id) {
+  return request({
+    url: `/api/product_versions/${id}`,
+    method: 'delete'
+  })
+}
+
+/* 获取广告列表 */
+export function getAdvertChild(params) {
+  return request({
+    url: '/api/ads',
+    method: 'get',
+    params
+  })
+}
+
+/* 添加广告 */
+export function addAdvertChild(data) {
+  return request({
+    url: '/api/ads',
+    method: 'post',
+    data
+  })
+}
+
+/*修改广告*/
+export function changeAdvertChild(id, data) {
+  return request({
+    url: `/api/ads/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 删除广告 */
+export function deleteAdvertChild(id) {
+  return request({
+    url: `/api/ads/${id}`,
+    method: 'delete'
+  })
+}

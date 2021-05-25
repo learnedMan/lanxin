@@ -470,7 +470,7 @@ export default {
       getCommentLists(this.removePropertyOfNullFor0(params)).then(res => {
         const { totalCount, list } = res.data;
         this.page.total = totalCount;
-        const ids = list.map(n => n.id);
+        const ids = list.map(n => n.id).join();
         getNews({ ids }).then(news => {
           const newMap = news.data.reduce((data, n) => {
             data[n.id] = n.title;
@@ -478,7 +478,7 @@ export default {
           }, {})
           this.tableData = list.map(n => ({
             ...n,
-            statusLabel: this.searchLists[3].selectOption.find(k => k.value === n.status)?.label,
+            statusLabel: this.searchLists[2].selectOption.find(k => k.value === n.status)?.label,
             title: newMap[n.dataId]
           }))
         })
@@ -521,11 +521,11 @@ export default {
       }else {
         promise = disableSendMsg({
           ...data,
-          expiresIn: 100 * 365 * 24 * 60 * 60
+          expiresIn: 7 * 24 * 60 * 60
         });
       }
-      promise.then(res => {
-        this.$message.success(res.message);
+      promise.then(() => {
+        this.$message.success(noTalkUser? '取消禁言成功!' : '禁言成功!');
         this.getList();
       })
     },
