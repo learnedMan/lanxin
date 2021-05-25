@@ -291,46 +291,46 @@
             label="类型"
             prop="sort"
           >
-            <el-radio-group v-model="dialogForm.type">
+            <el-radio-group @change="radiochange" v-model="dialogForm.type">
               <el-radio v-for="type of typeOptions" :key="type.value" :label="type.value" style="margin-top: 10px">{{ type.label }}</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item
             label="外链"
-            prop="outer_link"
+            prop="link"
             v-if="dialogForm.type === 'outer_link'"
           >
             <el-input
               clearable
               placeholder="请输入链接"
               style="width: 260px"
-              v-model="dialogForm.outer_link"
+              v-model="dialogForm.link"
             />
           </el-form-item>
           <el-form-item
             label="授权外链"
-            prop="auth_link"
+            prop="link"
             v-if="dialogForm.type === 'auth_link'"
           >
             <el-input
               clearable
               placeholder="请输入链接"
               style="width: 260px"
-              v-model="dialogForm.auth_link"
+              v-model="dialogForm.link"
             />
           </el-form-item>
 
 
           <el-form-item
             label="原生跳转id"
-            prop="app_redirect"
+            prop="link"
             v-if="dialogForm.type === 'app_redirect'"
           >
             <el-input
               clearable
               placeholder="请输入原生跳转id"
               style="width: 260px"
-              v-model="dialogForm.app_redirect"
+              v-model="dialogForm.link"
             />
           </el-form-item>
           <el-form-item
@@ -518,9 +518,10 @@
             logo: '',
             sort: '',
             type: 'outer_link',
-            outer_link: '',
-            auth_link: '',
-            app_redirect: '',
+            // outer_link: '',
+            // auth_link: '',
+            // app_redirect: '',
+            link:'',
             text: '',
             phone: ''
           },
@@ -534,14 +535,17 @@
             sort: [
               { required: true, type: 'number', message: '请输入排序', trigger: 'blur' }
             ],
-            outer_link: [
-              { required: true, message: '请输入外链', trigger: 'blur' }
-            ],
-            auth_link: [
-              { required: true, message: '请输入外链', trigger: 'blur' }
-            ],
-            app_redirect: [
-              { required: true, message: '请输入原生跳转id', trigger: 'blur' }
+            // outer_link: [
+            //   { required: true, message: '请输入外链', trigger: 'blur' }
+            // ],
+            // auth_link: [
+            //   { required: true, message: '请输入外链', trigger: 'blur' }
+            // ],
+            // app_redirect: [
+            //   { required: true, message: '请输入原生跳转id', trigger: 'blur' }
+            // ],
+            link: [
+              { required: true, message: '请输入', trigger: 'blur' }
             ],
             phone: [
               { required: true, message: '请输入电话号码', trigger: 'blur' }
@@ -568,6 +572,10 @@
         handleQuery () {
           this.getList();
         },
+        /* 新增菜单radio修改 */
+        radiochange(){
+          this.dialogForm.link='';
+        }, 
         /* 判断是否禁用 */
         judgeDisabled (name) {
           const key = this.defaultMenu.key;
@@ -619,7 +627,7 @@
         /* 编辑 */
         handleEdit (row, key) {
           this.resetForm('dialogForm');
-          const { name, logo, sort, type = 'outer_link', outer_link ='', auth_link='', app_redirect = '', text = '', phone = '' } = row;
+          const { name, logo, sort, type = 'outer_link', link='', text = '', phone = '' } = row;
           this.dialog = {
             title: '编辑菜单',
             disabledName: this.allMenu.some(n => n.name === name),
@@ -631,9 +639,10 @@
             logo,
             sort,
             type,
-            outer_link,
-            auth_link,
-            app_redirect,
+            // outer_link,
+            // auth_link,
+            // app_redirect,
+            link,
             text,
             phone
           }
@@ -647,7 +656,6 @@
               const target = data[key] || (data[key] = []);
               const value = { ...this.dialogForm };
             // return
-
               if(this.dialog.add) {
                 target.push(value)
               }else {
