@@ -172,13 +172,27 @@
         <el-table-column
           label="新闻类型"
           align="center"
-          prop="type"
+          prop="typeLabel"
         />
         <el-table-column
           label="状态"
           align="center"
-          prop="statusLabel"
-        />
+        >
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.status"
+              @change="statusChange(scope.row)"
+              size="small"
+            >
+              <el-option
+                v-for="item in statusOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
         <el-table-column
           label="作者"
           align="center"
@@ -186,15 +200,29 @@
           :show-overflow-tooltip="true"
         />
         <el-table-column
-          label="创建时间"
+          label="排序"
           align="center"
-          prop="created_at"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="small"
+              @click="handleSort(scope.row)"
+            >
+              {{ scope.row.sort }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="发布时间"
+          align="center"
+          prop="updated_at"
           :show-overflow-tooltip="true"
         />
         <el-table-column
           label="操作"
           align="center"
-          width="270"
+          width="300"
         >
           <template slot-scope="scope">
             <div class="verify-table-action">
@@ -233,6 +261,15 @@
               >
                 预览
               </el-button>
+              <!-- 推送 -->
+              <el-button
+                type="text"
+                icon="el-icon-document"
+                size="small"
+                @click="handlePush(scope.row)"
+              >
+                推送
+              </el-button>
             </div>
           </template>
         </el-table-column>
@@ -255,15 +292,142 @@
     >
       <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" @refresh="refresh" />
     </el-dialog>
+    <!-- 修改排序 -->
+    <el-dialog
+      width="400px"
+      title="调整排序"
+      :visible.sync="sortDialog.show"
+    >
+      <el-form
+        ref="sortForm"
+        :model="sortDialog.form"
+        :rules="sortDialog.rules"
+        label-width="120px"
+        size="small"
+      >
+        <el-form-item
+          label="当前排序:"
+          prop="old"
+        >
+          <el-input
+            v-model="sortDialog.form.old"
+            disabled
+            style="width: 194px"
+          />
+        </el-form-item>
+        <el-form-item
+          label="目标排序:"
+          prop="now"
+        >
+          <el-input
+            v-model.number="sortDialog.form.now"
+            @change="numberChange"
+            placeholder="请输入目标排序"
+            style="width: 194px"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="sortDialog.show = false">
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="enterSortDialog"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
+    <!-- 推送 -->
+    <el-dialog
+      width="500px"
+      :title="pushDialog.title"
+      :visible.sync="pushDialog.show"
+    >
+      <el-form
+        ref="dialogForm"
+        :model="dialogForm"
+        :rules="dialogRules"
+        label-width="120px"
+        size="small"
+      >
+        <el-form-item
+          label="消息内容:"
+          prop="title"
+        >
+          <el-input
+            v-model="dialogForm.title"
+            placeholder="请输入消息内容"
+            clearable
+            style="width: 194px"
+          />
+        </el-form-item>
+        <el-form-item
+          label="消息详情:"
+          prop="content"
+        >
+          <el-input
+            v-model="dialogForm.content"
+            placeholder="请输入消息详情"
+            clearable
+            type="textarea"
+            :row="4"
+            style="width: 194px"
+          />
+        </el-form-item>
+        <el-form-item
+          label="链接到:"
+          prop="linked_to.id"
+        >
+          <el-input
+            disabled
+            v-model="dialogForm.linked_to.title"
+            style="width: 194px"
+          />
+        </el-form-item>
+        <el-form-item
+          label="推送时间:"
+          prop="pushTime"
+        >
+          <el-date-picker
+            style="width: 194px"
+            v-model="dialogForm.pushTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            type="datetime"
+            placeholder="选择日期时间">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="pushDialog.show = false">
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="enterPushDialog"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getChannels } from '@/api/manage'
-import { getNews, deleteNews, setTop } from '@/api/content'
+import { addPushDetail} from '@/api/operamanage'
+import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort } from '@/api/content'
 import NewDetail from './reviewNews/detail'
 
 export default {
+  name: 'SeeSection',
   components: {
     NewDetail
   },
@@ -354,7 +518,53 @@ export default {
       detailDialog: {
         show: false,
         id: ''
-      }
+      },
+      sortDialog: {
+        show: false,
+        id: '',
+        form: {
+          old: '',
+          now: ''
+        },
+        rules: {
+          now: [
+            { required: true, message: '请输入目标排序', trigger: 'blur' }
+          ]
+        }
+      },
+      pushDialog: {
+        show: false,
+        title: '新增推送'
+      },
+      dialogForm: {
+        title: '',
+        content: '',
+        cover: '',
+        linked_to: {
+          route_type: 'news',
+          type: '',
+          id: '',
+          title: ''
+        },
+        push_to: {
+          type: 'all',
+          terminal: '3',
+          cid: []
+        },
+        pushTime: ''
+      },
+      dialogRules: {
+        title: [
+          { required: true, message: '请输入消息内容', trigger: 'blur' }
+        ],
+        content: [
+          { required: true, message: '请输入消息详情', trigger: 'blur' }
+        ],
+        pushTime: [
+          { required: true, message: '请选择推送时间', trigger: 'change' }
+        ],
+      },
+      product_id: ''
     }
   },
   async created() {
@@ -363,6 +573,7 @@ export default {
       const id = this.$route.query.id || this.channelsList[0]?.id
       this.defaultExpandedKeys = [id]
       this.$refs.tree.setCurrentKey(id)
+      this.product_id = this.$refs.tree.getCurrentNode()?.product_id || '';
       this.getList()
     })
   },
@@ -401,6 +612,64 @@ export default {
     handleQuery() {
       this.getList()
     },
+    /* 新增推送 */
+    handlePush (row) {
+      const { type, id, title } = row;
+      this.resetForm('dialogForm');
+      Object.assign(this.dialogForm, {
+        linked_to: {
+          route_type: 'news',
+          type,
+          id,
+          title
+        }
+      })
+      this.pushDialog.show = true;
+    },
+    /* 确认推送 */
+    enterPushDialog () {
+      const { product_id, dialogForm } = this;
+      const params = {
+        product_id,
+        extra: dialogForm
+      }
+      addPushDetail(params).then(res => {
+        this.$message.success(res.message);
+        this.pushDialog.show = false;
+      })
+    },
+    /* 只能输入数字 */
+    numberChange (val) {
+      val = Number.parseInt(val)
+      this.sortDialog.form.now = Number.isNaN(val)? '' : val;
+    },
+    /* 修改排序 */
+    handleSort (row) {
+      const { id, sort } = row;
+      Object.assign(this.sortDialog, {
+        show: true,
+        id,
+        form: {
+          old: sort,
+          now: ''
+        }
+      })
+    },
+    /* 确认修改排序 */
+    enterSortDialog () {
+      this.$refs.sortForm?.validate(val => {
+        if(val) {
+          const { id, form } = this.sortDialog;
+          changeNewsSort({
+            [id]: form.now
+          }).then(() => {
+            this.$message.success('修改成功');
+            this.sortDialog.show = false;
+            this.getList();
+          })
+        }
+      })
+    },
     /*
       * 置顶和取消置顶
       * */
@@ -423,6 +692,17 @@ export default {
         id,
         show: true
       }
+    },
+    /* 审核状态修改 */
+    statusChange (row) {
+      const { id, status } = row;
+      changeNewsStatus({
+        ids: id,
+        status
+      }).then(() => {
+        this.$message.success('修改状态成功')
+        this.getList();
+      })
     },
     /*
       * 删除新闻
@@ -449,7 +729,8 @@ export default {
       })
     },
     /* 节点数选中时 */
-    treeChange() {
+    treeChange(val) {
+      this.product_id = val.product_id;
       this.handleReset()
       this.getList()
     },
@@ -475,8 +756,7 @@ export default {
               }*/
           return {
             ...item,
-            statusLabel: this.statusOptions.find(n => item.status === n.value)?.label ?? '',
-            type: type && type.label || '',
+            typeLabel: type && type.label || '',
             cover: cover && cover.path || '' // 图片
           }
         })
