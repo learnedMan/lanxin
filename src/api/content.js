@@ -95,6 +95,15 @@ export function setTop(data) {
   })
 }
 
+/* 修改新闻排序 */
+export function changeNewsSort(data) {
+  return request({
+    url: '/api/news/setSort',
+    method: 'post',
+    data
+  })
+}
+
 /* 修改新闻状态 */
 export function changeNewsStatus(data) {
   return request({

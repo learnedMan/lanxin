@@ -106,26 +106,50 @@
         <el-table-column
           label="推送状态"
           align="center"
-          prop="status"
-        />
+          prop="statusLabel"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="watchDetail(scope.row)"
+            >
+              {{ scope.row.statusLabel }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column
           label="创建时间"
           align="center"
-          prop="status"
+          prop="created_at"
         />
         <el-table-column
           label="更新时间"
           align="center"
-          prop="status"
+          prop="updated_at"
         />
         <el-table-column
           label="推送个人"
           align="center"
-          prop="extra.push_to.type"
+          prop="isSingle"
+        />
+        <el-table-column
+          label="启用状态"
+          align="center"
+          prop="openStatus"
         >
-
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.openStatus"
+              @change="openStatusChange(scope.row)"
+              clearable
+            >
+              <el-option label="启用" :value="1"/>
+              <el-option label="禁用" :value="0"/>
+            </el-select>
+          </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="240">
+        <el-table-column label="操作" align="center" width="160">
           <template slot-scope="scope">
             <!-- 编辑 -->
             <el-button
@@ -225,7 +249,7 @@
               v-model="dialogForm.linked_to.title"
               style="width: 194px"
             />
-            <el-button type="primary" size="mini" @click="handleChoose">选择</el-button>
+            <el-button type="primary" size="small" @click="handleChoose" style="margin-left: 10px">选择</el-button>
           </el-form-item>
           <el-form-item
             label="推送时间:"
@@ -248,6 +272,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item
+            v-if="dialogForm.push_to.type === 'single'"
             label="用户手机号:"
             prop="push_to.cid"
           >
@@ -274,12 +299,13 @@
           </el-button>
         </div>
         <el-dialog
-          width="auto"
+          :width="innerDialog.width"
           :title="innerDialog.title"
           :visible.sync="innerDialog.show"
           append-to-body
         >
-          <new-list @confirm="confirmNew"></new-list>
+          <new-list @confirm="confirmChoose" v-if="dialogForm.linked_to.route_type === 'news'"></new-list>
+          <channel :id="dialogForm.linked_to.id" @confirm="confirmChoose" v-if="dialogForm.linked_to.route_type === 'channel'"></channel>
         </el-dialog>
       </el-dialog>
     </div>
@@ -287,12 +313,14 @@
 
 <script>
   import { getproduct } from '@/api/manage'
-  import { getPushList, addPushDetail } from '@/api/operamanage'
+  import { getPushList, addPushDetail, changePushDetail, deletePushDetail } from '@/api/operamanage'
   import newList from './component/newList'
+  import channel from './component/channel'
 
     export default {
       components: {
-        newList
+        newList,
+        channel
       },
       data() {
         return {
@@ -303,11 +331,11 @@
               value: ''
             },
             {
-              label: '未发布',
+              label: '禁用',
               value: 0
             },
             {
-              label: '发布',
+              label: '启用',
               value: 1
             }
           ],
@@ -364,11 +392,14 @@
               terminal: '',
               cid: ''
             },
-            pushTime: '',
+            pushTime: ''
           },
           dialogRules: {
             title: [
               { required: true, message: '请输入消息内容', trigger: 'blur' }
+            ],
+            content: [
+              { required: true, message: '请输入消息详情', trigger: 'blur' }
             ],
             pushTime: [
               { required: true, message: '请选择推送时间', trigger: 'change' }
@@ -378,6 +409,9 @@
             ],
             'linked_to.id': [
               { required: true, message: '请选择链接到的内容', trigger: 'change' }
+            ],
+            'push_to.terminal': [
+              { required: true, message: '请选择推送终端', trigger: 'change' }
             ]
           },
           dialog: {
@@ -386,6 +420,7 @@
           },
           innerDialog: {
             title: '链接到',
+            width: '1000px',
             show: false
           }
         }
@@ -416,10 +451,23 @@
         },
         /* 显示选择链接到内容的弹框 */
         handleChoose () {
-          this.innerDialog.show = true;
+          const type = this.dialogForm.linked_to.route_type;
+          if(type === 'news') {
+            this.innerDialog = {
+              title: '链接到新闻',
+              width: '1000px',
+              show: true
+            }
+          }else if(type === 'channel') {
+            this.innerDialog = {
+              title: '链接到栏目',
+              width: '600px',
+              show: true
+            }
+          }
         },
         /* 确认选择的新闻 */
-        confirmNew (data) {
+        confirmChoose (data) {
           Object.assign(this.dialogForm, {
             linked_to: {
               route_type: this.dialogForm.linked_to.route_type,
@@ -428,6 +476,7 @@
               title: data.title
             }
           })
+          this.innerDialog.show = false;
         },
         /* 新增 */
         handleAdd () {
@@ -440,13 +489,36 @@
               title: ''
             }
           })
+          this.dialog = {
+            title: '新增推送',
+            show: true
+          }
         },
         /* 编辑 */
         handleEdit (row) {
-          const { id } = row
+          const { id, extra } = row;
           this.resetForm('dialogForm');
           this.dialogForm = {
-
+            title: extra.title,
+            content: extra.content,
+            cover: extra.cover,
+            linked_to: {
+              route_type: extra.linked_to.route_type,
+              type: extra.linked_to.type,
+              id: extra.linked_to.id,
+              title: extra.linked_to.title
+            },
+            push_to: {
+              type: extra.push_to.type,
+              terminal: extra.push_to.terminal,
+              cid: extra.push_to.cid.join()
+            },
+            pushTime: extra.pushTime
+          };
+          this.dialog = {
+            title: '编辑推送',
+            show: true,
+            id
           }
         },
         /* 确认新增或编辑 */
@@ -454,15 +526,22 @@
           this.$refs.dialogForm?.validate(val => {
             if(val) {
               const id = this.dialog.id;
+              const cid = this.dialogForm.push_to.cid
               const params = {
                 product_id: this.queryParams.product_id,
-                extra: this.dialogForm
+                extra: {
+                  ...this.dialogForm,
+                  push_to: {
+                    ...this.dialogForm.push_to,
+                    cid: cid? [cid] : []
+                  }
+                }
               }
               let promise;
               if(id) {
-
+                promise = changePushDetail(id, params)
               }else {
-                promise = addPushDetail(id, params);
+                promise = addPushDetail(params);
               }
               promise.then(() => {
                 this.$message.success(id? '修改成功' : '新增成功');
@@ -473,15 +552,73 @@
           })
         },
         /* 删除 */
-        handleListDelete () {
-
+        handleListDelete (row) {
+          const { id, title } = row;
+          this.$confirm(`此操作将永久删除这条消息内容为${title}的推送信息, 是否继续?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            deletePushDetail(id).then(() => {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.getList();
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+        },
+        /* 修改状态 */
+        openStatusChange (row) {
+          const { id, extra, openStatus } = row;
+          const params = {
+            product_id: this.queryParams.product_id,
+            status: openStatus,
+            extra: {
+              title: extra.title,
+              content: extra.content,
+              cover: extra.cover,
+              linked_to: {
+                route_type: extra.linked_to.route_type,
+                type: extra.linked_to.type,
+                id: extra.linked_to.id,
+                title: extra.linked_to.title
+              },
+              push_to: {
+                type: extra.push_to.type,
+                terminal: extra.push_to.terminal,
+                cid: extra.push_to.cid?.join()
+              },
+              pushTime: extra.pushTime
+            }
+          };
+          changePushDetail(id, params).then(() => {
+            this.$message.success('修改成功');
+            this.getList();
+          })
+        },
+        /* 查看失败或成功详情 */
+        watchDetail (row) {
+          this.$alert(JSON.stringify(row.extra.pushResult), '详情', {
+            confirmButtonText: '确定',
+          });
         },
         /* 获取列表数据 */
         getList () {
           let params = { ...this.queryParams };
           this.loading = true;
           getPushList(this.removePropertyOfNullFor0(params)).then(res => {
-            this.tableData = res.data || [];
+            this.tableData = (res.data || []).map(n => ({
+              ...n,
+              openStatus: n.status === 0? 0 : 1,
+              statusLabel: n.status === 2? '待执行' : n.extra.pushResult.pushSeq? '成功' : '失败',
+              isSingle: n.extra.push_to.type === 'single'? '是' : '否'
+            }));
             this.total = res.total;
           }).finally(() => {
             this.loading = false;

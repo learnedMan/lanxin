@@ -181,3 +181,20 @@ export function addPushDetail(data) {
     data
   })
 }
+
+/* 修改推送消息 */
+export function changePushDetail(id, data) {
+  return request({
+    url: `/api/push/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 删除推送消息 */
+export function deletePushDetail(id) {
+  return request({
+    url: `/api/push/${id}`,
+    method: 'delete'
+  })
+}

@@ -61,8 +61,8 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="发布状态:"
-          prop="live"
+          label="审核状态:"
+          prop="status"
         >
           <el-select
             v-model="queryParams.status"
@@ -148,6 +148,25 @@
         align="center"
         prop="liveLabel"
       />
+      <el-table-column
+        label="审核状态"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <el-select
+            v-model="scope.row.status"
+            @change="publishChange(scope.row)"
+            size="small"
+          >
+            <el-option
+              v-for="item in publishOptions.filter(n => n.value !== '')"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </template>
+      </el-table-column>
       <el-table-column
         label="开播时间"
         align="center"
@@ -280,10 +299,20 @@
         </el-form-item>
         <el-form-item
           label-width="120px"
+          label="纯图文直播间:"
+          prop="extra.only_statement"
+        >
+          <el-radio-group v-model="dialog.form.extra.only_statement" @change="statementChange">
+            <el-radio label="1" style="margin-top: 10px">是</el-radio>
+            <el-radio label="0" style="margin-top: 10px">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          label-width="120px"
           label="图文直播:"
           prop="extra.statement"
         >
-          <el-radio-group v-model="dialog.form.extra.statement">
+          <el-radio-group v-model="dialog.form.extra.statement" :disabled="dialog.form.extra.only_statement === '1'">
             <el-radio v-for="type of statementOptions" :key="type.value" :label="type.value" style="margin-top: 10px">{{ type.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -457,7 +486,7 @@
 </template>
 
 <script>
-  import { getStudioList, addStudio, getStudio, editStudio, publishStudio, deleteStudio } from '@/api/operamanage'
+  import { getStudioList, addStudio, getStudio, editStudio, deleteStudio } from '@/api/operamanage'
   import { getChannels } from '@/api/manage'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
@@ -527,12 +556,16 @@
             value: ''
           },
           {
-            label: '未发布',
+            label: '待审核',
             value: 0
           },
           {
             label: '已发布',
             value: 1
+          },
+          {
+            label: '已下线',
+            value: 2
           }
         ], // 发布状态
         statementOptions: [
@@ -589,7 +622,8 @@
               title: '', // 直播间名
               cover: '', // 直播间封面
               portrait: '', // 直播类型
-              statement: '', // 图文直播
+              only_statement: '0', // 是否为纯图文直播间
+              statement: 'none', // 图文直播
               start_time: '', // 直播开始时间
               end_time: '', // 直播结束时间
               intro: '', // 直播间简介
@@ -683,6 +717,7 @@
                 channels: data.channel.map(n => n.id),
                 extra: {
                   ...data.extra,
+                  only_statement: data.extra.only_statement || '0',
                   portrait: Number(data.extra.portrait),
                   cover: data.extra.cover?.[0]?.path
                 }
@@ -712,6 +747,22 @@
             message: '已取消删除'
           })
         })
+      },
+      /* 修改发布状态 */
+      publishChange (row) {
+        const { id, status } = row;
+        editStudio(id, {
+          status
+        }).then(() => {
+          this.$message.success('修改成功');
+          this.getList();
+        })
+      },
+      /* 修改图文直播类型 */
+      statementChange (val) {
+        if(val === '1') {
+          this.dialog.form.extra.statement = 'broadcast';
+        }
       },
       /* 发布 */
       handlePublish (row) {
@@ -745,7 +796,6 @@
       enterChangeDialog () {
         const id = this.dialog.id;
         const params = {
-          product_id: 28,
           channels: this.dialog.form.channels.join(),
           extra: {
             ...this.dialog.form.extra,
@@ -773,17 +823,12 @@
       enterPublishDialog () {
         this.$refs.publishForm?.validate(val => {
           if(val) {
-            publishStudio({
-              ...this.publishDialog.form,
-              channel_id: this.publishDialog.form.channel_id.join()
-            }).then(res => {
-              if (res.status_code >= 200 && res.status_code < 300) {
-                this.$message.success(res.message);
-                this.publishDialog.show = false
-                this.getList();
-              } else {
-                this.$message.warning(res.message);
-              }
+            editStudio(this.publishDialog.form.broadcast_ids,{
+              channels: this.publishDialog.form.channel_id.join()
+            }).then(() => {
+              this.$message.success('发布成功');
+              this.publishDialog.show = false
+              this.getList();
             })
           }
         })
