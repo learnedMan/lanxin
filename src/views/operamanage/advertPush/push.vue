@@ -253,10 +253,10 @@
           </el-form-item>
           <el-form-item
             label="推送时间:"
-            prop="pushTime"
+            prop="push_time"
           >
             <el-date-picker
-              v-model="dialogForm.pushTime"
+              v-model="dialogForm.push_time"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间">
@@ -392,7 +392,7 @@
               terminal: '',
               cid: ''
             },
-            pushTime: ''
+            push_time: ''
           },
           dialogRules: {
             title: [
@@ -401,7 +401,7 @@
             content: [
               { required: true, message: '请输入消息详情', trigger: 'blur' }
             ],
-            pushTime: [
+            push_time: [
               { required: true, message: '请选择推送时间', trigger: 'change' }
             ],
             'push_to.cid': [
@@ -513,7 +513,7 @@
               terminal: extra.push_to.terminal,
               cid: extra.push_to.cid.join()
             },
-            pushTime: extra.pushTime
+            push_time: extra.push_time
           };
           this.dialog = {
             title: '编辑推送',
@@ -594,7 +594,7 @@
                 terminal: extra.push_to.terminal,
                 cid: extra.push_to.cid?.join()
               },
-              pushTime: extra.pushTime
+              push_time: extra.push_time
             }
           };
           changePushDetail(id, params).then(() => {
@@ -616,7 +616,7 @@
             this.tableData = (res.data || []).map(n => ({
               ...n,
               openStatus: n.status === 0? 0 : 1,
-              statusLabel: n.status === 2? '待执行' : n.extra.pushResult.pushSeq? '成功' : '失败',
+              statusLabel: (!n.extra.pushResult || n.status === 2)? '待执行' : n.extra.pushResult.pushSeq? '成功' : '失败',
               isSingle: n.extra.push_to.type === 'single'? '是' : '否'
             }));
             this.total = res.total;

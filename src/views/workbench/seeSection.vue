@@ -391,11 +391,11 @@
         </el-form-item>
         <el-form-item
           label="推送时间:"
-          prop="pushTime"
+          prop="push_time"
         >
           <el-date-picker
             style="width: 194px"
-            v-model="dialogForm.pushTime"
+            v-model="dialogForm.push_time"
             value-format="yyyy-MM-dd HH:mm:ss"
             type="datetime"
             placeholder="选择日期时间">
@@ -551,7 +551,7 @@ export default {
           terminal: '3',
           cid: []
         },
-        pushTime: ''
+        push_time: ''
       },
       dialogRules: {
         title: [
@@ -560,7 +560,7 @@ export default {
         content: [
           { required: true, message: '请输入消息详情', trigger: 'blur' }
         ],
-        pushTime: [
+        push_time: [
           { required: true, message: '请选择推送时间', trigger: 'change' }
         ],
       },
