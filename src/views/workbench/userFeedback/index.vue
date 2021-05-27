@@ -519,7 +519,7 @@ export default {
   },
   async created() {
     await this.getProductList();
-    this.getSourceList();
+    //this.getSourceList();
     this.getList()
   },
   methods: {
