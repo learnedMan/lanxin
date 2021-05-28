@@ -187,7 +187,7 @@
           initialFrameWidth: '100%', // 编辑器宽度
           initialFrameHeight: 200, // 编辑器高度
           serverUrl: `/laravel-u-editor-server/server`, // 上传图片以及视频的接口
-          autoHeightEnabled: false // 防止内容撑高编辑器
+          autoHeightEnabled: true // 防止内容撑高编辑器
         }, // 默认配置
         editorDependencies: [
           'ueditor.config.js',
