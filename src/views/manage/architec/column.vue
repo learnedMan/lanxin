@@ -410,6 +410,12 @@ import ChildPage1 from './pages/c_page1'
             value: 'default',
             label: '默认'
           },{
+            value: 'matrix',
+            label: '矩阵'
+          },{
+            value: 'matrix_intro',
+            label: '矩阵简介'
+          },{
             value: 'video_waterfall',
             label: '视频瀑布流'
           },{
