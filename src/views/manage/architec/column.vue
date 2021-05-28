@@ -197,7 +197,7 @@
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">
             <el-select v-model="form.extra.template_style" prop="extra.template_style" placeholder="请选择">
-              <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.id">
+              <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.catalogCode">
               </el-option>
             </el-select>
           </el-form-item>
