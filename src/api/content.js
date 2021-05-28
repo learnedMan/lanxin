@@ -42,7 +42,7 @@ export function batchPublishScript(data) {
   return request({
     url: `/api/scripts/pushScriptsToChannel`,
     method: 'post',
-    params: data
+    data
   })
 }
 
