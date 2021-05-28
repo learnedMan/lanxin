@@ -533,9 +533,10 @@ import ChildPage1 from './pages/c_page1'
       //     })
       // },
       getstyle(val){
-        // console.log(this.catalogoptions)
+        console.log(this.catalogoptions)
+        console.log(val)
         for(var i=0;i<this.catalogoptions.length;i++){
-          if(val==this.catalogoptions[i].id){
+          if(val==this.catalogoptions[i].catalogCode){
             return this.catalogoptions[i].catalogName
           }
         }
