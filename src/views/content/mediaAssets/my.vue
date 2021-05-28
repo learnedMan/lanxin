@@ -522,22 +522,12 @@ export default {
           // 多个稿件关联到单个栏目
           if (isArray) {
             batchPublishScript({
-              ids,
+              ids: ids.join(),
               channel_id: channels
-            }).then(res => {
-              if (res.status_code >= 200 && res.status_code < 300) {
-                this.$message({
-                  message: res.message,
-                  type: 'success'
-                })
-                this.dialog.show = false
-                this.getList()
-              } else {
-                this.$message({
-                  message: res.message,
-                  type: 'warning'
-                })
-              }
+            }).then(() => {
+              this.$message.success('批量发布成功');
+              this.dialog.show = false;
+              this.getList()
             })
           } else {
             // 单个稿件关联到多个栏目
