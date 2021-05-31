@@ -267,6 +267,7 @@
       <new-detail
         :id="detailDialog.id"
         :visible.sync="detailDialog.show"
+        :disabled="true"
         @refresh="refresh"
       />
     </el-dialog>
