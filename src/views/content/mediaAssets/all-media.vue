@@ -119,6 +119,7 @@
           <el-image
             style="width: 50px; height: 50px"
             :src="scope.row.cover || useravatar"
+            :preview-src-list="[scope.row.cover || useravatar]"
             fit="cover"
           >
             <img slot="error" :src="useravatar" alt="" style="width: 100%;height: 100%">

@@ -18,6 +18,9 @@
       margin-top: 30px;
       text-align: right;
     }
+    &-ul {
+      line-height: 0;
+    }
     &-li, &-ul {
       margin: 0;
       padding: 0;
@@ -136,7 +139,7 @@
         </el-upload>
       </li>
     </ul>
-    <div class="xl-cropper-tip">上传封面,建议尺寸 750*420,单个图片不超过10M!</div>
+    <div class="xl-cropper-tip" v-if="showTip">上传封面,建议尺寸 750*420,单个图片不超过10M!</div>
     <el-dialog
       width="600px"
       :title="dialog.title"
@@ -198,6 +201,10 @@ export default {
     count: {
       type: [Number, String],
       default: 1
+    },
+    showTip: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -456,7 +463,8 @@ export default {
           file
         }).then(res => {
           if (res.status_code >= 200 && res.status_code < 300) {
-            this.fileLists[this.dialog.index].path = res.path
+            this.fileLists[this.dialog.index].path = res.path;
+            this.$emit('changeCropper', res.path);
             this.dialog.show = false
           }
         })

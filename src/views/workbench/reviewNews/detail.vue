@@ -64,6 +64,7 @@
     <el-main style="padding: 10px">
       <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange">
         <el-tab-pane
+          disabled
           v-for="item of tabs"
           :key="item.value"
           :label="item.label"

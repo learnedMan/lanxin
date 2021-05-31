@@ -307,8 +307,13 @@
         /* 确认视频 */
         handleChoose (list) {
           const obj = { ...list };
+          const url = {
+            url: obj.customObj.url,
+            type: obj.customObj.type
+          };
           delete obj.customObj;
           this.$emit('choose', obj);
+          this.$emit('choose-url', url);
         },
         /* 获取栏目 */
         getVideoChannel (code = 0) {

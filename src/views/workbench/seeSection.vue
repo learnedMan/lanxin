@@ -356,6 +356,23 @@
         size="small"
       >
         <el-form-item
+          label="推送终端:"
+          prop="push_to.terminal"
+        >
+          <el-select
+            v-model="dialogForm.push_to.terminal"
+            placeholder="请选择终端"
+            clearable
+          >
+            <el-option
+              v-for="item in terminal"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
           label="消息内容:"
           prop="title"
         >
@@ -400,6 +417,27 @@
             type="datetime"
             placeholder="选择日期时间">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item
+          label="是否推送给个人:"
+          prop="push_to.type"
+        >
+          <el-radio-group v-model="dialogForm.push_to.type">
+            <el-radio label="all">否</el-radio>
+            <el-radio label="single">是</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          v-if="dialogForm.push_to.type === 'single'"
+          label="用户手机号:"
+          prop="push_to.cid"
+        >
+          <el-input
+            v-model="dialogForm.push_to.cid"
+            placeholder="请输入用户手机号"
+            clearable
+            style="width: 194px"
+          />
         </el-form-item>
       </el-form>
       <div
@@ -536,6 +574,20 @@ export default {
         show: false,
         title: '新增推送'
       },
+      terminal: [
+        {
+          label: '全部',
+          value: 3
+        },
+        {
+          label: 'ios',
+          value: 2
+        },
+        {
+          label: '安卓',
+          value: 1
+        }
+      ],
       dialogForm: {
         title: '',
         content: '',
@@ -548,8 +600,8 @@ export default {
         },
         push_to: {
           type: 'all',
-          terminal: '3',
-          cid: []
+          terminal: '',
+          cid: ''
         },
         push_time: ''
       },
@@ -563,6 +615,15 @@ export default {
         push_time: [
           { required: true, message: '请选择推送时间', trigger: 'change' }
         ],
+        'push_to.cid': [
+          { required: true, message: '请输入用户手机号', trigger: 'blur' }
+        ],
+        'linked_to.id': [
+          { required: true, message: '请选择链接到的内容', trigger: 'change' }
+        ],
+        'push_to.terminal': [
+          { required: true, message: '请选择推送终端', trigger: 'change' }
+        ]
       },
       product_id: ''
     }
@@ -629,9 +690,16 @@ export default {
     /* 确认推送 */
     enterPushDialog () {
       const { product_id, dialogForm } = this;
+      const cid = dialogForm.push_to.cid
       const params = {
         product_id,
-        extra: dialogForm
+        extra: {
+          ...dialogForm,
+          push_to: {
+            ...dialogForm.push_to,
+            cid: cid? [cid] : []
+          }
+        }
       }
       addPushDetail(params).then(res => {
         this.$message.success(res.message);

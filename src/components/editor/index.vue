@@ -163,16 +163,27 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 选择视频弹框 -->
+    <el-dialog
+      width="1000px"
+      top="4vh"
+      :title="videoDialog.title"
+      :visible.sync="videoDialog.show"
+    >
+      <xl-video @choose-url="videoDialogControl"></xl-video>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import VueUeditorWrap from 'vue-ueditor-wrap'
+  import xlVideo from '@/components/video'
   import { getEditImgLists } from '@/api/content'
   let currentEditor
   export default {
     components: {
-      VueUeditorWrap
+      VueUeditorWrap,
+      xlVideo
     },
     props: {
       value: {
@@ -237,7 +248,11 @@
             }
           }]
         },
-        editor: ''
+        editor: '',
+        videoDialog: {
+          title: '选择视频',
+          show: false,
+        }, // 选择视频弹框
       }
     },
     beforeDestroy() {
@@ -288,10 +303,21 @@
           })
           return btn
         }, undefined, id)
+        window.UE.registerUI('videoList', (editor, uiName) => {
+          const btn = new window.UE.ui.Button({
+            name: 'btn-dialog-' + uiName,
+            cssRules: `background-position: -320px -20px;`,
+            title: '视频列表',
+            onclick: () => {
+              this.videoDialog.show = true;
+            }
+          })
+          return btn
+        }, undefined, id)
       },
       /* 已生成editor实例 */
       handleReady(editor) {
-        editor.registerCommand('videolist', {
+        editor.registerCommand('imglist', {
           execCommand: () => {
             this.dialog.show = true
             this.$emit('getImgLists')
@@ -307,6 +333,15 @@
         if (status === 'confirm' && arr.length) {
           currentEditor.execCommand('insertHtml', arr.join(''))
         }
+      },
+      /* 视频弹框 */
+      videoDialogControl (val) {
+        const video = `<video height="200" controls preload="metadata">
+                  <source src="${val.url}" type="video/${val.type}">
+                  您的浏览器不支持 HTML5 video 标签。
+                </video>`
+        currentEditor.execCommand('insertHtml', video);
+        this.videoDialog.show = false;
       },
       /* 获取图库数据 */
       getList() {

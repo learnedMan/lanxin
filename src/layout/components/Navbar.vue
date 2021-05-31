@@ -21,9 +21,6 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/">
-            <el-dropdown-item>首页</el-dropdown-item>
-          </router-link>
           <router-link to="/admin">
             <el-dropdown-item>账号管理</el-dropdown-item>
           </router-link>

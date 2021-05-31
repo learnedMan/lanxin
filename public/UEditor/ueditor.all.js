@@ -27807,7 +27807,7 @@ UE.ui = baidu.editor.ui = {};
         'selectall', 'print','horizontal', 'removeformat', 'time', 'date', 'unlink',
         'insertparagraphbeforetable', 'insertrow', 'insertcol', 'mergeright', 'mergedown', 'deleterow',
         'deletecol', 'splittorows', 'splittocols', 'splittocells', 'mergecells', 'deletetable', 'drafts',
-        'videolist'
+        'imglist'
     ];
 
     for (var i = 0, ci; ci = btnCmds[i++];) {
