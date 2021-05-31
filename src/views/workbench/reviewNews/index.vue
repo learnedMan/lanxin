@@ -264,7 +264,11 @@
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show"
     >
-      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" @refresh="refresh" />
+      <new-detail
+        :id="detailDialog.id"
+        :visible.sync="detailDialog.show"
+        @refresh="refresh"
+      />
     </el-dialog>
   </div>
 </template>

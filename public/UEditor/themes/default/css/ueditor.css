@@ -524,7 +524,7 @@ div.edui-box {
 }
 
 /* toolbar icons */
-.edui-default .edui-for-videolist .edui-icon {
+.edui-default .edui-for-imglist .edui-icon {
   background-image: url('../images/gallery-icon.png') !important;
   background-repeat: no-repeat;
   background-size: cover;

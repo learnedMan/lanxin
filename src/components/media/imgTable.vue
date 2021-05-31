@@ -39,7 +39,13 @@
         width="120"
       >
         <template slot-scope="scope">
-          <div class="xl-table-img">
+          <cropper
+            :show-tip="false"
+            :value="parseObj(scope.row.path)"
+            @input="handleCropper($event, scope.row)"
+            @changeCropper="changeCropper($event, scope.row)"
+          ></cropper>
+          <!--<div class="xl-table-img">
             <el-image
               style="width: 100%; height: 100%"
               :src="scope.row.path"
@@ -49,8 +55,8 @@
                 <i class="el-icon-plus" style="font-size: 24px; color: #8c939d" />
               </div>
             </el-image>
-            <input type="file" accep="image/png,image/gif,image/jpeg" class="xl-table-img--upload" @change="handleUpload($event, scope.row)">
-          </div>
+            <input type="file" accep="image/png,image/gif,image/jpeg" class="xl-table-img&#45;&#45;upload" @change="handleUpload($event, scope.row)">
+          </div>-->
         </template>
       </el-table-column>
       <el-table-column label="描述">
@@ -105,9 +111,13 @@
 </template>
 
 <script>
-import { uploadImg } from '@/api/content.js'
+/*import { uploadImg } from '@/api/content.js'*/
+import Cropper from '@/components/Cropper'
 
 export default {
+  components: {
+    Cropper
+  },
   props: {
     value: {
       type: Array,
@@ -115,12 +125,29 @@ export default {
     }
   },
   methods: {
+    /* 解析数据 */
+    parseObj (path) {
+      return [
+        {
+          path
+        }
+      ]
+    },
+    /* 修改数据 */
+    handleCropper (val, row) {
+      const path = val?.[0]?.path || '';
+      row.path = path;
+    },
+    /* 修改图片剪切数据 */
+    changeCropper (val, row) {
+      row.path = val;
+    },
     /* 权重 */
     handleInput(val, row) {
       val = parseInt(val) || ''
       row.sort = val
     },
-    /* 上传图片 */
+    /*/!* 上传图片 *!/
     handleUpload(e, row) {
       const file = e.target.files[0]
       const formData = new FormData()
@@ -134,7 +161,7 @@ export default {
           row.path = res.path
         }
       })
-    },
+    },*/
     /* 删除一项 */
     handleDelete(index) {
       this.value.splice(index, 1)
