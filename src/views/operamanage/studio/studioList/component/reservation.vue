@@ -251,25 +251,29 @@
         },
         /* 保存 */
         handleSave () {
-          const current = this.lists.find(n => n.extra.sort == this.activeName);
-          const { id, extra, broadcast_id } = current;
-          const params = {
-            broadcast_id,
-            extra: {
-              ...extra
+          const currentIndex = this.lists.findIndex(n => n.extra.sort == this.activeName);
+          this.$refs.form[currentIndex]?.validate(val => {
+            if(val) {
+              const { id, extra, broadcast_id } = this.lists[currentIndex];
+              const params = {
+                broadcast_id,
+                extra: {
+                  ...extra
+                }
+              };
+              let promise;
+              // 编辑
+              if(id != null) {
+                promise = editReservation(id, params);
+              }else {
+                // 新增
+                promise = addReservation(params);
+              }
+              promise.then(() => {
+                this.$message.success('保存成功!');
+                this.getList();
+              })
             }
-          };
-          let promise;
-          // 编辑
-          if(id != null) {
-            promise = editReservation(id, params);
-          }else {
-            // 新增
-            promise = addReservation(params);
-          }
-          promise.then(() => {
-            this.$message.success('保存成功!');
-            this.getList();
           })
         },
         /* 获取机位 */

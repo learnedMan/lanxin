@@ -337,6 +337,7 @@ export default {
         {
           label: '所属新闻/帖子',
           prop: 'title',
+          hidden: !!this.newsId,
           showOverflowTooltip: true // 超出省略号
         },
         {
@@ -357,7 +358,7 @@ export default {
           width: 120,
           showOverflowTooltip: false // 超出省略号
         }
-      ],
+      ].filter(n => !n.hidden),
       tableData: [],
       selection: [], // 选中项
       loading: false, // 列表加载
