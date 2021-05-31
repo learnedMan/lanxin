@@ -64,7 +64,7 @@
     <el-main style="padding: 10px">
       <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange">
         <el-tab-pane
-          disabled
+          :disabled="disabled"
           v-for="item of tabs"
           :key="item.value"
           :label="item.label"
@@ -297,7 +297,7 @@
                 <el-form-item
                   v-show="initFrom().includes('extra.link.id')"
                   v-bind="formOptions['extra.link.id'].item.props"
-                  label-width="auto"
+                  label-width="126px"
                 >
                   <el-input
                     :value="parseObj(formOptions['extra.link.id'].item)"
@@ -565,6 +565,10 @@ export default {
     id: {
       type: [Number, String],
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -1387,7 +1391,7 @@ export default {
     getList() {
       return getNewDetail(this.id).then(res => {
         const extra = res.extra;
-        let link_type = extra.link && extra.link.type || '';
+        let link_type = extra.link && extra.link.type || 'target_obj';
         let target_obj = '';
         if(this.formOptions.target_obj.item.lists.find(n => n.value === link_type)) {
           target_obj = link_type;
