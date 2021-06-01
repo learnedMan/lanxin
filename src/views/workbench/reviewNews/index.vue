@@ -220,14 +220,14 @@
         ref="dialogForm"
         :model="dialog.form"
         :rules="dialogRules"
+        label-width="120px"
       >
         <el-form-item
-          label-width="120px"
           label="拒绝原因"
           prop="remark"
         >
           <el-select
-            v-model="dialog.form.remark"
+            v-model.trim="dialog.form.remark"
             size="small"
             placeholder="请选择拒绝原因"
             clearable
@@ -239,6 +239,20 @@
               :value="item.name"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item
+          label="原因"
+          prop="reason"
+          v-if="dialog.form.remark === '自定义原因'"
+        >
+          <el-input
+            v-model.trim="dialog.form.reason"
+            type="textarea"
+            :rows="6"
+            clearable
+            size="small"
+            style="width: 300px"
+          />
         </el-form-item>
       </el-form>
       <div
@@ -360,11 +374,13 @@ export default {
         form: {
           ids: '',
           status: 2,
+          reason: '',
           remark: ''
         }
       },
       dialogRules: {
-        remark: { required: true, message: '请选择拒绝原因', trigger: 'change' }
+        remark: { required: true, message: '请选择拒绝原因', trigger: 'change' },
+        reason: { required: true, message: '请输入自定义原因', trigger: 'change' },
       },
       detailDialog: {
         show: false,
@@ -418,7 +434,7 @@ export default {
         }
       })
       this.$nextTick(() => {
-            this.$refs.dialogForm?.clearValidate()
+        this.$refs.dialogForm?.clearValidate()
       })
     },
     /* 批量拒绝 */
@@ -433,7 +449,7 @@ export default {
         }
       })
       this.$nextTick(() => {
-            this.$refs.dialogForm?.clearValidate()
+        this.$refs.dialogForm?.clearValidate()
       })
     },
     /*
@@ -476,7 +492,9 @@ export default {
       if (status === 'confirm') {
         this.$refs.dialogForm.validate(val => {
           if (val) {
-            changeNewsStatus(this.dialog.form).then(() => {
+            const params = { ...this.dialog.form };
+            if(params.remark === '自定义原因') params.remark = params.reason, delete params.reason;
+            changeNewsStatus(params).then(() => {
               this.$message({
                 message: `${this.dialog.title}成功`,
                 type: 'success'
@@ -523,7 +541,10 @@ export default {
         pageSize: 9999,
         page: 1
       }).then(res => {
-        this.rejectLists = res.data || []
+        this.rejectLists = [{
+          id: '98998989',
+          name: '自定义原因'
+        }].concat(res.data || [])
       })
     },
     /*

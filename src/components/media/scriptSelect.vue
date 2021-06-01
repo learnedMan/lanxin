@@ -35,7 +35,7 @@
     <div class="xl-script-select">
       <el-button type="primary" size="small" @click="showDialog">添加新闻</el-button>
       <ul class="xl-script-select--lists">
-        <li v-for="(list, index) of lists" :key="list.id">
+        <li v-for="(list, index) of chooseList" :key="list.id">
           <p>{{ list.title }}</p>
           <i class="el-icon-circle-close" @click="deleteScript(index)"></i>
         </li>
@@ -43,6 +43,7 @@
       <!-- 选择关联新闻 -->
       <el-dialog
         width="1000px"
+        top="5vh"
         :title="dialog.title"
         :visible.sync="dialog.show"
       >
@@ -135,6 +136,20 @@
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
         />
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialog.show = false">
+            取 消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="enterDialog"
+          >
+            确 定
+          </el-button>
+        </div>
       </el-dialog>
     </div>
 </template>
@@ -151,7 +166,8 @@
       },
       data() {
         return {
-          lists: [],
+          lists: [], // 现已选中数据
+          chooseList: [], // 默认数据
           dialog: {
             title: '选择新闻',
             show: false
@@ -210,7 +226,8 @@
         /* 初始化已选列表数据 */
         initLists (ids) {
           getNews({ ids }).then(res => {
-            this.lists = res.data;
+            this.lists = res.data.map(n => n);
+            this.chooseList = res.data.map(n => n);
           })
         },
         /*
@@ -236,7 +253,7 @@
         },
         showDialog () {
           this.dialog.show = true;
-          this.$emit('initTable');
+          this.getList();
         },
         /*
         * 列表选择框变化
@@ -253,11 +270,11 @@
               this.lists.splice(this.lists.findIndex(n => n.id === row.id), 1);
             }
           })
-          this.$emit('input', this.lists.map(n => n.id))
         },
         /* 删除某一项 */
         deleteScript (index) {
           this.lists.splice(index, 1);
+          this.chooseList = this.lists.map(n => n);
           this.$emit('input', this.lists.map(n => n.id))
         },
         /* 获取新闻列表 */
@@ -292,11 +309,12 @@
             })
           }
         },
-      },
-      created() {
-        this.$once('initTable', () => {
-          this.getList();
-        })
+        /* 确认选中 */
+        enterDialog () {
+          this.chooseList = this.lists.map(n => n);
+          this.$emit('input', this.lists.map(n => n.id))
+          this.dialog.show = false;
+        },
       }
     }
 </script>
