@@ -780,6 +780,25 @@ export function addDirectory(data) {
     data
   })
 }
+/* 重命名目录 */
+export function renameDirectory(data) {
+  return request({
+    url: '/api/upload/mkdir',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除目录 */
+export function deleteDirectory(data) {
+  return request({
+    url: '/api/upload/rmdir',
+    method: 'post',
+    data
+  })
+}
+
+
 
 // 敏感词白名单
 export function getWhitelist(params) {
@@ -803,23 +822,6 @@ export function delWhitelist(data) {
   return request3({
     url: `/sensitive/whitetxt/del`,
     method: 'DELETE',
-    data
-  })
-}
-/* 重命名目录 */
-export function renameDirectory(data) {
-  return request({
-    url: '/api/upload/mkdir',
-    method: 'post',
-    data
-  })
-}
-
-/* 删除目录 */
-export function deleteDirectory(data) {
-  return request({
-    url: '/api/upload/rmdir',
-    method: 'post',
     data
   })
 }
