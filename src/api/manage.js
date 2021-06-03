@@ -762,9 +762,41 @@ export function changeAppMenu(id, data) {
   })
 }
 
+/*--------------------架构管理-模板管理---------------------------*/
+/* 获取目录 */
+export function getTemplateDirectory() {
+  return request({
+    url: '/api/upload/getH5Dir',
+    method: 'get'
+  })
+}
 
+/* 添加目录 */
+export function addDirectory(data) {
+  return request({
+    url: '/api/upload/mkdir',
+    method: 'post',
+    data
+  })
+}
 
+/* 重命名目录 */
+export function renameDirectory(data) {
+  return request({
+    url: '/api/upload/mkdir',
+    method: 'post',
+    data
+  })
+}
 
+/* 删除目录 */
+export function deleteDirectory(data) {
+  return request({
+    url: '/api/upload/rmdir',
+    method: 'post',
+    data
+  })
+}
 
 
 

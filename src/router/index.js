@@ -260,6 +260,12 @@ export const constantRoutes = [
             component: () => import('@/views/manage/architec/app-menu'),
             name: 'App-menu',
             meta: { title: 'APP用户中心菜单' }
+          },
+          {
+            path: 'template-manage',
+            component: () => import('@/views/manage/architec/template-manage'),
+            name: 'Template-manage',
+            meta: { title: '模板管理' }
           }
         ]
       },
