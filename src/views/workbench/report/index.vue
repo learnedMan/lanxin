@@ -83,10 +83,10 @@
         </el-form-item>
         <el-form-item
           label="举报人:"
-          prop="report_nickname"
+          prop="reportNickname"
         >
           <el-input
-            v-model="queryParams.report_nickname"
+            v-model="queryParams.reportNickname"
             placeholder="请输入姓名"
             clearable
             style="width: 200px"
@@ -95,10 +95,10 @@
         </el-form-item>
         <el-form-item
           label="联系方式:"
-          prop="phone"
+          prop="reportMobile"
         >
           <el-input
-            v-model="queryParams.report_mobile"
+            v-model="queryParams.reportMobile"
             placeholder="请输入联系方式"
             clearable
             style="width: 200px"
@@ -107,10 +107,10 @@
         </el-form-item>
         <el-form-item
           label="举报内容:"
-          prop="phone"
+          prop="reportContent"
         >
           <el-input
-            v-model="queryParams.report_content"
+            v-model="queryParams.reportContent"
             placeholder="请输入关键字"
             clearable
             style="width: 200px"
@@ -119,10 +119,10 @@
         </el-form-item>
         <el-form-item
           label="举报类型:"
-          prop="type"
+          prop="reportType"
         >
           <el-select
-            v-model="queryParams.report_type"
+            v-model="queryParams.reportType"
             size="small"
             placeholder="请选择类型"
             clearable
@@ -155,10 +155,10 @@
         </el-form-item>
         <el-form-item
           label="回复状态:"
-          prop="type"
+          prop="replyStatus"
         >
           <el-select
-            v-model="queryParams.reply_status"
+            v-model="queryParams.replyStatus"
             size="small"
             placeholder="请选择回复状态"
             clearable
@@ -173,10 +173,10 @@
         </el-form-item>
         <el-form-item
           label="处理状态:"
-          prop="process"
+          prop="handleStatus"
         >
           <el-select
-            v-model="queryParams.handle_status"
+            v-model="queryParams.handleStatus"
             size="small"
             placeholder="请选择回复状态"
             clearable
@@ -432,16 +432,16 @@ export default {
     return {
       productLists: [],
       queryParams: {
-        report_nickname: '',
-        report_mobile: '',
-        report_content: '',
-        report_type: '',
-        reply_status: '',
-        handle_status: '',
-        begin_reply_time: '',
-        end_reply_time: '',
-        begin_report_time: '',
-        end_report_time: '',
+        reportNickname: '',
+        reportMobile: '',
+        reportContent: '',
+        reportType: '',
+        replyStatus: '',
+        handleStatus: '',
+        beginReplyTime: '',
+        endReplyTime: '',
+        beginReportTime: '',
+        endReportTime: '',
         mediaId: '',
         sourceId: '', // 来源id
         page: 1,
@@ -572,10 +572,10 @@ export default {
       this.reportDate = ''
       this.replyDate = ''
       Object.assign(this.queryParams, {
-        begin_report_time: '',
-        end_report_time: '',
-        begin_reply_time: '',
-        end_reply_time: '',
+        beginReportTime: '',
+        endReportTime: '',
+        beginReplyTime: '',
+        endReplyTime: '',
         page: 1
       })
       this.resetForm('queryForm')
@@ -588,11 +588,11 @@ export default {
     handleDateChange(val, key) {
       const arr = val || ['', '']
       if (key === 'reportDate') {
-        this.queryParams.begin_report_time = arr[0]
-        this.queryParams.end_report_time = arr[1]
+        this.queryParams.beginReportTime = arr[0]
+        this.queryParams.endReportTime = arr[1]
       } else {
-        this.queryParams.begin_reply_time = arr[0]
-        this.queryParams.end_reply_time = arr[1]
+        this.queryParams.beginReplyTime = arr[0]
+        this.queryParams.endReplyTime = arr[1]
       }
     },
     /* 获取列表数据 */
