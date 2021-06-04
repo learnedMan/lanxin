@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import request2 from '@/utils/request_old'
+import request3 from '@/utils/request_old2'
 import $http from '@/utils/$http'
 
 // 权限
@@ -779,7 +780,6 @@ export function addDirectory(data) {
     data
   })
 }
-
 /* 重命名目录 */
 export function renameDirectory(data) {
   return request({
@@ -794,6 +794,34 @@ export function deleteDirectory(data) {
   return request({
     url: '/api/upload/rmdir',
     method: 'post',
+    data
+  })
+}
+
+
+
+// 敏感词白名单
+export function getWhitelist(params) {
+  return request3({
+    url: '/sensitive/whitetxt/list',
+    method: 'get',
+    params
+  })
+}
+
+export function addWhitelist(data) {
+  return request3({
+    url: '/sensitive/whitetxt/add',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除 */
+export function delWhitelist(data) {
+  return request3({
+    url: `/sensitive/whitetxt/del`,
+    method: 'DELETE',
     data
   })
 }

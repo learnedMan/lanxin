@@ -1,5 +1,5 @@
 <template>
-    <comment-verify :news-id="id"></comment-verify>
+    <comment-verify :news-id="`${id}`"></comment-verify>
 </template>
 
 <script>

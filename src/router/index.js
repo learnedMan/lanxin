@@ -338,6 +338,12 @@ export const constantRoutes = [
             component: () => import('@/views/manage/system/system-sensitword'),
             name: 'System-sensitword',
             meta: { title: '敏感词管理' }
+          },
+          {
+            path: 'system-whiteList',
+            component: () => import('@/views/manage/system/system-whiteList'),
+            name: 'System-whiteList',
+            meta: { title: '敏感词白名单' }
           }
         ]
       }

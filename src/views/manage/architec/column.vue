@@ -197,7 +197,7 @@
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">
             <el-select v-model="form.extra.template_style" prop="extra.template_style" placeholder="请选择">
-              <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.id">
+              <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.catalogCode">
               </el-option>
             </el-select>
           </el-form-item>
@@ -245,7 +245,7 @@
             </el-form-item>
 
             <!-- 默认 -->
-            <child-page1 v-if="forceRefresh" v-show="form.type=='default'" ref="c_page1" :userdata="userdata"  :form="form" v-model="form" />
+            <child-page1 v-if="forceRefresh" v-show="form.type=='default'||form.type=='video_waterfall'||form.type=='video_landscape'||form.type=='subscription'" ref="c_page1" :userdata="userdata"  :form="form" v-model="form" />
             <!-- 服务 -->
             <el-form-item v-show="form.type=='service'" label-width="150px" label="服务背景图:" prop="extra.background">
               <el-upload
@@ -410,6 +410,21 @@ import ChildPage1 from './pages/c_page1'
             value: 'default',
             label: '默认'
           },{
+            value: 'matrix',
+            label: '矩阵'
+          },{
+            value: 'matrix_intro',
+            label: '矩阵简介'
+          },{
+            value: 'video_waterfall',
+            label: '视频瀑布流'
+          },{
+            value: 'video_landscape',
+            label: '横版视频'
+          },{
+            value: 'subscription',
+            label: '订阅类型'
+          },{
             value: 'service',
             label: '服务'
           },
@@ -518,9 +533,10 @@ import ChildPage1 from './pages/c_page1'
       //     })
       // },
       getstyle(val){
-        // console.log(this.catalogoptions)
+        console.log(this.catalogoptions)
+        console.log(val)
         for(var i=0;i<this.catalogoptions.length;i++){
-          if(val==this.catalogoptions[i].id){
+          if(val==this.catalogoptions[i].catalogCode){
             return this.catalogoptions[i].catalogName
           }
         }

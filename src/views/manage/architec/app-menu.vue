@@ -291,18 +291,44 @@
             label="类型"
             prop="sort"
           >
-            <el-radio-group v-model="dialogForm.type">
+            <el-radio-group @change="radiochange" v-model="dialogForm.type">
               <el-radio v-for="type of typeOptions" :key="type.value" :label="type.value" style="margin-top: 10px">{{ type.label }}</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item
-            label="跳转链接"
+            label="外链"
             prop="link"
-            v-if="dialogForm.type === 'link'"
+            v-if="dialogForm.type === 'outer_link'"
           >
             <el-input
               clearable
               placeholder="请输入链接"
+              style="width: 260px"
+              v-model="dialogForm.link"
+            />
+          </el-form-item>
+          <el-form-item
+            label="授权外链"
+            prop="link"
+            v-if="dialogForm.type === 'auth_link'"
+          >
+            <el-input
+              clearable
+              placeholder="请输入链接"
+              style="width: 260px"
+              v-model="dialogForm.link"
+            />
+          </el-form-item>
+
+
+          <el-form-item
+            label="原生跳转id"
+            prop="link"
+            v-if="dialogForm.type === 'app_redirect'"
+          >
+            <el-input
+              clearable
+              placeholder="请输入原生跳转id"
               style="width: 260px"
               v-model="dialogForm.link"
             />
@@ -363,8 +389,16 @@
           productLists: [],
           typeOptions: [
             {
-              label: '链接',
-              value: 'link'
+              label: '外链',
+              value: 'outer_link'
+            },
+            {
+              label: '授权外链',
+              value: 'auth_link'
+            },
+            {
+              label: '原生跳转',
+              value: 'app_redirect'
             },
             {
               label: '电话',
@@ -384,85 +418,85 @@
               name: '收藏',
               logo: '',
               sort: 1,
-              type: 'link',
-              link: 1
+              type: 'app_redirect',
+              link: '1'
             },
             {
               name: '积分',
               logo: '',
               sort: 2,
-              type: 'link',
-              link: 2
+              type: 'app_redirect',
+              link: '2'
             },
             {
               name: '评论',
               logo: '',
               sort: 3,
-              type: 'link',
-              link: 3
+              type: 'app_redirect',
+              link: '3'
             },
             {
               name: '活动',
               logo: '',
               sort: 4,
-              type: 'link',
-              link: 4
+              type: 'app_redirect',
+              link: '4'
             },
             {
               name: '爆料',
               logo: '',
               sort: 5,
-              type: 'link',
-              link: 5
+              type: 'app_redirect',
+              link: '5'
             },
             {
               name: '意见反馈',
               logo: '',
               sort: 6,
-              type: 'link',
-              link: 6
+              type: 'app_redirect',
+              link: '6'
             },
             {
               name: '邀请好友',
               logo: '',
               sort: 7,
-              type: 'link',
-              link: 7
+              type: 'app_redirect',
+              link: '7'
             },
             {
               name: '邀请码',
               logo: '',
               sort: 8,
-              type: 'link',
-              link: 8
+              type: 'app_redirect',
+              link: '8'
             },
             {
               name: '我的奖品',
               logo: '',
               sort: 9,
-              type: 'link',
-              link: 9
+              type: 'app_redirect',
+              link: '9'
             },
             {
               name: '发布',
               logo: '',
               sort: 10,
-              type: 'link',
-              link: 10
+              type: 'app_redirect',
+              link: '10'
             },
             {
               name: '我的钱包',
               logo: '',
               sort: 11,
-              type: 'link',
-              link: 11
+              type: 'app_redirect',
+              link: '11'
             },
             {
               name: '关于我们',
               logo: '',
               sort: 12,
-              type: 'link',
-              link: 12
+              type: 'app_redirect',
+              link: '12'
             }
           ], // 默认菜单集合
           allMenuSelect: [], // 当前选中项
@@ -483,8 +517,11 @@
             name: '',
             logo: '',
             sort: '',
-            type: 'link',
-            link: '',
+            type: 'outer_link',
+            // outer_link: '',
+            // auth_link: '',
+            // app_redirect: '',
+            link:'',
             text: '',
             phone: ''
           },
@@ -498,8 +535,17 @@
             sort: [
               { required: true, type: 'number', message: '请输入排序', trigger: 'blur' }
             ],
+            // outer_link: [
+            //   { required: true, message: '请输入外链', trigger: 'blur' }
+            // ],
+            // auth_link: [
+            //   { required: true, message: '请输入外链', trigger: 'blur' }
+            // ],
+            // app_redirect: [
+            //   { required: true, message: '请输入原生跳转id', trigger: 'blur' }
+            // ],
             link: [
-              { required: true, message: '请输入链接', trigger: 'blur' }
+              { required: true, message: '请输入', trigger: 'blur' }
             ],
             phone: [
               { required: true, message: '请输入电话号码', trigger: 'blur' }
@@ -526,6 +572,10 @@
         handleQuery () {
           this.getList();
         },
+        /* 新增菜单radio修改 */
+        radiochange(){
+          this.dialogForm.link='';
+        }, 
         /* 判断是否禁用 */
         judgeDisabled (name) {
           const key = this.defaultMenu.key;
@@ -565,7 +615,6 @@
         },
         /* 新增自定义菜单 */
         addCustom (key) {
-          if(key === 'main' && this.main.length === 4) return this.$message.warning('最多添加4个菜单!');
           this.resetForm('dialogForm');
           this.dialog = {
             title: '添加自定义菜单',
@@ -578,7 +627,7 @@
         /* 编辑 */
         handleEdit (row, key) {
           this.resetForm('dialogForm');
-          const { name, logo, sort, type = 'link', link = '', text = '', phone = '' } = row;
+          const { name, logo, sort, type = 'outer_link', link='', text = '', phone = '' } = row;
           this.dialog = {
             title: '编辑菜单',
             disabledName: this.allMenu.some(n => n.name === name),
@@ -590,6 +639,9 @@
             logo,
             sort,
             type,
+            // outer_link,
+            // auth_link,
+            // app_redirect,
             link,
             text,
             phone
@@ -603,6 +655,7 @@
               const key = this.dialog.key;
               const target = data[key] || (data[key] = []);
               const value = { ...this.dialogForm };
+            // return
               if(this.dialog.add) {
                 target.push(value)
               }else {
