@@ -159,13 +159,30 @@ import {
       },
       recovery(data){
           var ids = data.id||this.multipleSelection.join(',');
-          restore(ids).then(response => {
+
+          this.$confirm('此操作将恢复id为'+ids+'的稿件, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            restore(ids).then(response => {
               this.$message({
                 message: '恢复成功',
                 type: 'success'
               });
               this.getList();
-          })
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消恢复'
+            });          
+          });
+
+
+
+
+          
       },
         // 表格选中变化
       handleSelectionChange(val){

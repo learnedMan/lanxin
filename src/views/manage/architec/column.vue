@@ -200,6 +200,15 @@
               <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.catalogCode">
               </el-option>
             </el-select>
+            <el-popover
+              style="margin-left:10px;"
+              placement="right"
+              trigger="hover">
+              <div>
+                <img :src="mbhimg[form.extra.template_style]?mbhimg[form.extra.template_style]:mbhimg.zanwu" alt="">
+              </div>
+              <el-button slot="reference">预览</el-button>
+            </el-popover>
           </el-form-item>
           <!-- <el-form-item el-form-item label-width="150px" label="(模板化)样式:" prop="extra.template_style">
             <el-select v-model="form.extra.template_style" placeholder="请选择">
@@ -325,6 +334,35 @@ import {
   cateloglist,
   styleinfo} from '@/api/manage'
 
+import p1001 from '@/assets/mbh_images/1001.png'
+import p1002 from '@/assets/mbh_images/1002.png'
+import p1101 from '@/assets/mbh_images/1101.png'
+import p1102 from '@/assets/mbh_images/1102.png'
+import p1103 from '@/assets/mbh_images/1103.png'
+import p1104 from '@/assets/mbh_images/1104.png'
+import p1105 from '@/assets/mbh_images/1105.png'
+import p1201 from '@/assets/mbh_images/1201.png'
+import p1202 from '@/assets/mbh_images/1202.png'
+import p1203 from '@/assets/mbh_images/1203.png'
+import p1204 from '@/assets/mbh_images/1204.png'
+import p1301 from '@/assets/mbh_images/1301.png'
+import p1302 from '@/assets/mbh_images/1302.png'
+import p1303 from '@/assets/mbh_images/1303.png'
+import p1304 from '@/assets/mbh_images/1304.png'
+import p1305 from '@/assets/mbh_images/1305.png'
+import p1306 from '@/assets/mbh_images/1306.png'
+import p1307 from '@/assets/mbh_images/1307.png'
+import p1308 from '@/assets/mbh_images/1308.png'
+import p1401 from '@/assets/mbh_images/1401.png'
+import p1402 from '@/assets/mbh_images/1402.png'
+import p1403 from '@/assets/mbh_images/1403.png'
+import p1501 from '@/assets/mbh_images/1501.png'
+import p1601 from '@/assets/mbh_images/1601.png'
+import p1602 from '@/assets/mbh_images/1602.png'
+import p1603 from '@/assets/mbh_images/1603.png'
+import tab栏 from '@/assets/mbh_images/tab栏.png'
+import zanwu from '@/assets/mbh_images/zanwu.png'
+
 import ChildPage1 from './pages/c_page1'
 
   export default {
@@ -335,7 +373,36 @@ import ChildPage1 from './pages/c_page1'
     data() {
       var mytoken = sessionStorage.getItem("token");
       return {
-
+        mbhimg:{
+          1001:p1001,
+          1002:p1002,
+          1101:p1101,
+          1102:p1102,
+          1103:p1103,
+          1104:p1104,
+          1105:p1105,
+          1201:p1201,
+          1202:p1202,
+          1203:p1203,
+          1204:p1204,
+          1301:p1301,
+          1302:p1302,
+          1303:p1303,
+          1304:p1304,
+          1305:p1305,
+          1306:p1306,
+          1307:p1307,
+          1308:p1308,
+          1401:p1401,
+          1402:p1402,
+          1403:p1403,
+          1501:p1501,
+          1601:p1601,
+          1602:p1602,
+          1603:p1603,
+          tab栏:tab栏,
+          zanwu:zanwu
+        },
         //子组件
         forceRefresh:false,
         userdata:[],
@@ -487,7 +554,7 @@ import ChildPage1 from './pages/c_page1'
       this.getuserfn();
 
       cateloglist().then(response => {
-          // console.log(response)
+          console.log(response)
           this.catalogoptions = response.data.list
       })
     },
@@ -533,8 +600,8 @@ import ChildPage1 from './pages/c_page1'
       //     })
       // },
       getstyle(val){
-        console.log(this.catalogoptions)
-        console.log(val)
+        // console.log(this.catalogoptions)
+        // console.log(val)
         for(var i=0;i<this.catalogoptions.length;i++){
           if(val==this.catalogoptions[i].catalogCode){
             return this.catalogoptions[i].catalogName
