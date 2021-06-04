@@ -100,7 +100,43 @@
           </span>
         </el-tree>
       </div>
-      <div class="xl-template-manage--content"></div>
+      <div class="xl-template-manage--content">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+        >
+          <el-form-item
+            label="名称:"
+            prop="keyword"
+          >
+            <el-input
+              v-model="queryParams.name"
+              placeholder="请输入关键字"
+              clearable
+              size="small"
+              style="width: 200px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleReset"
+            >
+              重置
+            </el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleQuery"
+            >
+              搜索
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
       <!-- 添加目录 -->
       <el-dialog
         width="400px"
@@ -190,7 +226,15 @@
                 { required: true, message: '请输入目录名', trigger: 'blur' }
               ]
             }
-          }
+          },
+          queryParams: {
+            name: '',
+            page: 1,
+            pageSize: 10
+          },
+          loading: false,
+          tableData: [],
+          total: 0
         }
       },
       methods: {
@@ -284,9 +328,11 @@
           }).then(() => {
             deleteDirectory({
               path: `${path}/${name}`
-            }).then(({ message, status_code }) => {
+            }).then(async ({ message, status_code }) => {
               if(status_code === 200) {
                 this.$message.success(message)
+                await this.getChannels();
+                this.$refs.tree.setCurrentKey(this.currentKey);
               }else {
                 this.$message.warning(message)
               }
@@ -303,6 +349,15 @@
           this.currentKey = val.id;
           console.log(val)
         },
+        /* 搜索 */
+        handleQuery () {
+          this.getList();
+        },
+        /* 获取列表数据 */
+        getList () {
+          let params = { ...this.queryParams };
+
+        }
       },
       async created() {
         await this.getChannels();
