@@ -5,7 +5,7 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-      <div style="margin-right: 10px">
+      <div style="margin-right: 10px" v-if="!isMobile">
         <el-button type="primary" size="mini" v-for="btn of btns" @click="$router.push(btn.url)">{{btn.label}}</el-button>
       </div>
       <el-button

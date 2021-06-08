@@ -72,7 +72,7 @@ const actions = {
           commit('SET_INFO', data)
           resolve(data)
       })
-      
+
     }).catch(error => {
       reject(error)
     })
@@ -106,7 +106,7 @@ const actions = {
             commit('SET_INTRODUCTION', introduction)
             resolve(data)
         // })
-        
+
       }).catch(error => {
         reject(error)
       })
@@ -118,6 +118,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       // logout(state.token).then(() => {
         commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
         removeToken()
         // dispatch('tagsView/delAllViews', null, { root: true })
         resolve()

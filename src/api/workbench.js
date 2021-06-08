@@ -81,11 +81,11 @@ export function reply(data) {
 /* -------------------------举报处理--------------------------------*/
 
 /* 获取举报列表 */
-export function getReport(params) {
+export function getReport(data) {
   return request2({
     url: '/internal/report/pageList',
-    method: 'get',
-    params
+    method: 'post',
+    data
   })
 }
 

@@ -11,6 +11,24 @@ export function getScripts(query) {
   })
 }
 
+/*复制文稿*/
+export function copyScript(id, data) {
+  return request({
+    url: `/api/scripts/duplicate/${id}`,
+    method: 'post',
+    data
+  })
+}
+
+/* 获取编辑人员 */
+export function getEditorPerson(params) {
+  return request({
+    url: '/api/news/checkEditors',
+    method: 'get',
+    params
+  })
+}
+
 /* 新增或修改稿件 */
 export function changeScripts(id, data) {
   return request({

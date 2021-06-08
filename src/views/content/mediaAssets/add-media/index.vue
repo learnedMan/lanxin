@@ -6,9 +6,10 @@
     &--header {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
       background-color: #fff;
       margin-top: 10px;
+      padding: 10px;
     }
     &--tab {
       background-color: #fff;
@@ -62,7 +63,10 @@
 </style>
 <template>
   <el-container class="xl-add-media">
-    <el-header class="xl-add-media--header" height="40px">
+    <el-header class="xl-add-media--header" height="auto">
+      <div style="font-size: 14px;color: #606266;flex: 1">
+        <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
+      </div>
       <div>
         <el-button
           type="primary"
@@ -87,7 +91,7 @@
         </el-button>
       </div>
     </el-header>
-    <el-main style="padding: 10px">
+    <el-main style="padding: 10px 0">
       <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange">
         <el-tab-pane
           v-for="item of tabs"
@@ -588,7 +592,7 @@
 
 <script>
 import Cropper from '@/components/Cropper'
-import { getLabels, getScriptDetail, changeScripts } from '@/api/content'
+import { getLabels, getScriptDetail, changeScripts, getEditorPerson } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from '@/components/media/tag'
 import ImgTable from '@/components/media/imgTable'
@@ -1266,7 +1270,8 @@ export default {
         label: 'name', // 显示值
         multiple: true // 多选
       }, // 级联选择器配置
-      channelsList: [] // 栏目列表
+      channelsList: [], // 栏目列表
+      editorPerson: ''
     }
   },
   computed: {
@@ -1276,6 +1281,7 @@ export default {
     }
   },
   async created() {
+    this.getEditorPerson();
     this.getChannels()
     await this.getLabels()
     await this.getList()
@@ -1509,7 +1515,17 @@ export default {
         }// 表单
         this.dialog.form.channel_id = res.news.map(n => n.channel_id)
       })
-    }
+    },
+    /* 获取编辑人员 */
+    getEditorPerson () {
+      const { id } = this.$route.query
+      getEditorPerson({
+        id,
+        type: 'script'
+      }).then(res => {
+        this.editorPerson = res.join();
+      })
+    },
   }
 }
 </script>
