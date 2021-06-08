@@ -233,6 +233,11 @@
             </el-input>
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加</el-button>
           </el-form-item>
+          <el-form-item label-width="150px" label="重保期选项" prop="extra.user_settings">
+                <el-checkbox true-label="1" false-label="0" v-model="form.extra.user_settings.deny_register">禁止注册</el-checkbox>
+                <el-checkbox true-label="1" false-label="0" v-model="form.extra.user_settings.deny_modify">禁止修改用户信息</el-checkbox>
+                <el-checkbox true-label="1" false-label="0" v-model="form.extra.user_settings.deny_OAuth">禁止第三方登录</el-checkbox>
+          </el-form-item>
         </div>
 
         <div class="fr" style="width: 50%">
@@ -594,6 +599,11 @@ export default {
             watermark:"",
             watermark_position:"",
             hot_search:[],
+            user_settings: {
+              deny_register:"0",
+              deny_modify:"0",
+              deny_OAuth:"0"
+            },
             policy: {
                 version: "",
                 intro: "",
@@ -623,6 +633,14 @@ export default {
             privacy_policy:"",
             user_policy:"",
             time:''
+        }
+      }
+      if(!this.form.extra.user_settings){
+        this.form.extra.user_settings = {}
+        this.form.extra.user_settings = {
+            deny_register:"0",
+            deny_modify:"0",
+            deny_OAuth:"0"
         }
       }
 

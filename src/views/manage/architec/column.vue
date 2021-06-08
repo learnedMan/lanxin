@@ -166,12 +166,12 @@
             </el-upload>
           </el-form-item>
 
-          <el-form-item label-width="150px" label="允许发布的内容:" prop="extra.allow_news_types">
+          <!-- <el-form-item label-width="150px" label="允许发布的内容:" prop="extra.allow_news_types">
             <el-checkbox-group 
                 v-model="form.extra.allow_news_types">
                 <el-checkbox v-for="media in medias" :label="media.label" :key="media.label">{{media.value}}</el-checkbox>
             </el-checkbox-group>
-          </el-form-item>
+          </el-form-item> -->
 
           <el-form-item el-form-item  label-width="150px" label="加载子栏目:" prop="extra.load_child">
             <el-switch
@@ -638,18 +638,18 @@ import ChildPage1 from './pages/c_page1'
           father:'',
           name:'',
           sort:0,
-          status:'',
+          status:1,
           extra:{
             // 公共
             intro:'',
             cover:'',
             logo:'',
             allow_news_types:[],
-            load_child:'0',
-            load_news:'0',
+            load_child:'1',
+            load_news:'1',
             linked_channel_id:'',
             template_style:'',
-            show_num:'',
+            show_num:0,
             group:'',
             // 默认
             multi_review:[],

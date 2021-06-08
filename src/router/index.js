@@ -344,6 +344,12 @@ export const constantRoutes = [
             component: () => import('@/views/manage/system/system-whiteList'),
             name: 'System-whiteList',
             meta: { title: '敏感词白名单' }
+          },
+          {
+            path: 'mbhmealmange',
+            component: () => import('@/views/manage/system/mbhmealmange'),
+            name: 'Mbhmealmange',
+            meta: { title: '模板化套餐发布' }
           }
         ]
       }
