@@ -798,7 +798,40 @@ export function deleteDirectory(data) {
   })
 }
 
+/* 获取h5列表 */
+export function getH5List(params) {
+  return request({
+    url: '/api/h5',
+    method: 'get',
+    params
+  })
+}
 
+/* 新增h5列表 */
+export function addH5List(data) {
+  return request({
+    url: '/api/h5',
+    method: 'post',
+    data
+  })
+}
+
+/* 修改h5列表 */
+export function patchH5List(id, data) {
+  return request({
+    url: `/api/h5/${id}`,
+    method: 'post',
+    data
+  })
+}
+
+/* 删除h5列表 */
+export function deleteH5List(id) {
+  return request({
+    url: `/api/h5/${id}`,
+    method: 'delete'
+  })
+}
 
 // 敏感词白名单
 export function getWhitelist(params) {

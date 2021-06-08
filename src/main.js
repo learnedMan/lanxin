@@ -22,10 +22,13 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 
 import { resetForm, removePropertyOfNull, removePropertyOfNullFor0, parseTime } from '@/utils/costum'
-Vue.prototype.resetForm = resetForm
-Vue.prototype.removePropertyOfNull = removePropertyOfNull
-Vue.prototype.removePropertyOfNullFor0 = removePropertyOfNullFor0
-Vue.prototype.parseTime = parseTime
+Object.defineProperties(Vue.prototype, {
+  resetForm: { value: resetForm },
+  removePropertyOfNull: { value: removePropertyOfNull },
+  removePropertyOfNullFor0: { value: removePropertyOfNullFor0 },
+  parseTime: { value: parseTime },
+  isMobile: { value: /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) },
+});
 // 组件
 import Pagination from '@/components/Pagination'
 Vue.component('Pagination', Pagination)

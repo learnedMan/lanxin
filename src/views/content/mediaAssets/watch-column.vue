@@ -50,18 +50,18 @@
       style="width: 100%"
     >
       <el-table-column
-        label="稿件ID"
+        label="新闻ID"
         align="center"
         prop="mediaId"
       />
       <el-table-column
-        label="稿件名称"
+        label="新闻名称"
         align="center"
         prop="mediaTitle"
         :show-overflow-tooltip="true"
       />
       <el-table-column
-        label="稿件类型"
+        label="新闻类型"
         align="center"
         prop="type"
       />
@@ -126,9 +126,19 @@
       <el-table-column
         label="操作"
         align="center"
+        width="160"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
+            <!-- 审批进度 -->
+            <el-button
+              type="text"
+              icon="el-icon-set-up"
+              size="small"
+              @click="watchProgress(scope.row)"
+            >
+              审批进度
+            </el-button>
             <!-- 删除 -->
             <el-button
               type="text"
@@ -144,6 +154,26 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 审批进度 -->
+    <el-dialog
+      width="400px"
+      title="审批进度"
+      :visible.sync="approval.show"
+    >
+      <el-steps direction="vertical" :active="approval.active" :space="100">
+        <el-step
+          v-for="list of approval.lists"
+          :title="list.title"
+          :key="list.sort"
+          :description="list.description"
+        >
+          <div slot="description">
+            <div>提交人: {{ list.user_id || '' }}</div>
+            <p v-if="list.remark">拒绝原因: {{ list.remark }}</p>
+          </div>
+        </el-step>
+      </el-steps>
+    </el-dialog>
   </div>
 </template>
 
@@ -197,28 +227,33 @@ export default {
       commentOption: [
         {
           label: '先审后发',
-          value: 0
+          value: '0'
         },
         {
           label: '先发后审',
-          value: 1
+          value: '1'
         },
         {
           label: '禁止评论',
-          value: 2
+          value: '2'
         }
       ], // 评论控制
       shareOption: [
         {
           label: '允许',
-          value: 1
+          value: '1'
         },
         {
           label: '不允许',
-          value: 2
+          value: '2'
         }
       ], // 分享控制
-      loading: false
+      loading: false,
+      approval: {
+        show: false,
+        active: '',
+        lists: []
+      }, // 审批进度
     }
   },
   computed: {
@@ -304,7 +339,20 @@ export default {
         })
         this.getList()
       })
-    }
+    },
+    /* 查看审批进度 */
+    watchProgress (row) {
+      const multi_review = row.multi_review || [];
+      if(multi_review.length === 0) return this.$message.warning('暂无审批进度');
+      this.approval = {
+        show: true,
+        active: multi_review.findIndex(n => n.status === 1 || n.status === 2),
+        lists: multi_review.map(n => ({
+          ...n,
+          title: `${this.statusOptions.find(item => n.status === item.value)?.label}   ${n.time || ''}`,
+        }))
+      }
+    },
   }
 }
 </script>

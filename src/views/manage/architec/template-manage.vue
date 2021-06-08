@@ -100,7 +100,120 @@
           </span>
         </el-tree>
       </div>
-      <div class="xl-template-manage--content"></div>
+      <div class="xl-template-manage--content">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+        >
+          <el-form-item
+            label="名称:"
+            prop="keyword"
+          >
+            <el-input
+              v-model="queryParams.name"
+              placeholder="请输入关键字"
+              clearable
+              size="small"
+              style="width: 200px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleReset"
+            >
+              重置
+            </el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleQuery"
+            >
+              搜索
+            </el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleAddList"
+            >
+              新增
+            </el-button>
+          </el-form-item>
+        </el-form>
+        <el-table
+          ref="multipleTable"
+          v-loading="loading"
+          :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
+          :data="tableData"
+          border
+          tooltip-effect="dark"
+          style="width: 100%"
+        >
+          <el-table-column
+            label="ID"
+            align="center"
+            prop="id"
+          />
+          <el-table-column
+            label="名称"
+            align="center"
+            prop="name"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            label="路径规则"
+            align="center"
+            prop="url"
+          />
+          <el-table-column
+            label="域名"
+            align="center"
+            prop="domainLabel"
+          />
+          <el-table-column
+            label="更新时间"
+            align="center"
+            prop="updated_at"
+          />
+          <el-table-column
+            label="操作"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <div class="verify-table-action">
+                <!-- 编辑 -->
+                <el-button
+                  type="text"
+                  icon="el-icon-edit"
+                  size="small"
+                  @click="handleEditList(scope.row)"
+                >
+                  编辑
+                </el-button>
+                <!-- 删除 -->
+                <el-button
+                  type="text"
+                  icon="el-icon-delete"
+                  size="small"
+                  @click="handleDeleteList(scope.row)"
+                >
+                  删除
+                </el-button>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination
+          v-show="total > 0"
+          :total="total"
+          :page.sync="queryParams.page"
+          :limit.sync="queryParams.pageSize"
+          @pagination="getList"
+        />
+      </div>
       <!-- 添加目录 -->
       <el-dialog
         width="400px"
@@ -153,11 +266,93 @@
           </el-button>
         </div>
       </el-dialog>
+      <!-- 编辑和新增列表数据 -->
+      <el-dialog
+        width="500px"
+        :title="dialog.title"
+        :visible.sync="dialog.show"
+      >
+        <el-form
+          ref="dialogForm"
+          :model="listFrom"
+          :rules="listRule"
+          label-width="120px"
+          size="small"
+        >
+          <el-form-item
+            label="域名:"
+            prop="domain"
+          >
+            <el-select
+              style="width: 240px"
+              v-model="listFrom.domain"
+              placeholder="请选择域名"
+              clearable
+            >
+              <el-option
+                v-for="item in domainOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="名称:"
+            prop="name"
+          >
+            <el-input
+              v-model.trim="listFrom.name"
+              placeholder="请输入名称"
+              clearable
+              style="width: 240px"
+            />
+          </el-form-item>
+          <el-form-item
+            label="文件:"
+            prop="upload"
+            :rules="dialog.id? [] : { required: true, message: '文件不能为空', trigger: 'change' }"
+          >
+            <el-upload
+              class="upload-demo"
+              ref="upload"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-change="handleFileChange"
+              :on-remove="handleRemove"
+              :auto-upload="false">
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialog.show = false">
+            取 消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="entryDialog"
+          >
+            确 定
+          </el-button>
+        </div>
+      </el-dialog>
     </div>
 </template>
 
 <script>
-  import { getTemplateDirectory, renameDirectory, addDirectory, deleteDirectory } from '@/api/manage'
+  import {
+    getTemplateDirectory,
+    renameDirectory,
+    addDirectory,
+    deleteDirectory,
+    getH5List,
+    addH5List,
+    patchH5List,
+    deleteH5List
+  } from '@/api/manage'
 
     export default {
       name: 'Template-manage',
@@ -190,6 +385,37 @@
                 { required: true, message: '请输入目录名', trigger: 'blur' }
               ]
             }
+          },
+          queryParams: {
+            name: '',
+            page: 1,
+            pageSize: 10
+          },
+          loading: false,
+          tableData: [],
+          total: 0,
+          domainOptions: [
+            {
+              label: '全站',
+              value: 1
+            },
+            {
+              label: '租户',
+              value: 2
+            }
+          ],
+          dialog: {
+            show: false,
+            title: '新增'
+          },
+          listFrom: {
+            domain: '',
+            name: '',
+            upload: ''
+          },
+          listRule: {
+            domain: { required: true, message: '请选择域名', trigger: 'change' },
+            name: { required: true, message: '请添加名称', trigger: 'blur' },
           }
         }
       },
@@ -284,9 +510,11 @@
           }).then(() => {
             deleteDirectory({
               path: `${path}/${name}`
-            }).then(({ message, status_code }) => {
+            }).then(async ({ message, status_code }) => {
               if(status_code === 200) {
                 this.$message.success(message)
+                await this.getChannels();
+                this.$refs.tree.setCurrentKey(this.currentKey);
               }else {
                 this.$message.warning(message)
               }
@@ -303,8 +531,110 @@
           this.currentKey = val.id;
           console.log(val)
         },
+        /* 搜索 */
+        handleQuery () {
+          this.getList();
+        },
+        /* 重置 */
+        handleReset () {
+          Object.assign(this.queryParams, {
+            name: '',
+            page: 1
+          })
+        },
+        /* 新增列表数据 */
+        handleAddList () {
+          this.resetForm('dialogForm');
+          this.dialog = {
+            title: '新增',
+            show: true
+          }
+        },
+        /* 编辑列表 */
+        handleEditList (row) {
+          const { id, name, domain } = row;
+          this.resetForm('dialogForm');
+          this.listFrom = {
+            name,
+            domain,
+            upload: ''
+          }
+          this.dialog = {
+            title: '新增',
+            show: true,
+            id
+          }
+        },
+        /* 文件变化 */
+        handleFileChange (file, fileList) {
+          if(fileList.length > 1) fileList.splice(0, 1);
+          this.listFrom.upload = file.raw;
+        },
+        /* 删除文件 */
+        handleRemove () {
+          this.listFrom.upload = '';
+        },
+        /* 确认编辑或删除 */
+        entryDialog () {
+          this.$refs.dialogForm?.validate(val => {
+            if(val) {
+              const { id } = this.dialog;
+              const params = { ...this.listFrom };
+              const formData = new FormData();
+              formData.append('name', params.name);
+              formData.append('domain', params.domain);
+              if(params.upload) formData.append('upload', params.upload);
+              let promise;
+              if(id) {
+                promise = patchH5List(id, formData)
+              }else {
+                promise = addH5List(formData)
+              }
+              promise.then(() => {
+                this.$message.success(id? '修改成功' : '新增成功');
+                this.dialog.show = false;
+                this.getList();
+              })
+            }
+          })
+        },
+        /* 删除列表 */
+        handleDeleteList (row) {
+          const { id } = row;
+          this.$confirm(`此操作将永久删除该id为${id}的文件, 是否继续?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            deleteH5List(id).then(() => {
+              this.$message.success('删除成功');
+              this.getList();
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+        },
+        /* 获取列表数据 */
+        getList () {
+          let params = { ...this.queryParams };
+          this.loading = true;
+          getH5List(this.removePropertyOfNullFor0(params)).then(res => {
+            const { data, total } = res;
+            this.tableData = data.map(n => ({
+              ...n,
+              domainLabel: this.domainOptions.find(item => item.value === n.domain)?.label ?? ''
+            }))
+            this.total = total;
+          }).finally(() => {
+            this.loading = false;
+          })
+        }
       },
       async created() {
+        this.getList();
         await this.getChannels();
         this.$nextTick(() => {
           const id = this.$route.query.id || this.channelsList[0]?.id;

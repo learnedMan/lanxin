@@ -170,6 +170,15 @@
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
+            <!-- 审批进度 -->
+            <el-button
+              type="text"
+              icon="el-icon-set-up"
+              size="small"
+              @click="watchProgress(scope.row)"
+            >
+              审批进度
+            </el-button>
             <!-- 查看 -->
             <el-button
               type="text"
@@ -181,7 +190,7 @@
             </el-button>
             <!-- 通过 -->
             <el-button
-              v-if="scope.row.status !== 1"
+              v-if="scope.row.status === 0"
               type="text"
               icon="el-icon-check"
               size="small"
@@ -191,7 +200,7 @@
             </el-button>
             <!-- 拒绝 -->
             <el-button
-              v-if="scope.row.status !== 2"
+              v-if="scope.row.status === 0"
               type="text"
               icon="el-icon-close"
               size="small"
@@ -276,7 +285,7 @@
       title="查看"
       top="20px"
       :visible.sync="detailDialog.show"
-      v-if="detailDialog.show"
+      v-if="detailDialog.show && !isMobile"
     >
       <new-detail
         :id="detailDialog.id"
@@ -284,6 +293,40 @@
         :disabled="true"
         @refresh="refresh"
       />
+    </el-dialog>
+    <!-- 编辑移动端新闻 -->
+    <el-dialog
+      width="100vw"
+      title="查看"
+      :visible.sync="detailDialog.show"
+      v-if="detailDialog.show && isMobile"
+    >
+      <mobile-detail
+        :id="detailDialog.id"
+        :visible.sync="detailDialog.show"
+        :disabled="true"
+        @refresh="refresh"
+      />
+    </el-dialog>
+    <!-- 审批进度 -->
+    <el-dialog
+      width="400px"
+      title="审批进度"
+      :visible.sync="approval.show"
+    >
+      <el-steps direction="vertical" :active="approval.active" :space="100">
+        <el-step
+          v-for="list of approval.lists"
+          :title="list.title"
+          :key="list.sort"
+          :description="list.description"
+        >
+          <div slot="description">
+            <div>提交人: {{ list.user_id || '' }}</div>
+            <p v-if="list.remark">拒绝原因: {{ list.remark }}</p>
+          </div>
+        </el-step>
+      </el-steps>
     </el-dialog>
   </div>
 </template>
@@ -293,10 +336,12 @@ import { getChannels } from '@/api/manage'
 import { getNews, changeNewsStatus } from '@/api/content'
 import { getReasons } from '@/api/workbench'
 import NewDetail from './detail'
+import mobileDetail from './mobileDetail'
 export default {
   name: 'ReviewScript',
   components: {
-    NewDetail
+    NewDetail,
+    mobileDetail
   },
   data() {
     return {
@@ -385,7 +430,12 @@ export default {
       detailDialog: {
         show: false,
         id: ''
-      }
+      },
+      approval: {
+        show: false,
+        active: '',
+        lists: []
+      }, // 审批进度
     }
   },
   created() {
@@ -451,6 +501,19 @@ export default {
       this.$nextTick(() => {
         this.$refs.dialogForm?.clearValidate()
       })
+    },
+    /* 查看审批进度 */
+    watchProgress (row) {
+      const multi_review = row.multi_review || [];
+      if(multi_review.length === 0) return this.$message.warning('暂无审批进度');
+      this.approval = {
+        show: true,
+        active: multi_review.findIndex(n => n.status === 1 || n.status === 2),
+        lists: multi_review.map(n => ({
+          ...n,
+          title: `${this.statusOptions.find(item => n.status === item.value)?.label}   ${n.time || ''}`,
+        }))
+      }
     },
     /*
         * 搜索时间变化
