@@ -236,17 +236,17 @@
       <el-table-column
         label="反馈人"
         align="center"
-        prop="reportNickname"
+        prop="feedbackNickname"
       />
       <el-table-column
         label="联系方式"
         align="center"
-        prop="reportMobile"
+        prop="feedbackMobile"
       />
       <el-table-column
         label="反馈内容"
         align="center"
-        prop="reportContent"
+        prop="feedbackContent"
         :show-overflow-tooltip="true"
       />
       <el-table-column
@@ -272,7 +272,7 @@
       <el-table-column
         label="反馈时间"
         align="center"
-        prop="reportTime"
+        prop="feedbackTime"
       />
       <el-table-column
         label="操作"
@@ -613,13 +613,13 @@ export default {
       this.tableData = []
       const params = { ...this.queryParams }
       getFeedback(this.removePropertyOfNullFor0(params)).then(res => {
-        this.tableData = (res.data || []).map(item => ({
+        this.tableData = (res.data?.datas || []).map(item => ({
           ...item,
-          reportTypeLabel: item.reportType.split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
+          reportTypeLabel: item.feedbackType.split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
           replyStatusLabel: this.replyOptions.find(n => n.value === item.replyStatus)?.label,
           handleStatusLabel: this.handleOption.find(n => n.value === item.handleStatus)?.label
         }))
-        this.total = res.total || 0
+        this.total = res.data?.datas?.total || 0
       }).finally(() => {
         this.loading = false
       })
