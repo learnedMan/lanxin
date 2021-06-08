@@ -165,7 +165,7 @@
       <el-table-column
         label="操作"
         align="center"
-        width="280"
+        width="300"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
@@ -188,6 +188,15 @@
               删除
             </el-button>
             <!-- 复制 -->
+            <el-button
+              type="text"
+              icon="el-icon-document-copy"
+              size="small"
+              @click="handleListCopy(scope.row)"
+            >
+              复制
+            </el-button>
+            <!-- 发布 -->
             <el-button
               type="text"
               icon="el-icon-document-copy"
@@ -259,7 +268,7 @@
 </template>
 
 <script>
-import { getScripts, deleteScript, PatchScript, batchPublishScript } from '@/api/content'
+import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript } from '@/api/content'
 import { getChannels } from '@/api/manage'
 
 export default {
@@ -444,6 +453,34 @@ export default {
         * */
     handleListWatch(row) {
       this.$router.push(`/content/mediaAssets/watch-column?id=${row.id}`)
+    },
+    /* 复制稿件 */
+    handleListCopy (row) {
+      const { id } = row;
+      this.$prompt('请输入文稿名称', '复制', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValidator: (val) => {
+          return val != null && val.trim() !== '';
+        },
+        inputErrorMessage: '请输入文稿名称'
+      }).then(({ value }) => {
+        copyScript(id, {
+          title: value
+        }).then(({ message, status_code }) => {
+          if(status_code === 200) {
+            this.getList();
+            this.$message.success(message)
+          }else {
+            this.$message.warning(message)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
     },
     /*
     * 列表编辑

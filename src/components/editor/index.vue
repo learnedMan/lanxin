@@ -179,7 +179,7 @@
   import VueUeditorWrap from 'vue-ueditor-wrap'
   import xlVideo from '@/components/video'
   import { getEditImgLists } from '@/api/content'
-  let currentEditor
+  let currentEditor;
   export default {
     components: {
       VueUeditorWrap,
@@ -193,13 +193,16 @@
     },
     data() {
       return {
-        config: {
+        config: Object.assign({
           UEDITOR_HOME_URL: '/UEditor/', // 编辑器库的位置
           initialFrameWidth: '100%', // 编辑器宽度
           initialFrameHeight: 200, // 编辑器高度
           serverUrl: `/laravel-u-editor-server/server`, // 上传图片以及视频的接口
-          autoHeightEnabled: true // 防止内容撑高编辑器
-        }, // 默认配置
+          autoHeightEnabled: true, // 防止内容撑高编辑器
+          enableAutoSave: false,
+        }, this.isMobile? {
+          toolbars: [[]]
+        } : {}), // 默认配置
         editorDependencies: [
           'ueditor.config.js',
           'ueditor.all.js'
@@ -280,6 +283,7 @@
       },
       /* 初始化之前 */
       beforeInit(id) {
+        if(this.isMobile) return
         window.UE.registerUI('135editor', (editor, uiName) => {
           const width = document.body.clientWidth * 0.9
           const height = window.innerHeight - 50
@@ -317,7 +321,7 @@
       },
       /* 已生成editor实例 */
       handleReady(editor) {
-        editor.registerCommand('imglist', {
+        if(!this.isMobile) editor.registerCommand('imglist', {
           execCommand: () => {
             this.dialog.show = true
             this.$emit('getImgLists')
@@ -350,7 +354,7 @@
           this.imgLists = res.data
           this.total = res.total
         })
-      }
+      },
     }
   }
 </script>
