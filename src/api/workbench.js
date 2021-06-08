@@ -52,20 +52,20 @@ export function getSourceList() {
 /* -------------------------用户反馈--------------------------------*/
 
 /* 反馈列表 */
-export function getFeedback(params) {
+export function getFeedback(data) {
   return request2({
-    url: '/internal/report/pageList',
-    method: 'get',
-    params
+    url: '/internal/feedback/pageList',
+    method: 'post',
+    data
   })
 }
 
 /* 反馈详情 */
-export function getFeedbackDetail(params) {
+export function getFeedbackDetail(data) {
   return request2({
     url: '/internal/feedback/info',
-    method: 'get',
-    params
+    method: 'post',
+    data
   })
 }
 
@@ -90,11 +90,11 @@ export function getReport(data) {
 }
 
 /* 举报详情 */
-export function getReportDetail(params) {
+export function getReportDetail(data) {
   return request2({
     url: '/internal/report/info',
-    method: 'get',
-    params
+    method: 'post',
+    data
   })
 }
 
