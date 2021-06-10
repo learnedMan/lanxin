@@ -861,3 +861,46 @@ export function delWhitelist(data) {
 
 
 
+/* 模板化套餐发布 */
+
+//发布管理列表
+export function getPublishList(data) {
+  return request2({
+    url: '/publish/list',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除 */
+export function delPublishList(id) {
+  return request2({
+    url: `/publish/delete?id=${id}`,
+    method: 'post',
+  })
+}
+// 套餐列表
+export function mealdefaultlist(data) {
+  return request2({
+    url: `/meal/openList`,
+    method: 'post',
+    data
+  })
+}
+
+/* 新增套餐 */
+export function addPublish(data) {
+  return request2({
+    url: '/publish/setPublish',
+    method: 'post',
+    data
+  })
+}
+/* 修改套餐 */
+export function editPublish(data) {
+  return request2({
+    url: '/publish/update',
+    method: 'post',
+    data
+  })
+}

@@ -283,7 +283,8 @@ export default {
         page: 1,
         pageSize: 10,
         version_code:'',
-        platform:''
+        platform:'',
+        product_id:this.page2id,
       },
       dialogTitle:'',
       dialogType:'',
@@ -308,6 +309,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
+      console.log(this.page2id)
       this.loading = true;
       this.queryParams.page = 1;
       this.getList();

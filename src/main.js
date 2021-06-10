@@ -57,6 +57,9 @@ Vue.prototype.msgInfo = function(msg) {
   this.$message.info(msg)
 }
 
+import Iconbutton from '@/components/iconbutton/index.vue'
+Vue.component("Iconbutton", Iconbutton);
+
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
   // locale: enLang // 如果使用中文，无需设置，请删除
