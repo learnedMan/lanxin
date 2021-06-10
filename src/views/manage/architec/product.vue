@@ -82,9 +82,12 @@
           prop="updated_at"
           :show-overflow-tooltip="true"
         />
-        <el-table-column width="240px" label="操作" align="left">
+        <el-table-column width="280px" label="操作" align="center">
           <template slot-scope="scope">
-            <el-button
+            <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+            <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+            <Iconbutton icontype="appbbgl" label="app版本管理" @fatherMethod="changepage(scope.row)"></Iconbutton>
+            <!-- <el-button
               size="mini"
               type="text"
               icon="el-icon-edit"
@@ -108,7 +111,7 @@
               style="color: #67c23a"
               @click="changepage(scope.row)"
               >客户端配置</el-button
-            >
+            > -->
           </template>
         </el-table-column>
       </el-table>

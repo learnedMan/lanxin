@@ -48,9 +48,12 @@
       <el-table-column label="大小" align="center" prop="size" :show-overflow-tooltip="true" />
       <el-table-column label="拍摄时间" align="center" prop="time" :show-overflow-tooltip="true" />
       <el-table-column label="上传时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
-      <el-table-column width="180px" label="操作" align="center">
+      <el-table-column width="220px" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button
+          <Iconbutton icontype="xiazai" label="下载" @fatherMethod="download(scope.row)"></Iconbutton>
+          <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+          <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-download"
@@ -70,7 +73,7 @@
             icon="el-icon-delete"
             style="color:#F56C6C;"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>

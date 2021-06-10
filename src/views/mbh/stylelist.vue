@@ -100,17 +100,22 @@
               </el-table-column> -->
               <el-table-column label="样式预览" align="center" class-name="small-padding fixed-width" width="120px">
                 <template slot-scope="scope">
-                  <el-button
+                  <Iconbutton icontype="yl" label="预览" @fatherMethod="handleView(scope.row)"></Iconbutton>
+                  <!-- <el-button
                     size="mini"
                     type="text"
                     icon="el-icon-view"
                     @click="handleView(scope.row)"
-                  >预览</el-button>
+                  >预览</el-button> -->
                 </template>
               </el-table-column>
               <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200px">
                 <template slot-scope="scope">
-                  <el-button
+                  <Iconbutton icontype="xg" label="修改" @fatherMethod="handleEdit(scope.row)"></Iconbutton>
+                  <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+
+
+                  <!-- <el-button
                     size="mini"
                     type="text"
                     icon="el-icon-edit"
@@ -121,7 +126,7 @@
                     type="text"
                     icon="el-icon-delete"
                     @click="handleDelete(scope.row)"
-                  >删除</el-button>
+                  >删除</el-button> -->
                 </template>
               </el-table-column>
             </el-table>

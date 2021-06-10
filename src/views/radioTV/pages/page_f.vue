@@ -31,9 +31,12 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="创建时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
-                    <el-table-column width="200px" label="操作" align="center">
+                    <el-table-column width="280px" label="操作" align="center">
                         <template slot-scope="scope">
-                        <el-button
+                            <Iconbutton icontype="dbjmd" label="点播节目单" @fatherMethod="golist(scope.row)"></Iconbutton>
+                            <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+                            <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+                        <!-- <el-button
                             size="mini"
                             type="text"
                             icon="el-icon-tickets"
@@ -51,7 +54,7 @@
                             icon="el-icon-delete"
                             style="color: #f56c6c"
                             @click="deldata(scope.row)"
-                            >删除</el-button>
+                            >删除</el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>

@@ -51,13 +51,14 @@
       <el-table-column label="删除时间" align="center" prop="deleted_at" :show-overflow-tooltip="true" />
       <el-table-column width="100px" label="操作" align="center">
           <template slot-scope="scope">
-            <el-button
+            <!-- <el-button
                 size="mini"
                 type="text"
                 icon="el-icon-finished"
                 @click="recovery(scope.row)"
                 style="color:#67C23A;"
-            >恢复</el-button>
+            >恢复</el-button> -->
+            <Iconbutton icontype="hf" label="恢复" @fatherMethod="recovery(scope.row)"></Iconbutton>
           </template>
       </el-table-column>
     </el-table>

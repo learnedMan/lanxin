@@ -37,12 +37,13 @@
               </el-table-column>
               <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
               <template slot-scope="scope">
-                <el-button
+                <Iconbutton icontype="xg" label="修改" @fatherMethod="handleUpdate(scope.row)"></Iconbutton>
+                <!-- <el-button
                   size="mini"
                   type="text"
                   icon="el-icon-circle-check"
                   @click="handleUpdate(scope.row)"
-                >修改</el-button>
+                >修改</el-button> -->
                 <!-- <el-button
                   size="mini"
                   type="text"

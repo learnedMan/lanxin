@@ -49,7 +49,9 @@
                 </el-table-column>
                 <el-table-column label="样式预览" align="center" class-name="small-padding fixed-width">
                     <template slot-scope="scope">
-                        <el-button
+                        <Iconbutton icontype="yl" label="预览" @fatherMethod="handleview(scope.row)"></Iconbutton>
+                        <Iconbutton icontype="sc" label="删除" @fatherMethod="handledelete(scope.row)"></Iconbutton>
+                        <!-- <el-button
                         size="mini"
                         type="text"
                         icon="el-icon-view"
@@ -61,7 +63,7 @@
                         type="text"
                         icon="el-icon-delete"
                         @click="handledelete(scope.row)"
-                        >删除</el-button>
+                        >删除</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>

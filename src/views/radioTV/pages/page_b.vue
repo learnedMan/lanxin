@@ -40,7 +40,9 @@
                     </el-table-column>
                     <el-table-column width="150px" label="操作" align="center">
                         <template slot-scope="scope">
-                        <el-button
+                            <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+                            <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+                        <!-- <el-button
                             size="mini"
                             type="text"
                             icon="el-icon-edit"
@@ -52,7 +54,7 @@
                             icon="el-icon-delete"
                             style="color: #f56c6c"
                             @click="deldata(scope.row)"
-                            >删除</el-button>
+                            >删除</el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>

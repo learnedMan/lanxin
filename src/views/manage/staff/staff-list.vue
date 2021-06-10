@@ -49,9 +49,13 @@
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
       <el-table-column label="上次登录时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
-      <el-table-column width="240px" label="操作" align="center">
+      <el-table-column width="280px" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button
+          <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+          <Iconbutton icontype="qx" label="权限" @fatherMethod="editjurisdiction(scope.row)"></Iconbutton>
+          <Iconbutton icontype="js" label="角色" @fatherMethod="editroledata(scope.row)"></Iconbutton>
+          <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -77,7 +81,7 @@
             icon="el-icon-delete"
             style="color:#F56C6C;"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>

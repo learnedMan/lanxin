@@ -21,9 +21,12 @@
       <el-table-column label="site-id" align="center" prop="site_id" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
       <el-table-column label="更新时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
-      <el-table-column label="操作" align="center" width="200px">
+      <el-table-column label="操作" align="center" width="240px">
         <template slot-scope="scope">
-          <el-button
+          <Iconbutton v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'" icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+          <Iconbutton icontype="qx" label="权限" @fatherMethod="editjurisdiction(scope.row)"></Iconbutton>
+          <Iconbutton v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'" icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+          <!-- <el-button
             size="mini"
             type="text"
             style="color:#E6A23C;"
@@ -45,7 +48,7 @@
             icon="el-icon-delete"
             v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>

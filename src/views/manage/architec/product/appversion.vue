@@ -86,9 +86,11 @@
         prop="created_at"
         :show-overflow-tooltip="true"
       />
-      <el-table-column width="240px" label="操作" align="left">
+      <el-table-column width="200px" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button
+          <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+          <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -103,7 +105,7 @@
             style="color: #f56c6c"
             @click="deldata(scope.row)"
             >删除</el-button
-          >
+          > -->
         </template>
       </el-table-column>
     </el-table>

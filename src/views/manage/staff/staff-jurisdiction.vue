@@ -23,9 +23,12 @@
       <el-table-column label="路由" align="center" prop="id" :show-overflow-tooltip="true" >web</el-table-column>
       <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
       <el-table-column label="更新时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
-      <el-table-column label="操作" align="center" width="200px">
+      <el-table-column label="操作" align="center" width="240px">
         <template slot-scope="scope">
-          <el-button
+          <Iconbutton icontype="xz" label="新增" @fatherMethod="adddata(scope.row)"></Iconbutton>
+          <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+          <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-document-add"
@@ -44,7 +47,7 @@
             style="color:#F56C6C;"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>

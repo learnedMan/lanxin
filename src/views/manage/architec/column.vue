@@ -57,7 +57,12 @@
       <el-table-column label="更新时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
       <el-table-column label="操作" align="left" width="360px">
         <template slot-scope="scope">
-          <el-button
+          <Iconbutton icontype="xz" label="新增" @fatherMethod="adddata(scope.row)"></Iconbutton>
+          <Iconbutton v-if="scope.row.type!='product'" icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+          <Iconbutton v-if="scope.row.b_sort!='begin'" icontype="sy" label="上移" @fatherMethod="move(scope.$index, scope.row, 'up')"></Iconbutton>
+          <Iconbutton v-if="scope.row.e_sort!='end'" icontype="xy" label="下移" @fatherMethod="move(scope.$index, scope.row, 'down')"></Iconbutton>
+          <Iconbutton v-if="scope.row.type!='product'" icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+          <!-- <el-button
             size="mini"
             type="text"
             style="color:#E6A23C;"
@@ -92,7 +97,7 @@
             icon="el-icon-bottom"
             :disabled="scope.row.e_sort=='end'"
             @click="move(scope.$index, scope.row, 'down')"
-          >下移</el-button>
+          >下移</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -762,15 +767,14 @@ import ChildPage1 from './pages/c_page1'
           }
         }
         find(this.dataList,thisid,type)
-        console.log('当前的id：'+thisid)
+        // console.log('当前的id：'+thisid)
         // console.log('获取的id：'+getid)
         // console.log('获取的权重：'+getsort)
         var data = {
-          [thisid]:thissort,
-          [getid]:getsort
+          [thisid]:getsort,
+          [getid]:thissort
         }
         setSortchannels(data).then(response => {
-          console.log(response)
             this.$message({
               message: '修改成功',
               type: 'success'

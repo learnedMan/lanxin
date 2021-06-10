@@ -32,6 +32,8 @@ import yl from '@/assets/iconbox/预览.png'
 import zd from '@/assets/iconbox/置顶.png'
 import ztwglb from '@/assets/iconbox/专题文稿列表.png'
 import appbbgl from '@/assets/iconbox/app版本管理.png'
+import ys from '@/assets/iconbox/样式.png'
+import tc from '@/assets/iconbox/套餐.png'
 export default {
   props: {
     label: {
@@ -69,7 +71,9 @@ export default {
       yl:yl,
       zd:zd,
       ztwglb:ztwglb,
-      appbbgl:appbbgl
+      appbbgl:appbbgl,
+      ys:ys,
+      tc:tc
     }
   },
   computed: {

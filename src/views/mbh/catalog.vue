@@ -36,7 +36,9 @@
             <el-table-column label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
             <el-table-column label="操作" align="center">
               <template slot-scope="scope">
-                <el-button
+                <Iconbutton icontype="xg" label="修改" @fatherMethod="handleUpdate(scope.row)"></Iconbutton>
+                <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+                <!-- <el-button
                   size="mini"
                   type="text"
                   icon="el-icon-circle-check"
@@ -47,7 +49,7 @@
                   type="text"
                   icon="el-icon-delete"
                   @click="handleDelete(scope.row)"
-                >删除</el-button>
+                >删除</el-button> -->
               </template>
             </el-table-column>
           </el-table>

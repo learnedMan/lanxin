@@ -48,13 +48,14 @@
       <el-table-column label="上次登录时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
       <el-table-column width="100px" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             style="color:#E6A23C;"
             @click="editdata(scope.row)"
-          >修改</el-button>
+          >修改</el-button> -->
+          <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
         </template>
       </el-table-column>
     </el-table>

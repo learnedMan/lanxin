@@ -31,13 +31,14 @@
                     icon="el-icon-edit"
                     style="color:#E6A23C;"
                     @click="editdata(scope.row)">修改</el-button> -->
-                <el-button
+                    <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+                <!-- <el-button
                     size="mini"
                     type="text"
                     icon="el-icon-delete"
                     style="color: #f56c6c"
                     @click="deldata(scope.row)"
-                    >删除</el-button>
+                    >删除</el-button> -->
                 </template>
             </el-table-column>
         </el-table>

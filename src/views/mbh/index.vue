@@ -24,7 +24,11 @@
             <el-table-column label="更新时间" prop="updateAt" :show-overflow-tooltip="true" />
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
               <template slot-scope="scope">
-                <el-button
+                <Iconbutton icontype="ys" label="样式" @fatherMethod="handlestylelist(scope.row)"></Iconbutton>
+                <Iconbutton icontype="tc" label="套餐" @fatherMethod="handleSetmeallist(scope.row)"></Iconbutton>
+                <Iconbutton icontype="xg" label="修改" @fatherMethod="handleUpdate(scope.row)"></Iconbutton>
+                <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+                <!-- <el-button
                   size="mini"
                   type="text"
                   icon="el-icon-more-outline"
@@ -47,7 +51,7 @@
                   type="text"
                   icon="el-icon-delete"
                   @click="handleDelete(scope.row)"
-                >删除</el-button>
+                >删除</el-button> -->
               </template>
             </el-table-column>
           </el-table>
