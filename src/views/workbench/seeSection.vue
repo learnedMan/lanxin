@@ -222,7 +222,7 @@
         <el-table-column
           label="操作"
           align="center"
-          width="300"
+          width="390"
         >
           <template slot-scope="scope">
             <div class="verify-table-action">
@@ -258,6 +258,7 @@
                 type="text"
                 icon="el-icon-picture"
                 size="small"
+                @click="handlePreview(scope.row)"
               >
                 预览
               </el-button>
@@ -269,6 +270,15 @@
                 @click="handlePush(scope.row)"
               >
                 推送
+              </el-button>
+              <!-- 操作记录 -->
+              <el-button
+                type="text"
+                icon="el-icon-collection"
+                size="small"
+                @click="handleHistory(scope.row)"
+              >
+                操作记录
               </el-button>
             </div>
           </template>
@@ -290,7 +300,7 @@
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show"
     >
-      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" @refresh="refresh" :disabled="true" />
+      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" @refresh="refresh" />
     </el-dialog>
     <!-- 修改排序 -->
     <el-dialog
@@ -455,6 +465,15 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 查看历史版本 -->
+    <el-dialog
+      width="700px"
+      title="操作记录"
+      :visible.sync="history.show"
+      v-if="history.show"
+    >
+      <version-history :id="history.id" type="news"></version-history>
+    </el-dialog>
   </div>
 </template>
 
@@ -463,11 +482,13 @@ import { getChannels } from '@/api/manage'
 import { addPushDetail} from '@/api/operamanage'
 import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort } from '@/api/content'
 import NewDetail from './reviewNews/detail'
+import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
 export default {
   name: 'SeeSection',
   components: {
-    NewDetail
+    NewDetail,
+    VersionHistory
   },
   data() {
     return {
@@ -625,7 +646,11 @@ export default {
           { required: true, message: '请选择推送终端', trigger: 'change' }
         ]
       },
-      product_id: ''
+      product_id: '',
+      history: {
+        show: false,
+        id: ''
+      }
     }
   },
   async created() {
@@ -751,6 +776,19 @@ export default {
         this.getList()
       })
     },
+    /* 预览 */
+    handlePreview (row) {
+      const { id } = row;
+      this.$router.push({ name: 'Preview', query: { id, type: 'news' }})
+    },
+    /* 查看历史记录 */
+    handleHistory (row) {
+      const { id } = row;
+      this.history = {
+        show: true,
+        id
+      }
+    },
     /*
       * 编辑新闻
       * */
@@ -835,7 +873,7 @@ export default {
     /* 刷新视图 */
     refresh () {
       this.getList();
-      this.dialog.id = '';
+      this.detailDialog.id = '';
     },
   }
 }

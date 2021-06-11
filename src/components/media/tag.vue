@@ -18,7 +18,7 @@
     <el-tag
       v-for="(tag, index) in dynamicTags"
       :key="index"
-      closable
+      :closable="!disabled"
       :disable-transitions="false"
       @close="handleClose(tag)"
     >
@@ -45,6 +45,11 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    /* 是否可编辑 */
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

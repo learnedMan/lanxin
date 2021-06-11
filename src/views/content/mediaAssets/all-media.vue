@@ -167,10 +167,19 @@
       <el-table-column
         label="操作"
         align="center"
-        width="300"
+        width="440"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
+            <!-- 查看 -->
+            <el-button
+              type="text"
+              icon="el-icon-view"
+              size="small"
+              @click="handleWatch(scope.row)"
+            >
+              查看
+            </el-button>
             <!-- 编辑 -->
             <el-button
               type="text"
@@ -179,6 +188,15 @@
               @click="handleEdit(scope.row)"
             >
               编辑
+            </el-button>
+            <!-- 一键下线 -->
+            <el-button
+              type="text"
+              icon="el-icon-bottom"
+              size="small"
+              @click="handleOffline(scope.row)"
+            >
+              一键下线
             </el-button>
             <!-- 删除 -->
             <el-button
@@ -212,8 +230,18 @@
               type="text"
               icon="el-icon-picture"
               size="small"
+              @click="handlePreview(scope.row)"
             >
               预览
+            </el-button>
+            <!-- 操作记录 -->
+            <el-button
+              type="text"
+              icon="el-icon-collection"
+              size="small"
+              @click="handleHistory(scope.row)"
+            >
+              操作记录
             </el-button>
           </div>
         </template>
@@ -266,14 +294,27 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 查看历史版本 -->
+    <el-dialog
+      width="700px"
+      title="操作记录"
+      :visible.sync="history.show"
+      v-if="history.show"
+    >
+      <version-history :id="history.id" type="script"></version-history>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript } from '@/api/content'
+import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript, offlineNews } from '@/api/content'
 import { getChannels } from '@/api/manage'
+import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
 export default {
+  components: {
+    VersionHistory
+  },
   data() {
     return {
       queryParams: {
@@ -358,7 +399,11 @@ export default {
         multiple: true // 多选
       }, // 级联选择器配置
       channelsList: [], // 栏目列表
-      selection: [] // 表格选中项
+      selection: [], // 表格选中项
+      history: {
+        show: false,
+        id: ''
+      }
     }
   },
   created() {
@@ -479,8 +524,49 @@ export default {
     * 编辑
     * */
     handleEdit(row) {
-      const { id } = row
+      const { id, news } = row;
+      if(news.some(n => n.status === 1)) return this.$message.warning('该文稿下存在已发布的新闻，请点击“一键下线”按钮下线所有新闻后再进行编辑')
       this.$router.push({ name: 'Add-media', query: { id }})
+    },
+    /* 预览 */
+    handlePreview (row) {
+      const { id } = row;
+      this.$router.push({ name: 'Preview', query: { id, type: 'scripts' }})
+    },
+    /* 查看历史记录 */
+    handleHistory (row) {
+      const { id } = row;
+      this.history = {
+        show: true,
+        id
+      }
+    },
+    /* 一键下线 */
+    handleOffline (row) {
+      const { id } = row;
+      this.$confirm(`此操作将下线该文稿下所有新闻, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        offlineNews(id).then(({ message, status_code }) => {
+          this.$message({
+            message: message,
+            type: status_code === 200? 'success' : 'warning'
+          })
+          this.getList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    /* 查看详情 */
+    handleWatch (row) {
+      const { id } = row;
+      this.$router.push({ name: 'Add-media', query: { id, disabled: '1' } })
     },
     /*
       * 列表删除

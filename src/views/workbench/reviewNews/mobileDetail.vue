@@ -385,7 +385,12 @@
         }
       },
       created() {
-        this.getEditorPerson();
+        let timer = setInterval(() => {
+          this.getEditorPerson();
+        }, 8000)
+        this.$once('hook:beforeDestroy', () => {
+          clearInterval(timer);
+        })
         this.getData();
       }
     }

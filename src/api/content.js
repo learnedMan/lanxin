@@ -64,6 +64,14 @@ export function batchPublishScript(data) {
   })
 }
 
+/* 文稿下新闻一键下线 */
+export function offlineNews(id) {
+  return request({
+    url: `/api/scripts/pullAll/${id}`,
+    method: 'post',
+  })
+}
+
 /* 获取稿件详情 */
 export function getScriptDetail(id) {
   return request({
@@ -130,6 +138,15 @@ export function changeNewsStatus(data) {
     data
   })
 }
+/* 获取新闻或文稿的操作记录 */
+export function getHistory(params) {
+  return request({
+    url: '/api/operationLogs',
+    methods: 'get',
+    params
+  })
+}
+
 
 /* -------------------------标签管理--------------------------------*/
 

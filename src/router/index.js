@@ -67,6 +67,13 @@ export const constantRoutes = [
         hidden: true,
         name: 'Admin',
         meta: { title: '账号管理', icon: 'admin' }
+      },
+      {
+        path: 'preview',
+        component: () => import('@/views/dashboard/preview/index'),
+        hidden: true,
+        name: 'Preview',
+        meta: { title: '预览' }
       }
     ]
   },
