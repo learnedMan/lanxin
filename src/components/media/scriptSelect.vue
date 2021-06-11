@@ -37,7 +37,7 @@
       <ul class="xl-script-select--lists">
         <li v-for="(list, index) of chooseList" :key="list.id">
           <p>{{ list.title }}</p>
-          <i class="el-icon-circle-close" @click="deleteScript(index)"></i>
+          <i class="el-icon-circle-close" @click="deleteScript(index)" v-if="!disabled"></i>
         </li>
       </ul>
       <!-- 选择关联新闻 -->
@@ -162,6 +162,11 @@
         value: {
           type: Array,
           default: () => []
+        },
+        /* 是否禁用 */
+        disabled: {
+          type: Boolean,
+          default: false
         }
       },
       data() {

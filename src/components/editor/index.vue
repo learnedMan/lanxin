@@ -189,6 +189,11 @@
       value: {
         type: String,
         default: ''
+      },
+      /* 是否可编辑 */
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -200,6 +205,7 @@
           serverUrl: `/laravel-u-editor-server/server`, // 上传图片以及视频的接口
           autoHeightEnabled: true, // 防止内容撑高编辑器
           enableAutoSave: false,
+          readonly: this.disabled
         }, this.isMobile? {
           toolbars: [[]]
         } : {}), // 默认配置

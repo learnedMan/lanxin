@@ -165,10 +165,19 @@
       <el-table-column
         label="操作"
         align="center"
-        width="300"
+        width="440"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
+            <!-- 查看 -->
+            <el-button
+              type="text"
+              icon="el-icon-view"
+              size="small"
+              @click="handleWatch(scope.row)"
+            >
+              查看
+            </el-button>
             <!-- 编辑 -->
             <el-button
               type="text"
@@ -178,7 +187,16 @@
             >
               编辑
             </el-button>
-            <!-- 查看 -->
+            <!-- 一键下线 -->
+            <el-button
+              type="text"
+              icon="el-icon-bottom"
+              size="small"
+              @click="handleOffline(scope.row)"
+            >
+              一键下线
+            </el-button>
+            <!-- 删除 -->
             <el-button
               type="text"
               icon="el-icon-delete"
@@ -210,6 +228,7 @@
               type="text"
               icon="el-icon-picture"
               size="small"
+              @click="handlePreview(scope.row)"
             >
               预览
             </el-button>
@@ -268,7 +287,7 @@
 </template>
 
 <script>
-import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript } from '@/api/content'
+import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript, offlineNews } from '@/api/content'
 import { getChannels } from '@/api/manage'
 
 export default {
@@ -486,8 +505,41 @@ export default {
     * 列表编辑
     * */
     handleEdit(row) {
-      const { id } = row
+      const { id, news } = row;
+      if(news.some(n => n.status === 1)) return this.$message.warning('该文稿下存在已发布的新闻，请点击“一键下线”按钮下线所有新闻后再进行编辑')
       this.$router.push({ name: 'Add-media', query: { id }})
+    },
+    /* 预览 */
+    handlePreview (row) {
+      const { id } = row;
+      this.$router.push({ name: 'Preview', query: { id, type: 'scripts' }})
+    },
+    /* 一键下线 */
+    handleOffline (row) {
+      const { id } = row;
+      this.$confirm(`此操作将下线该文稿下所有新闻, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        offlineNews(id).then(({ message, status_code }) => {
+          this.$message({
+            message: message,
+            type: status_code === 200? 'success' : 'warning'
+          })
+          this.getList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    /* 查看详情 */
+    handleWatch (row) {
+      const { id } = row;
+      this.$router.push({ name: 'Add-media', query: { id, disabled: '1' } })
     },
     /*
         * 列表删除

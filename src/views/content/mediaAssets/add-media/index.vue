@@ -67,7 +67,7 @@
       <div style="font-size: 14px;color: #606266;flex: 1">
         <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
       </div>
-      <div>
+      <div v-if="!disabled">
         <el-button
           type="primary"
           size="small"
@@ -95,6 +95,7 @@
       <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange">
         <el-tab-pane
           v-for="item of tabs"
+          :disabled="disabled || isEdit"
           :key="item.value"
           :label="item.label"
           :name="item.value"
@@ -104,6 +105,7 @@
         ref="submitForm"
         label-width="100px"
         size="small"
+        :disabled="disabled"
         :model="from"
         :rules="currentTabsFromRules"
       >
@@ -226,6 +228,7 @@
                 >
                   <cropper
                     v-bind="formOptions['extra.cover'].item.componentProps"
+                    :disabled="disabled"
                     :value="parseObj(formOptions['extra.cover'].item)"
                     @input="handleInput($event, formOptions['extra.cover'].item)"
                   />
@@ -240,6 +243,7 @@
                   v-bind="formOptions['extra.custom_rec'].item.props"
                 >
                   <script-select
+                    :disabled="disabled"
                     :value="parseObj(formOptions['extra.custom_rec'].item)"
                     @input="handleInput($event, formOptions['extra.custom_rec'].item)"
                   ></script-select>
@@ -250,6 +254,7 @@
                   v-bind="formOptions['extra.content'].item.props"
                 >
                   <editor
+                    :disabled="disabled"
                     :value="parseObj(formOptions['extra.content'].item)"
                     @input="handleInput($event, formOptions['extra.content'].item)"
                   />
@@ -346,20 +351,6 @@
               <el-row class="xl-add-media--title">
                 <el-col :span="24">发布设置</el-col>
               </el-row>
-              <!-- 定时发布 -->
-              <el-form-item
-                v-show="initFrom().includes('extra.publish_timer')"
-                v-bind="formOptions['extra.publish_timer'].item.props"
-              >
-                <el-radio-group
-                  size="small"
-                  :value="parseObj(formOptions['extra.publish_timer'].item)"
-                  @input="handleInput($event, formOptions['extra.publish_timer'].item)"
-                  @change="handleTabChange"
-                >
-                  <el-radio v-for="list of formOptions['extra.publish_timer'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
               <!-- 发布时间 -->
               <el-form-item
                 v-show="initFrom().includes('extra.set_created_at')"
@@ -380,6 +371,7 @@
                 v-bind="formOptions['author_name'].item.props"
               >
                 <tag
+                  :disabled="disabled"
                   :value="parseObj(formOptions['author_name'].item)"
                   @input="handleInput($event, formOptions['author_name'].item)"
                 />
@@ -390,6 +382,7 @@
                 v-bind="formOptions['editor_name'].item.props"
               >
                 <tag
+                  :disabled="disabled"
                   :value="parseObj(formOptions['editor_name'].item)"
                   @input="handleInput($event, formOptions['editor_name'].item)"
                 />
@@ -610,6 +603,14 @@ export default {
     Editor,
     scriptSelect
   },
+  props: {
+    id: {
+      type: [Number, String],
+      default: null
+    },
+    /* 自定义请求函数 */
+    fetchSuggestions: Function
+  },
   data() {
     const coverValidator = (rule, value, callback) => {
       const count = this.formOptions['extra.cover'].item.componentProps.count
@@ -812,29 +813,6 @@ export default {
             }
           }
         },
-        'extra.publish_timer': {
-          item: {
-            key: 'extra.publish_timer',
-            props: {
-              label: '定时发布:',
-              prop: 'extra.publish_timer'
-            },
-            component: 'radio', // 组件名
-            lists: [
-              {
-                label: '是',
-                value: '1'
-              },
-              {
-                label: '否',
-                value: '0'
-              }
-            ]
-          },
-          rule: [
-            { required: true, message: '请选择是否定时发布', trigger: 'change' }
-          ]
-        },
         'extra.set_created_at': {
           item: {
             key: 'extra.set_created_at',
@@ -844,9 +822,9 @@ export default {
             },
             component: 'date' // 组件名
           },
-          rule: [
+          /*rule: [
             { required: true, message: '请选择发布时间', trigger: 'change' }
-          ]
+          ]*/
         },
         'extra.video_extra.video_list': {
           item: {
@@ -1221,7 +1199,6 @@ export default {
           intro: '', // 简介
           tags: '', // 标签
           keywords: '', // 关键词
-          publish_timer: '0', // 定时发布
           set_created_at: '', // 发布时间
           content: '', // 编辑器内容
           is_original: '1', // 是否原创
@@ -1278,10 +1255,27 @@ export default {
     /* 上传接口 */
     actionUrl() {
       return `${process.env.VUE_APP_BASE_API}/api/upload/image`
+    },
+    /* 文稿id */
+    scriptsId ({ $route }) {
+      return $route.query.id || this.id;
+    },
+    /* 禁用 */
+    disabled ({ $route }) {
+      return $route.query.disabled === '1' || this.id != null;
+    },
+    /* 是否为编辑 */
+    isEdit ({ scriptsId }) {
+      return scriptsId != null;
     }
   },
   async created() {
-    this.getEditorPerson();
+    let timer = setInterval(() => {
+      this.getEditorPerson();
+    }, 8000)
+    this.$once('hook:beforeDestroy', () => {
+      clearInterval(timer);
+    })
     this.getChannels()
     await this.getLabels()
     await this.getList()
@@ -1308,6 +1302,7 @@ export default {
     * 显示选择视频弹框
     * */
     handleChangeVideo() {
+      if(this.disabled) return
       this.videoDialog.show = true;
     },
     /* 控制视频弹框*/
@@ -1322,9 +1317,8 @@ export default {
       // 确定图片显示个数
       this.formOptions['extra.cover'].item.componentProps.count = template_style?.count || 1
       // 基础显示的item
-      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer']
+      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.set_created_at']
       // 显示发布时间
-      if (this.from.extra.publish_timer === '1') baseTopItem.push('extra.set_created_at')
       const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
       if (this.from.extra.is_original === '0') baseBottomItem.splice(2, 0, 'extra.source')
@@ -1372,7 +1366,7 @@ export default {
       const channel_id = this.dialog.form.channel_id
       const currentTabsFromItem = this.initFrom()
       const type = this.from.extra.type
-      const { id } = this.$route.query
+      const id = this.scriptsId;
       const count = this.formOptions['extra.cover'].item.componentProps.count
       let arr, keyVal
       const obj = {
@@ -1464,9 +1458,9 @@ export default {
     },
     /* 获取详情数据 */
     getList() {
-      const { id } = this.$route.query
+      const id = this.scriptsId;
       if (id == null) return
-      return getScriptDetail(id).then(res => {
+      return (this.fetchSuggestions? this.fetchSuggestions() : getScriptDetail(id)).then(res => {
         const extra = res.extra;
         let link_type = extra.link && extra.link.type || '';
         let target_obj = '';
@@ -1487,7 +1481,6 @@ export default {
             intro: extra.intro, // 简介
             tags: extra.tags, // 标签
             keywords: extra.keywords, // 关键词
-            publish_timer: (extra.publish_timer || '1').toString(), // 定时发布
             set_created_at: extra.set_created_at, // 发布时间
             content: extra.content, // 编辑器内容
             is_original: (extra.is_original || '1').toString(), // 是否原创
@@ -1513,12 +1506,12 @@ export default {
             } // 外链
           }
         }// 表单
-        this.dialog.form.channel_id = res.news.map(n => n.channel_id)
+        if(!this.disabled) this.dialog.form.channel_id = res.news.map(n => n.channel_id)
       })
     },
     /* 获取编辑人员 */
     getEditorPerson () {
-      const { id } = this.$route.query
+      const id = this.scriptsId;
       getEditorPerson({
         id,
         type: 'script'

@@ -1,5 +1,5 @@
 <style type="text/scss" lang="scss">
-  .xl-add-media {
+  .xl-news-media {
     background-color: #f9f9f9;
     padding: 10px;
     margin: 0;
@@ -60,14 +60,14 @@
   }
 </style>
 <template>
-  <el-container class="xl-add-media">
+  <el-container class="xl-news-media">
     <el-header height="40px" style="background-color: #fff;line-height: 40px">
       <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
     </el-header>
     <el-main style="padding: 10px 0">
-      <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange">
+      <el-tabs v-model="from.extra.type" class="xl-news-media--tab" @tab-click="handleTabChange">
         <el-tab-pane
-          :disabled="disabled"
+          disabled
           v-for="item of tabs"
           :key="item.value"
           :label="item.label"
@@ -79,12 +79,13 @@
         label-width="100px"
         size="small"
         style="max-height: 600px;overflow: auto"
+        :disabled="disabled"
         :model="from"
         :rules="currentTabsFromRules"
       >
-        <el-row class="xl-add-media--bc" style="margin-bottom: 20px">
+        <el-row class="xl-news-media--bc" style="margin-bottom: 20px">
           <el-col :span="24">
-            <el-row class="xl-add-media--title">
+            <el-row class="xl-news-media--title">
               <el-col :span="24">图文设置</el-col>
             </el-row>
             <el-row>
@@ -235,7 +236,7 @@
                   v-show="initFrom().includes('extra.video_extra.video_list')"
                   v-bind="formOptions['extra.video_extra.video_list'].item.props"
                 >
-                  <div class="xl-add-media--upload" @click="handleChangeVideo">
+                  <div class="xl-news-media--upload" @click="handleChangeVideo">
                     <i class="el-icon-video-camera-solid" v-if="!from.extra.video_extra.video_list[0]"></i>
                     <el-image
                       v-else
@@ -318,8 +319,8 @@
         </el-row>
         <el-row :gutter="20" type="flex">
           <el-col :span="12">
-            <div class="xl-add-media--bc xl-add-media--row">
-              <el-row class="xl-add-media--title">
+            <div class="xl-news-media--bc xl-news-media--row">
+              <el-row class="xl-news-media--title">
                 <el-col :span="24">发布设置</el-col>
               </el-row>
               <!-- 定时发布 -->
@@ -434,8 +435,8 @@
             </div>
           </el-col>
           <el-col :span="12">
-            <div class="xl-add-media--bc xl-add-media--row">
-              <el-row class="xl-add-media--title">
+            <div class="xl-news-media--bc xl-news-media--row">
+              <el-row class="xl-news-media--title">
                 <el-col :span="24">推广设置</el-col>
               </el-row>
               <!-- 评论控制-->
@@ -531,7 +532,7 @@
         </el-row>
       </el-form>
     </el-main>
-    <el-footer class="xl-add-media--footer" height="40px">
+    <el-footer class="xl-news-media--footer" height="40px" v-if="!disabled">
       <el-button
         type="primary"
         size="small"
@@ -585,10 +586,13 @@ export default {
       type: [Number, String],
       required: true
     },
+    /* 是否禁用 */
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    /* 自定义请求函数 */
+    fetchSuggestions: Function
   },
   data() {
     const coverValidator = (rule, value, callback) => {
@@ -1277,7 +1281,12 @@ export default {
   },
   created() {
     this.getLabels()
-    this.getEditorPerson();
+    let timer = setInterval(() => {
+      this.getEditorPerson();
+    }, 8000)
+    this.$once('hook:beforeDestroy', () => {
+      clearInterval(timer);
+    })
   },
   methods: {
     /* 解析路径返回值 */
@@ -1387,8 +1396,8 @@ export default {
           delete obj.target_obj;
           changeNews(this.id, obj).then(() => {
             this.$message.success('保存草稿成功!')
-            this.$emit('refresh')
             this.handleClose()
+            this.$emit('refresh')
           })
         }
       })
@@ -1423,7 +1432,7 @@ export default {
     },
     /* 获取详情数据 */
     getList() {
-      return getNewDetail(this.id).then(res => {
+      return (this.fetchSuggestions? this.fetchSuggestions() : getNewDetail(this.id)).then(res => {
         const extra = res.extra;
         let link_type = extra.link && extra.link.type || 'target_obj';
         let target_obj = '';

@@ -120,13 +120,26 @@
       <el-table-column
         label="状态"
         align="center"
-        prop="status"
-        :show-overflow-tooltip="true"
-      />
+      >
+        <template slot-scope="scope">
+          <el-select
+            v-model="scope.row.status"
+            size="small"
+            @change="changeStatus(scope.row)"
+          >
+            <el-option
+              v-for="item in statusOptions.filter(n => n.value !== '')"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
         align="center"
-        width="160"
+        width="280"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
@@ -148,8 +161,31 @@
             >
               删除
             </el-button>
+            <!-- 查看 -->
+            <el-button
+              type="text"
+              icon="el-icon-view"
+              size="small"
+              @click="handleWatch(scope.row)"
+              v-if="scope.row.status === 1"
+            >查看</el-button>
             <!-- 编辑 -->
-            <!--<el-button type="text" icon="el-icon-edit" size="small">编辑</el-button>-->
+            <el-button
+              type="text"
+              icon="el-icon-edit"
+              size="small"
+              @click="handleEdit(scope.row)"
+              v-if="scope.row.status !== 1"
+            >编辑</el-button>
+            <!-- 操作记录 -->
+            <el-button
+              type="text"
+              icon="el-icon-collection"
+              size="small"
+              @click="handleHistory(scope.row)"
+            >
+              操作记录
+            </el-button>
           </div>
         </template>
       </el-table-column>
@@ -174,13 +210,43 @@
         </el-step>
       </el-steps>
     </el-dialog>
+    <!-- 详情 -->
+    <el-dialog
+      width="1200px"
+      :title="dialog.title"
+      top="20px"
+      :visible.sync="dialog.show"
+      v-if="dialog.show"
+    >
+      <new-detail
+        :id="dialog.id"
+        :visible.sync="dialog.show"
+        :disabled="dialog.disabled"
+        @refresh="refresh"
+      />
+    </el-dialog>
+    <!-- 查看历史版本 -->
+    <el-dialog
+      width="700px"
+      title="操作记录"
+      :visible.sync="history.show"
+      v-if="history.show"
+    >
+      <version-history :id="history.id" type="news"></version-history>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getScriptDetail, deleteNews, changeNews } from '@/api/content'
+import { getScriptDetail, deleteNews, changeNews, changeNewsStatus } from '@/api/content'
+import newDetail from '@/views/workbench/reviewNews/detail.vue'
+import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
 export default {
+  components: {
+    newDetail,
+    VersionHistory
+  },
   data() {
     return {
       statusOptions: [
@@ -193,11 +259,11 @@ export default {
           value: 0
         },
         {
-          label: '已审核',
+          label: '已上线',
           value: 1
         },
         {
-          label: '已拒绝',
+          label: '已下线',
           value: 2
         }
       ], // 状态集合
@@ -254,6 +320,16 @@ export default {
         active: '',
         lists: []
       }, // 审批进度
+      dialog: {
+        title: '查看详情',
+        show: false,
+        id: '',
+        disabled: false
+      },
+      history: {
+        show: false,
+        id: ''
+      }
     }
   },
   computed: {
@@ -281,7 +357,7 @@ export default {
             mediaId: res.id,
             mediaTitle: res.title,
             type: type && type.label || '',
-            status: status && status.label || '',
+            statusLabel: status && status.label || '',
             allow_comment: item.extra.allow_comment,
             allow_share: item.extra.allow_share
           }
@@ -351,6 +427,52 @@ export default {
           ...n,
           title: `${this.statusOptions.find(item => n.status === item.value)?.label}   ${n.time || ''}`,
         }))
+      }
+    },
+    /* 查看详情 */
+    handleWatch (row) {
+      const { id } = row;
+      this.dialog = {
+        title: '查看详情',
+        show: true,
+        id,
+        disabled: true
+      }
+    },
+    /* 编辑详情 */
+    handleEdit (row) {
+      const { id } = row;
+      this.dialog = {
+        title: '编辑详情',
+        show: true,
+        id,
+        disabled: false
+      }
+    },
+    /* 修改状态 */
+    changeStatus (row) {
+      const { id, status } = row;
+      changeNewsStatus({
+        ids: id,
+        status
+      }).then(() => {
+        this.$message({
+          message: '修改成功',
+          type: 'success'
+        })
+        this.getList()
+      })
+    },
+    /* 刷新数据 */
+    refresh () {
+      this.getList();
+    },
+    /* 查看历史记录 */
+    handleHistory (row) {
+      const { id } = row;
+      this.history = {
+        show: true,
+        id
       }
     },
   }

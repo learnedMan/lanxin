@@ -92,6 +92,7 @@
           v-show="count >= index + 1"
           ref="uploader"
           class="xl-cropper-uploader"
+          :disabled="disabled"
           :action="actionUrl"
           :show-file-list="false"
           name="image"
@@ -119,18 +120,21 @@
               <span
                 class="xl-cropper-icon"
                 @click="handleUpload(index)"
+                v-show="!disabled"
               >
                 <i class="el-icon-upload" />
               </span>
               <span
                 class="xl-cropper-icon"
                 @click="handleShear(list, index)"
+                v-show="!disabled"
               >
                 <i class="el-icon-scissors" />
               </span>
               <span
                 class="xl-cropper-icon"
                 @click="handleRemove(index)"
+                v-show="!disabled"
               >
                 <i class="el-icon-delete" />
               </span>
@@ -196,6 +200,11 @@ export default {
     value: {
       type: Array,
       default: () => []
+    },
+    /* 是否禁用 */
+    disabled: {
+      type: Boolean,
+      default: false
     },
     /* 显示个数 */
     count: {

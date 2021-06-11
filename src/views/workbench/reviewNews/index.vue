@@ -290,7 +290,6 @@
       <new-detail
         :id="detailDialog.id"
         :visible.sync="detailDialog.show"
-        :disabled="true"
         @refresh="refresh"
       />
     </el-dialog>
@@ -304,7 +303,6 @@
       <mobile-detail
         :id="detailDialog.id"
         :visible.sync="detailDialog.show"
-        :disabled="true"
         @refresh="refresh"
       />
     </el-dialog>
@@ -367,7 +365,7 @@ export default {
         keyword: '', // 标题
         channel_id: '', // 栏目
         startdate: '', // 提交时间
-        status: '', // 状态
+        status: 0, // 状态
         enddate: '',
         pageSize: 10,
         page: 1
@@ -584,7 +582,7 @@ export default {
       this.selection = []
       this.tableData = []
       const params = { ...this.queryParams }
-      getNews(this.removePropertyOfNull(params)).then(res => {
+      getNews(this.removePropertyOfNullFor0(params)).then(res => {
         let statusLabel
         this.tableData = (res.data || []).map(n => {
           statusLabel = this.statusOptions.find(item => item.value === n.status)?.label
