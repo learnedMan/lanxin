@@ -86,7 +86,7 @@
           prop="feedbackNickname"
         >
           <el-input
-            v-model="queryParams.feedback_nickname"
+            v-model="queryParams.feedbackNickname"
             placeholder="请输入姓名"
             clearable
             style="width: 200px"
@@ -98,7 +98,7 @@
           prop="feedbackMobile"
         >
           <el-input
-            v-model="queryParams.feedback_mobile"
+            v-model="queryParams.feedbackMobile"
             placeholder="请输入联系方式"
             clearable
             style="width: 200px"
@@ -110,7 +110,7 @@
           prop="feedbackContent"
         >
           <el-input
-            v-model="queryParams.feedback_content"
+            v-model="queryParams.feedbackContent"
             placeholder="请输入关键字"
             clearable
             style="width: 200px"
@@ -122,7 +122,7 @@
           prop="type"
         >
           <el-select
-            v-model="queryParams.feedback_type"
+            v-model="queryParams.feedbackType"
             size="small"
             placeholder="请选择类型"
             clearable
@@ -140,7 +140,7 @@
           prop="replyStatus"
         >
           <el-select
-            v-model="queryParams.reply_status"
+            v-model="queryParams.replyStatus"
             size="small"
             placeholder="请选择回复状态"
             clearable
@@ -158,7 +158,7 @@
           prop="handleStatus"
         >
           <el-select
-            v-model="queryParams.handle_status"
+            v-model="queryParams.handleStatus"
             size="small"
             placeholder="请选择回复状态"
             clearable
@@ -277,6 +277,7 @@
       <el-table-column
         label="操作"
         align="center"
+        width="120px"
       >
         <template slot-scope="scope">
           <!-- 查看 -->
@@ -408,16 +409,16 @@ export default {
     return {
       productLists: [],
       queryParams: {
-        feedback_nickname: '', // 反馈人
-        feedback_mobile: '', // 联系人
-        feedback_content: '', // 反馈内容
-        feedback_type: '', // 反馈类型
-        reply_status: '', // 回复状态
-        handle_status: '', // 处理状态
-        begin_reply_time: '', // 回复开始时间
-        end_reply_time: '', // 回复结束时间
-        begin_feedback_time: '', // 反馈开始时间
-        end_feedback_time: '', // 反馈结束时间
+        feedbackNickname: '', // 反馈人
+        feedbackMobile: '', // 联系人
+        feedbackContent: '', // 反馈内容
+        feedbackType: '', // 反馈类型
+        replyStatus: '', // 回复状态
+        handleStatus: '', // 处理状态
+        beginReplyTime: '', // 回复开始时间
+        endReplyTime: '', // 回复结束时间
+        beginFeedbackTime: '', // 反馈开始时间
+        endFeedbackTime: '', // 反馈结束时间
         sourceId: '', // 来源id
         page: 1,
         limit: 10
@@ -428,6 +429,38 @@ export default {
         {
           label: '全部',
           value: ''
+        },
+        {
+          label: '程序bug',
+          value: '1'
+        },
+        {
+          label: '功能建议',
+          value: '2'
+        },
+        {
+          label: '内容意见',
+          value: '3'
+        },
+        {
+          label: '广播问题',
+          value: '4'
+        },
+        {
+          label: '钱包问题',
+          value: '5'
+        },
+        {
+          label: '跟帖相关',
+          value: '6'
+        },
+        {
+          label: '活动相关',
+          value: '7'
+        },
+        {
+          label: '其他',
+          value: '8'
         }
       ], // 反馈类型列表
       replyOptions: [
@@ -536,10 +569,10 @@ export default {
       this.feedbackDate = ''
       this.replyDate = ''
       Object.assign(this.queryParams, {
-        begin_feedback_time: '',
-        end_feedback_time: '',
-        begin_reply_time: '',
-        end_reply_time: '',
+        beginFeedbackTime: '',
+        endFeedbackTime: '',
+        beginReplyTime: '',
+        endReplyTime: '',
         page: 1
       })
       this.resetForm('queryForm')
@@ -552,11 +585,11 @@ export default {
     handleDateChange(val, key) {
       const arr = val || ['', '']
       if (key === 'feedbackDate') {
-        this.queryParams.begin_feedback_time = arr[0]
-        this.queryParams.end_feedback_time = arr[1]
+        this.queryParams.beginFeedbackTime = arr[0]
+        this.queryParams.endFeedbackTime = arr[1]
       } else {
-        this.queryParams.begin_reply_time = arr[0]
-        this.queryParams.end_reply_time = arr[1]
+        this.queryParams.beginReplyTime = arr[0]
+        this.queryParams.endReplyTime = arr[1]
       }
     },
     /* 查看详情 */
@@ -616,7 +649,7 @@ export default {
           replyStatusLabel: this.replyOptions.find(n => n.value === item.replyStatus)?.label,
           handleStatusLabel: this.handleOption.find(n => n.value === item.handleStatus)?.label
         }))
-        this.total = res.data?.datas?.total || 0
+        this.total = res.data?.count || 0
       }).finally(() => {
         this.loading = false
       })

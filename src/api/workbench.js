@@ -61,11 +61,11 @@ export function getFeedback(data) {
 }
 
 /* 反馈详情 */
-export function getFeedbackDetail(data) {
+export function getFeedbackDetail(params) {
   return request2({
     url: '/internal/feedback/info',
-    method: 'post',
-    data
+    method: 'get',
+    params
   })
 }
 
@@ -90,11 +90,11 @@ export function getReport(data) {
 }
 
 /* 举报详情 */
-export function getReportDetail(data) {
+export function getReportDetail(params) {
   return request2({
     url: '/internal/report/info',
-    method: 'post',
-    data
+    method: 'get',
+    params
   })
 }
 

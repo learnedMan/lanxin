@@ -396,11 +396,18 @@ export default {
         extra: {
           [key]: row[key]
         }
-      }).then(() => {
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
+      }).then(({ message, statu_code }) => {
+        if(statu_code == 200) {
+          this.$message({
+            message,
+            type: 'success'
+          })
+        }else {
+          this.$message({
+            message,
+            type: 'error'
+          })
+        }
         this.getList()
       })
     },

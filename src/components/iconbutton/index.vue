@@ -34,6 +34,9 @@ import ztwglb from '@/assets/iconbox/专题文稿列表.png'
 import appbbgl from '@/assets/iconbox/app版本管理.png'
 import ys from '@/assets/iconbox/样式.png'
 import tc from '@/assets/iconbox/套餐.png'
+import xx from '@/assets/iconbox/下线.png'
+import shjd from '@/assets/iconbox/审核进度.png'
+import czjl from '@/assets/iconbox/操作记录.png'
 export default {
   props: {
     label: {
@@ -47,6 +50,9 @@ export default {
   },
   data() {
     return {
+      xx,
+      shjd,
+      czjl,
       ckxq:ckxq,
       ckjson:ckjson,
       dbjmd:dbjmd,
