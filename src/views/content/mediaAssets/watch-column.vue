@@ -52,12 +52,12 @@
       <el-table-column
         label="新闻ID"
         align="center"
-        prop="mediaId"
+        prop="id"
       />
       <el-table-column
         label="新闻名称"
         align="center"
-        prop="mediaTitle"
+        prop="title"
         :show-overflow-tooltip="true"
       />
       <el-table-column
@@ -68,13 +68,13 @@
       <el-table-column
         label="栏目ID"
         align="center"
-        prop="id"
+        prop="channel_id"
         :show-overflow-tooltip="true"
       />
       <el-table-column
         label="栏目名称"
         align="center"
-        prop="title"
+        prop="channel_name"
         :show-overflow-tooltip="true"
       />
       <el-table-column
@@ -139,53 +139,42 @@
       <el-table-column
         label="操作"
         align="center"
-        width="280"
+        width="380"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
             <!-- 审批进度 -->
-            <el-button
-              type="text"
-              icon="el-icon-set-up"
-              size="small"
-              @click="watchProgress(scope.row)"
-            >
-              审批进度
-            </el-button>
+            <Iconbutton
+              icontype="shjd"
+              label="审核进度"
+              @fatherMethod="watchProgress(scope.row)"
+            ></Iconbutton>
             <!-- 删除 -->
-            <el-button
-              type="text"
-              icon="el-icon-delete"
-              size="small"
-              @click="handleListDelete(scope.row)"
-            >
-              删除
-            </el-button>
+            <Iconbutton
+              icontype="sc"
+              label="删除"
+              @fatherMethod="handleListDelete(scope.row)"
+            ></Iconbutton>
             <!-- 查看 -->
-            <el-button
-              type="text"
-              icon="el-icon-view"
-              size="small"
-              @click="handleWatch(scope.row)"
+            <Iconbutton
               v-if="scope.row.status === 1"
-            >查看</el-button>
+              icontype="ckxq"
+              label="查看详情"
+              @fatherMethod="handleWatch(scope.row)"
+            ></Iconbutton>
             <!-- 编辑 -->
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              size="small"
-              @click="handleEdit(scope.row)"
+            <Iconbutton
               v-if="scope.row.status !== 1"
-            >编辑</el-button>
+              icontype="xg"
+              label="编辑"
+              @fatherMethod="handleEdit(scope.row)"
+            ></Iconbutton>
             <!-- 操作记录 -->
-            <el-button
-              type="text"
-              icon="el-icon-collection"
-              size="small"
-              @click="handleHistory(scope.row)"
-            >
-              操作记录
-            </el-button>
+            <Iconbutton
+              icontype="czjl"
+              label="操作记录"
+              @fatherMethod="handleHistory(scope.row)"
+            ></Iconbutton>
           </div>
         </template>
       </el-table-column>
@@ -354,8 +343,7 @@ export default {
           const status = this.statusOptions.find(n => item.status === n.value)
           return {
             ...item,
-            mediaId: res.id,
-            mediaTitle: res.title,
+            channel_name: (res.channel || []).find(n => n.id === item.channel_id)?.name || '',
             type: type && type.label || '',
             statusLabel: status && status.label || '',
             allow_comment: item.extra.allow_comment,

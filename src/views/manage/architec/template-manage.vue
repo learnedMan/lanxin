@@ -185,23 +185,17 @@
             <template slot-scope="scope">
               <div class="verify-table-action">
                 <!-- 编辑 -->
-                <el-button
-                  type="text"
-                  icon="el-icon-edit"
-                  size="small"
-                  @click="handleEditList(scope.row)"
-                >
-                  编辑
-                </el-button>
+                <Iconbutton
+                  icontype="xg"
+                  label="编辑"
+                  @fatherMethod="handleEditList(scope.row)"
+                ></Iconbutton>
                 <!-- 删除 -->
-                <el-button
-                  type="text"
-                  icon="el-icon-delete"
-                  size="small"
-                  @click="handleDeleteList(scope.row)"
-                >
-                  删除
-                </el-button>
+                <Iconbutton
+                  icontype="sc"
+                  label="删除"
+                  @fatherMethod="handleDeleteList(scope.row)"
+                ></Iconbutton>
               </div>
             </template>
           </el-table-column>
@@ -309,6 +303,17 @@
             />
           </el-form-item>
           <el-form-item
+            label="路径:"
+            prop="path"
+          >
+            <el-input
+              v-model.trim="listFrom.path"
+              placeholder="请输入路径(不填按年月日来生成路径)"
+              clearable
+              style="width: 240px"
+            />
+          </el-form-item>
+          <el-form-item
             label="文件:"
             prop="upload"
             :rules="dialog.id? [] : { required: true, message: '文件不能为空', trigger: 'change' }"
@@ -357,6 +362,15 @@
     export default {
       name: 'Template-manage',
       data() {
+        const pathValidator = (rule, value, callback) => {
+          if(value.trim() === '') {
+            callback()
+          }else if(!/(\/[\w\/]*)?\w+/.test(value)) {
+            callback(new Error('请输入正确的路径'))
+          }else {
+            callback()
+          }
+        }
         return {
           channelsList: [], // 栏目
           props: Object.freeze({
@@ -410,12 +424,14 @@
           },
           listFrom: {
             domain: '',
+            path: '',
             name: '',
             upload: ''
           },
           listRule: {
             domain: { required: true, message: '请选择域名', trigger: 'change' },
             name: { required: true, message: '请添加名称', trigger: 'blur' },
+            path: { validator: pathValidator, trigger: 'blur' }
           }
         }
       },
@@ -552,11 +568,12 @@
         },
         /* 编辑列表 */
         handleEditList (row) {
-          const { id, name, domain } = row;
+          const { id, name, domain, path } = row;
           this.resetForm('dialogForm');
           this.listFrom = {
             name,
             domain,
+            path,
             upload: ''
           }
           this.dialog = {
@@ -583,6 +600,7 @@
               const formData = new FormData();
               formData.append('name', params.name);
               formData.append('domain', params.domain);
+              formData.append('domain', params.path);
               if(params.upload) formData.append('upload', params.upload);
               let promise;
               if(id) {

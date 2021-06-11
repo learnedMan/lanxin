@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ckqx from '@/assets/iconbox/查看详情.png'
+import ckxq from '@/assets/iconbox/查看详情.png'
 import ckjson from '@/assets/iconbox/查看json.png'
 import dbjmd from '@/assets/iconbox/点播节目单.png'
 import fb from '@/assets/iconbox/发布.png'
@@ -47,7 +47,7 @@ export default {
   },
   data() {
     return {
-      ckqx:ckqx,
+      ckxq:ckxq,
       ckjson:ckjson,
       dbjmd:dbjmd,
       fb:fb,
@@ -78,7 +78,7 @@ export default {
   },
   computed: {
     imgsrc(){
-      return this[this.icontype] 
+      return this[this.icontype]
     }
   },
   methods: {

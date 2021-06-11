@@ -128,35 +128,26 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="240">
+        <el-table-column label="操作" align="center" width="260">
           <template slot-scope="scope">
             <!-- 查看 -->
-            <el-button
-              type="text"
-              icon="el-icon-view"
-              size="small"
-              @click="watchList(scope.row)"
-            >
-              查看广告列表
-            </el-button>
+            <Iconbutton
+              icontype="ckxq"
+              label="查看广告列表"
+              @fatherMethod="watchList(scope.row)"
+            ></Iconbutton>
             <!-- 编辑 -->
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              size="small"
-              @click="handleEdit(scope.row)"
-            >
-              编辑
-            </el-button>
+            <Iconbutton
+              icontype="xg"
+              label="编辑"
+              @fatherMethod="handleEdit(scope.row)"
+            ></Iconbutton>
             <!-- 删除 -->
-            <el-button
-              type="text"
-              icon="el-icon-delete"
-              size="small"
-              @click="handleListDelete(scope.row)"
-            >
-              删除
-            </el-button>
+            <Iconbutton
+              icontype="sc"
+              label="删除"
+              @fatherMethod="handleListDelete(scope.row)"
+            ></Iconbutton>
           </template>
         </el-table-column>
       </el-table>

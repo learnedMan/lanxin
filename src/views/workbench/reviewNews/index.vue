@@ -166,48 +166,36 @@
       <el-table-column
         label="操作"
         align="center"
-        width="280"
+        width="400"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
             <!-- 审批进度 -->
-            <el-button
-              type="text"
-              icon="el-icon-set-up"
-              size="small"
-              @click="watchProgress(scope.row)"
-            >
-              审批进度
-            </el-button>
+            <Iconbutton
+              icontype="shjd"
+              label="审批进度"
+              @fatherMethod="watchProgress(scope.row)"
+            ></Iconbutton>
             <!-- 查看 -->
-            <el-button
-              type="text"
-              icon="el-icon-view"
-              size="small"
-              @click="goLink(scope.row)"
-            >
-              查看
-            </el-button>
+            <Iconbutton
+              icontype="ckxq"
+              label="查看详情"
+              @fatherMethod="goLink(scope.row)"
+            ></Iconbutton>
             <!-- 通过 -->
-            <el-button
+            <Iconbutton
               v-if="scope.row.status === 0"
-              type="text"
-              icon="el-icon-check"
-              size="small"
-              @click="handleThrough(scope.row)"
-            >
-              通过
-            </el-button>
+              icontype="shtg"
+              label="审核通过"
+              @fatherMethod="handleThrough(scope.row)"
+            ></Iconbutton>
             <!-- 拒绝 -->
-            <el-button
+            <Iconbutton
               v-if="scope.row.status === 0"
-              type="text"
-              icon="el-icon-close"
-              size="small"
-              @click="handleReject(scope.row)"
-            >
-              拒绝
-            </el-button>
+              icontype="shjj"
+              label="审核拒绝"
+              @fatherMethod="handleReject(scope.row)"
+            ></Iconbutton>
           </div>
         </template>
       </el-table-column>

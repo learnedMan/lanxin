@@ -140,13 +140,11 @@
         />
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <!-- 审批通过 -->
-            <el-button
-              type="text"
-              icon="el-icon-circle-check"
-              size="small"
-              @click="handleRestore(scope.row)"
-            >恢复</el-button>
+            <Iconbutton
+              icontype="hf"
+              label="恢复"
+              @fatherMethod="handleRestore(scope.row)"
+            ></Iconbutton>
           </template>
         </el-table-column>
       </el-table>
@@ -218,11 +216,11 @@
         getProductList () {
           return getproduct({}).then(res => {
             const data = res.data || []
-            this.productLists = data.map(n => ({
+            this.productLists = data.filter(n => n.source_id).map(n => ({
               label: n.name,
-              value: n.source_id
+              value: n.source_id.toString()
             }));
-            this.queryParams.sourceId = data?.[0]?.source_id;
+            this.queryParams.sourceId = data?.[0]?.source_id.toString();
           });
         },
         /* 修改时间 */

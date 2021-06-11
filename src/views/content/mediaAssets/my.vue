@@ -165,73 +165,58 @@
       <el-table-column
         label="操作"
         align="center"
-        width="440"
+        width="570"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
             <!-- 查看 -->
-            <el-button
-              type="text"
-              icon="el-icon-view"
-              size="small"
-              @click="handleWatch(scope.row)"
-            >
-              查看
-            </el-button>
+            <Iconbutton
+              icontype="ckxq"
+              label="查看详情"
+              @fatherMethod="handleWatch(scope.row)"
+            ></Iconbutton>
             <!-- 编辑 -->
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              size="small"
-              @click="handleEdit(scope.row)"
-            >
-              编辑
-            </el-button>
+            <Iconbutton
+              icontype="xg"
+              label="编辑"
+              @fatherMethod="handleEdit(scope.row)"
+            ></Iconbutton>
             <!-- 一键下线 -->
-            <el-button
-              type="text"
-              icon="el-icon-bottom"
-              size="small"
-              @click="handleOffline(scope.row)"
-            >
-              一键下线
-            </el-button>
+            <Iconbutton
+              icontype="xx"
+              label="下线"
+              @fatherMethod="handleOffline(scope.row)"
+            ></Iconbutton>
             <!-- 删除 -->
-            <el-button
-              type="text"
-              icon="el-icon-delete"
-              size="small"
-              @click="handleListDelete(scope.row)"
-            >
-              删除
-            </el-button>
+            <Iconbutton
+              icontype="sc"
+              label="删除"
+              @fatherMethod="handleListDelete(scope.row)"
+            ></Iconbutton>
             <!-- 复制 -->
-            <el-button
-              type="text"
-              icon="el-icon-document-copy"
-              size="small"
-              @click="handleListCopy(scope.row)"
-            >
-              复制
-            </el-button>
+            <Iconbutton
+              icontype="fz"
+              label="复制"
+              @fatherMethod="handleListCopy(scope.row)"
+            ></Iconbutton>
             <!-- 发布 -->
-            <el-button
-              type="text"
-              icon="el-icon-document-copy"
-              size="small"
-              @click="handleDialogShow('publish', scope.row)"
-            >
-              发布
-            </el-button>
+            <Iconbutton
+              icontype="fb"
+              label="发布"
+              @fatherMethod="handleDialogShow('publish', scope.row)"
+            ></Iconbutton>
             <!-- 预览 -->
-            <el-button
-              type="text"
-              icon="el-icon-picture"
-              size="small"
-              @click="handlePreview(scope.row)"
-            >
-              预览
-            </el-button>
+            <Iconbutton
+              icontype="yl"
+              label="预览"
+              @fatherMethod="handlePreview(scope.row)"
+            ></Iconbutton>
+            <!-- 操作记录 -->
+            <Iconbutton
+              icontype="czjl"
+              label="操作记录"
+              @fatherMethod="handleHistory(scope.row)"
+            ></Iconbutton>
           </div>
         </template>
       </el-table-column>
@@ -283,14 +268,27 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 查看历史版本 -->
+    <el-dialog
+      width="700px"
+      title="操作记录"
+      :visible.sync="history.show"
+      v-if="history.show"
+    >
+      <version-history :id="history.id" type="script"></version-history>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript, offlineNews } from '@/api/content'
 import { getChannels } from '@/api/manage'
+import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
 export default {
+  components: {
+    VersionHistory
+  },
   data() {
     return {
       queryParams: {
@@ -376,7 +374,11 @@ export default {
         multiple: true // 多选
       }, // 级联选择器配置
       channelsList: [], // 栏目列表
-      selection: [] // 表格选中项
+      selection: [], // 表格选中项
+      history: {
+        show: false,
+        id: ''
+      }
     }
   },
   computed: {
@@ -513,6 +515,14 @@ export default {
     handlePreview (row) {
       const { id } = row;
       this.$router.push({ name: 'Preview', query: { id, type: 'scripts' }})
+    },
+    /* 查看历史记录 */
+    handleHistory (row) {
+      const { id } = row;
+      this.history = {
+        show: true,
+        id
+      }
     },
     /* 一键下线 */
     handleOffline (row) {

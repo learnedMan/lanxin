@@ -107,28 +107,22 @@
       <el-table-column
         label="操作"
         align="center"
-        width="280"
+        width="160"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
             <!-- 编辑 -->
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              size="small"
-              @click="handleEdit(scope.row)"
-            >
-              编辑
-            </el-button>
+            <Iconbutton
+              icontype="xg"
+              label="编辑"
+              @fatherMethod="handleEdit(scope.row)"
+            ></Iconbutton>
             <!-- 删除 -->
-            <el-button
-              type="text"
-              icon="el-icon-delete"
-              size="small"
-              @click="handleListDelete(scope.row)"
-            >
-              删除
-            </el-button>
+            <Iconbutton
+              icontype="sc"
+              label="删除"
+              @fatherMethod="handleListDelete(scope.row)"
+            ></Iconbutton>
           </div>
         </template>
       </el-table-column>

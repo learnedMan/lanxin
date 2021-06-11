@@ -222,64 +222,46 @@
         <el-table-column
           label="操作"
           align="center"
-          width="390"
+          width="440"
         >
           <template slot-scope="scope">
             <div class="verify-table-action">
               <!-- 置顶和取消置顶 -->
-              <el-button
-                type="text"
-                :icon="scope.row.top === 1? 'el-icon-bottom' : 'el-icon-top'"
-                size="small"
-                @click="handlePlaced(scope.row)"
-              >
-                {{ scope.row.top === 1? '取消置顶' : '置顶' }}
-              </el-button>
+              <Iconbutton
+                :icontype="scope.row.top === 1? 'qxzd' : 'zd'"
+                :label="scope.row.top === 1? '取消置顶' : '置顶'"
+                @fatherMethod="handlePlaced(scope.row)"
+              ></Iconbutton>
               <!-- 编辑 -->
-              <el-button
-                type="text"
-                icon="el-icon-edit"
-                size="small"
-                @click="handleEdit(scope.row)"
-              >
-                编辑
-              </el-button>
+              <Iconbutton
+                icontype="xg"
+                label="编辑"
+                @fatherMethod="handleEdit(scope.row)"
+              ></Iconbutton>
               <!-- 删除 -->
-              <el-button
-                type="text"
-                icon="el-icon-delete"
-                size="small"
-                @click="handleListDelete(scope.row)"
-              >
-                删除
-              </el-button>
+              <Iconbutton
+                icontype="sc"
+                label="删除"
+                @fatherMethod="handleListDelete(scope.row)"
+              ></Iconbutton>
               <!-- 预览 -->
-              <el-button
-                type="text"
-                icon="el-icon-picture"
-                size="small"
-                @click="handlePreview(scope.row)"
-              >
-                预览
-              </el-button>
+              <Iconbutton
+                icontype="yl"
+                label="预览"
+                @fatherMethod="handlePreview(scope.row)"
+              ></Iconbutton>
               <!-- 推送 -->
-              <el-button
-                type="text"
-                icon="el-icon-document"
-                size="small"
-                @click="handlePush(scope.row)"
-              >
-                推送
-              </el-button>
+              <Iconbutton
+                icontype="ts"
+                label="推送"
+                @fatherMethod="handlePush(scope.row)"
+              ></Iconbutton>
               <!-- 操作记录 -->
-              <el-button
-                type="text"
-                icon="el-icon-collection"
-                size="small"
-                @click="handleHistory(scope.row)"
-              >
-                操作记录
-              </el-button>
+              <Iconbutton
+                icontype="czjl"
+                label="操作记录"
+                @fatherMethod="handleHistory(scope.row)"
+              ></Iconbutton>
             </div>
           </template>
         </el-table-column>

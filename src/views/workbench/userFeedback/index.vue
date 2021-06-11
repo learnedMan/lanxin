@@ -280,14 +280,11 @@
       >
         <template slot-scope="scope">
           <!-- 查看 -->
-          <el-button
-            type="text"
-            icon="el-icon-view"
-            size="small"
-            @click="handleWatch(scope.row)"
-          >
-            查看
-          </el-button>
+          <Iconbutton
+            icontype="ckxq"
+            label="查看详情"
+            @fatherMethod="handleWatch(scope.row)"
+          ></Iconbutton>
         </template>
       </el-table-column>
     </el-table>

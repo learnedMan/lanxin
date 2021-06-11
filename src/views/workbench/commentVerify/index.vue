@@ -47,17 +47,31 @@
           {{ scope.row[head.prop] }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="120">
+      <el-table-column label="操作" align="center" width="360">
         <template slot-scope="scope">
           <div class="verify-table-action">
             <!-- 禁言-->
-            <el-button type="text" :icon="scope.row.noTalkUser? 'el-icon-microphone' : 'el-icon-turn-off-microphone'" size="small" @click="handleMsgAction(scope.row)">{{ scope.row.noTalkUser? '取消禁言' : '禁言' }}</el-button>
+            <Iconbutton
+              :icontype="scope.row.noTalkUser? 'hfjy' : 'jy'"
+              :label="scope.row.noTalkUser? '取消禁言' : '禁言'"
+              @fatherMethod="handleMsgAction(scope.row)"
+            ></Iconbutton>
             <!-- 回复 -->
             <!--<el-button type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('回复', scope.row)">回复</el-button>-->
             <!-- 审批通过 -->
-            <el-button type="text" icon="el-icon-circle-check" size="small" @click="handleAgreeOrRefused(scope.row, 'approve')" v-if="scope.row.status != 1">通过</el-button>
+            <Iconbutton
+              icontype="shtg"
+              label="审核通过"
+              @fatherMethod="handleAgreeOrRefused(scope.row, 'approve')"
+              v-if="scope.row.status != 1"
+            ></Iconbutton>
             <!-- 拒绝 -->
-            <el-button type="text" icon="el-icon-circle-close" size="small" @click="handleAgreeOrRefused(scope.row, 'reject')" v-if="scope.row.status != 2">拒绝</el-button>
+            <Iconbutton
+              icontype="shjj"
+              label="审核拒绝"
+              @fatherMethod="handleAgreeOrRefused(scope.row, 'reject')"
+              v-if="scope.row.status != 2"
+            ></Iconbutton>
           </div>
         </template>
       </el-table-column>

@@ -175,23 +175,17 @@
         >
           <template slot-scope="scope">
             <!-- 编辑 -->
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              size="small"
-              @click="handleEdit(scope.row)"
-            >
-              编辑
-            </el-button>
+            <Iconbutton
+              icontype="xg"
+              label="编辑"
+              @fatherMethod="handleEdit(scope.row)"
+            ></Iconbutton>
             <!-- 拉黑 -->
-            <el-button
-              type="text"
-              icon="el-icon-delete"
-              size="small"
-              @click="handleDelete(scope.row)"
-            >
-              拉黑
-            </el-button>
+            <Iconbutton
+              icontype="jy"
+              label="拉黑"
+              @fatherMethod="handleDelete(scope.row)"
+            ></Iconbutton>
           </template>
         </el-table-column>
       </el-table>
