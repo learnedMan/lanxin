@@ -13,7 +13,6 @@
       >
         <el-form-item
           label="所属产品:"
-          prop="sourceId"
         >
           <el-select
             v-model="queryParams.sourceId"
@@ -218,9 +217,9 @@
             const data = res.data || []
             this.productLists = data.filter(n => n.source_id).map(n => ({
               label: n.name,
-              value: n.source_id.toString()
+              value: n.source_id
             }));
-            this.queryParams.sourceId = data?.[0]?.source_id.toString();
+            this.queryParams.sourceId = data?.[0]?.source_id;
           });
         },
         /* 修改时间 */

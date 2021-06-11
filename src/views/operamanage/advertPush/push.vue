@@ -12,7 +12,6 @@
       >
         <el-form-item
           label="所属产品:"
-          prop="sourceId"
         >
           <el-select
             v-model="queryParams.product_id"
@@ -435,8 +434,7 @@
         handleReset () {
           this.resetForm('queryForm');
           Object.assign(this.queryParams, {
-            page: 1,
-            product_id: this.productLists?.[0]?.id
+            page: 1
           })
         },
         /* 搜索 */

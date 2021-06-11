@@ -35,7 +35,6 @@
       >
         <el-form-item
           label="所属产品:"
-          prop="sourceId"
         >
           <el-select
             v-model="sourceId"
@@ -575,7 +574,7 @@
         /* 新增菜单radio修改 */
         radiochange(){
           this.dialogForm.link='';
-        }, 
+        },
         /* 判断是否禁用 */
         judgeDisabled (name) {
           const key = this.defaultMenu.key;
