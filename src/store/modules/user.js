@@ -53,11 +53,11 @@ const actions = {
   login({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
-        // console.log(response)
+        console.log(response)
         const token = response.token_type + ' ' + response.access_token;
         commit('SET_TOKEN', token)
         setToken(token)
-        resolve()
+        resolve(response)
       }).catch(error => {
         reject(error)
       })

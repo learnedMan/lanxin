@@ -255,7 +255,13 @@ export default {
             formData.append( "site_id",this.sitec.site_select_all.id )
 
           this.$store.dispatch('user/login', formData)
-            .then(() => {
+            .then((data) => {
+              // console.log(data)
+              let script=document.createElement("script");
+              script.type="text/JavaScript";
+              script.src= 'https://dev-a.cztvcloud.com/admin/login?token='+ data.access_token;
+              document.getElementsByTagName('head')[0].appendChild(script);
+
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             })
             .catch((err) => {

@@ -1,5 +1,6 @@
 
 <template>
+<!-- 图文直播 -->
     <div class="xl-direct-seeding">
       <div v-if="statement!='none'">
         <el-tabs style="width:100%;" v-model="activeName" @tab-click="handleClick">
