@@ -465,6 +465,7 @@ export default {
     resetSearch() {
       const form = this.$refs.search.$refs.ruleForm
       form.resetFields();
+      this.search.sourceId = this.searchLists[0].selectOption[0]?.value;
     },
     /*
     * 选择项发生变化时

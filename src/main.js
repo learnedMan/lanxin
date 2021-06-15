@@ -23,7 +23,7 @@ import * as filters from './filters' // global filters
 
 import { resetForm, removePropertyOfNull, removePropertyOfNullFor0, parseTime } from '@/utils/costum'
 Object.defineProperties(Vue.prototype, {
-  resetForm: { value: resetForm },
+ /* resetForm: { value: resetForm },*/
   removePropertyOfNull: { value: removePropertyOfNull },
   removePropertyOfNullFor0: { value: removePropertyOfNullFor0 },
   parseTime: { value: parseTime },
@@ -48,6 +48,7 @@ if (process.env.NODE_ENV === 'production') {
 Vue.prototype.msgSuccess = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'success' })
 }
+Vue.prototype.resetForm = resetForm;
 
 Vue.prototype.msgError = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'error' })

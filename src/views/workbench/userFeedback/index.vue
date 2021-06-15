@@ -66,7 +66,6 @@
       >
         <el-form-item
           label="所属产品:"
-          prop="sourceId"
         >
           <el-select
             v-model="queryParams.sourceId"
@@ -117,7 +116,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
+        <!--<el-form-item
           label="反馈类型:"
           prop="type"
         >
@@ -134,7 +133,7 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item
           label="回复状态:"
           prop="replyStatus"

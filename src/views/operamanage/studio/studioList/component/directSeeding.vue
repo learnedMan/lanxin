@@ -119,7 +119,7 @@
             } catch (error) {
               // console.log('滚动失败')
             }
-          },  
+          },
           // 获取直播间发言列表
           async getbroadcastStatement(){
             var data = await this.getbroadcasts();
@@ -149,7 +149,7 @@
                 resolve(this.streamlist)
               })
             })
-            
+
           },
           //切换机位
           handleClick(tab, event) {

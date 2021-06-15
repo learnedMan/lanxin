@@ -11,7 +11,6 @@
       >
         <el-form-item
           label="所属产品:"
-          prop="sourceId"
         >
           <el-select
             v-model="queryParams.sourceId"

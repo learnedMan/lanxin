@@ -13,7 +13,6 @@
       >
         <el-form-item
           label="所属产品:"
-          prop="sourceId"
         >
           <el-select
             v-model="queryParams.sourceId"
@@ -414,7 +413,6 @@
             page: 1
           })
           this.resetForm('queryForm');
-          this.queryParams.sourceId = this.productLists[0]?.value;
         },
         /* 搜索 */
         handleQuery () {

@@ -66,7 +66,6 @@
       >
         <el-form-item
           label="所属产品:"
-          prop="sourceId"
         >
           <el-select
             v-model="queryParams.sourceId"
@@ -117,7 +116,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
+        <!--<el-form-item
           label="举报类型:"
           prop="reportType"
         >
@@ -134,7 +133,7 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item
           label="举报对象类型:"
           prop="type"
@@ -300,6 +299,7 @@
       <el-table-column
         label="操作"
         align="center"
+        width="120"
       >
         <template slot-scope="scope">
           <!-- 查看 -->
@@ -491,7 +491,43 @@ export default {
         {
           label: '全部',
           value: ''
-        }
+        },
+        {
+          label: '低俗色情',
+          value: '1'
+        },
+        {
+          label: '违法违政',
+          value: '2'
+        },
+        {
+          label: '侵权',
+          value: '3'
+        },
+        {
+          label: '标题党',
+          value: '4'
+        },
+        {
+          label: '与事实不符',
+          value: '5'
+        },
+        {
+          label: '内容灌水',
+          value: '6'
+        },
+        {
+          label: '排版格式有误',
+          value: '7'
+        },
+        {
+          label: '有错别字',
+          value: '8'
+        },
+        {
+          label: '其他',
+          value: '9'
+        },
       ], // 举报类型列表
       replyOptions: [
         {
@@ -600,7 +636,7 @@ export default {
       getReport(this.removePropertyOfNullFor0(params)).then(res => {
         this.tableData = (res.data || []).map(item => ({
           ...item,
-          reportTypeLabel: item.reportType.split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
+          reportTypeLabel: item.reportType.replace(/[\[|\]]/g, '').split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
           replyStatusLabel: this.replyOptions.find(n => n.value === item.replyStatus)?.label,
           handleStatusLabel: this.handleOption.find(n => n.value === item.handleStatus)?.label,
           mediaTypeLabel: this.mediaOptions.find(n => n.value === item.mediaId)?.label
@@ -625,7 +661,7 @@ export default {
         const data = res.data
         this.baseInfo = {
           ...(data || {}),
-          reportTypeLabel: data.reportType.split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
+          reportTypeLabel: data.reportType.replace(/[\[|\]]/g, '').split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
           handleStatusLabel: this.handleOption.find(n => n.value === data.handleStatus)?.label,
           mediaTypeLabel: this.tableData.find(n => n.id === id)?.mediaTypeLabel || ''
         }
