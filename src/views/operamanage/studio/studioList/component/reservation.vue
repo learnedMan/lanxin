@@ -46,7 +46,7 @@
             size="small"
           >
             <el-form-item label="机位状态">
-              <el-switch v-model="item.extra.is_valid" :active-value="1"></el-switch>
+              <el-switch v-model="item.extra.is_valid" active-value="1" inactive-value="0"></el-switch>
             </el-form-item>
             <el-form-item
               label="机位名称"
@@ -200,7 +200,7 @@
                 name: value,
                 oldName: value,
                 cover: '',
-                is_valid: 0,
+                is_valid: '0',
                 stream_url: '',
                 guide_video: '',
                 allow_replay: '0',
