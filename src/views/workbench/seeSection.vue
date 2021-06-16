@@ -683,7 +683,7 @@ export default {
       * 获取栏目列表
       * */
     getChannels() {
-      return getChannels({ status: 0 }).then(res => {
+      return getChannels({ status: 1 }).then(res => {
         this.channelsList = res;
       })
     },
