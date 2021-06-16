@@ -290,7 +290,8 @@
       name: 'Convention',
       data() {
         const checkUpperLineEveryday = (rule, value, callback) => {
-          if (!value) {
+          console.log(value)
+          if (value == null || value === '') {
             return callback(new Error('每日最高限额不能为空'));
           }
           if (!Number.isInteger(value) || value < 0) {
@@ -300,7 +301,7 @@
           }
         };
         const checkUpperLine = (rule, value, callback) => {
-          if (!value) {
+          if (value == null || value === '') {
             return callback(new Error('最高限额不能为空'));
           }
           if (!Number.isInteger(value) || value < 0) {

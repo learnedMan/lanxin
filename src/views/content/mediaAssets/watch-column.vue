@@ -360,7 +360,8 @@ export default {
     handleReturn() {
       const fullPath = this.$route.fullPath
       const view = this.visitedViews.find(n => n.fullPath === fullPath)
-      this.$router.push('/content/mediaAssets/all-media')
+      const { redirect = 'All-media' } = this.$route.query;
+      this.$router.push({ name: redirect });
       this.$store.dispatch('tagsView/delView', view)
     },
     /*

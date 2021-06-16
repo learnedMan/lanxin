@@ -252,7 +252,9 @@
               v-model="dialogForm.push_time"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
-              placeholder="选择日期时间">
+              placeholder="选择日期时间"
+              :picker-options="pickerOptions"
+            >
             </el-date-picker>
           </el-form-item>
           <el-form-item
@@ -317,6 +319,11 @@
       },
       data() {
         return {
+          pickerOptions:{
+            disabledDate(time) {
+              return time.getTime() > new Date().getTime();
+            },
+          },
           productLists: [],
           statusOptions: [
             {
@@ -452,7 +459,7 @@
             }
           }else if(type === 'channel') {
             this.innerDialog = {
-              title: '链接到栏目',
+              title: '链接到早播报',
               width: '600px',
               show: true
             }
