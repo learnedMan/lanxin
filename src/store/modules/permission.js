@@ -9,12 +9,12 @@ import { asyncRoutes, constantRoutes, defaultRoutes } from '@/router'
  */
 export function filterAsyncRoutes(routes, isAdministrator, permissions) {
   const res = []
-  routes.forEach(route => {
+  routes.map(route => {
     const tmp = { ...route }
     if (permissions.find(n => n.name === tmp.name) || tmp.hidden) {
       if (tmp.children) {
         tmp.children = filterAsyncRoutes(tmp.children, isAdministrator, permissions)
-        tmp.children.length !== 0 && res.push(tmp)
+        tmp.children.length !== 0 && tmp.children.every(n => !n.hidden) && res.push(tmp)
       }else {
         res.push(tmp)
       }

@@ -141,7 +141,7 @@
       >
         <el-form-item
           label-width="120px"
-          label="当前开播时间"
+          label="当前结束时间"
           prop="old"
         >
           <el-date-picker

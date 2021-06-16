@@ -24,7 +24,6 @@
           <el-select
             v-model="queryParams.sourceId"
             placeholder="请选择所属产品"
-            clearable
           >
             <el-option
               v-for="item in productLists"

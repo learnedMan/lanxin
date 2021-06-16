@@ -28,7 +28,7 @@
         </el-form-item>
         <el-form-item
           label="媒资标题:"
-          prop="keyword"
+          prop="title"
         >
           <el-input
             v-model="queryParams.title"
@@ -254,6 +254,7 @@
               type="datetime"
               placeholder="选择日期时间"
               :picker-options="pickerOptions"
+              @focus="pickerFocus"
             >
             </el-date-picker>
           </el-form-item>
@@ -318,12 +319,21 @@
         channel
       },
       data() {
+        const selectableRange = () => {
+          let data = new Date(new Date().getTime() + 1000);
+          let hour = data.getHours();
+          let minute = data.getMinutes();
+          let second = data.getSeconds();
+          return `00:00:00 - ${hour}:${minute}:${second}`
+        }
         return {
           pickerOptions:{
+            selectableRange: selectableRange(),
             disabledDate(time) {
               return time.getTime() > new Date().getTime();
             },
           },
+          updateSelectableRange: selectableRange,
           productLists: [],
           statusOptions: [
             {
@@ -426,6 +436,10 @@
         }
       },
       methods: {
+        /* 更新间距 */
+        pickerFocus () {
+          this.pickerOptions.selectableRange = this.updateSelectableRange();
+        },
         /* 获取产品列表 */
         getProductList () {
           return getproduct({}).then(res => {

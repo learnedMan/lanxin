@@ -90,7 +90,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions"
-            @change="handleDateChange"
+            @change="handleDateChange($event, 'createDate')"
           />
         </el-form-item>
         <el-form-item>
@@ -285,7 +285,7 @@
           label="直播类型:"
           prop="extra.portrait"
         >
-          <el-radio-group v-model="dialog.form.extra.portrait">
+          <el-radio-group v-model="dialog.form.extra.portrait" disabled>
             <el-radio v-for="type of portraitOptions.filter(n => n.value !== '')" :key="type.value" :label="type.value">{{ type.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -352,6 +352,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.view_base_num"
                   :controls="false"
+                  :precision="0"
                   placeholder="请输入"
                   clearable
                 ></el-input-number> 人
@@ -365,6 +366,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.robot_settings.view.min"
                   :controls="false"
+                  :precision="0"
                   :max="dialog.form.extra.robot_settings.view.max || 100"
                   placeholder="请输入"
                   clearable
@@ -375,6 +377,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.robot_settings.view.max"
                   :controls="false"
+                  :precision="0"
                   :min="dialog.form.extra.robot_settings.view.min || 0"
                   :max="100"
                   placeholder="请输入"
@@ -612,7 +615,7 @@
               type: 'broadcast',
               title: '', // 直播间名
               cover: '', // 直播间封面
-              portrait: '', // 直播类型
+              portrait: 0, // 直播类型
               only_statement: '0', // 是否为纯图文直播间
               statement: 'none', // 图文直播
               start_time: '', // 直播开始时间
@@ -850,6 +853,9 @@
     },
     created() {
       this.getChannels();
+      this.getList();
+    },
+    activated() {
       this.getList();
     }
   }
