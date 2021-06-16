@@ -61,12 +61,12 @@
         <el-form-item  label-width="80px" label="分类名称" prop="name">
           <el-input style="width: 350px" autocomplete="off" placeholder="请输入分类名称" v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item  label-width="80px" label="简介" prop="description">
+        <el-form-item  label-width="80px" label="分类描述" prop="description">
           <el-input 
             type="textarea" 
             style="width: 350px" 
             autocomplete="off" 
-            placeholder="请输入简介" 
+            placeholder="请输入分类描述" 
             :autosize="{ minRows: 4}"
             v-model="form.description"></el-input>
         </el-form-item>
@@ -106,7 +106,7 @@ import {
         form: {},
         rules: {
           name: [
-            { required: true, message: "请输入分类姓名", trigger: "blur" }
+            { required: true, message: "请输入分类名称", trigger: "blur" }
           ],
         },
         dialogType: "add",

@@ -238,8 +238,12 @@ export default {
             var data = this.tvqueryParams;
             gettv_channel(data).then(response => {
                 this.tvList = response.data;
-                console.log(this.tvList)
+                // console.log(this.tvList)
+                this.tvList = this.tvList.filter(function (item) {
+                    return item.status==1
+                })
                 this.queryParams.channel_id = this.tvList[0]?'' + this.tvList[0].id:'';
+                // console.log(this.queryParams.channel_id)
                 this.getList()
             })
         },

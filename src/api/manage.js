@@ -601,7 +601,7 @@ export function cateloglist() {
 }
 export function stylelist(data) {
   return request2({
-    url: '/styleByCode/list',
+    url: '/style/catalogCodeStyle',
     method: 'post',
     data
   })
