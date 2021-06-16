@@ -132,6 +132,9 @@ export default {
           var data = this.pickformdata(this.form.id);
           sessionStorage.setItem('TempZone',data.zone_id)
           sessionStorage.setItem('TempSite',data.id)
+
+
+          this.$router.push(`/dashboard`)
           window.location.reload()
       })
     }

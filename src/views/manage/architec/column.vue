@@ -537,7 +537,7 @@ import ChildPage1 from './pages/c_page1'
         rules: {
           father: [{ required: true, message: "请选择上级栏目", trigger: "blur" }],
           name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
-          'extra.cover': [{ required: true, message: "请选择栏目封面", trigger: "blur" }],
+          // 'extra.cover': [{ required: true, message: "请选择栏目封面", trigger: "blur" }],
           'extra.show_num': [{ required: true, message: "请输入展示条数", trigger: "blur" }],
           type: [{ required: true, message: "请选择栏目类型", trigger: "blur" }],
           status: [{ required: true, message: "请选择是否启用", trigger: "blur" }],
@@ -587,7 +587,7 @@ import ChildPage1 from './pages/c_page1'
     },
     methods:{
       yulanfn(){
-        window.open('http://10.30.10.125/view/#/mt?id='+this.form.extra.template_json_id)
+        window.open('http://10.30.10.158/view/#/mt?id='+this.form.extra.template_json_id)
       },
       // getinfo(val){
       //   return new Promise((resolve, reject)=>{

@@ -1033,7 +1033,7 @@ export default {
     handleView(data){
       // console.log(process.env.VUE_APP_BASE_API)
       // return
-      window.open('http://10.30.10.125/view/#/mt?id='+data.id);
+      window.open('http://10.30.10.158/view/#/mt?id='+data.id);
     },
     handleDelete(data){
       this.$confirm('是否确认删除序号为"' + data.id + '"的数据项?', '警告', {

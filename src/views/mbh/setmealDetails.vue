@@ -214,7 +214,7 @@ export default {
             // console.log(data)
             // console.log(data)
             // window.open('http://10.30.10.158/view/#/mt?id='+data.styleId);
-            window.open('http://10.30.10.125/view/#/mt?id='+data.styleId);
+            window.open('http://10.30.10.158/view/#/mt?id='+data.styleId);
             // this.$message({
             //     message:'点击预览，暂未开发，敬请期待',
             //     type:"warning"

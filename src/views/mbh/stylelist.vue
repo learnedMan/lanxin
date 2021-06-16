@@ -453,7 +453,7 @@ export default {
     },
     handleView(data){
       console.log(data)
-      window.open('http://10.30.10.125/view/#/mt?id='+data.id);
+      window.open('http://10.30.10.158/view/#/mt?id='+data.id);
       // this.$message({
       //   message:'点击预览，暂未开发，敬请期待',
       //   type:'warning'
