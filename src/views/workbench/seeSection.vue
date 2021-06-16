@@ -100,6 +100,24 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item
+            label="新闻状态:"
+            prop="status"
+          >
+            <el-select
+              v-model="queryParams.status"
+              size="small"
+              placeholder="请选择状态"
+              clearable
+            >
+              <el-option
+                v-for="item in [{ value: '', label: '全部' }].concat(statusOptions)"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="创建日期:">
             <el-date-picker
               v-model="dateValue"
@@ -216,7 +234,7 @@
         <el-table-column
           label="发布时间"
           align="center"
-          prop="updated_at"
+          prop="created_at"
           :show-overflow-tooltip="true"
         />
         <el-table-column
@@ -515,6 +533,7 @@ export default {
         label: 'name'
       }),
       queryParams: {
+        status: '',
         keyword: '',
         type: '',
         startdate: '',
@@ -646,12 +665,26 @@ export default {
     })
   },
   methods: {
+    /* 过滤禁用的产品 */
+    filterNode (data) {
+      let arr = [];
+      data.map(n => {
+        const { children = [] } = n;
+        if(n.status === 1) {
+          arr.push({
+            ...n,
+            children: this.filterNode(children)
+          })
+        }
+      })
+      return arr
+    },
     /*
       * 获取栏目列表
       * */
     getChannels() {
-      return getChannels().then(res => {
-        this.channelsList = res
+      return getChannels({ status: 0 }).then(res => {
+        this.channelsList = res;
       })
     },
     /*
@@ -828,7 +861,7 @@ export default {
       this.$router.push({ path: this.$route.path, query: { id: data.id }})
       this.loading = true
       const params = { ...this.queryParams, channel_id: data.id }
-      getNews(this.removePropertyOfNull(params)).then(res => {
+      getNews(this.removePropertyOfNullFor0(params)).then(res => {
         this.total = res.total
         this.tableData = (res.data || []).map(item => {
           const type = this.typeOptions.find(n => item.type === n.value)
