@@ -485,6 +485,24 @@ export const asyncRoutes = [
             meta: { title: '推送管理' }
           }
         ]
+      },
+      {
+        path: 'events',
+        component: () => import('@/views/operamanage/events'),
+        name: 'Events',
+        meta: { title: '报名' },
+      },
+      {
+        path: 'lottery_group',
+        component: () => import('@/views/operamanage/lottery_group'),
+        name: 'Lottery_group',
+        meta: { title: '抽奖' },
+      },
+      {
+        path: 'vote',
+        component: () => import('@/views/operamanage/vote'),
+        name: 'Vote',
+        meta: { title: '投票' },
       }
     ]
   },

@@ -1,7 +1,7 @@
 <template>
   <div class="system-whiteList">
     <el-form ref="queryForm" :model="queryParams" :inline="true">
-      <el-form-item label="白名单：">
+      <!-- <el-form-item label="白名单：">
         <el-input
           v-model="queryParams.keyword"
           placeholder="请输入关键字"
@@ -10,10 +10,10 @@
           style="width: 200px"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
-          <el-button type="info" @click="initcondition" size="mini" >重置</el-button>
-          <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
+          <!-- <el-button type="info" @click="initcondition" size="mini" >重置</el-button> -->
+          <!-- <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
           <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
       </el-form-item>
     </el-form>

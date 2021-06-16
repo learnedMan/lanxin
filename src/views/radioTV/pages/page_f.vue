@@ -258,6 +258,9 @@ export default {
                 this.tvList = response.data;
                 // console.log(this.tvList)
                 // this.queryParams.channel_id ='' + this.tvList[0].id;
+                this.tvList = this.tvList.filter(function (item) {
+                    return item.status==1
+                })
                 this.queryParams.channel_id = this.tvList[0]?'' + this.tvList[0].id:'';
                 this.getList()
             })

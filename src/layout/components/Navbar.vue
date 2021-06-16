@@ -13,7 +13,7 @@
         type="text"
         icon="el-icon-sort"
         @click="dialogFormVisible = true;"
-      >切换频道</el-button>
+      >切换站点</el-button>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
@@ -30,13 +30,13 @@
         </el-dropdown-menu>
       </el-dropdown>
 
-      <!-- 切换频道 -->
+      <!-- 切换站点 -->
       <el-dialog
         :close-on-click-modal="false"
         :close-on-press-escape="false"
-        width="600px" title="切换频道" :visible.sync="dialogFormVisible">
+        width="600px" title="切换站点" :visible.sync="dialogFormVisible">
         <el-form :model="form" :rules="rules" ref="dataForm">
-          <el-form-item label-width="100px" label="选择频道" prop="id">
+          <el-form-item label-width="100px" label="选择站点" prop="id">
               <el-select v-model="form.id" placeholder="请选择">
                 <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                 </el-option>
@@ -74,7 +74,7 @@ export default {
       },
       rules:{
         id:[
-          { required: true, message: "请选择频道", trigger: "blur" }
+          { required: true, message: "请选择站点", trigger: "blur" }
         ]
       },
       btns: [

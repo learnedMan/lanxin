@@ -41,15 +41,15 @@
         <!-- 显示更多 -->
         <el-form-item label-width="150px" label="显示更多:" prop="extra.display_more">
             <el-radio-group v-model="c_form.extra.display_more">
-                <el-radio :label="1">显示</el-radio>
-                <el-radio :label="0">不显示</el-radio>
+                <el-radio :label="'1'">显示</el-radio>
+                <el-radio :label="'0'">不显示</el-radio>
             </el-radio-group>
         </el-form-item>
         <!-- 显示标题 -->
         <el-form-item label-width="150px" label="显示标题:" prop="extra.display_title">
             <el-radio-group v-model="c_form.extra.display_title">
-                <el-radio :label="1">显示</el-radio>
-                <el-radio :label="0">不显示</el-radio>
+                <el-radio :label="'1'">显示</el-radio>
+                <el-radio :label="'0'">不显示</el-radio>
             </el-radio-group>
         </el-form-item>
 

@@ -254,7 +254,8 @@ import { isArray } from '@/utils/validate';
           }).then(() => {
               if(this.data.extra.template.type=='daily'){
                 this.dayList.splice(this.editIndex,1); 
-                this.datalistformat(this.weekList[this.dayList])
+                // this.datalistformat(this.weekList[this.dayList])
+                this.datalistformat(this.dayList)
                 this.dataList = this.dayList;
                 this.innerVisible = false;
                 this.$message({

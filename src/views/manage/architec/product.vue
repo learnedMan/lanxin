@@ -484,7 +484,7 @@ export default {
             logo:"",
             logo_dark:"",
             introduction:"",
-            comment_control:"",
+            comment_control:'2',
             watermark:"",
             watermark_position:"",
             hot_search:[]
@@ -598,7 +598,7 @@ export default {
             logo:"",
             logo_dark:"",
             introduction:"",
-            comment_control:"",
+            comment_control:'2',
             watermark:"",
             watermark_position:"",
             hot_search:[],
