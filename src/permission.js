@@ -36,14 +36,16 @@ router.beforeEach(async(to, from, next) => {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
           // 通过getInfo获取用户的角色
-          const { roles } = await store.dispatch('user/getInfo')
+          //const { roles } = await store.dispatch('user/getInfo')
 
           // 获取用户信息
-          const u_data = await store.dispatch('user/getuserinfo')// 拿一下数据
-
+          const { roles, permissions } = await store.dispatch('user/getuserinfo')// 拿一下数据
           // generate accessible routes map based on roles
-          // 根据角色生成可访问路由图
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          // 根据角色和权限生成可访问路由图
+          const accessRoutes = await store.dispatch('permission/generateRoutes', {
+            roles, // 角色
+            permissions // 权限
+          })
           // dynamically add accessible routes
           // 动态添加可访问路由
           router.addRoutes(accessRoutes)

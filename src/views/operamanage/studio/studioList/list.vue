@@ -180,6 +180,7 @@
       <el-table-column
         label="运营"
         align="center"
+        width="100"
       >
         <template slot-scope="scope">
           <el-button

@@ -63,8 +63,8 @@
 </style>
 <template>
   <el-container class="xl-add-media">
-    <el-header class="xl-add-media--header" height="auto">
-      <div style="font-size: 14px;color: #606266;flex: 1">
+    <el-header class="xl-add-media--header" height="auto" :style="{ justifyContent: isEdit? 'space-between' : 'flex-end' }">
+      <div style="font-size: 14px;color: #606266;flex: 1" v-if="isEdit && !disabled">
         <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
       </div>
       <div v-if="!disabled">
@@ -1267,15 +1267,21 @@ export default {
     /* 是否为编辑 */
     isEdit ({ scriptsId }) {
       return scriptsId != null;
+    },
+    /* 当前已有的标签页 */
+    visitedViews() {
+      return this.$store.state.tagsView.visitedViews
     }
   },
   async created() {
-    let timer = setInterval(() => {
-      this.getEditorPerson();
-    }, 8000)
-    this.$once('hook:beforeDestroy', () => {
-      clearInterval(timer);
-    })
+    if(this.isEdit && !this.disabled) {
+      let timer = setInterval(() => {
+        this.getEditorPerson();
+      }, 8000)
+      this.$once('hook:beforeDestroy', () => {
+        clearInterval(timer);
+      })
+    }
     this.getChannels()
     await this.getLabels()
     await this.getList()
@@ -1355,14 +1361,26 @@ export default {
     enterDialog() {
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
-          this.handleSave('保存并发布成功')
+          this.handleSave('保存并发布成功', () => {
+            this.handleReturn();
+          })
         }
       })
     },
     /*
+     * 返回上一级
+    */
+    handleReturn() {
+      const fullPath = this.$route.fullPath
+      const view = this.visitedViews.find(n => n.fullPath === fullPath)
+      const { redirect = 'All-media' } = this.$route.query;
+      this.$router.push({ name: redirect });
+      this.$store.dispatch('tagsView/delView', view)
+    },
+    /*
         * 保存数据
         * */
-    handleSave(tip) {
+    handleSave(tip, cb) {
       const channel_id = this.dialog.form.channel_id
       const currentTabsFromItem = this.initFrom()
       const type = this.from.extra.type
@@ -1393,7 +1411,8 @@ export default {
       delete obj.target_obj;
       changeScripts(id, obj).then(() => {
         this.$message.success(tip)
-        this.dialog.show = false
+        this.dialog.show = false;
+        cb && cb();
       })
     },
     /* 保存草稿 */

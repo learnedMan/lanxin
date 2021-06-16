@@ -61,7 +61,7 @@
 </style>
 <template>
   <el-container class="xl-news-media">
-    <el-header height="40px" style="background-color: #fff;line-height: 40px">
+    <el-header height="40px" style="background-color: #fff;line-height: 40px" v-if="!disabled">
       <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
     </el-header>
     <el-main style="padding: 10px 0">
@@ -1281,12 +1281,14 @@ export default {
   },
   created() {
     this.getLabels()
-    let timer = setInterval(() => {
-      this.getEditorPerson();
-    }, 8000)
-    this.$once('hook:beforeDestroy', () => {
-      clearInterval(timer);
-    })
+    if(!this.disabled) {
+      let timer = setInterval(() => {
+        this.getEditorPerson();
+      }, 8000)
+      this.$once('hook:beforeDestroy', () => {
+        clearInterval(timer);
+      })
+    }
   },
   methods: {
     /* 解析路径返回值 */

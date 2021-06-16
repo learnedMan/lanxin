@@ -162,12 +162,11 @@
         label="创建时间"
         align="center"
         prop="created_at"
-        :show-overflow-tooltip="true"
       />
       <el-table-column
         label="操作"
         align="center"
-        width="570"
+        width="300"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
@@ -417,7 +416,7 @@ export default {
       * 新增
       * */
     handleAdd() {
-      this.$router.push({ name: 'Add-media' })
+      this.$router.push({ name: 'Add-media', query: { redirect: 'All-media' } })
     },
     /*
       * 批量发布
@@ -466,14 +465,15 @@ export default {
       * 查看栏目
       * */
     handleListWatch(row) {
-      this.$router.push(`/content/mediaAssets/watch-column?id=${row.id}`)
+      this.$router.push(`/content/mediaAssets/watch-column?id=${row.id}&redirect=All-media`)
     },
     /* 复制稿件 */
     handleListCopy (row) {
-      const { id } = row;
+      const { id, title } = row;
       this.$prompt('请输入文稿名称', '复制', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        inputValue: `[副本]${title}`,
         inputValidator: (val) => {
           return val != null && val.trim() !== '';
         },
@@ -502,7 +502,7 @@ export default {
     handleEdit(row) {
       const { id, news } = row;
       if(news.some(n => n.status === 1)) return this.$message.warning('该文稿下存在已发布的新闻，请点击“一键下线”按钮下线所有新闻后再进行编辑')
-      this.$router.push({ name: 'Add-media', query: { id }})
+      this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media' }})
     },
     /* 预览 */
     handlePreview (row) {
