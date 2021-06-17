@@ -16,7 +16,7 @@
           <el-select
             v-model="queryParams.product_id"
             placeholder="请选择所属产品"
-            clearable
+            @change="handleQuery"
           >
             <el-option
               v-for="item in productLists"
@@ -160,6 +160,7 @@
       <el-dialog
         width="600px"
         :title="dialog.title"
+        :close-on-click-modal="false"
         :visible.sync="dialog.show"
       >
         <el-form

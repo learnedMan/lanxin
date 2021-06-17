@@ -145,6 +145,7 @@
       <el-dialog
         width="600px"
         :title="dialog.title"
+        :close-on-click-modal="false"
         :visible.sync="dialog.show"
       >
         <el-form
@@ -242,12 +243,14 @@
             label="广告时长:"
             prop="extra.duration"
           >
-            <el-input
-              v-model.number="dialogForm.extra.duration"
+            <el-input-number
+              v-model="dialogForm.extra.duration"
+              :controls="false"
+              :precision="0"
               placeholder="请输入时长(单位: 秒)"
-              clearable
               style="width: 194px"
-            />
+              clearable
+            ></el-input-number>
           </el-form-item>
           <el-form-item
             label="广告角标:"

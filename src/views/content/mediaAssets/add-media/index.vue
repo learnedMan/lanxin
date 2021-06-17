@@ -218,7 +218,15 @@
                       :key="list.value"
                       :label="list.value"
                       style="line-height: 32px"
-                    >{{ list.label }}</el-radio>
+                    >
+                      <el-popover
+                        placement="top"
+                        trigger="hover"
+                      >
+                        <span slot="reference">{{ list.label }}</span>
+                        <img :src="require(`@/assets/media/${list.img}`)" alt="" width="300px" />
+                      </el-popover>
+                    </el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <!-- 封面图片 -->
@@ -673,82 +681,98 @@ export default {
               {
                 label: '纯文本',
                 value: '240',
-                count: 1
+                count: 1,
+                img: '1402-240.png'
               },
               {
                 label: '三图下文本',
                 value: '230',
-                count: 3
+                count: 3,
+                img: '1402-230.png'
               },
               {
                 label: '三图上文本',
                 value: '231',
-                count: 3
+                count: 3,
+                img: '1402-231.png'
               },
               {
                 label: '左图+标题1',
                 value: '220',
-                count: 1
+                count: 1,
+                img: '1402-220.png'
               },
               {
-                label: '作图+标题2',
+                label: '左图+标题2',
                 value: '222',
-                count: 1
+                count: 1,
+                img: '1402-222.png'
               },
               {
                 label: '右图+标题',
                 value: '221',
-                count: 1
+                count: 1,
+                img: '1402-221.png'
               },
               {
                 label: '播放器1',
                 value: '210',
-                count: 1
+                count: 1,
+                img: '1402-210.png'
               },
               {
                 label: '播放器2',
                 value: '211',
-                count: 1
+                count: 1,
+                img: '1402-211.png'
               },
               {
                 label: '播放器3',
                 value: '212',
-                count: 1
+                count: 1,
+                img: '1402-212.png'
               },
               {
                 label: '大图1',
                 value: '200',
-                count: 1
+                count: 1,
+                img: '1402-200.png'
               },
               {
                 label: '大图2',
                 value: '201',
-                count: 1
+                count: 1,
+                img: '1402-201.png'
               },
               {
                 label: '大图3',
                 value: '202',
-                count: 1
+                count: 1,
+                img: '1402-202.png'
               },
               {
                 label: '大图4',
                 value: '203',
-                count: 1
+                count: 1,
+                img: '1402-203.png'
               },
               {
                 label: '大图5',
                 value: '204',
-                count: 1
+                count: 1,
+                img: '1402-204.png'
               },
               {
                 label: '大图6',
                 value: '205',
-                count: 1
+                count: 1,
+                img: '1402-205.png'
               },
               {
                 label: '大图7',
                 value: '206',
-                count: 1
+                count: 1,
+                img: '1402-206.png'
               }
             ]
           },
@@ -1128,6 +1152,14 @@ export default {
               {
                 label: '听广播',
                 value: 'radio'
+              },
+              {
+                label: '爆料',
+                value: 'tip-off'
+              },
+              {
+                label: '服务',
+                value: 'service'
               }
             ]
           },

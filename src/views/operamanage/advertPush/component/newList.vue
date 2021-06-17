@@ -180,7 +180,7 @@
         <el-table-column
           label="新闻类型"
           align="center"
-          prop="type"
+          prop="typeLabel"
         />
         <el-table-column
           label="作者"
@@ -374,7 +374,7 @@
                 }*/
             return {
               ...item,
-              type: type && type.label || '',
+              typeLabel: type && type.label || '',
               cover: cover && cover.path || '' // 图片
             }
           })

@@ -22,10 +22,12 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      title: '融合发布平台',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+  computed: {
+    logo ({ $store: { state: { user: { u_info } } } }) {
+      return u_info.site.logo
+    },
+    title ({ $store: { state: { user: { u_info } } } }) {
+      return u_info.site.name
     }
   }
 }

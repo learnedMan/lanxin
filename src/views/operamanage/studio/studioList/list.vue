@@ -90,7 +90,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions"
-            @change="handleDateChange"
+            @change="handleDateChange($event, 'createDate')"
           />
         </el-form-item>
         <el-form-item>
@@ -233,12 +233,53 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+    <!-- 发布栏目 -->
+    <el-dialog
+      width="600px"
+      :title="publishDialog.title"
+      :visible.sync="publishDialog.show"
+    >
+      <el-form
+        ref="publishForm"
+        :model="publishDialog.form"
+        :rules="publishDialog.rules"
+      >
+        <el-form-item
+          label-width="120px"
+          label="栏目"
+          prop="channel_id"
+        >
+          <el-cascader
+            v-model="publishDialog.form.channel_id"
+            style="width: 350px"
+            :options="channelsList"
+            :props="cascaderOption"
+            clearable
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="publishDialog.show = false">
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="enterPublishDialog"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
     <!-- 修改编辑 -->
     <el-dialog
       width="800px"
       top="20px"
       :title="dialog.title"
       :visible.sync="dialog.show"
+      v-if="dialog.show"
     >
       <el-form
         ref="dialogForm"
@@ -274,29 +315,53 @@
           />
         </el-form-item>
         <el-form-item
-          label-width="120px"
           label="直播封面:"
+          prop="extra.template_style"
+        >
+          <el-radio-group
+            size="small"
+            v-model="dialog.form.extra.template_style"
+          >
+            <el-radio
+              v-for="list of templateStyleLists"
+              :key="list.value"
+              :label="list.value"
+              style="line-height: 32px"
+            >
+              <el-popover
+                placement="top"
+                trigger="hover"
+              >
+                <span slot="reference">{{ list.label }}</span>
+                <img :src="require(`@/assets/media/${list.img}`)" alt="" width="300px" />
+              </el-popover>
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
           prop="extra.cover"
         >
-          <upload-single v-model="dialog.form.extra.cover"></upload-single>
+          <cropper
+            :count="imgCount"
+            v-model="dialog.form.extra.cover"
+          />
         </el-form-item>
         <el-form-item
           label-width="120px"
           label="直播类型:"
           prop="extra.portrait"
         >
-          <el-radio-group v-model="dialog.form.extra.portrait">
+          <el-radio-group v-model="dialog.form.extra.portrait" :disabled="portraitDisabled">
             <el-radio v-for="type of portraitOptions.filter(n => n.value !== '')" :key="type.value" :label="type.value">{{ type.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label-width="120px"
-          label="纯图文直播间:"
+          label="直播方式:"
           prop="extra.only_statement"
         >
           <el-radio-group v-model="dialog.form.extra.only_statement" @change="statementChange">
-            <el-radio label="1" style="margin-top: 10px">是</el-radio>
-            <el-radio label="0" style="margin-top: 10px">否</el-radio>
+            <el-radio label="1" style="margin-top: 10px">图片</el-radio>
+            <el-radio label="0" style="margin-top: 10px">视频流</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
@@ -352,6 +417,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.view_base_num"
                   :controls="false"
+                  :precision="0"
                   placeholder="请输入"
                   clearable
                 ></el-input-number> 人
@@ -365,6 +431,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.robot_settings.view.min"
                   :controls="false"
+                  :precision="0"
                   :max="dialog.form.extra.robot_settings.view.max || 100"
                   placeholder="请输入"
                   clearable
@@ -375,6 +442,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.robot_settings.view.max"
                   :controls="false"
+                  :precision="0"
                   :min="dialog.form.extra.robot_settings.view.min || 0"
                   :max="100"
                   placeholder="请输入"
@@ -433,46 +501,6 @@
         <el-button type="primary" @click="enterChangeDialog">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 发布栏目 -->
-    <el-dialog
-      width="600px"
-      :title="publishDialog.title"
-      :visible.sync="publishDialog.show"
-    >
-      <el-form
-        ref="publishForm"
-        :model="publishDialog.form"
-        :rules="publishDialog.rules"
-      >
-        <el-form-item
-          label-width="120px"
-          label="栏目"
-          prop="channel_id"
-        >
-          <el-cascader
-            v-model="publishDialog.form.channel_id"
-            style="width: 350px"
-            :options="channelsList"
-            :props="cascaderOption"
-            clearable
-          />
-        </el-form-item>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="publishDialog.show = false">
-          取 消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="enterPublishDialog"
-        >
-          确 定
-        </el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -480,13 +508,25 @@
   import { getStudioList, addStudio, getStudio, editStudio, deleteStudio } from '@/api/operamanage'
   import { getChannels } from '@/api/manage'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
+  import Cropper from '@/components/Cropper'
 
   export default {
     name: 'studioList',
     components: {
-      uploadSingle
+      uploadSingle,
+      Cropper
     },
     data() {
+      const coverValidator = (rule, value, callback) => {
+        const count = this.imgCount;
+        if (!Array.isArray(value) || value.length === 0) {
+          callback(new Error('请上传图片'))
+        } else if (!value.slice(0, count).every(n => n.path)) {
+          callback(new Error(`请上传${count}张图片`))
+        } else {
+          callback()
+        }
+      }
       return {
         loading: false,
         queryParams: {
@@ -602,6 +642,104 @@
         },
         liveTime: '', // 直播时间
         createDate: '', // 创建时间
+        templateStyleLists: [
+          {
+            label: '纯文本',
+            value: '240',
+            count: 1,
+            img: '1402-240.png'
+          },
+          {
+            label: '三图下文本',
+            value: '230',
+            count: 3,
+            img: '1402-230.png'
+          },
+          {
+            label: '三图上文本',
+            value: '231',
+            count: 3,
+            img: '1402-231.png'
+          },
+          {
+            label: '左图+标题1',
+            value: '220',
+            count: 1,
+            img: '1402-220.png'
+          },
+          {
+            label: '左图+标题2',
+            value: '222',
+            count: 1,
+            img: '1402-222.png'
+          },
+          {
+            label: '右图+标题',
+            value: '221',
+            count: 1,
+            img: '1402-221.png'
+          },
+          {
+            label: '播放器1',
+            value: '210',
+            count: 1,
+            img: '1402-210.png'
+          },
+          {
+            label: '播放器2',
+            value: '211',
+            count: 1,
+            img: '1402-211.png'
+          },
+          {
+            label: '播放器3',
+            value: '212',
+            count: 1,
+            img: '1402-212.png'
+          },
+          {
+            label: '大图1',
+            value: '200',
+            count: 1,
+            img: '1402-200.png'
+          },
+          {
+            label: '大图2',
+            value: '201',
+            count: 1,
+            img: '1402-201.png'
+          },
+          {
+            label: '大图3',
+            value: '202',
+            count: 1,
+            img: '1402-202.png'
+          },
+          {
+            label: '大图4',
+            value: '203',
+            count: 1,
+            img: '1402-203.png'
+          },
+          {
+            label: '大图5',
+            value: '204',
+            count: 1,
+            img: '1402-204.png'
+          },
+          {
+            label: '大图6',
+            value: '205',
+            count: 1,
+            img: '1402-205.png'
+          },
+          {
+            label: '大图7',
+            value: '206',
+            count: 1,
+            img: '1402-206.png'
+          }
+        ],
         dialog: {
           title: '新增',
           id: '',
@@ -611,8 +749,9 @@
             extra: {
               type: 'broadcast',
               title: '', // 直播间名
-              cover: '', // 直播间封面
-              portrait: '', // 直播类型
+              template_style: '240',
+              cover: [], // 直播间封面
+              portrait: 0, // 直播类型
               only_statement: '0', // 是否为纯图文直播间
               statement: 'none', // 图文直播
               start_time: '', // 直播开始时间
@@ -640,8 +779,11 @@
             'extra.title': [
               { required: true, message: '请输入直播间名称', trigger: 'blur' }
             ],
+            'extra.template_style': [
+              { required: true, message: '请选择直播封面样式', trigger: 'change' }
+            ],
             'extra.cover': [
-              { required: true, message: '请上传直播封面', trigger: 'change' }
+              { validator: coverValidator, trigger: 'change' }
             ],
             'extra.portrait': [
               { required: true, message: '请选择直播类型', trigger: 'change' }
@@ -667,6 +809,15 @@
         }
       }
     },
+    computed: {
+      imgCount ({ dialog, templateStyleLists }) {
+        return templateStyleLists.find(n => n.value === dialog.form.extra.template_style)?.count ?? 1
+      },
+      /* 直播类型限制 */
+      portraitDisabled ({ dialog: { form: { extra: { only_statement } } } }) {
+        return only_statement === '1'
+      }
+    },
     methods: {
       /* 重置 */
       handleReset () {
@@ -684,12 +835,40 @@
       },
       /* 新增 */
       handleAdd () {
+        this.liveTime = ''
         Object.assign(this.dialog, {
           title: '新增',
           id: '',
-          show: true
+          show: true,
+          form: {
+            channels: '', // 栏目
+            extra: {
+              type: 'broadcast',
+              title: '', // 直播间名
+              template_style: '240',
+              cover: [], // 直播间封面
+              portrait: 0, // 直播类型
+              only_statement: '0', // 是否为纯图文直播间
+              statement: 'none', // 图文直播
+              start_time: '', // 直播开始时间
+              end_time: '', // 直播结束时间
+              intro: '', // 直播间简介
+              view_base_num: '', // 观看基础人数
+              praise_base_num: '', // 点赞人数
+              robot_settings: {
+                enable: 0, // 机器人数据
+                view: {
+                  min: '',
+                  max: ''
+                },
+                praise: {
+                  min: '',
+                  max: ''
+                }
+              }, // 设置机器人数量
+            }
+          }
         })
-        this.$refs.dialogForm?.resetFields();
       },
       /* 编辑 */
       handleEdit (row) {
@@ -698,7 +877,6 @@
         getStudio(id).then(res => {
           const data = res.data;
           this.liveTime = [data.extra.start_time, data.extra.end_time];
-          this.$refs.dialogForm?.resetFields();
           this.$nextTick(() => {
             Object.assign(this.dialog, {
               title: '编辑',
@@ -708,9 +886,9 @@
                 channels: data.channel.map(n => n.id),
                 extra: {
                   ...data.extra,
+                  template_style: data.extra.template_style || '240',
                   only_statement: data.extra.only_statement || '0',
-                  portrait: Number(data.extra.portrait),
-                  cover: data.extra.cover?.[0]?.path
+                  portrait: Number(data.extra.portrait)
                 }
               }
             });
@@ -753,6 +931,7 @@
       statementChange (val) {
         if(val === '1') {
           this.dialog.form.extra.statement = 'broadcast';
+          this.dialog.form.extra.portrait = 0;
         }
       },
       /* 发布 */
@@ -789,13 +968,7 @@
         const params = {
           channels: this.dialog.form.channels.join(),
           extra: {
-            ...this.dialog.form.extra,
-            cover: [
-              {
-                path: this.dialog.form.extra.cover,
-                intro: ''
-              }
-            ]
+            ...this.dialog.form.extra
           }
         };
         let promise;
@@ -850,6 +1023,9 @@
     },
     created() {
       this.getChannels();
+      this.getList();
+    },
+    activated() {
       this.getList();
     }
   }

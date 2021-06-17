@@ -131,7 +131,11 @@
         align="center"
         prop="title"
         :show-overflow-tooltip="true"
-      />
+      >
+        <template slot-scope="scope">
+          <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column
         label="稿件类型"
         align="center"
@@ -470,31 +474,17 @@ export default {
     /* 复制稿件 */
     handleListCopy (row) {
       const { id, title } = row;
-      this.$prompt('请输入文稿名称', '复制', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValue: `[副本]${title}`,
-        inputValidator: (val) => {
-          return val != null && val.trim() !== '';
-        },
-        inputErrorMessage: '请输入文稿名称'
-      }).then(({ value }) => {
-        copyScript(id, {
-          title: value
-        }).then(({ message, status_code }) => {
-          if(status_code === 200) {
-            this.getList();
-            this.$message.success(message)
-          }else {
-            this.$message.warning(message)
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        });
-      });
+      copyScript(id, {
+        title: `[副本]${title}`
+      }).then(({ id, message }) => {
+        if(id) {
+          this.getList();
+          this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media' }})
+          this.$message.success('复制成功')
+        }else {
+          this.$message.warning(message)
+        }
+      })
     },
     /*
     * 编辑

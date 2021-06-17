@@ -16,7 +16,7 @@
           <el-select
             v-model="queryParams.product_id"
             placeholder="请选择所属产品"
-            clearable
+            @change="handleQuery"
           >
             <el-option
               v-for="item in productLists"
@@ -28,7 +28,7 @@
         </el-form-item>
         <el-form-item
           label="媒资标题:"
-          prop="keyword"
+          prop="title"
         >
           <el-input
             v-model="queryParams.title"
@@ -141,10 +141,10 @@
             <el-select
               v-model="scope.row.openStatus"
               @change="openStatusChange(scope.row)"
-              clearable
             >
-              <el-option label="启用" :value="1"/>
               <el-option label="禁用" :value="0"/>
+              <el-option label="启用" :value="1"/>
+              <el-option label="失败" :value="2"/>
             </el-select>
           </template>
         </el-table-column>
@@ -254,6 +254,7 @@
               type="datetime"
               placeholder="选择日期时间"
               :picker-options="pickerOptions"
+              @focus="pickerFocus"
             >
             </el-date-picker>
           </el-form-item>
@@ -294,6 +295,7 @@
           </el-button>
         </div>
         <el-dialog
+          top="20px"
           :width="innerDialog.width"
           :title="innerDialog.title"
           :visible.sync="innerDialog.show"
@@ -318,12 +320,21 @@
         channel
       },
       data() {
+        const selectableRange = () => {
+          let data = new Date(new Date().getTime() + 1000);
+          let hour = data.getHours();
+          let minute = data.getMinutes();
+          let second = data.getSeconds();
+          return `00:00:00 - ${hour}:${minute}:${second}`
+        }
         return {
           pickerOptions:{
+            selectableRange: selectableRange(),
             disabledDate(time) {
               return time.getTime() > new Date().getTime();
             },
           },
+          updateSelectableRange: selectableRange,
           productLists: [],
           statusOptions: [
             {
@@ -337,7 +348,11 @@
             {
               label: '启用',
               value: 1
-            }
+            },
+            {
+              label: '失败',
+              value: 2
+            },
           ],
           terminal: [
             {
@@ -426,6 +441,10 @@
         }
       },
       methods: {
+        /* 更新间距 */
+        pickerFocus () {
+          this.pickerOptions.selectableRange = this.updateSelectableRange();
+        },
         /* 获取产品列表 */
         getProductList () {
           return getproduct({}).then(res => {
@@ -467,6 +486,7 @@
         },
         /* 确认选择的新闻 */
         confirmChoose (data) {
+          console.log(data)
           Object.assign(this.dialogForm, {
             linked_to: {
               route_type: this.dialogForm.linked_to.route_type,
@@ -479,19 +499,30 @@
         },
         /* 新增 */
         handleAdd () {
-          this.resetForm('dialogForm');
-          Object.assign(this.dialogForm, {
-            linked_to: {
+          this.dialogForm = {
+            title: '',
+              content: '',
+              cover: '',
+              linked_to: {
               route_type: 'news',
-              type: '',
-              id: '',
-              title: ''
-            }
-          })
+                type: '',
+                id: '',
+                title: ''
+            },
+            push_to: {
+              type: 'all',
+                terminal: '',
+                cid: ''
+            },
+            push_time: ''
+          }
           this.dialog = {
             title: '新增推送',
             show: true
           }
+          this.$nextTick(() => {
+            this.$refs.dialogForm.clearValidate()
+          })
         },
         /* 编辑 */
         handleEdit (row) {
@@ -614,8 +645,8 @@
           getPushList(this.removePropertyOfNullFor0(params)).then(res => {
             this.tableData = (res.data || []).map(n => ({
               ...n,
-              openStatus: n.status === 0? 0 : 1,
-              statusLabel: (!n.extra.pushResult || n.status === 2)? '待执行' : n.extra.pushResult.pushSeq? '成功' : '失败',
+              openStatus: n.status,
+              statusLabel: !n.processed_at? '待执行' : n.extra.pushResult?.pushSeq? '成功' : '失败',
               isSingle: n.extra.push_to.type === 'single'? '是' : '否'
             }));
             this.total = res.total;
