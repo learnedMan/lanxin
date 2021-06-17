@@ -186,7 +186,11 @@
           align="center"
           prop="title"
           :show-overflow-tooltip="true"
-        />
+        >
+          <template slot-scope="scope">
+            <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+          </template>
+        </el-table-column>
         <el-table-column
           label="新闻类型"
           align="center"
@@ -250,8 +254,16 @@
                 :label="scope.row.top === 1? '取消置顶' : '置顶'"
                 @fatherMethod="handlePlaced(scope.row)"
               ></Iconbutton>
+              <!-- 查看 -->
+              <Iconbutton
+                v-if="scope.row.status === 1"
+                icontype="ckxq"
+                label="查看详情"
+                @fatherMethod="handleWatch(scope.row)"
+              ></Iconbutton>
               <!-- 编辑 -->
               <Iconbutton
+                v-if="scope.row.status !== 1"
                 icontype="xg"
                 label="编辑"
                 @fatherMethod="handleEdit(scope.row)"
@@ -300,7 +312,7 @@
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show"
     >
-      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" @refresh="refresh" />
+      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" />
     </el-dialog>
     <!-- 修改排序 -->
     <el-dialog
@@ -577,7 +589,8 @@ export default {
       loading: false,
       detailDialog: {
         show: false,
-        id: ''
+        id: '',
+        disabled: false
       },
       sortDialog: {
         show: false,
@@ -683,7 +696,7 @@ export default {
       * 获取栏目列表
       * */
     getChannels() {
-      return getChannels({ status: 0 }).then(res => {
+      return getChannels({ status: 1 }).then(res => {
         this.channelsList = res;
       })
     },
@@ -804,6 +817,15 @@ export default {
         id
       }
     },
+    /* 查看新闻 */
+    handleWatch (row) {
+      const { id } = row;
+      this.detailDialog = {
+        id,
+        show: true,
+        disabled: true
+      }
+    },
     /*
       * 编辑新闻
       * */
@@ -811,7 +833,8 @@ export default {
       const { id } = row
       this.detailDialog = {
         id,
-        show: true
+        show: true,
+        disabled: false
       }
     },
     /* 审核状态修改 */

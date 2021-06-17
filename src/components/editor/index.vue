@@ -289,7 +289,7 @@
       },
       /* 初始化之前 */
       beforeInit(id) {
-        if(this.isMobile) return
+        if(this.isMobile || this.disabled) return
         window.UE.registerUI('135editor', (editor, uiName) => {
           const width = document.body.clientWidth * 0.9
           const height = window.innerHeight - 50

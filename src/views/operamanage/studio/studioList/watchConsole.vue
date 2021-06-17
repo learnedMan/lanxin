@@ -262,19 +262,20 @@
       },
       computed: {
         lists () {
-          const arr = [
-            {
+          let arr = [];
+          if(this.detail.extra.only_statement === '0') {
+            arr.push({
               label: '机位管理',
               name: 'reservation'
-            },
-            {
-              label: '评论审核',
-              name: 'comment'
-            }
-          ]
-          if(this.detail.extra.statement !== 'none') arr.splice(1, 0, {
+            })
+          }
+          if(this.detail.extra.statement !== 'none') arr.push({
             label: '图文直播',
             name: 'directSeeding'
+          })
+          arr.push({
+            label: '评论审核',
+            name: 'comment'
           })
           return arr
         }
@@ -298,6 +299,7 @@
               label: statusLabel[data.live],
               cover: data.extra.cover[0]?.path
             }
+            this.currentView = this.lists[0].name
           })
         },
         /* 提前开播 */
