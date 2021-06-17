@@ -5,14 +5,14 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 20px;
-    }
-    .cropper-left {
-      width: 350px;
-      height: 300px;
-    }
-    .radio-select-item {
-      display: block;
-      line-height: 40px;
+      &-left {
+        width: 350px;
+        height: 300px;
+      }
+      .radio-select-item {
+        display: block;
+        line-height: 40px;
+      }
     }
     &-footer {
       margin-top: 30px;
@@ -148,9 +148,10 @@
       width="600px"
       :title="dialog.title"
       :visible.sync="dialog.show"
+      append-to-body
     >
       <div class="xl-cropper-box">
-        <div class="cropper-left">
+        <div class="xl-cropper-box-left">
           <vueCropper
             ref="cropper"
             :img="option.img"
@@ -170,7 +171,7 @@
             :info-true="option.infoTrue"
           />
         </div>
-        <div class="cropper-right">
+        <div class="xl-cropper-box-right">
           <el-radio-group v-model="proportionVal" class="radio-select" @change="proportionChange">
             <el-radio v-for="(item, index) of proportion" :key="index" :label="item.value" class="radio-select-item">{{ item.label }}</el-radio>
           </el-radio-group>
@@ -181,7 +182,7 @@
         <el-button type="primary" @click="enterDialog">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog :visible.sync="bigImgDialog.show">
+    <el-dialog :visible.sync="bigImgDialog.show" append-to-body>
       <img width="100%" :src="bigImgDialog.path" alt="">
     </el-dialog>
   </div>

@@ -198,7 +198,7 @@
                         trigger="hover"
                       >
                         <span slot="reference">{{ list.label }}</span>
-                        <img :src="require(`@/assets/media/${list.img}`)" alt="" />
+                        <img :src="require(`@/assets/media/${list.img}`)" alt="" width="300px" />
                       </el-popover>
                     </el-radio>
                   </el-radio-group>
@@ -209,6 +209,7 @@
                   v-bind="formOptions['extra.cover'].item.props"
                 >
                   <cropper
+                    :disabled="disabled"
                     v-bind="formOptions['extra.cover'].item.componentProps"
                     :value="parseObj(formOptions['extra.cover'].item)"
                     @input="handleInput($event, formOptions['extra.cover'].item)"
@@ -1169,6 +1170,14 @@ export default {
               {
                 label: '听广播',
                 value: 'radio'
+              },
+              {
+                label: '爆料',
+                value: 'tip-off'
+              },
+              {
+                label: '服务',
+                value: 'service'
               }
             ]
           },
