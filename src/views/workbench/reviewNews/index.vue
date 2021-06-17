@@ -128,7 +128,11 @@
         align="center"
         prop="title"
         :show-overflow-tooltip="true"
-      />
+      >
+        <template slot-scope="scope">
+          <el-button type="text" @click="goLink(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column
         label="发布栏目ID"
         align="center"
@@ -308,7 +312,7 @@
           :description="list.description"
         >
           <div slot="description">
-            <div>提交人: {{ list.user_id || '' }}</div>
+            <div>提交人/审核人: {{ list.name }}</div>
             <p v-if="list.remark">拒绝原因: {{ list.remark }}</p>
           </div>
         </el-step>
@@ -318,7 +322,7 @@
 </template>
 
 <script>
-import { getChannels } from '@/api/manage'
+import { getChannels, getUser } from '@/api/manage'
 import { getNews, changeNewsStatus } from '@/api/content'
 import { getReasons } from '@/api/workbench'
 import NewDetail from './detail'
@@ -422,14 +426,22 @@ export default {
         active: '',
         lists: []
       }, // 审批进度
+      userLists: []
     }
   },
   created() {
     this.getChannels()
     this.getRejectList()
     this.getList()
+    this.getUserList();
   },
   methods: {
+    /* 获取用户列表数据 */
+    getUserList () {
+      getUser({ model: 'User', page: 1, pageSize: 9999 }).then(({ data }) => {
+        this.userLists = data.map(({ id, name }) => ({ id, name }))
+      })
+    },
     /* 通过 */
     handleThrough(row) {
       const { id } = row
@@ -494,11 +506,15 @@ export default {
       if(multi_review.length === 0) return this.$message.warning('暂无审批进度');
       this.approval = {
         show: true,
-        active: multi_review.findIndex(n => n.status === 1 || n.status === 2),
-        lists: multi_review.map(n => ({
-          ...n,
-          title: `${this.statusOptions.find(item => n.status === item.value)?.label}   ${n.time || ''}`,
-        }))
+        active: multi_review.findIndex(n => n.status === 1 || n.status === 2) + 1,
+        lists: multi_review.map(n => {
+          const ids = n.reviewer_ids.split(',')
+          return {
+            ...n,
+            name: this.userLists.filter(item => n.user_id? item.id === n.user_id : ids.includes(item.id.toString()) ).map(item => item.name).join(),
+            title: `${this.statusOptions.find(item => n.status === item.value)?.label}   ${n.time || ''}`,
+          }
+        })
       }
     },
     /*

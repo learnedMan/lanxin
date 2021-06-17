@@ -59,7 +59,11 @@
         align="center"
         prop="title"
         :show-overflow-tooltip="true"
-      />
+      >
+        <template slot-scope="scope">
+          <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column
         label="新闻类型"
         align="center"
@@ -193,7 +197,7 @@
           :description="list.description"
         >
           <div slot="description">
-            <div>提交人: {{ list.user_id || '' }}</div>
+            <div>提交人/审核人: {{ list.name }}</div>
             <p v-if="list.remark">拒绝原因: {{ list.remark }}</p>
           </div>
         </el-step>
@@ -228,6 +232,7 @@
 
 <script>
 import { getScriptDetail, deleteNews, changeNews, changeNewsStatus } from '@/api/content'
+import { getUser } from '@/api/manage'
 import newDetail from '@/views/workbench/reviewNews/detail.vue'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
@@ -318,7 +323,8 @@ export default {
       history: {
         show: false,
         id: ''
-      }
+      }, // 历史记录
+      userLists: [] // 用户列表
     }
   },
   computed: {
@@ -329,8 +335,15 @@ export default {
   },
   created() {
     this.getList()
+    this.getUserList();
   },
   methods: {
+    /* 获取用户列表数据 */
+    getUserList () {
+      getUser({ model: 'User', page: 1, pageSize: 9999 }).then(({ data }) => {
+        this.userLists = data.map(({ id, name }) => ({ id, name }))
+      })
+    },
     /*
       * 获取列表数据
       * */
@@ -414,15 +427,33 @@ export default {
     },
     /* 查看审批进度 */
     watchProgress (row) {
-      const multi_review = row.multi_review || [];
+      const multi_review = row.extra.multi_review || [];
       if(multi_review.length === 0) return this.$message.warning('暂无审批进度');
+      const statusOptions = [
+        {
+          label: '待审核',
+          value: 0
+        },
+        {
+          label: '已审核',
+          value: 1
+        },
+        {
+          label: '已拒绝',
+          value: 2
+        }
+      ]
       this.approval = {
         show: true,
-        active: multi_review.findIndex(n => n.status === 1 || n.status === 2),
-        lists: multi_review.map(n => ({
-          ...n,
-          title: `${this.statusOptions.find(item => n.status === item.value)?.label}   ${n.time || ''}`,
-        }))
+        active: multi_review.findIndex(n => n.status === 1 || n.status === 2) + 1,
+        lists: multi_review.map(n => {
+          const ids = n.reviewer_ids.split(',')
+          return {
+            ...n,
+            name: this.userLists.filter(item => n.user_id? item.id === n.user_id : ids.includes(item.id.toString()) ).map(item => item.name).join(),
+            title: `${statusOptions.find(item => n.status === item.value)?.label}   ${n.time || ''}`,
+          }
+        })
       }
     },
     /* 查看详情 */

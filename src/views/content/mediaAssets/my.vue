@@ -129,7 +129,11 @@
         align="center"
         prop="title"
         :show-overflow-tooltip="true"
-      />
+      >
+        <template slot-scope="scope">
+          <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column
         label="稿件类型"
         align="center"

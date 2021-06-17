@@ -145,6 +145,7 @@
       <el-dialog
         width="600px"
         :title="dialog.title"
+        :close-on-click-modal="false"
         :visible.sync="dialog.show"
       >
         <el-form

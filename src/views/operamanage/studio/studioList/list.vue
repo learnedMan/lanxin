@@ -90,7 +90,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions"
-            @change="handleDateChange"
+            @change="handleDateChange($event, 'createDate')"
           />
         </el-form-item>
         <el-form-item>
@@ -233,6 +233,46 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+    <!-- 发布栏目 -->
+    <el-dialog
+      width="600px"
+      :title="publishDialog.title"
+      :visible.sync="publishDialog.show"
+    >
+      <el-form
+        ref="publishForm"
+        :model="publishDialog.form"
+        :rules="publishDialog.rules"
+      >
+        <el-form-item
+          label-width="120px"
+          label="栏目"
+          prop="channel_id"
+        >
+          <el-cascader
+            v-model="publishDialog.form.channel_id"
+            style="width: 350px"
+            :options="channelsList"
+            :props="cascaderOption"
+            clearable
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="publishDialog.show = false">
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="enterPublishDialog"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
     <!-- 修改编辑 -->
     <el-dialog
       width="800px"
@@ -285,18 +325,17 @@
           label="直播类型:"
           prop="extra.portrait"
         >
-          <el-radio-group v-model="dialog.form.extra.portrait">
+          <el-radio-group v-model="dialog.form.extra.portrait" disabled>
             <el-radio v-for="type of portraitOptions.filter(n => n.value !== '')" :key="type.value" :label="type.value">{{ type.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label-width="120px"
-          label="纯图文直播间:"
+          label="直播方式:"
           prop="extra.only_statement"
         >
           <el-radio-group v-model="dialog.form.extra.only_statement" @change="statementChange">
-            <el-radio label="1" style="margin-top: 10px">是</el-radio>
-            <el-radio label="0" style="margin-top: 10px">否</el-radio>
+            <el-radio label="1" style="margin-top: 10px">图片</el-radio>
+            <el-radio label="0" style="margin-top: 10px">视频流</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
@@ -352,6 +391,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.view_base_num"
                   :controls="false"
+                  :precision="0"
                   placeholder="请输入"
                   clearable
                 ></el-input-number> 人
@@ -365,6 +405,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.robot_settings.view.min"
                   :controls="false"
+                  :precision="0"
                   :max="dialog.form.extra.robot_settings.view.max || 100"
                   placeholder="请输入"
                   clearable
@@ -375,6 +416,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.robot_settings.view.max"
                   :controls="false"
+                  :precision="0"
                   :min="dialog.form.extra.robot_settings.view.min || 0"
                   :max="100"
                   placeholder="请输入"
@@ -431,46 +473,6 @@
       >
         <el-button @click="dialog.show = false">取 消</el-button>
         <el-button type="primary" @click="enterChangeDialog">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 发布栏目 -->
-    <el-dialog
-      width="600px"
-      :title="publishDialog.title"
-      :visible.sync="publishDialog.show"
-    >
-      <el-form
-        ref="publishForm"
-        :model="publishDialog.form"
-        :rules="publishDialog.rules"
-      >
-        <el-form-item
-          label-width="120px"
-          label="栏目"
-          prop="channel_id"
-        >
-          <el-cascader
-            v-model="publishDialog.form.channel_id"
-            style="width: 350px"
-            :options="channelsList"
-            :props="cascaderOption"
-            clearable
-          />
-        </el-form-item>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="publishDialog.show = false">
-          取 消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="enterPublishDialog"
-        >
-          确 定
-        </el-button>
       </div>
     </el-dialog>
   </div>
@@ -612,7 +614,7 @@
               type: 'broadcast',
               title: '', // 直播间名
               cover: '', // 直播间封面
-              portrait: '', // 直播类型
+              portrait: 0, // 直播类型
               only_statement: '0', // 是否为纯图文直播间
               statement: 'none', // 图文直播
               start_time: '', // 直播开始时间
@@ -684,12 +686,40 @@
       },
       /* 新增 */
       handleAdd () {
+        this.liveTime = ''
+        this.resetForm('dialogForm')
         Object.assign(this.dialog, {
           title: '新增',
           id: '',
-          show: true
+          show: true,
+          form: {
+            channels: '', // 栏目
+            extra: {
+              type: 'broadcast',
+              title: '', // 直播间名
+              cover: '', // 直播间封面
+              portrait: 0, // 直播类型
+              only_statement: '0', // 是否为纯图文直播间
+              statement: 'none', // 图文直播
+              start_time: '', // 直播开始时间
+              end_time: '', // 直播结束时间
+              intro: '', // 直播间简介
+              view_base_num: '', // 观看基础人数
+              praise_base_num: '', // 点赞人数
+              robot_settings: {
+                enable: 0, // 机器人数据
+                view: {
+                  min: '',
+                  max: ''
+                },
+                praise: {
+                  min: '',
+                  max: ''
+                }
+              }, // 设置机器人数量
+            }
+          }
         })
-        this.$refs.dialogForm?.resetFields();
       },
       /* 编辑 */
       handleEdit (row) {
@@ -698,7 +728,7 @@
         getStudio(id).then(res => {
           const data = res.data;
           this.liveTime = [data.extra.start_time, data.extra.end_time];
-          this.$refs.dialogForm?.resetFields();
+          this.resetForm('dialogForm')
           this.$nextTick(() => {
             Object.assign(this.dialog, {
               title: '编辑',
@@ -850,6 +880,9 @@
     },
     created() {
       this.getChannels();
+      this.getList();
+    },
+    activated() {
       this.getList();
     }
   }

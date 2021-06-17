@@ -227,6 +227,7 @@
                 >
                   <editor
                     v-if="editorInit"
+                    :disabled="disabled"
                     :value="parseObj(formOptions['extra.content'].item)"
                     @input="handleInput($event, formOptions['extra.content'].item)"
                   />
@@ -1396,10 +1397,14 @@ export default {
             type: obj.target_obj
           }
           delete obj.target_obj;
-          changeNews(this.id, obj).then(() => {
-            this.$message.success('保存草稿成功!')
+          changeNews(this.id, obj).then(({ statu_code, message }) => {
             this.handleClose()
-            this.$emit('refresh')
+            if(statu_code) {
+              this.$message.error(message)
+            }else {
+              this.$message.success('保存草稿成功!')
+              this.$emit('refresh')
+            }
           })
         }
       })
