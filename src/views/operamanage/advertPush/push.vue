@@ -646,7 +646,7 @@
             this.tableData = (res.data || []).map(n => ({
               ...n,
               openStatus: n.status,
-              statusLabel: !n.extra.processed_at? '待执行' : n.extra.pushResult?.pushSeq? '成功' : '失败',
+              statusLabel: !n.processed_at? '待执行' : n.extra.pushResult?.pushSeq? '成功' : '失败',
               isSingle: n.extra.push_to.type === 'single'? '是' : '否'
             }));
             this.total = res.total;
