@@ -288,6 +288,7 @@
     <!-- 编辑移动端新闻 -->
     <el-dialog
       width="100vw"
+      top="0"
       title="查看"
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show && isMobile"

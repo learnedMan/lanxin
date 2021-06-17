@@ -351,7 +351,7 @@
           label="直播类型:"
           prop="extra.portrait"
         >
-          <el-radio-group v-model="dialog.form.extra.portrait" disabled>
+          <el-radio-group v-model="dialog.form.extra.portrait" :disabled="portraitDisabled">
             <el-radio v-for="type of portraitOptions.filter(n => n.value !== '')" :key="type.value" :label="type.value">{{ type.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -812,6 +812,10 @@
     computed: {
       imgCount ({ dialog, templateStyleLists }) {
         return templateStyleLists.find(n => n.value === dialog.form.extra.template_style)?.count ?? 1
+      },
+      /* 直播类型限制 */
+      portraitDisabled ({ dialog: { form: { extra: { only_statement } } } }) {
+        return only_statement === '1'
       }
     },
     methods: {
@@ -927,6 +931,7 @@
       statementChange (val) {
         if(val === '1') {
           this.dialog.form.extra.statement = 'broadcast';
+          this.dialog.form.extra.portrait = 0;
         }
       },
       /* 发布 */

@@ -71,11 +71,12 @@ const actions = {
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
-        removeToken()
-        // dispatch('tagsView/delAllViews', null, { root: true })
-        resolve()
+      commit('SET_TOKEN', '') // 清空token
+      commit('SET_ROLES', []) // 清空角色
+      removeToken()
+      resetRouter()
+      dispatch('tagsView/delAllViews', null, { root: true }) // 清空tab
+      resolve()
     })
   },
 

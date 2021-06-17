@@ -16,7 +16,12 @@ export function filterAsyncRoutes(routes, isAdministrator, permissions) {
         tmp.children = filterAsyncRoutes(tmp.children, isAdministrator, permissions)
         tmp.children.length !== 0 && !tmp.children.every(n => n.hidden) && res.push(tmp)
       }else {
-        res.push(tmp)
+        // 站点管理需要特殊处理
+        if(tmp.name === 'Architec-site') {
+          isAdministrator && res.push(tmp)
+        }else {
+          res.push(tmp)
+        }
       }
     }
   })

@@ -12,7 +12,7 @@
         style="color:#999;margin-right:30px;"
         type="text"
         icon="el-icon-sort"
-        @click="dialogFormVisible = true;"
+        @click="handleChangeSite"
       >切换站点</el-button>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -106,6 +106,12 @@ export default {
     this.options = this.u_info.site_list
   },
   methods: {
+    /* 切换站点 */
+    handleChangeSite () {
+      const id = this.u_info.site_id;
+      this.form.id = id;
+      this.dialogFormVisible = true;
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
