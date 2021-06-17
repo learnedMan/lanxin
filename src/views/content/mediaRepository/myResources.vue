@@ -3,7 +3,7 @@
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="图片名称：">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.keyword"
           placeholder="请输入关键字"
           clearable
           size="small"
@@ -163,7 +163,8 @@ import {
         // 查询参数
         queryParams: {
           page: 1,
-          pageSize: 10
+          pageSize: 10,
+          keyword:''
         },
         loading:true,
         dataList:[],
@@ -231,7 +232,7 @@ import {
           this.form.file = data.file;
       },
       initcondition(){
-        this.queryParams.name="";
+        this.queryParams.keyword="";
       },
       /** 搜索按钮操作 */
       handleQuery() {

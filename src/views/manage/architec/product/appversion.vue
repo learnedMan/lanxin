@@ -339,6 +339,7 @@ export default {
         getproduct_versions(this.queryParams).then(response => {
           this.loading = false;
           this.dataList = response.data;
+          this.total = response.total;
         })
     },
     deldata(row){

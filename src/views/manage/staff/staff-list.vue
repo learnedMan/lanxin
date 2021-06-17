@@ -165,10 +165,6 @@
     >
       <el-tabs class="role-box" type="border-card">
         <el-tab-pane label="用户直接权限菜单">
-          <div class="clearflex">
-            <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
-            <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
-          </div>
           <el-tree
             :data="treedata"
             :default-checked-keys="treechoosedata"
@@ -183,6 +179,10 @@
           </el-tree>
         </el-tab-pane>
       </el-tabs>
+      <div class="clearflex" style="margin-right:20px;margin-top:20px;">
+          <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
+          <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
+        </div>
     </el-drawer>
 
     <el-drawer
@@ -190,10 +190,7 @@
     >
       <el-tabs class="userrole-box" type="border-card">
         <el-tab-pane label="用户角色菜单">
-          <div class="clearflex">
-            <el-button class="fl-right" @click="userrolecancelrole" size="small" type="info">取消</el-button>
-            <el-button class="fl-right" style="margin-right:15px;" @click="userrolesurerole" size="small" type="primary">确 定</el-button>
-          </div>
+          
           <el-tree
             :data="userroletreedata"
             :default-checked-keys="userroletreechoosedata"
@@ -208,6 +205,10 @@
           </el-tree>
         </el-tab-pane>
       </el-tabs>
+      <div class="clearflex" style="margin-right:20px;margin-top:20px;">
+        <el-button class="fl-right" @click="userrolecancelrole" size="small" type="info">取消</el-button>
+        <el-button class="fl-right" style="margin-right:15px;" @click="userrolesurerole" size="small" type="primary">确 定</el-button>
+      </div>
     </el-drawer>
   </div>
 </template>
