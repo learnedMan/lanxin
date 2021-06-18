@@ -84,16 +84,14 @@
     >
       <el-tabs class="role-box" type="border-card">
         <el-tab-pane label="角色权限菜单">
-          <div class="clearflex">
-            <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
-            <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
-          </div>
+          <!-- check-strictly 父子互不关联 -->
           <el-tree
             :data="treedata"
             :default-checked-keys="treechoosedata"
             show-checkbox
-            :check-strictly="true"
+            :check-strictly="true" 
             @check-change = "checkChange"
+            @check = "nodeclick"
             default-expand-all
             node-key="id"
             ref="tree"
@@ -102,6 +100,10 @@
           </el-tree>
         </el-tab-pane>
       </el-tabs>
+      <div class="clearflex" style="margin-right:20px;margin-top:20px;">
+            <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
+            <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
+          </div>
     </el-drawer>
   </div>
 </template>
@@ -176,12 +178,7 @@ import {
       },
       //权限切换选中
       checkChange(data,b,c){
-        Array.prototype.remove = function(val) {
-          var index = this.indexOf(val);
-            if (index > -1) {
-            this.splice(index, 1);
-          }
-        };
+        Array.prototype.remove = function(val) {var index = this.indexOf(val);if (index > -1) {this.splice(index, 1);}};
         let thisNode = this.$refs.tree.getNode(data.id) // 获取当前节点
         var keys = this.$refs.tree.getCheckedKeys() // 获取已勾选节点的key值
         if (b) { // 当前节点若被选中
@@ -204,6 +201,10 @@ import {
           }
         }
         this.$refs.tree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
+      },
+      nodeclick(a,b){
+        console.log(a)
+        console.log(b)
       },
       cancelrole(){
         this.drawer = false;

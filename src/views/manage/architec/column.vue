@@ -564,6 +564,13 @@ import ChildPage1 from './pages/c_page1'
       // }
     },
     created() {
+      // if(!this.sourceId){
+      //   this.$message({
+      //     message: '请先填写sourceid,以免影响后续操作',
+      //     type: 'warning'
+      //   });
+      //   return
+      // }
       this.initForm();
       // this.getList();
       this.getproductList();
@@ -836,7 +843,7 @@ import ChildPage1 from './pages/c_page1'
           // 把拿到的多级审核的数据进行修改
           var new_multi_review = [];
           var multi_review = this.form.extra.multi_review||[];
-          // console.log(this.form)
+          console.log(this.form)
           for(var i=0;i<multi_review.length;i++){
             new_multi_review[i] = [];
             new_multi_review[i] = multi_review[i].reviewer_ids.split(',');
@@ -854,7 +861,7 @@ import ChildPage1 from './pages/c_page1'
             this.$refs.c_page1.listnum = new_multi_review.length;
           })
 
-          console.log(this.form)
+          // console.log(this.form)
           if(this.form.extra.template_style){
               var a =this.form.extra.template_json_id?Number(this.form.extra.template_json_id):''
               this.catalogchange()

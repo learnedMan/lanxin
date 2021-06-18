@@ -133,6 +133,16 @@ export default({
         },
         // 确定审核人
         suretransfer(){
+            console.log(this.c_form.extra.multi_review)
+            for(var i=0;i<this.c_form.extra.multi_review.length;i++){
+                if(this.c_form.extra.multi_review[i].length==0){
+                    this.$message({
+                        message: `第${i+1}级审核为空，请保证每一级审核都有审核人`,
+                        type: 'warning'
+                    });
+                    return
+                }
+            }
             this.dialogVisible = false;
             this.listshowarr.length = this.c_form.extra.multi_review.length;
             this.showtxt()

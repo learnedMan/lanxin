@@ -131,7 +131,7 @@ export default {
       this.dialogFormVisible = false;
     },
     // 确定弹窗
-    enterDialog() {
+    async enterDialog() {
       this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
           this.dialogFormVisible = false;
@@ -139,11 +139,18 @@ export default {
           sessionStorage.setItem('TempZone',data.zone_id)
           sessionStorage.setItem('TempSite',data.id)
 
-
-          this.$router.push(`/dashboard`)
-          window.location.reload()
+          this.closeAllTags()
       })
-    }
+    },
+    closeAllTags(view) {
+      this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
+        this.toLastView(visitedViews)
+      })
+    },
+    toLastView(visitedViews) {
+          this.$router.push('/')
+          window.location.reload()
+    },
   }
 }
 </script>

@@ -145,9 +145,14 @@ import {
                     message: '保存成功',
                     type: 'success'
                   });
-                })
-                // window.location.reload();
-                this.editflag = true;
+                }).then(
+                  (res) => {
+                    this.editflag = true;
+                    this.getinfo();
+                  },  // 成功
+                  (err) => {} // 失败
+                )
+                // 
             })
         },
         editfn(){

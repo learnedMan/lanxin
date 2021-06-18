@@ -90,6 +90,7 @@ import {
           page: 1,
           limit: 10,
           keyword:"",
+          order:'desc'
         },
         loading:true,
         dataList:[],

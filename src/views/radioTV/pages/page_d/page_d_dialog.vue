@@ -326,11 +326,29 @@ import { isArray } from '@/utils/validate';
             var data = JSON.parse(JSON.stringify(this.form))
             if (this.dialogType=='edit') {
               if(this.data.extra.template.type=='daily'){
+                for(var i=0;i<this.dayList.length;i++){
+                  if(data.time==this.dayList[i].time&&i!=this.editIndex){
+                    this.$message({
+                      message: '开始时间重复，请修改',
+                      type: 'warning'
+                    });
+                    return
+                  }
+                }
                 this.dayList.splice(this.editIndex,1,data); 
                 this.datalistformat(this.dayList)
                 this.dataList = this.dayList;
                 this.innerVisible = false;
               }else if(this.data.extra.template.type=='weekly'){
+                for(var i=0;i<this.weekList[this.weekday].length;i++){
+                  if(data.time==this.weekList[this.weekday][i].time&&i!=this.editIndex){
+                    this.$message({
+                      message: '开始时间重复，请修改',
+                      type: 'warning'
+                    });
+                    return
+                  }
+                }
                 this.weekList[this.weekday].splice(this.editIndex,1,data); 
                 this.datalistformat(this.weekList[this.weekday])
                 this.dataList = this.weekList[this.weekday];
@@ -339,12 +357,30 @@ import { isArray } from '@/utils/validate';
               }
             }else{
                   if(this.data.extra.template.type=='daily'){
+                    for(var i=0;i<this.dayList.length;i++){
+                      if(data.time==this.dayList[i].time){
+                        this.$message({
+                          message: '开始时间重复，请修改',
+                          type: 'warning'
+                        });
+                        return
+                      }
+                    }
                     this.dayList.push(data)
                     this.datalistformat(this.dayList)
                     this.dataList = this.dayList;
                     this.innerVisible = false;
                   }else if(this.data.extra.template.type=='weekly'){
                     if( isArray(this.weekList[this.weekday])){
+                      for(var i=0;i<this.weekList[this.weekday].length;i++){
+                        if(data.time==this.weekList[this.weekday][i].time){
+                          this.$message({
+                            message: '开始时间重复，请修改',
+                            type: 'warning'
+                          });
+                          return
+                        }
+                      }
                       this.weekList[this.weekday].push(data);
                     }else{
                       this.weekList[this.weekday] = [];
