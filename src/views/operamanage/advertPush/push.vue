@@ -383,14 +383,14 @@
               label: '新闻',
               value: 'news'
             },
-            {
+            /*{
               label: '活动(待定)',
               value: 'active'
             },
             {
               label: '早播报',
               value: 'channel'
-            }
+            }*/
           ],
           dialogForm: {
             title: '',
@@ -465,6 +465,7 @@
         },
         /* 搜索 */
         handleQuery () {
+          this.queryParams.page = 1;
           this.getList();
         },
         /* 显示选择链接到内容的弹框 */

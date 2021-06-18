@@ -238,6 +238,7 @@
       width="600px"
       :title="dialog.title"
       :visible.sync="dialog.show"
+      v-if="dialog.show"
     >
       <el-form
         ref="dialogForm"
@@ -414,6 +415,7 @@ export default {
       * 搜索
       * */
     handleQuery() {
+      this.queryParams.page = 1;
       this.getList()
     },
     /*
@@ -565,7 +567,7 @@ export default {
       let id; let channel_id = []
       const isPublish = ident === 'publish' // 是否为列表发布
       if (isPublish) {
-        channel_id = row.channel.map(n => n.id)
+        channel_id = row.channel.map(n => n.id).sort((a, b) => b - a)
         id = row.id
       } else {
         id = this.selection

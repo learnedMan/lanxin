@@ -42,7 +42,7 @@
           prop="mobile"
         >
           <el-input
-            v-model.number="queryParams.mobile"
+            v-model="queryParams.mobile"
             placeholder="请输入手机号"
             clearable
             style="width: 200px"
@@ -359,6 +359,7 @@
         },
         /* 查询 */
         handleQuery () {
+          this.queryParams.page = 1;
           this.getList();
         },
         /* 修改注册时间 */

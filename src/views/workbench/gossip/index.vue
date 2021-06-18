@@ -383,6 +383,7 @@
         },
         /* 搜索 */
         handleQuery () {
+          this.queryParams.page = 1;
           this.getList();
         },
         /* 查看爆料详情 */
@@ -437,7 +438,7 @@
             if(res.code == 200) {
               const data = res.data;
               this.selection = [];
-              this.tableData = (data.data || []).map(n => ({
+              this.tableData = (data.list || []).map(n => ({
                 ...n,
                 statusLabel: this.statusLists.find(list => list.value === n.status)?.label
               }));

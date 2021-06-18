@@ -420,6 +420,7 @@ export default {
         * 搜索
         * */
     handleQuery() {
+      this.queryParams.page = 1;
       this.getList()
     },
     /*

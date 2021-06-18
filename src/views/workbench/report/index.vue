@@ -91,7 +91,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
+        <!--<el-form-item
           label="联系方式:"
           prop="reportMobile"
         >
@@ -102,7 +102,7 @@
             style="width: 200px"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item
           label="举报内容:"
           prop="reportContent"
@@ -614,6 +614,7 @@ export default {
     },
     /* 搜索 */
     handleQuery() {
+      this.queryParams.page = 1;
       this.getList()
     },
     /* 时间变化 */

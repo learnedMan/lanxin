@@ -411,15 +411,15 @@ export default {
           [key]: row[key]
         }
       }).then(({ message, statu_code }) => {
-        if(statu_code == 200) {
-          this.$message({
-            message,
-            type: 'success'
-          })
-        }else {
+        if(statu_code) {
           this.$message({
             message,
             type: 'error'
+          })
+        }else {
+          this.$message({
+            message: '切换成功!',
+            type: 'success'
           })
         }
         this.getList()

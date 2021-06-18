@@ -8,6 +8,7 @@
 <template>
   <el-dialog
     width="500px"
+    :close-on-click-modal="false"
     :title="dialog.title"
     :visible.sync="dialog.show"
   >
@@ -208,12 +209,16 @@
         },
         /* 确认修改 */
         enterDialog () {
-          const data = { ...this.form, phone: this.phone, zone_id: this.zone_id, site_id: this.site_id };
-          delete data.confirmPassword;
-          changePassword(data).then(res => {
-            this.dialog.show = false;
-            this.$message.success(res.message);
-            this.logout();
+          this.$refs.passForm?.validate(val => {
+            if(val) {
+              const data = { ...this.form, phone: this.phone, zone_id: this.zone_id, site_id: this.site_id };
+              delete data.confirmPassword;
+              changePassword(data).then(res => {
+                this.dialog.show = false;
+                this.$message.success(res.message);
+                this.logout();
+              })
+            }
           })
         },
         /* 重新登录 */

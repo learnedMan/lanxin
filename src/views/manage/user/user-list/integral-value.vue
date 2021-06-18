@@ -167,6 +167,7 @@
       },
       /* 查询 */
       handleQuery () {
+        this.queryParams.page = 1;
         this.getList();
       },
       /* 返回上一级 */

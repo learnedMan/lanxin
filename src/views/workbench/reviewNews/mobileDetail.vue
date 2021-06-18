@@ -74,11 +74,8 @@
           v-show="initFrom().includes('extra.keywords')"
           v-bind="formOptions['extra.keywords'].item.props"
         >
-          <el-input
+          <tag
             :value="parseObj(formOptions['extra.keywords'].item)"
-            v-bind="formOptions['extra.keywords'].item.componentProps"
-            clearable
-            size="small"
             @input="handleInput($event, formOptions['extra.keywords'].item)"
           />
         </el-form-item>
@@ -133,6 +130,7 @@
 <script>
   import { getEditorPerson, getNewDetail, changeNews, changeNewsStatus } from '@/api/content'
   import Editor from '@/components/editor'
+  import Tag from '@/components/media/tag'
 
     export default {
       props: {
@@ -147,7 +145,8 @@
         }
       },
       components: {
-        Editor
+        Editor,
+        Tag
       },
       data() {
         return {
@@ -175,11 +174,7 @@
                 props: {
                   label: '关键词:'
                 },
-                component: 'input', // 组件名
-                componentProps: {
-                  placeholder: '请输入关键词',
-                  multiple: true
-                }
+                component: 'tag', // 组件名
               }
             },
             'extra.content': {

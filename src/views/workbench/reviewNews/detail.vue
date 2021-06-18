@@ -147,14 +147,9 @@
                   v-show="initFrom().includes('extra.keywords')"
                   v-bind="formOptions['extra.keywords'].item.props"
                 >
-                  <!-- 输入框 -->
-                  <el-input
+                  <tag
+                    :disabled="disabled"
                     :value="parseObj(formOptions['extra.keywords'].item)"
-                    :rows="4"
-                    v-bind="formOptions['extra.keywords'].item.componentProps"
-                    clearable
-                    size="small"
-                    style="width: 200px"
                     @input="handleInput($event, formOptions['extra.keywords'].item)"
                   />
                 </el-form-item>
@@ -382,7 +377,7 @@
                 v-bind="formOptions['author_name'].item.props"
               >
                 <tag
-                  disabled
+                  :disabled="disabled"
                   :value="parseObj(formOptions['author_name'].item)"
                   @input="handleInput($event, formOptions['author_name'].item)"
                 />
@@ -393,7 +388,7 @@
                 v-bind="formOptions['editor_name'].item.props"
               >
                 <tag
-                  disabled
+                  :disabled="disabled"
                   :value="parseObj(formOptions['editor_name'].item)"
                   @input="handleInput($event, formOptions['editor_name'].item)"
                 />
@@ -815,11 +810,7 @@ export default {
             props: {
               label: '关键词:'
             },
-            component: 'input', // 组件名
-            componentProps: {
-              placeholder: '请输入关键词',
-              multiple: true
-            }
+            component: 'tag', // 组件名
           }
         },
         'extra.publish_timer.status': {

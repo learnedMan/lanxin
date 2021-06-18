@@ -18,7 +18,7 @@
     <search ref="search" v-model="search" :lists="searchLists">
       <div slot="action">
         <el-button size="mini" type="primary" @click="resetSearch">重置</el-button>
-        <el-button size="mini" type="primary" @click="getList">搜索</el-button>
+        <el-button size="mini" type="primary" @click="handleQuery">搜索</el-button>
         <!--<el-button size="mini" type="primary">添加评论</el-button>-->
         <el-button size="mini" type="success" @click="batchAgreeOrRefused('approve')" :disabled="disabledBatchAction">批量通过</el-button>
         <el-button size="mini" type="warning" @click="batchAgreeOrRefused('reject')" :disabled="disabledBatchAction">批量拒绝</el-button>
@@ -467,11 +467,16 @@ export default {
       form.resetFields();
       this.search.sourceId = this.searchLists[0].selectOption[0]?.value;
     },
+    /* 搜索 */
+    handleQuery () {
+      this.search.pageNo = 1;
+      this.getList();
+    },
     /*
     * 选择项发生变化时
     * */
     handleSelectionChange(arr) {
-      this.selection = arr.map(n => n.comment_sn);
+      this.selection = arr.map(n => n.commentSn);
     },
     /*
     * 获取列表数据
@@ -486,7 +491,7 @@ export default {
       getCommentLists(this.removePropertyOfNullFor0(params)).then(res => {
         const { totalCount, list } = res.data;
         this.page.total = totalCount;
-        const ids = list.map(n => n.id).join();
+        const ids = list.map(n => n.dataId).join();
         getNews({ ids }).then(news => {
           const newMap = news.data.reduce((data, n) => {
             data[n.id] = n.title;
@@ -549,10 +554,14 @@ export default {
     * 审核通过或拒绝
     * */
     handleAgreeOrRefused(row, status) {
-      const str = `${status}/${row.comment_sn}`
-      commentAction(str).then(res => {
-        this.$message.success(res.message);
-        this.getList();
+      const str = `${status}/${row.commentSn}`
+      commentAction(str).then(({ code }) => {
+        if(code) {
+          this.$message.success('操作成功!');
+          this.getList();
+        }else {
+          this.$message.error('操作失败!')
+        }
       })
     },
     /* 批量审核通过或拒绝 */
@@ -560,8 +569,13 @@ export default {
       batchCommentAction({
         operateType: status,
         commentSnList: this.selection
-      }).then(res => {
-        this.$message.success(res.message);
+      }).then(({ code }) => {
+        if(code == 200) {
+          this.$message.success('批量操作成功!');
+          this.getList();
+        }else {
+          this.$message.error('批量操作失败!')
+        }
       })
     },
     /* 处理选择新闻时间 */

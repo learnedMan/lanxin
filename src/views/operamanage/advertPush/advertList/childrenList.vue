@@ -93,9 +93,8 @@
           <template slot-scope="scope">{{ getLabel(scope.row.type) }}</template>
         </el-table-column>
         <el-table-column
-          label="广告位描述"
+          label="所属广告位"
           align="center"
-          prop="intro"
         >
           <template slot-scope="scope">{{ params.name }}</template>
         </el-table-column>
@@ -411,10 +410,6 @@
               value: 'outer_link'
             },
             {
-              label: '文字提示',
-              value: 'text'
-            },
-            {
               label: '新闻ID',
               value: 'news'
             }
@@ -489,6 +484,7 @@
         },
         /* 搜索 */
         handleQuery () {
+          this.queryParams.page = 1;
           this.getList();
         },
         /* 返回上一级 */

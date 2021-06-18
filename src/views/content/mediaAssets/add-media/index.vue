@@ -173,14 +173,9 @@
                   v-show="initFrom().includes('extra.keywords')"
                   v-bind="formOptions['extra.keywords'].item.props"
                 >
-                  <!-- 输入框 -->
-                  <el-input
+                  <tag
+                    :disabled="disabled"
                     :value="parseObj(formOptions['extra.keywords'].item)"
-                    :rows="4"
-                    v-bind="formOptions['extra.keywords'].item.componentProps"
-                    clearable
-                    size="small"
-                    style="width: 200px"
                     @input="handleInput($event, formOptions['extra.keywords'].item)"
                   />
                 </el-form-item>
@@ -633,7 +628,7 @@ export default {
     const imgListValidator = (rule, value, callback) => {
       if (!Array.isArray(value) || value.length === 0) {
         callback(new Error('请上传图片'))
-      } else if (!value.every(n => Object.keys(n).every(key => n[key] !== ''))) {
+      } else if (!value.every(n => Object.keys(n).every(key => key === 'intro' || n[key] !== ''))) {
         callback(new Error('请填写完成图片信息'))
       } else {
         callback()
@@ -830,11 +825,7 @@ export default {
             props: {
               label: '关键词:'
             },
-            component: 'input', // 组件名
-            componentProps: {
-              placeholder: '请输入关键词',
-              multiple: true
-            }
+            component: 'tag', // 组件名
           }
         },
         'extra.set_created_at': {
@@ -1441,10 +1432,10 @@ export default {
         type: obj.target_obj
       }
       delete obj.target_obj;
-      changeScripts(id, obj).then(() => {
+      changeScripts(id, obj).then((res) => {
         this.$message.success(tip)
         this.dialog.show = false;
-        cb && cb();
+        cb && cb(res);
       })
     },
     /* 保存草稿 */
@@ -1461,7 +1452,9 @@ export default {
     handlePreview() {
       this.$refs.submitForm.validate(valid => {
         if (valid) {
-          this.handleSave('保存成功')
+          this.handleSave('保存成功', ({ data: { id } = {} }) => {
+            if(id) this.$router.push({ name: 'Preview', query: { id, type: 'scripts' }})
+          })
         }
       })
     },

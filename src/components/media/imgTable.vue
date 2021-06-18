@@ -27,6 +27,14 @@
     cursor: pointer;
   }
 }
+.el-form-item.is-error .table-textarea {
+  .el-textarea__inner {
+    border-color: #DCDFE6;
+  }
+  .el-textarea__inner:focus {
+    border-color: #409eff;
+  }
+}
 </style>
 <template>
   <div class="xl-table">
@@ -62,6 +70,7 @@
       <el-table-column label="描述">
         <template slot-scope="scope">
           <el-input
+            class="table-textarea"
             v-model="scope.row.intro"
             type="textarea"
             placeholder="请输入图片描述"

@@ -174,7 +174,7 @@ export const asyncRoutes = [
         path: 'seeSection',
         component: () => import('@/views/workbench/seeSection'),
         name: 'SeeSection',
-        meta: { title: '栏目查看' }
+        meta: { title: '栏目数据' }
       }
     ]
   },

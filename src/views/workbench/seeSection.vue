@@ -529,7 +529,7 @@ export default {
       ], // 新闻类型
       statusOptions: [
         {
-          label: '已审核',
+          label: '已上线',
           value: 1
         },
         {
@@ -537,7 +537,7 @@ export default {
           value: 0
         },
         {
-          label: '已拒绝',
+          label: '已下线',
           value: 2
         }
       ], // 状态集合
@@ -724,6 +724,7 @@ export default {
         * 搜索
         * */
     handleQuery() {
+      this.queryParams.page = 1;
       this.getList()
     },
     /* 新增推送 */

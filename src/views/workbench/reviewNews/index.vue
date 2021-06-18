@@ -528,6 +528,7 @@ export default {
     },
     /* 搜索 */
     handleQuery() {
+      this.queryParams.page = 1;
       this.getList()
     },
     /* 重置 */
@@ -605,7 +606,8 @@ export default {
     getRejectList() {
       getReasons({
         pageSize: 9999,
-        page: 1
+        page: 1,
+        apply_to: '1'
       }).then(res => {
         this.rejectLists = [{
           id: '98998989',

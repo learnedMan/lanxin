@@ -237,6 +237,7 @@
         },
         /* 搜索 */
         handleQuery () {
+          this.queryParams.page = 1;
           this.getList();
         },
         /* 修改选中项 */

@@ -126,8 +126,6 @@
             <el-select
               v-model="scope.row.status"
               @change="handleChangeStatus(scope.row)"
-              placeholder="请选择所属产品"
-              clearable
             >
               <el-option
                 v-for="item in statusLists"
@@ -417,6 +415,7 @@
         },
         /* 搜索 */
         handleQuery () {
+          this.queryParams.page = 1;
           this.getList();
         },
         /* 添加 */
