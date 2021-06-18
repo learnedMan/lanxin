@@ -204,7 +204,7 @@ export default {
         },
         returntvList:function(){
             return this.tvList.filter(function (item) {
-                return item.status==1
+                return item.status==1&&item.extra.has_replay=='1'
             })
             // return this.tvList
         }
@@ -258,7 +258,7 @@ export default {
                 this.tvList = response.data;
                 // console.log(this.tvList)
                 this.tvList = this.tvList.filter(function (item) {
-                    return item.status==1
+                    return item.status==1&&item.extra.has_replay=='1'
                 })
                 this.queryParams.channel_id = this.tvList[0]?'' + this.tvList[0].id:'';
                 this.getList()

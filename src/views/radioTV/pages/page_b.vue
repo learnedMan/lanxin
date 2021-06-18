@@ -199,7 +199,7 @@ export default {
         },
         returntvList:function(){
             return this.tvList.filter(function (item) {
-                return item.status==1
+                return item.status==1&&item.extra.has_live=='1'
             })
         }
     },
@@ -240,7 +240,7 @@ export default {
                 this.tvList = response.data;
                 // console.log(this.tvList)
                 this.tvList = this.tvList.filter(function (item) {
-                    return item.status==1
+                    return item.status==1&&item.extra.has_live=='1'
                 })
                 this.queryParams.channel_id = this.tvList[0]?'' + this.tvList[0].id:'';
                 // console.log(this.queryParams.channel_id)

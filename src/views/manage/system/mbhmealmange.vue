@@ -2,8 +2,8 @@
   <div class="mbhmealmange">
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="所属产品：">
-        <el-select @change="changesource_id" v-model="queryParams.source_id" placeholder="请选择">
-          <el-option v-for="item in productList" :key="item.source_id" :label="item.name" :value="item.source_id">
+        <el-select @change="changesource_id" v-model="queryParams.sourceId" placeholder="请选择">
+          <el-option v-for="item in productList" :key="item.source_id" :label="item.name" :value="item.source_id||0">
           </el-option>
         </el-select>
       </el-form-item>
@@ -167,7 +167,7 @@ import {
         queryParams: {
           pageIndex: 1,
           pageSize: 10,
-          source_id:0,
+          sourceId:0,
           mealName:"",
           appType:''
         },
@@ -196,20 +196,15 @@ import {
           value: '',
           label: '全部'
         },{
-          value: 'web',
-          label: 'web'
+          value: 'ANDROID',
+          label: 'ANDROID'
         },{
-          value: 'android',
-          label: '安卓'
-        },{
-          value: 'ios',
-
-          label: 'ios'
+          value: 'IOS',
+          label: 'IOS'
         }],
       }
     },
     created() {
-      this.getList();
       this.getproductList()
 
     },
@@ -229,11 +224,11 @@ import {
       appTypechange(){
         this.form.version = '';
         this.versionList = JSON.parse(JSON.stringify(this._versionList)) ;
-        this.versionList = this.versionList.filter(item=>item.platform.toLowerCase() == this.form.appType);
+        this.versionList = this.versionList.filter(item=>item.platform.toLowerCase() == this.form.appType.toLowerCase());
       },
       getmealList(){
         var data = {
-          sourceId:this.queryParams.source_id
+          sourceId:this.queryParams.sourceId
         }
         mealdefaultlist(data).then((response) => {
           this.mealList = response.data;
@@ -244,10 +239,11 @@ import {
         getproduct({}).then((response) => {
             this.productList = response.data;
             this.product_id = this.productList[0].id;
-            this.queryParams.source_id = this.productList[0].source_id;
+            this.queryParams.sourceId = this.productList[0].source_id;
             this.getversionsList()
              this.getmealList();
             this.initForm();
+      this.getList();
 
         });
       },
@@ -320,7 +316,7 @@ import {
       initForm() {
           this.form = {
             mealId: "",
-            sourceId:this.queryParams.source_id,
+            sourceId:this.queryParams.sourceId,
             version:'',
             appType:''
           }
@@ -335,6 +331,8 @@ import {
         this.dialogType = "edit";
         this.$nextTick(() => { 
           this.form = JSON.parse(JSON.stringify(row))
+          this.versionList = JSON.parse(JSON.stringify(this._versionList)) ;
+          this.versionList = this.versionList.filter(item=>item.platform.toLowerCase() == this.form.appType.toLowerCase());
         })
         this.dialogFormVisible = true;
       },
