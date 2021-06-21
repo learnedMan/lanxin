@@ -299,6 +299,7 @@
           :width="innerDialog.width"
           :title="innerDialog.title"
           :visible.sync="innerDialog.show"
+          v-if="innerDialog.show"
           append-to-body
         >
           <new-list @confirm="confirmChoose" v-if="dialogForm.linked_to.route_type === 'news'"></new-list>
@@ -440,6 +441,11 @@
           }
         }
       },
+      watch: {
+        'innerDialog.show' () {
+          this.$router.push({ query: {} })
+        },
+      },
       methods: {
         /* 更新间距 */
         pickerFocus () {
@@ -488,27 +494,31 @@
         /* 确认选择的新闻 */
         confirmChoose (data) {
           console.log(data)
-          Object.assign(this.dialogForm, {
-            linked_to: {
+          if(Object.keys(data).length !== 0) {
+            const params = {
               route_type: this.dialogForm.linked_to.route_type,
               type: data.type,
               id: data.id,
               title: data.title
             }
-          })
+            if(data.link) params.link = data.link;
+            Object.assign(this.dialogForm, {
+              linked_to: params
+            })
+          }
           this.innerDialog.show = false;
         },
         /* 新增 */
         handleAdd () {
           this.dialogForm = {
             title: '',
-              content: '',
-              cover: '',
-              linked_to: {
+            content: '',
+            cover: '',
+            linked_to: {
               route_type: 'news',
-                type: '',
-                id: '',
-                title: ''
+              type: '',
+              id: '',
+              title: ''
             },
             push_to: {
               type: 'all',
@@ -537,7 +547,8 @@
               route_type: extra.linked_to.route_type,
               type: extra.linked_to.type,
               id: extra.linked_to.id,
-              title: extra.linked_to.title
+              title: extra.linked_to.title,
+              ...(extra.linked_to.link? { link: extra.linked_to.link } : {})
             },
             push_to: {
               type: extra.push_to.type,

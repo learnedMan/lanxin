@@ -388,6 +388,9 @@
           type: row.type,
           title: row.title
         }
+        if(row.link) {
+          this.params.link = { ...row.link };
+        }
       },
       /* 确认 */
       confirm () {

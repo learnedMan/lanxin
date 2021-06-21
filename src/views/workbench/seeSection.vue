@@ -729,14 +729,15 @@ export default {
     },
     /* 新增推送 */
     handlePush (row) {
-      const { type, id, title } = row;
+      const { type, id, title, link } = row;
       this.resetForm('dialogForm');
       Object.assign(this.dialogForm, {
         linked_to: {
           route_type: 'news',
           type,
           id,
-          title
+          title,
+          ...(link? { link } : {})
         }
       })
       this.pushDialog.show = true;
