@@ -156,7 +156,9 @@ import {
           children: 'children',
           label: 'remarks'
         },
-        chooseid:undefined
+        chooseid:undefined,
+
+        checkflag:true
       }
     },
     created() {
@@ -178,33 +180,61 @@ import {
       },
       //权限切换选中
       checkChange(data,b,c){
+        // console.log(data)
+        // console.log(b)
+        // console.log(c)
+        if(!this.checkflag){
+          return
+        }
+
         Array.prototype.remove = function(val) {var index = this.indexOf(val);if (index > -1) {this.splice(index, 1);}};
         let thisNode = this.$refs.tree.getNode(data.id) // 获取当前节点
         var keys = this.$refs.tree.getCheckedKeys() // 获取已勾选节点的key值
         if (b) { // 当前节点若被选中
-          for (let i = thisNode.level; i > 1; i--) { // 判断是否有父级节点
-            if (!thisNode.parent.checked) { // 父级节点未被选中，则将父节点替换成当前节点，往上继续查询，并将此节点key存入keys数组
+          for (let i = thisNode.level; i > 1; i--) { 
+            if (!thisNode.parent.checked) { //把父节点选中
               thisNode = thisNode.parent
               keys.push(thisNode.data.id)
             }
           }
-          // if(thisNode.childNodes){
+
+          // console.log(c)
+
+          // if(thisNode.childNodes){ //如果有子节点，那么把子节点选中
           //   for(var i=0;i<thisNode.childNodes.length;i++){
           //     keys.push(thisNode.childNodes[i].key)
           //   }
           // }
         }else{
-          if(thisNode.childNodes){
+          if(thisNode.childNodes){//取消该节点选中
             for(var i=0;i<thisNode.childNodes.length;i++){
               keys.remove(thisNode.childNodes[i].key)
             }
           }
         }
         this.$refs.tree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
+
+        // this.checkflag = false
+        // setTimeout(()=>{
+        //   this.checkflag = true
+        // },1000)
       },
       nodeclick(a,b){
-        console.log(a)
-        console.log(b)
+        // console.log(a)
+        // console.log(b)
+        var keys = this.$refs.tree.getCheckedKeys()
+        if(b.checkedKeys.indexOf(a.id)>-1){
+          console.log('选中')
+          let thisNode = this.$refs.tree.getNode(a.id) // 获取当前节点
+          if(thisNode.childNodes){ //如果有子节点，那么把子节点选中
+            for(var i=0;i<thisNode.childNodes.length;i++){
+              keys.push(thisNode.childNodes[i].key)
+            }
+          }
+        this.$refs.tree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
+        }else{
+          // console.log('不选中')
+        }
       },
       cancelrole(){
         this.drawer = false;
