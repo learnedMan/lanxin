@@ -263,7 +263,7 @@
       computed: {
         lists () {
           let arr = [];
-          if(this.detail.extra.only_statement === '0') {
+          if(this.detail.extra.broadcast_type !== '3') {
             arr.push({
               label: '机位管理',
               name: 'reservation'

@@ -26,16 +26,16 @@
         </el-form-item>
         <el-form-item
           label="类型:"
-          prop="portrait"
+          prop="broadcast_type"
         >
           <el-select
-            v-model="queryParams.portrait"
+            v-model="queryParams.broadcast_type"
             size="small"
             placeholder="请选择类型"
             clearable
           >
             <el-option
-              v-for="item in portraitOptions"
+              v-for="item in broadcast_typeOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -141,7 +141,7 @@
       <el-table-column
         label="直播间类型"
         align="center"
-        prop="portraitLabel"
+        prop="broadcast_typeLabel"
       />
       <el-table-column
         label="直播状态"
@@ -349,27 +349,25 @@
         <el-form-item
           label-width="120px"
           label="直播类型:"
-          prop="extra.portrait"
+          prop="extra.broadcast_type"
         >
-          <el-radio-group v-model="dialog.form.extra.portrait" :disabled="portraitDisabled">
-            <el-radio v-for="type of portraitOptions.filter(n => n.value !== '')" :key="type.value" :label="type.value">{{ type.label }}</el-radio>
+          <el-radio-group v-model="dialog.form.extra.broadcast_type" @change="statementChange">
+            <el-radio v-for="type of broadcast_typeOptions.filter(n => n.value !== '')" :key="type.value" :label="type.value">{{ type.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="直播方式:"
-          prop="extra.only_statement"
+          label-width="120px"
+          label="顶部图片:"
+          prop="extra.banner"
         >
-          <el-radio-group v-model="dialog.form.extra.only_statement" @change="statementChange">
-            <el-radio label="1" style="margin-top: 10px">图片</el-radio>
-            <el-radio label="0" style="margin-top: 10px">视频流</el-radio>
-          </el-radio-group>
+          <upload-single v-model="dialog.form.extra.banner"></upload-single>
         </el-form-item>
         <el-form-item
           label-width="120px"
           label="图文直播:"
           prop="extra.statement"
         >
-          <el-radio-group v-model="dialog.form.extra.statement" :disabled="dialog.form.extra.only_statement === '1'">
+          <el-radio-group v-model="dialog.form.extra.statement" :disabled="dialog.form.extra.broadcast_type === '3'">
             <el-radio v-for="type of statementOptions" :key="type.value" :label="type.value" style="margin-top: 10px">{{ type.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -532,7 +530,7 @@
         queryParams: {
           keyword: '',
           live: '',
-          portrait: '',
+          broadcast_type: '',
           status: '',
           startdate: '',
           enddate: '',
@@ -549,18 +547,22 @@
           multiple: true // 多选
         }, // 级联选择器配置
         channelsList: [], // 栏目列表
-        portraitOptions: [
+        broadcast_typeOptions: [
           {
             label: '全部',
             value: ''
           },
           {
             label: '横版',
-            value: 0
+            value: '1'
           },
           {
             label: '竖版',
-            value: 1
+            value: '2'
+          },
+          {
+            label: '纯图文',
+            value: '3'
           }
         ], // 直播类型
         liveOptions: [
@@ -749,10 +751,10 @@
             extra: {
               type: 'broadcast',
               title: '', // 直播间名
+              banner: '',
               template_style: '240',
               cover: [], // 直播间封面
-              portrait: 0, // 直播类型
-              only_statement: '0', // 是否为纯图文直播间
+              broadcast_type: '1', // 直播类型
               statement: 'none', // 图文直播
               start_time: '', // 直播开始时间
               end_time: '', // 直播结束时间
@@ -785,7 +787,7 @@
             'extra.cover': [
               { validator: coverValidator, trigger: 'change' }
             ],
-            'extra.portrait': [
+            'extra.broadcast_type': [
               { required: true, message: '请选择直播类型', trigger: 'change' }
             ],
             'extra.start_time': [
@@ -793,6 +795,9 @@
             ],
             'extra.intro': [
               { required: true, message: '请输入直播间简介', trigger: 'blur' }
+            ],
+            'extra.banner': [
+              { required: true, message: '请上传顶部图片', trigger: 'change' }
             ],
           }
         },
@@ -813,10 +818,6 @@
       imgCount ({ dialog, templateStyleLists }) {
         return templateStyleLists.find(n => n.value === dialog.form.extra.template_style)?.count ?? 1
       },
-      /* 直播类型限制 */
-      portraitDisabled ({ dialog: { form: { extra: { only_statement } } } }) {
-        return only_statement === '1'
-      }
     },
     methods: {
       /* 重置 */
@@ -846,10 +847,10 @@
             extra: {
               type: 'broadcast',
               title: '', // 直播间名
+              banner: '',
               template_style: '240',
               cover: [], // 直播间封面
-              portrait: 0, // 直播类型
-              only_statement: '0', // 是否为纯图文直播间
+              broadcast_type: '1', // 直播类型
               statement: 'none', // 图文直播
               start_time: '', // 直播开始时间
               end_time: '', // 直播结束时间
@@ -888,8 +889,7 @@
                 extra: {
                   ...data.extra,
                   template_style: data.extra.template_style || '240',
-                  only_statement: data.extra.only_statement || '0',
-                  portrait: Number(data.extra.portrait)
+                  broadcast_type: data.extra.broadcast_type
                 }
               }
             });
@@ -930,9 +930,8 @@
       },
       /* 修改图文直播类型 */
       statementChange (val) {
-        if(val === '1') {
+        if(val === '3') {
           this.dialog.form.extra.statement = 'broadcast';
-          this.dialog.form.extra.portrait = 0;
         }
       },
       /* 发布 */
@@ -969,7 +968,8 @@
         const params = {
           channels: this.dialog.form.channels.join(),
           extra: {
-            ...this.dialog.form.extra
+            ...this.dialog.form.extra,
+            cover: this.dialog.form.extra.cover.slice(0, this.imgCount)
           }
         };
         let promise;
@@ -1005,7 +1005,7 @@
         getStudioList(this.removePropertyOfNullFor0(params)).then(res => {
           this.tableData = (res.data || []).map(n => ({
             ...n,
-            portraitLabel: this.portraitOptions.find(item => item.value === n.portrait)?.label ?? '',
+            broadcast_typeLabel: this.broadcast_typeOptions.find(item => item.value === n.broadcast_type)?.label ?? '',
             liveLabel: this.liveOptions.find(item => item.value === n.live)?.label ?? ''
           }));
           this.total = res.total;

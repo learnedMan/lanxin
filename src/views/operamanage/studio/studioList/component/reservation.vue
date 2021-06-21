@@ -254,9 +254,9 @@
           const currentIndex = this.lists.findIndex(n => n.extra.sort == this.activeName);
           this.$refs.form[currentIndex]?.validate(val => {
             if(val) {
-              const { id, extra, broadcast_id } = this.lists[currentIndex];
+              const { id, extra } = this.lists[currentIndex];
               const params = {
-                broadcast_id,
+                broadcast_id: this.id,
                 extra: {
                   ...extra
                 }

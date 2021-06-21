@@ -108,7 +108,7 @@ export default {
   methods: {
     /* 切换站点 */
     handleChangeSite () {
-      const id = this.u_info.site_id;
+      const id = this.u_info.site.id;
       this.form.id = id;
       this.dialogFormVisible = true;
     },
