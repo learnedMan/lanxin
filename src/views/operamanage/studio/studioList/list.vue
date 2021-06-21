@@ -359,6 +359,7 @@
           label-width="120px"
           label="顶部图片:"
           prop="extra.banner"
+          v-if="dialog.form.extra.broadcast_type === '3'"
         >
           <upload-single v-model="dialog.form.extra.banner"></upload-single>
         </el-form-item>
