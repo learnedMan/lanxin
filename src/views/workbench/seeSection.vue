@@ -428,6 +428,12 @@
           />
         </el-form-item>
         <el-form-item
+          label="推送图片:"
+          prop="cover"
+        >
+          <upload-single v-model="dialogForm.cover"></upload-single>
+        </el-form-item>
+        <el-form-item
           label="推送时间:"
           prop="push_time"
         >
@@ -461,12 +467,12 @@
         </el-form-item>
         <el-form-item
           v-if="dialogForm.push_to.type === 'single'"
-          label="用户手机号:"
+          label="客户端ID:"
           prop="push_to.cid"
         >
           <el-input
             v-model="dialogForm.push_to.cid"
-            placeholder="请输入用户手机号"
+            placeholder="请输入客户端ID"
             clearable
             style="width: 194px"
           />
@@ -506,12 +512,14 @@ import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort } from '@
 import NewDetail from './reviewNews/detail'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 import { dateFormat } from "@/utils/costum";
+import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
 export default {
   name: 'SeeSection',
   components: {
     NewDetail,
-    VersionHistory
+    VersionHistory,
+    uploadSingle
   },
   data() {
     const selectableRange = () => {
@@ -649,7 +657,7 @@ export default {
           { required: true, message: '请选择推送时间', trigger: 'change' }
         ],
         'push_to.cid': [
-          { required: true, message: '请输入用户手机号', trigger: 'blur' }
+          { required: true, message: '请输入客户端ID', trigger: 'blur' }
         ],
         'linked_to.id': [
           { required: true, message: '请选择链接到的内容', trigger: 'change' }
@@ -737,10 +745,11 @@ export default {
     },
     /* 新增推送 */
     handlePush (row) {
-      const { type, id, title, link } = row;
+      const { type, id, title, link, cover } = row;
       this.resetForm('dialogForm');
       this.switchVal = false;
       Object.assign(this.dialogForm, {
+        cover,
         linked_to: {
           route_type: 'news',
           type,

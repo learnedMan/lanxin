@@ -683,12 +683,6 @@
             img: '1402-221.png'
           },
           {
-            label: '播放器1',
-            value: '210',
-            count: 1,
-            img: '1402-210.png'
-          },
-          {
             label: '播放器2',
             value: '211',
             count: 1,

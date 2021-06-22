@@ -24,6 +24,30 @@
       display: block;
       object-fit: cover;
     }
+    .img-box {
+      position: relative;
+      &-hover {
+        z-index: -1;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0 , 0, 0, 0);
+        transition: background-color ease-in .1s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 20px;
+      }
+      &:hover {
+        .img-box-hover {
+          z-index: 1;
+          background-color: rgba(0 , 0, 0, .5);
+        }
+      }
+    }
   }
 </style>
 <template>
@@ -37,7 +61,12 @@
     :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"
   >
-    <img v-if="value" :src="value" class="avatar">
+    <div v-if="value" class="img-box">
+      <img :src="value" class="avatar">
+      <div class="img-box-hover">
+        <i class="el-icon-delete" @click.stop="$emit('input', '')" />
+      </div>
+    </div>
     <i v-else class="el-icon-plus avatar-uploader-icon" />
   </el-upload>
 </template>

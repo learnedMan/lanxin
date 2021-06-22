@@ -245,6 +245,12 @@
             <el-button type="primary" size="small" @click="handleChoose" style="margin-left: 10px">选择</el-button>
           </el-form-item>
           <el-form-item
+            label="推送图片:"
+            prop="cover"
+          >
+            <upload-single v-model="dialogForm.cover"></upload-single>
+          </el-form-item>
+          <el-form-item
             label="推送时间:"
             prop="push_time"
           >
@@ -278,12 +284,12 @@
           </el-form-item>
           <el-form-item
             v-if="dialogForm.push_to.type === 'single'"
-            label="用户手机号:"
+            label="客户端ID:"
             prop="push_to.cid"
           >
             <el-input
               v-model="dialogForm.push_to.cid"
-              placeholder="请输入用户手机号"
+              placeholder="请输入客户端ID"
               clearable
               style="width: 194px"
             />
@@ -324,11 +330,13 @@
   import newList from './component/newList'
   import channel from './component/channel'
   import { dateFormat } from "@/utils/costum";
+  import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
     export default {
       components: {
         newList,
-        channel
+        channel,
+        uploadSingle
       },
       data() {
         const selectableRange = () => {
@@ -393,8 +401,8 @@
             {
               label: '新闻',
               value: 'news'
-            },
-            /*{
+            }/*,
+            {
               label: '活动(待定)',
               value: 'active'
             },
@@ -431,7 +439,7 @@
               { required: true, message: '请选择推送时间', trigger: 'change' }
             ],
             'push_to.cid': [
-              { required: true, message: '请输入用户手机号', trigger: 'blur' }
+              { required: true, message: '请输入客户端ID', trigger: 'blur' }
             ],
             'linked_to.id': [
               { required: true, message: '请选择链接到的内容', trigger: 'change' }
@@ -516,11 +524,12 @@
               route_type: this.dialogForm.linked_to.route_type,
               type: data.type,
               id: data.id,
-              title: data.title
+              title: data.title,
             }
             if(data.link) params.link = data.link;
             Object.assign(this.dialogForm, {
-              linked_to: params
+              linked_to: params,
+              cover: data.cover
             })
           }
           this.innerDialog.show = false;
@@ -649,7 +658,8 @@
                 route_type: extra.linked_to.route_type,
                 type: extra.linked_to.type,
                 id: extra.linked_to.id,
-                title: extra.linked_to.title
+                title: extra.linked_to.title,
+                ...(extra.linked_to.link? { link: extra.linked_to.link } : {})
               },
               push_to: {
                 type: extra.push_to.type,
