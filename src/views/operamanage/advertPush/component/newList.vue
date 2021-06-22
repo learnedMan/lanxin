@@ -386,7 +386,8 @@
         this.params = {
           id: row.id,
           type: row.type,
-          title: row.title
+          title: row.title,
+          cover: row.cover
         }
         if(row.link) {
           this.params.link = { ...row.link };

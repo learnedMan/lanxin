@@ -51,10 +51,17 @@
           const id = val.id;
           this.$refs.channel.setCheckedKeys([]);
           this.$refs.channel.setCheckedKeys([id]);
+          let cover;
+          try {
+            cover = JSON.parse(val.cover)?.[0]?.path || '';
+          }catch (e) {
+            cover = ''
+          }
           this.params = {
             id: val.id,
             type: val.type,
-            title: val.name
+            title: val.name,
+            cover
           }
         },
         confirm () {
