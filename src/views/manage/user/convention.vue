@@ -62,7 +62,7 @@
             size="mini"
             @click="handleAdd"
           >
-            添加
+            新增
           </el-button>
           <el-button
             type="primary"
@@ -234,6 +234,17 @@
             </el-select>
           </el-form-item>
           <el-form-item
+            label="赠送积分"
+            prop="risePoints"
+          >
+            <el-input
+              clearable
+              style="width: 200px"
+              placeholder="请输入赠送积分值"
+              v-model.number="dialogForm.risePoints"
+            />
+          </el-form-item>
+          <el-form-item
             label="每日最高限额"
             prop="upperLineEveryday"
           >
@@ -308,6 +319,16 @@
             callback()
           }
         };
+        const checkRisePoints = (rule, value, callback) => {
+          if (value == null || value === '') {
+            return callback(new Error('赠送积分值不能为空'));
+          }
+          if (!Number.isInteger(value) || value < 0) {
+            callback(new Error('请输入正整数'));
+          } else {
+            callback()
+          }
+        };
         return {
           productLists: [],
           statusLists: [
@@ -342,6 +363,7 @@
             ruleName: '', // 名称
             ruleRemark: '', // 说明
             type: '', // 规则类型
+            risePoints: '', // 赠送积分值
             action: '', // 行为
             upperLineEveryday: '', // 每日最高限额
             upperLine: '', // 最高限额积分
@@ -363,6 +385,9 @@
             upperLine: [
               { required: true, validator: checkUpperLine, trigger: 'blur' }
             ],
+            risePoints: [
+              { required: true, validator: checkRisePoints, trigger: 'blur' }
+            ]
           }
         }
       },
@@ -433,6 +458,7 @@
           this.dialogForm = {
             ruleName: row.ruleName,
             ruleRemark: row.ruleRemark,
+            risePoints: row.risePoints,
             type: row.type,
             action: row.action,
             upperLineEveryday: row.upperLineEveryday,
@@ -484,7 +510,7 @@
         },
         /* 修改状态 */
         handleChangeStatus (row) {
-          const { sourceId, id, status, ruleName, ruleRemark, type, action, upperLineEveryday, upperLine } = row;
+          const { sourceId, id, status, ruleName, ruleRemark, type, action, upperLineEveryday, upperLine, risePoints } = row;
           const user = this.$store.state.user.u_info;
           const params = {
             sourceId,
@@ -494,6 +520,7 @@
             ruleName, // 名称
             ruleRemark, // 说明
             type, // 规则类型
+            risePoints,
             action, // 行为
             upperLineEveryday, // 每日最高限额
             upperLine, // 最高限额积分
