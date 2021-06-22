@@ -42,7 +42,7 @@
         * 获取栏目列表
         * */
         getChannels() {
-          return getChannels().then(res => {
+          return getChannels({ status: 1 }).then(res => {
             this.channelsList = res
           })
         },

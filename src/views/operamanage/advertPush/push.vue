@@ -125,7 +125,7 @@
         <el-table-column
           label="更新时间"
           align="center"
-          prop="updated_at"
+          prop="push_time"
         />
         <el-table-column
           label="推送个人"
@@ -249,14 +249,23 @@
             prop="push_time"
           >
             <el-date-picker
+              style="width: 194px;margin-right: 10px"
               v-model="dialogForm.push_time"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
               :picker-options="pickerOptions"
               @focus="pickerFocus"
+              v-show="switchVal"
             >
             </el-date-picker>
+            <el-switch
+              size="small"
+              v-model="switchVal"
+              @change="switchChange"
+              active-text="自定义时间"
+              inactive-text="立即推送">
+            </el-switch>
           </el-form-item>
           <el-form-item
             label="是否推送给个人:"
@@ -314,6 +323,7 @@
   import { getPushList, addPushDetail, changePushDetail, deletePushDetail } from '@/api/operamanage'
   import newList from './component/newList'
   import channel from './component/channel'
+  import { dateFormat } from "@/utils/costum";
 
     export default {
       components: {
@@ -326,13 +336,13 @@
           let hour = data.getHours();
           let minute = data.getMinutes();
           let second = data.getSeconds();
-          return `00:00:00 - ${hour}:${minute}:${second}`
+          return `${hour}:${minute}:${second} - 23:59:59`
         }
         return {
           pickerOptions:{
             selectableRange: selectableRange(),
             disabledDate(time) {
-              return time.getTime() > new Date().getTime();
+              return time.getTime() < (new Date().getTime() - 24 * 60 * 60 * 1000);
             },
           },
           updateSelectableRange: selectableRange,
@@ -438,7 +448,8 @@
             title: '链接到',
             width: '1000px',
             show: false
-          }
+          },
+          switchVal: false
         }
       },
       watch: {
@@ -447,6 +458,12 @@
         },
       },
       methods: {
+        /* 推送时间问题 */
+        switchChange () {
+          this.$nextTick(() => {
+            this.$refs.dialogForm?.clearValidate('push_time')
+          })
+        },
         /* 更新间距 */
         pickerFocus () {
           this.pickerOptions.selectableRange = this.updateSelectableRange();
@@ -510,6 +527,7 @@
         },
         /* 新增 */
         handleAdd () {
+          this.switchVal = false;
           this.dialogForm = {
             title: '',
             content: '',
@@ -538,6 +556,7 @@
         /* 编辑 */
         handleEdit (row) {
           const { id, extra } = row;
+          this.switchVal = true;
           this.resetForm('dialogForm');
           this.dialogForm = {
             title: extra.title,
@@ -565,6 +584,7 @@
         },
         /* 确认新增或编辑 */
         enterDialog () {
+          if(!this.switchVal) this.dialogForm.push_time = dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss');
           this.$refs.dialogForm?.validate(val => {
             if(val) {
               const id = this.dialog.id;

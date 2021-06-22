@@ -135,10 +135,10 @@
         </el-form-item>-->
         <el-form-item
           label="举报对象类型:"
-          prop="type"
+          prop="mediaType"
         >
           <el-select
-            v-model="queryParams.mediaId"
+            v-model="queryParams.mediaType"
             size="small"
             placeholder="请选择类型"
             clearable
@@ -418,6 +418,7 @@
 <script>
 import { getReport, getReportDetail, reportReply } from '@/api/workbench.js'
 import { getproduct } from '@/api/manage'
+import { getNewDetail } from '@/api/content'
 import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
 export default {
@@ -438,7 +439,7 @@ export default {
         endReplyTime: '',
         beginReportTime: '',
         endReportTime: '',
-        mediaId: '',
+        mediaType: '',
         sourceId: '', // 来源id
         page: 1,
         limit: 10
@@ -657,8 +658,10 @@ export default {
     getReportDetail(id) {
       getReportDetail({
         id
-      }).then(res => {
-        const data = res.data
+      }).then(async res => {
+        const data = res.data;
+        /*const newData = await getNewDetail(data.newId);
+        console.log(newData)*/
         this.baseInfo = {
           ...(data || {}),
           reportTypeLabel: data.reportType.replace(/[\[|\]]/g, '').split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),

@@ -129,7 +129,6 @@
               value-format="yyyy-MM-dd HH:mm:ss"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              :picker-options="pickerOptions"
               @change="handleDateChange"
             />
           </el-form-item>
@@ -433,12 +432,23 @@
           prop="push_time"
         >
           <el-date-picker
-            style="width: 194px"
+            style="width: 194px;margin-right: 10px"
             v-model="dialogForm.push_time"
             value-format="yyyy-MM-dd HH:mm:ss"
             type="datetime"
-            placeholder="选择日期时间">
+            placeholder="选择日期时间"
+            :picker-options="pickerOptions"
+            @focus="pickerFocus"
+            v-show="switchVal"
+          >
           </el-date-picker>
+          <el-switch
+            size="small"
+            v-model="switchVal"
+            @change="switchChange"
+            active-text="自定义时间"
+            inactive-text="立即推送">
+          </el-switch>
         </el-form-item>
         <el-form-item
           label="是否推送给个人:"
@@ -495,6 +505,7 @@ import { addPushDetail} from '@/api/operamanage'
 import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort } from '@/api/content'
 import NewDetail from './reviewNews/detail'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
+import { dateFormat } from "@/utils/costum";
 
 export default {
   name: 'SeeSection',
@@ -503,6 +514,13 @@ export default {
     VersionHistory
   },
   data() {
+    const selectableRange = () => {
+      let data = new Date(new Date().getTime() + 1000);
+      let hour = data.getHours();
+      let minute = data.getMinutes();
+      let second = data.getSeconds();
+      return `${hour}:${minute}:${second} - 23:59:59`
+    }
     return {
       channelsList: [], // 栏目
       typeOptions: [
@@ -553,32 +571,12 @@ export default {
         pageSize: 10,
         page: 1
       },
+      switchVal: false,
       pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
+        selectableRange: selectableRange(),
+        disabledDate(time) {
+          return time.getTime() < (new Date().getTime() - 24 * 60 * 60 * 1000);
+        },
       },
       useravatar: require('@/assets/c_images/useravatar.jpg'), // 默认头像
       dateValue: '',
@@ -678,6 +676,16 @@ export default {
     })
   },
   methods: {
+    /* 推送时间问题 */
+    switchChange () {
+      this.$nextTick(() => {
+        this.$refs.dialogForm?.clearValidate('push_time')
+      })
+    },
+    /* 更新间距 */
+    pickerFocus () {
+      this.pickerOptions.selectableRange = this.updateSelectableRange();
+    },
     /* 过滤禁用的产品 */
     filterNode (data) {
       let arr = [];
@@ -731,6 +739,7 @@ export default {
     handlePush (row) {
       const { type, id, title, link } = row;
       this.resetForm('dialogForm');
+      this.switchVal = false;
       Object.assign(this.dialogForm, {
         linked_to: {
           route_type: 'news',
@@ -744,21 +753,26 @@ export default {
     },
     /* 确认推送 */
     enterPushDialog () {
-      const { product_id, dialogForm } = this;
-      const cid = dialogForm.push_to.cid
-      const params = {
-        product_id,
-        extra: {
-          ...dialogForm,
-          push_to: {
-            ...dialogForm.push_to,
-            cid: cid? [cid] : []
+      if(!this.switchVal) this.dialogForm.push_time = dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss');
+      this.$refs.dialogForm?.validate(val => {
+        if(val) {
+          const { product_id, dialogForm } = this;
+          const cid = dialogForm.push_to.cid
+          const params = {
+            product_id,
+            extra: {
+              ...dialogForm,
+              push_to: {
+                ...dialogForm.push_to,
+                cid: cid? [cid] : []
+              }
+            }
           }
+          addPushDetail(params).then(res => {
+            this.$message.success(res.message);
+            this.pushDialog.show = false;
+          })
         }
-      }
-      addPushDetail(params).then(res => {
-        this.$message.success(res.message);
-        this.pushDialog.show = false;
       })
     },
     /* 只能输入数字 */
