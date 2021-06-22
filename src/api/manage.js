@@ -515,9 +515,10 @@ export function delprograms(id) {
 }
 
 // 点播
-export function getvms_channels() {
+//cloud=1 蓝云 cloud=0 vms
+export function getvms_channels(id) {
   return request({
-    url: '/api/videos/vms_channels/?cloud=1',
+    url: `/api/videos/vms_channels/?cloud=${id}`,
     method: 'get'
   })
 }
