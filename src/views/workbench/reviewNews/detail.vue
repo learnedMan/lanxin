@@ -129,7 +129,7 @@
                   <el-select
                     :value="parseObj(formOptions['extra.tags'].item)"
                     size="small"
-                    style="width: 200px"
+                    style="width: 300px"
                     clearable
                     v-bind="formOptions['extra.tags'].item.componentProps"
                     @input="handleInput($event, formOptions['extra.tags'].item)"
@@ -603,9 +603,9 @@ export default {
     const coverValidator = (rule, value, callback) => {
       const count = this.formOptions['extra.cover'].item.componentProps.count
       if (!Array.isArray(value) || value.length === 0) {
-        callback(new Error('请上传图片'))
+        callback(new Error('请上传封面图片'))
       } else if (!value.slice(0, count).every(n => n.path)) {
-        callback(new Error(`请上传${count}张图片`))
+        callback(new Error(`请上传${count}张封面图片`))
       } else {
         callback()
       }
@@ -1394,7 +1394,7 @@ export default {
           * 保存数据
           * */
     handleSave() {
-      this.$refs.submitForm.validate(valid => {
+      this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           const currentTabsFromItem = this.initFrom()
           const type = this.from.extra.type
@@ -1430,6 +1430,8 @@ export default {
               this.$emit('refresh')
             }
           })
+        }else {
+          this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
         }
       })
     },
