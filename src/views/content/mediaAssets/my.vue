@@ -161,9 +161,9 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="创建时间"
+        label="更新时间"
         align="center"
-        prop="created_at"
+        prop="updated_at"
       />
       <el-table-column
         label="操作"

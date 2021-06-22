@@ -4,8 +4,13 @@
   padding: 30px;
   &--url {
     padding-right: 20px;
-    word-wrap: break-word;
-    word-break: break-all;
+    span {
+      display: inline-block;
+      width: 500px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
   &--box {
     display: flex;
@@ -26,7 +31,7 @@
     <div class="xl-preview-script">
       <h3>{{ detail.title }}</h3>
       <p class="xl-preview-script--url">
-        {{ this.url }}
+        <span>{{ this.url }}</span>
         <el-button
           style="margin-left: 10px"
           type="text"
