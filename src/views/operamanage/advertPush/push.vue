@@ -284,12 +284,12 @@
           </el-form-item>
           <el-form-item
             v-if="dialogForm.push_to.type === 'single'"
-            label="用户手机号:"
+            label="客户端ID:"
             prop="push_to.cid"
           >
             <el-input
               v-model="dialogForm.push_to.cid"
-              placeholder="请输入用户手机号"
+              placeholder="请输入客户端ID"
               clearable
               style="width: 194px"
             />
@@ -439,7 +439,7 @@
               { required: true, message: '请选择推送时间', trigger: 'change' }
             ],
             'push_to.cid': [
-              { required: true, message: '请输入用户手机号', trigger: 'blur' }
+              { required: true, message: '请输入客户端ID', trigger: 'blur' }
             ],
             'linked_to.id': [
               { required: true, message: '请选择链接到的内容', trigger: 'change' }
