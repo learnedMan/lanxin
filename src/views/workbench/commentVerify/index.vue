@@ -350,7 +350,7 @@ export default {
         },
         {
           label: '所属新闻/帖子',
-          prop: 'title',
+          prop: 'dataTitle',
           hidden: !!this.newsId,
           showOverflowTooltip: true // 超出省略号
         },

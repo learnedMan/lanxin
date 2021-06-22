@@ -125,7 +125,7 @@
         <el-table-column
           label="更新时间"
           align="center"
-          prop="updated_at"
+          prop="push_time"
         />
         <el-table-column
           label="推送个人"
@@ -249,14 +249,23 @@
             prop="push_time"
           >
             <el-date-picker
+              style="width: 194px;margin-right: 10px"
               v-model="dialogForm.push_time"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
               :picker-options="pickerOptions"
               @focus="pickerFocus"
+              v-show="switchVal"
             >
             </el-date-picker>
+            <el-switch
+              size="small"
+              v-model="switchVal"
+              @change="switchChange"
+              active-text="自定义时间"
+              inactive-text="立即推送">
+            </el-switch>
           </el-form-item>
           <el-form-item
             label="是否推送给个人:"
@@ -299,6 +308,7 @@
           :width="innerDialog.width"
           :title="innerDialog.title"
           :visible.sync="innerDialog.show"
+          v-if="innerDialog.show"
           append-to-body
         >
           <new-list @confirm="confirmChoose" v-if="dialogForm.linked_to.route_type === 'news'"></new-list>
@@ -313,6 +323,7 @@
   import { getPushList, addPushDetail, changePushDetail, deletePushDetail } from '@/api/operamanage'
   import newList from './component/newList'
   import channel from './component/channel'
+  import { dateFormat } from "@/utils/costum";
 
     export default {
       components: {
@@ -325,13 +336,13 @@
           let hour = data.getHours();
           let minute = data.getMinutes();
           let second = data.getSeconds();
-          return `00:00:00 - ${hour}:${minute}:${second}`
+          return `${hour}:${minute}:${second} - 23:59:59`
         }
         return {
           pickerOptions:{
             selectableRange: selectableRange(),
             disabledDate(time) {
-              return time.getTime() > new Date().getTime();
+              return time.getTime() < (new Date().getTime() - 24 * 60 * 60 * 1000);
             },
           },
           updateSelectableRange: selectableRange,
@@ -437,10 +448,22 @@
             title: '链接到',
             width: '1000px',
             show: false
-          }
+          },
+          switchVal: false
         }
       },
+      watch: {
+        'innerDialog.show' () {
+          this.$router.push({ query: {} })
+        },
+      },
       methods: {
+        /* 推送时间问题 */
+        switchChange () {
+          this.$nextTick(() => {
+            this.$refs.dialogForm?.clearValidate('push_time')
+          })
+        },
         /* 更新间距 */
         pickerFocus () {
           this.pickerOptions.selectableRange = this.updateSelectableRange();
@@ -488,27 +511,32 @@
         /* 确认选择的新闻 */
         confirmChoose (data) {
           console.log(data)
-          Object.assign(this.dialogForm, {
-            linked_to: {
+          if(Object.keys(data).length !== 0) {
+            const params = {
               route_type: this.dialogForm.linked_to.route_type,
               type: data.type,
               id: data.id,
               title: data.title
             }
-          })
+            if(data.link) params.link = data.link;
+            Object.assign(this.dialogForm, {
+              linked_to: params
+            })
+          }
           this.innerDialog.show = false;
         },
         /* 新增 */
         handleAdd () {
+          this.switchVal = false;
           this.dialogForm = {
             title: '',
-              content: '',
-              cover: '',
-              linked_to: {
+            content: '',
+            cover: '',
+            linked_to: {
               route_type: 'news',
-                type: '',
-                id: '',
-                title: ''
+              type: '',
+              id: '',
+              title: ''
             },
             push_to: {
               type: 'all',
@@ -528,6 +556,7 @@
         /* 编辑 */
         handleEdit (row) {
           const { id, extra } = row;
+          this.switchVal = true;
           this.resetForm('dialogForm');
           this.dialogForm = {
             title: extra.title,
@@ -537,7 +566,8 @@
               route_type: extra.linked_to.route_type,
               type: extra.linked_to.type,
               id: extra.linked_to.id,
-              title: extra.linked_to.title
+              title: extra.linked_to.title,
+              ...(extra.linked_to.link? { link: extra.linked_to.link } : {})
             },
             push_to: {
               type: extra.push_to.type,
@@ -554,6 +584,7 @@
         },
         /* 确认新增或编辑 */
         enterDialog () {
+          if(!this.switchVal) this.dialogForm.push_time = dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss');
           this.$refs.dialogForm?.validate(val => {
             if(val) {
               const id = this.dialog.id;

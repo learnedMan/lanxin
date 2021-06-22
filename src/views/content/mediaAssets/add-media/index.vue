@@ -333,7 +333,7 @@
                 <el-form-item
                   v-show="initFrom().includes('extra.link.id')"
                   v-bind="formOptions['extra.link.id'].item.props"
-                  label-width="auto"
+                  label-width="126px"
                 >
                   <el-input
                     :value="parseObj(formOptions['extra.link.id'].item)"
@@ -618,9 +618,9 @@ export default {
     const coverValidator = (rule, value, callback) => {
       const count = this.formOptions['extra.cover'].item.componentProps.count
       if (!Array.isArray(value) || value.length === 0) {
-        callback(new Error('请上传图片'))
+        callback(new Error('请上传封面图片'))
       } else if (!value.slice(0, count).every(n => n.path)) {
-        callback(new Error(`请上传${count}张图片`))
+        callback(new Error(`请上传${count}张封面图片`))
       } else {
         callback()
       }
@@ -1440,9 +1440,11 @@ export default {
     },
     /* 保存草稿 */
     handleDraft() {
-      this.$refs.submitForm.validate(valid => {
+      this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存草稿成功!')
+        }else {
+          this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
         }
       })
     },
@@ -1450,11 +1452,13 @@ export default {
         * 预览
         * */
     handlePreview() {
-      this.$refs.submitForm.validate(valid => {
+      this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存成功', ({ data: { id } = {} }) => {
             if(id) this.$router.push({ name: 'Preview', query: { id, type: 'scripts' }})
           })
+        }else {
+          this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
         }
       })
     },
@@ -1462,9 +1466,11 @@ export default {
         * 发布
         * */
     handlePublish() {
-      this.$refs.submitForm.validate(valid => {
+      this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.dialog.show = true
+        }else {
+          this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
         }
       })
     },
@@ -1496,7 +1502,7 @@ export default {
        * 获取栏目列表
        * */
     getChannels() {
-      getChannels().then(res => {
+      getChannels({ status: 1 }).then(res => {
         this.channelsList = res
       })
     },
