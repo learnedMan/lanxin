@@ -428,6 +428,12 @@
           />
         </el-form-item>
         <el-form-item
+          label="推送图片:"
+          prop="cover"
+        >
+          <upload-single v-model="dialogForm.cover"></upload-single>
+        </el-form-item>
+        <el-form-item
           label="推送时间:"
           prop="push_time"
         >
@@ -506,12 +512,14 @@ import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort } from '@
 import NewDetail from './reviewNews/detail'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 import { dateFormat } from "@/utils/costum";
+import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
 export default {
   name: 'SeeSection',
   components: {
     NewDetail,
-    VersionHistory
+    VersionHistory,
+    uploadSingle
   },
   data() {
     const selectableRange = () => {
@@ -737,10 +745,11 @@ export default {
     },
     /* 新增推送 */
     handlePush (row) {
-      const { type, id, title, link } = row;
+      const { type, id, title, link, cover } = row;
       this.resetForm('dialogForm');
       this.switchVal = false;
       Object.assign(this.dialogForm, {
+        cover,
         linked_to: {
           route_type: 'news',
           type,
