@@ -7,8 +7,7 @@
               v-for="item in platformoptions"
               :key="item.value"
               :label="item.label"
-              :value="item.value"
-            >
+              :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
@@ -19,16 +18,13 @@
             clearable
             size="small"
             style="width: 200px"
-            @keyup.enter.native="handleQuery"
-          />
+            @keyup.enter.native="handleQuery"/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery" size="mini"
-            >搜索</el-button
-          >
+            >搜索</el-button>
           <el-button type="info" @click="initcondition" size="mini"
-            >重置</el-button
-          >
+            >重置</el-button>
             <el-button type="primary" @click="adddata" size="mini">添加</el-button>
             <el-button type="primary" @click="back" size="mini">返回上一级</el-button>
         </el-form-item>
@@ -38,74 +34,50 @@
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       border
       v-loading="loading"
-      :data="dataList"
-    >
+      :data="dataList">
       <el-table-column label="ID" width="100px" align="center" prop="id" />
       <el-table-column
         label="应用名称"
         width="100px"
         align="center"
-        prop="name"
-      />
+        prop="name"/>
       <el-table-column
         label="应用LOGO"
         width="150px"
         align="center"
         prop="logo"
-        :show-overflow-tooltip="true"
-      >
+        :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <img
             :src="scope.row.logo"
             alt=""
-            style="width: 50px; height: 50px; border-radius: 50%"
-          />
+            style="width: 50px; height: 50px; border-radius: 50%" />
         </template>
       </el-table-column>
       <el-table-column
         label="终端"
         align="center"
         prop="platform"
-        :show-overflow-tooltip="true"
-      />
+        :show-overflow-tooltip="true"/>
       <el-table-column
         label="版本"
         align="center"
         prop="version_code"
-        :show-overflow-tooltip="true"
-      />
+        :show-overflow-tooltip="true"/>
       <el-table-column
         label="下载地址"
         align="center"
         prop="url"
-        :show-overflow-tooltip="true"
-      />
+        :show-overflow-tooltip="true"/>
       <el-table-column
         label="创建时间"
         align="center"
         prop="created_at"
-        :show-overflow-tooltip="true"
-      />
+        :show-overflow-tooltip="true"/>
       <el-table-column width="200px" label="操作" align="center">
         <template slot-scope="scope">
           <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
           <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
-          <!-- <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            style="color: #e6a23c"
-            @click="editdata(scope.row)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            style="color: #f56c6c"
-            @click="deldata(scope.row)"
-            >删除</el-button
-          > -->
         </template>
       </el-table-column>
     </el-table>
@@ -114,15 +86,13 @@
       :total="total"
       :page.sync="queryParams.page"
       :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      @pagination="getList"/>
     <el-dialog
       width="800px"
       :close-on-click-modal="false"
       :title="dialogTitle"
       top="2vh"
-      :visible.sync="dialogFormVisible"
-    >
+      :visible.sync="dialogFormVisible">
         <el-form
             :model="form"
             :rules="rules"
@@ -190,6 +160,7 @@
                     <el-radio :label="2">强更</el-radio>
                 </el-radio-group>
             </el-form-item>
+            <!-- ios版本：url2 -->
             <el-form-item v-show="form.platform!='Android'" label-width="150px" label="APP Store链接：" prop="url">
                 <el-input
                 style="width: 500px"
@@ -198,15 +169,17 @@
                 v-model="form.url"
                 ></el-input>
             </el-form-item>
-            <el-form-item v-show="form.platform=='Android'" label-width="150px" label="Android APK包：" prop="url2">
-                <el-input
+            <!-- 安卓版本：url2 -->
+            <el-form-item v-if="form.platform=='Android'" label-width="150px" label="Android APK包：" prop="url2">
+                <!-- <el-input
                 style="width: 500px"
                 autocomplete="off"
                 :disabled="form.platform=='Android'"
                 placeholder=""
                 v-model="form.url2"
-                ></el-input>
-                <el-upload
+                ></el-input> -->
+                <uploadfile v-if="dialogFormVisible" v-model = "form.url2"  />
+                <!-- <el-upload
                     style="display:inline;margin-left:20px;"
                     class="upload-demo"
                     :action="VUE_APP_BASE_API + '/api/upload/image'"
@@ -217,7 +190,7 @@
                     name="image">
                     <el-button size="small" type="primary">添加</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传一个包，若已存在，请删除后再重新上传</div>
-                </el-upload>
+                </el-upload> -->
             </el-form-item>
         </el-form>
       <div class="dialog-footer" slot="footer">
@@ -225,10 +198,13 @@
         <el-button @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
+
+    
   </div>
 </template>
 
 <script>
+import uploadfile from '../uploadFile/uploadFile'
 import {
     addproduct_versions,
     getproduct_versions,
@@ -237,6 +213,9 @@ import {
 } from "@/api/manage";
 export default {
   name: "appversion",
+  components: {
+      uploadfile
+  },
   props: {
     page2id: {
       type: Number,

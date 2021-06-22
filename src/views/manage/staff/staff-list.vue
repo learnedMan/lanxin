@@ -514,7 +514,7 @@ import { validUsername , validEmail } from '@/utils/validate'
         // console.log(b)
         var keys = this.$refs.roletree.getCheckedKeys()
         if(b.checkedKeys.indexOf(a.id)>-1){
-          console.log('选中')
+          // console.log('选中')
           let thisNode = this.$refs.roletree.getNode(a.id) // 获取当前节点
           if(thisNode.childNodes){ //如果有子节点，那么把子节点选中
             for(var i=0;i<thisNode.childNodes.length;i++){
