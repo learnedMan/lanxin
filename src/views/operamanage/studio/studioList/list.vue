@@ -378,6 +378,7 @@
           prop="extra.start_time"
         >
           <el-date-picker
+            :disabled="dialog.id !== ''"
             v-model="liveTime"
             type="datetimerange"
             align="right"

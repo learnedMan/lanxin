@@ -86,6 +86,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions"
+            :default-time="['00:00:00', '23:59:59']"
             @change="handleDateChange($event, 'submitTime')"
           />
         </el-form-item>
@@ -101,6 +102,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions"
+            :default-time="['00:00:00', '23:59:59']"
             @change="handleDateChange($event, 'auditTime')"
           />
         </el-form-item>

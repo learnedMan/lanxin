@@ -9,6 +9,7 @@
         <el-button type="primary" size="mini" v-for="btn of btns" @click="$router.push(btn.url)">{{btn.label}}</el-button>
       </div>
       <el-button
+        v-if="u_info.site_list.length !== 0"
         style="color:#999;margin-right:30px;"
         type="text"
         icon="el-icon-sort"
