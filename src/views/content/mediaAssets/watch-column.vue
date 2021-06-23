@@ -191,13 +191,13 @@
     >
       <el-steps direction="vertical" :active="approval.active" :space="100">
         <el-step
-          v-for="list of approval.lists"
+          v-for="(list, index) of approval.lists"
           :title="list.title"
           :key="list.sort"
           :description="list.description"
         >
           <div slot="description">
-            <div>提交人/审核人: {{ list.name }}</div>
+            <div>{{ index === 0? '提交人' : '审核人' }}: {{ list.name }}</div>
             <p v-if="list.remark">拒绝原因: {{ list.remark }}</p>
           </div>
         </el-step>

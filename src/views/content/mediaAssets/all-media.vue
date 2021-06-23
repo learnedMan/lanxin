@@ -207,7 +207,7 @@
             <!-- 发布 -->
             <Iconbutton
               icontype="fb"
-              label="发布"
+              label="栏目"
               @fatherMethod="handleDialogShow('publish', scope.row)"
             ></Iconbutton>
             <!-- 预览 -->
@@ -251,6 +251,7 @@
           prop="channel_id"
         >
           <el-cascader
+            filterable
             v-model="dialog.form.channel_id"
             style="width: 350px"
             :options="channelsList"

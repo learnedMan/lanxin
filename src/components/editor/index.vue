@@ -9,12 +9,15 @@
         padding: 0;
         margin: 0;
         list-style: none;
+      }
+      ul {
         display: flex;
+        flex-wrap: wrap;
       }
       li {
         display: inline-block;
         box-sizing: border-box;
-        width: 25%;
+        width: 22.6%;
         justify-content: center;
         border-radius: 6px;
         box-shadow: 2px 2px 10px 5px rgb(219 219 219 / 40%);
