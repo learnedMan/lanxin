@@ -155,7 +155,7 @@
                   <el-select
                     :value="parseObj(formOptions['extra.tags'].item)"
                     size="small"
-                    style="width: 200px"
+                    style="width: 300px;"
                     clearable
                     v-bind="formOptions['extra.tags'].item.componentProps"
                     @input="handleInput($event, formOptions['extra.tags'].item)"

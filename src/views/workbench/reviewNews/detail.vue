@@ -135,7 +135,7 @@
                     @input="handleInput($event, formOptions['extra.tags'].item)"
                   >
                     <el-option
-                      v-for="list in formOptions['extra.tags'].item.lists"
+                      v-for="list in tagLists"
                       :key="list.value"
                       :label="list.label"
                       :value="list.value"
@@ -1280,6 +1280,7 @@ export default {
         multiple: true // 多选
       }, // 级联选择器配置
       editorPerson: '', // 编辑人员集合
+      tagLists: [],
       editorInit: false
     }
   },
@@ -1301,6 +1302,7 @@ export default {
   created() {
     this.getLabels()
     if(!this.disabled) {
+      this.getEditorPerson();
       let timer = setInterval(() => {
         this.getEditorPerson();
       }, 8000)
@@ -1451,10 +1453,11 @@ export default {
         pageSize: 9999
       }).then(res => {
         const { data } = res
-        this.formOptions['extra.tags'].item.lists = data.map(n => ({
+        const arr = data.map(n => ({
           label: n.name,
           value: n.id.toString()
         }))
+        this.tagLists = arr;
       })
     },
     /* 获取详情数据 */
