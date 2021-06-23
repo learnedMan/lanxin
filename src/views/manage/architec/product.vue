@@ -493,6 +493,7 @@ export default {
       rules: {
         name: [{ required: true, message: "请输入产品姓名", trigger: "blur" }],
         type: [{ required: true, message: "请选择产品类型", trigger: "blur" }],
+        source_id: [{ required: true, message: "请输入source_id", trigger: "blur" }],
         'extra.logo': [{ required: true, message: "请选择产品logo", trigger: "blur" }],
         'extra.policy.version': [{ required: true, message: "请输入协议版本", trigger: "blur" }],
         'extra.policy.intro': [{ required: true, message: "请输入弹窗详情", trigger: "blur" }],
