@@ -27,11 +27,24 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="媒资标题:"
+          label="推送标题:"
           prop="title"
         >
           <el-input
             v-model="queryParams.title"
+            placeholder="请输入关键字"
+            clearable
+            size="small"
+            style="width: 200px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="媒资标题:"
+          prop="article_title"
+        >
+          <el-input
+            v-model="queryParams.article_title"
             placeholder="请输入关键字"
             clearable
             size="small"
@@ -144,7 +157,6 @@
             >
               <el-option label="禁用" :value="0"/>
               <el-option label="启用" :value="1"/>
-              <el-option label="失败" :value="2"/>
             </el-select>
           </template>
         </el-table-column>
@@ -367,11 +379,7 @@
             {
               label: '启用',
               value: 1
-            },
-            {
-              label: '失败',
-              value: 2
-            },
+            }
           ],
           terminal: [
             {
@@ -389,6 +397,7 @@
           ],
           queryParams: {
             status: '',
+            article_title: '',
             title: '',
             product_id: '',
             page: 1,

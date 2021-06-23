@@ -267,7 +267,7 @@ export default {
             .catch((err) => {
               const errData = err.response.data;
               // 重置密码
-              if(errData && errData.status_code === 406) {
+              if(errData && errData.status_code === 412) {
                 const changePass = this.$refs.changePass;
                 changePass.dialog.show = true;
               }

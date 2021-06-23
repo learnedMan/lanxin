@@ -55,7 +55,7 @@
         >
           <el-form-item
             label="新闻标题:"
-            prop="title"
+            prop="keyword"
           >
             <el-input
               v-model="queryParams.keyword"
@@ -65,7 +65,7 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="创建时间:">
+          <el-form-item label="创建时间:" prop="dateValue">
             <el-date-picker
               v-model="queryParams.dateValue"
               type="daterange"
