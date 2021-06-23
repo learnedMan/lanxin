@@ -319,6 +319,14 @@
           ],
           typeOptions: [
             {
+              label: 'APP开机广告',
+              value: 7
+            },
+            {
+              label: 'APP顶部广告',
+              value: 8
+            },
+            {
               label: '矩形横幅',
               value: 1
             },
@@ -341,15 +349,8 @@
             {
               label: '广告代码',
               value: 6
-            },
-            {
-              label: 'APP开机广告',
-              value: 7
-            },
-            {
-              label: 'APP顶部广告',
-              value: 8
             }
+            
           ],
           queryParams: {
             name: '',

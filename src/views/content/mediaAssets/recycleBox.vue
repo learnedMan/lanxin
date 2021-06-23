@@ -1,7 +1,7 @@
 <template>
   <div class="architec-site">
     <el-form ref="queryForm" :model="queryParams" :inline="true">
-      <el-form-item label="稿件类型：">
+      <el-form-item label="新闻类型：">
         <el-select clearable v-model="queryParams.type" placeholder="请选择">
           <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
@@ -29,14 +29,15 @@
       border v-loading="loading" :data="dataList"
        @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column label="稿件id" align="center" prop="id" />
-      <el-table-column label="稿件封面" width="80px" align="center" prop="name" :show-overflow-tooltip="true">
+      <el-table-column label="新闻id" align="center" prop="id" />
+      <el-table-column label="栏目" align="center" prop="channel.name" />
+      <el-table-column label="新闻封面" width="80px" align="center" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <img :src="scope.row.extra.cover[0].path||noimg" alt="" style="width: 50px;height: 50px;">
           </template>
       </el-table-column>
-      <el-table-column label="稿件标题" align="center" prop="title" :show-overflow-tooltip="true" />
-      <el-table-column label="稿件类型" align="center" :show-overflow-tooltip="true" >
+      <el-table-column label="新闻标题" align="center" prop="title" :show-overflow-tooltip="true" />
+      <el-table-column label="新闻类型" align="center" :show-overflow-tooltip="true" >
             <template slot-scope="scope">
                 <span>{{scope.row.type | formattype}}</span>
             </template>
@@ -161,7 +162,7 @@ import {
       recovery(data){
           var ids = data.id||this.multipleSelection.join(',');
 
-          this.$confirm('此操作将恢复id为'+ids+'的稿件, 是否继续?', '提示', {
+          this.$confirm('此操作将恢复id为'+ids+'的新闻, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
