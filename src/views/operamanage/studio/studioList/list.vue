@@ -807,6 +807,9 @@
             'extra.banner': [
               { required: true, message: '请上传顶部图片', trigger: 'change' }
             ],
+            'extra.allow_comment': [
+              { required: true, message: '请选择评论控制', trigger: 'change' }
+            ],
           }
         },
         publishDialog: {
