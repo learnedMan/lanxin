@@ -55,33 +55,6 @@
           <Iconbutton icontype="qx" label="权限" @fatherMethod="editjurisdiction(scope.row)"></Iconbutton>
           <Iconbutton icontype="js" label="角色" @fatherMethod="editroledata(scope.row)"></Iconbutton>
           <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
-          <!-- <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            style="color:#E6A23C;"
-            @click="editdata(scope.row)"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-thumb"
-            style="color:#67C23A;"
-            @click="editjurisdiction(scope.row)"
-          >权限</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-s-custom"
-            @click="editroledata(scope.row)"
-          >角色</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            style="color:#F56C6C;"
-            @click="handleDelete(scope.row)"
-          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -145,6 +118,14 @@
         <el-form-item el-form-item  label-width="120px" label="设置栏目权限">
            <el-button size="mini" @click="showchannel" type="success">权限</el-button>
         </el-form-item>
+
+        <el-form-item el-form-item  label-width="120px" label="允许外网登录" prop="extra.allow_www_login">
+          <el-select v-model="form.extra.allow_www_login" placeholder="请选择">
+            <el-option v-for="item in www_loginoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item v-if="dialogType=='edit'" el-form-item  label-width="120px" label="是否启用" prop="status">
           <el-select v-model="form.status" placeholder="请选择">
             <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
@@ -268,6 +249,13 @@ import { validUsername , validEmail } from '@/utils/validate'
         dataList:[],
         // 总条数
         total: 0,
+        www_loginoptions:[{
+          value: '0',
+          label: '否'
+        },{
+          value: '1',
+          label: '是'
+        }],
         statusoptions: [{
           value: '1',
           label: '启用'
@@ -284,7 +272,10 @@ import { validUsername , validEmail } from '@/utils/validate'
           phone:"",
           avatar:"",
           email:"",
-          status:""
+          status:"",
+          extra:{
+            allow_www_login:'0',
+          }
         },
         rules: {
           name: [
@@ -431,11 +422,6 @@ import { validUsername , validEmail } from '@/utils/validate'
               keys.push(thisNode.data.id)
             }
           }
-          // if(thisNode.childNodes){
-          //   for(var i=0;i<thisNode.childNodes.length;i++){
-          //     keys.push(thisNode.childNodes[i].key)
-          //   }
-          // }
         }else{
           if(thisNode.childNodes){
             for(var i=0;i<thisNode.childNodes.length;i++){
@@ -471,8 +457,6 @@ import { validUsername , validEmail } from '@/utils/validate'
         this.$refs.roletree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
       },
       // 抽屉
-      
-
 
       showchannel(){
         this.innerVisible = true;
@@ -611,7 +595,10 @@ import { validUsername , validEmail } from '@/utils/validate'
           phone:"",
           avatar:"",
           email:"",
-          status:""
+          status:"",
+          extra:{
+            allow_www_login:'0',
+          }
         }
         this.recordtree = [];
         this.channeltreechoose = [];
@@ -752,7 +739,6 @@ import { validUsername , validEmail } from '@/utils/validate'
             // console.log(this.form)
             var choosestr = this.channeltreechoose.map((obj)=>{return obj}).join(",");
             var data = this.form;
-            data.extra = {}
             data.extra.channel_limit = choosestr;
             // console.log(data)
             // return
@@ -776,7 +762,6 @@ import { validUsername , validEmail } from '@/utils/validate'
             // console.log(this.channeltreechoose)
             var choosestr = this.channeltreechoose.map((obj)=>{return obj}).join(",");
             var data = this.form;
-            data.extra = {}
             data.extra.channel_limit = choosestr;
             console.log(data)
             // var _data = this.toFormData(data)

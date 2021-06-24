@@ -221,7 +221,9 @@
             'fontfamily', 'fontsize', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
             'link', 'unlink', '|',
-            'simpleupload', 'insertimage','imglist', 'insertvideo','|',
+            'simpleupload', 'insertimage','imglist', 
+            // 'insertvideo',
+            '|',
             'searchreplace', '|',
             'fullscreen'
         ]]
