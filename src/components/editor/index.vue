@@ -169,6 +169,7 @@
       top="4vh"
       :title="videoDialog.title"
       :visible.sync="videoDialog.show"
+      append-to-body
     >
       <xl-video @choose-url="videoDialogControl"></xl-video>
     </el-dialog>

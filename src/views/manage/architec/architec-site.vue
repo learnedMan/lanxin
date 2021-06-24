@@ -49,7 +49,6 @@
       <el-table-column width="200px" label="操作" align="center">
         <template slot-scope="scope">
           <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
-          <Iconbutton icontype="xg" label="设置" @fatherMethod="setting(scope.row)"></Iconbutton>
         </template>
       </el-table-column>
     </el-table>
