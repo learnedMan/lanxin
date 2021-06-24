@@ -80,6 +80,7 @@
       width="900px"
       :title="dialog.title"
       :visible.sync="dialog.show"
+      append-to-body
     >
       <div>
         <el-form

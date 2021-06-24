@@ -120,7 +120,7 @@
               <span
                 class="xl-cropper-icon"
                 @click="handleUpload(index)"
-                v-show="!disabled"
+                v-show="!disabled && hasUploadAgain"
               >
                 <i class="el-icon-upload" />
               </span>
@@ -134,7 +134,7 @@
               <span
                 class="xl-cropper-icon"
                 @click="handleRemove(index)"
-                v-show="!disabled"
+                v-show="!disabled && hasRemove"
               >
                 <i class="el-icon-delete" />
               </span>
@@ -213,6 +213,16 @@ export default {
       default: 1
     },
     showTip: {
+      type: Boolean,
+      default: true
+    },
+    /* 是否有删除按钮 */
+    hasRemove: {
+      type: Boolean,
+      default: true
+    },
+    /* 是否有重新上传按钮 */
+    hasUploadAgain: {
       type: Boolean,
       default: true
     }
