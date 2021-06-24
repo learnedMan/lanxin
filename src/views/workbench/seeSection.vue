@@ -513,6 +513,7 @@ import NewDetail from './reviewNews/detail'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 import { dateFormat } from "@/utils/costum";
 import uploadSingle from '@/components/Upload/uploadSingle.vue'
+import Sortable from 'sortablejs'
 
 export default {
   name: 'SeeSection',
@@ -551,7 +552,35 @@ export default {
         {
           label: '外链',
           value: 'outer_link'
-        }
+        },
+        {
+          label: '直播间',
+          value: 'broadcast'
+        },
+        {
+          label: '专题',
+          value: 'topic'
+        },
+        {
+          label: '服务',
+          value: 'service'
+        },
+        {
+          label: '电视直播',
+          value: 'tv_live'
+        },
+        {
+          label: '电视点播',
+          value: 'tv_replay'
+        },
+        {
+          label: '广播直播',
+          value: 'radio_live'
+        },
+        {
+          label: '广播点播',
+          value: 'radio_replay'
+        },
       ], // 新闻类型
       statusOptions: [
         {
@@ -750,6 +779,8 @@ export default {
       this.switchVal = false;
       Object.assign(this.dialogForm, {
         cover,
+        title,
+        content: '',
         linked_to: {
           route_type: 'news',
           type,
@@ -929,8 +960,28 @@ export default {
             cover: cover && cover.path || '' // 图片
           }
         })
+        this.initSort();
       }).finally(() => {
         this.loading = false
+      })
+    },
+    /* 初始化 */
+    initSort () {
+      const sortTable = this.$refs.multipleTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0];
+      Sortable.create(sortTable, {
+        ghostClass: 'sortable-ghost',
+        onEnd: evt => {
+          const { newIndex, oldIndex } = evt;
+          const { id } = this.tableData[oldIndex];
+          const { sort } = this.tableData[newIndex];
+          this.tableData = [];
+          changeNewsSort({
+            [id]: sort
+          }).then(() => {
+            this.$message.success('修改成功');
+            this.getList();
+          })
+        }
       })
     },
     /* 刷新视图 */

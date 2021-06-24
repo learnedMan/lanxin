@@ -448,6 +448,9 @@
             end_time: [
               { required: true, validator: endDateValidate, trigger: 'change' }
             ],
+            'extra.url': [
+              { required: true, message: '请输入广告图片/视频', trigger: 'blur' }
+            ],
             'extra.duration': [
               { type: 'number', required: true, message: '请输入广告时长', trigger: 'blur' }
             ],
