@@ -14,9 +14,11 @@ export function getSiteList() {
   })
 }
 
+// host == 'batrix-www.cztv.com' ? '/api/authorizations/' : 'api/authorizations/wwwLogin' 
+
 export function login(data) {
   return request({
-    url: '/api/authorizations',
+    url: window.host != 'localhost:9527'?'api/authorizations/wwwLogin':'/api/authorizations',
     method: 'post',
     data
   })
