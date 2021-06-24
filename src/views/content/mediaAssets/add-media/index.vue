@@ -63,8 +63,8 @@
 </style>
 <template>
   <el-container class="xl-add-media">
-    <el-header class="xl-add-media--header" height="auto" :style="{ justifyContent: isEdit? 'space-between' : 'flex-end' }">
-      <div style="font-size: 14px;color: #606266;flex: 1" v-if="isEdit && !disabled">
+    <el-header class="xl-add-media--header" height="auto" :style="{ justifyContent: isEdit && editorPerson? 'space-between' : 'flex-end' }">
+      <div style="font-size: 14px;color: #606266;flex: 1" v-if="isEdit && editorPerson && !disabled">
         <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
       </div>
       <div v-if="!disabled">
@@ -1263,7 +1263,8 @@ export default {
         emitPath: false, // 返回值是否为数组
         value: 'id', // 选项值
         label: 'name', // 显示值
-        multiple: true // 多选
+        multiple: true, // 多选
+        disabled: 'product_id'
       }, // 级联选择器配置
       channelsList: [], // 栏目列表
       editorPerson: ''
@@ -1561,7 +1562,7 @@ export default {
         id,
         type: 'script'
       }).then(res => {
-        this.editorPerson = res.join();
+        this.editorPerson = res.length < 2? '' : res.join();
       })
     },
   }

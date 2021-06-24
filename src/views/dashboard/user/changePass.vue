@@ -131,7 +131,7 @@
             callback(new Error('您的密码不符要求(密码中必须包含大小写字母和数字)'))
           } else {
             if (this.form.confirmPassword.trim() !== '') {
-              this.$refs.dialogForm.validateField('confirmPassword');
+              this.$refs.passForm.validateField('confirmPassword');
             }
             callback();
           }
