@@ -301,6 +301,14 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <!-- 专题 -->
+            <el-form-item v-show="form.type=='topic'"
+              label-width="150px" label="专题类型:" prop="extra.topic_type">
+              <el-select v-model="form.extra.topic_type" placeholder="请选择">
+                <el-option v-for="item in topicoption" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
             <!-- 外链 -->
             <div v-if="form.type=='service'&&form.extra.link.type=='app_redirect'">
               <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'" 
@@ -453,6 +461,16 @@ import ChildPage1 from './pages/c_page1'
             label: '分类'
           },
         ],
+        topicoption:[
+          {
+            value: '1',
+            label: '简单聚合'
+          },
+          {
+            value: '2',
+            label: '多模块聚合'
+          }
+        ],
         linktypeoption:[
           {
             value: 'outer_link',
@@ -492,6 +510,9 @@ import ChildPage1 from './pages/c_page1'
           {
             value: 'default',
             label: '默认'
+          },{
+            value: 'topic',
+            label: '专题'
           },{
             value: 'matrix',
             label: '矩阵'
@@ -686,6 +707,8 @@ import ChildPage1 from './pages/c_page1'
             multi_review:[],
             display_more:'',
             display_title:'',
+            // 专题
+            topic_type:'1',
             // 服务
             background:'',
             // 外链
