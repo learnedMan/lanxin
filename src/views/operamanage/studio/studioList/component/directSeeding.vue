@@ -162,6 +162,8 @@ export default {
     },
     //发送文字
     submitForm(formName) {
+      console.log(this.ruleForm)
+      // return
       this.ruleForm.broadcast_id = this.statementquery.id;
       this.ruleForm.stream_id = this.statementquery.stream_id;
       this.ruleForm.host_name = "测试";

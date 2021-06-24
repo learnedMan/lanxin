@@ -384,8 +384,9 @@
       },
       /* 视频弹框 */
       videoDialogControl (val) {
-        const video = `<video height="200" controls preload="metadata" poster="${val.cover}">
-                  <source src="${val.url}" type="video/${val.type}">
+        const video =
+                `<video poster="${val.cover}" class="edui-upload-video" controls="" preload="none" width="420" height="280" src="http://img.cztv.com/uploads/ueditor/php/upload/video/20210624/1624540592393574.mp4" data-setup="{}">
+                    <source src="${val.url}" type="video/mp4"/>
                 </video>`
         currentEditor.execCommand('insertHtml', video);
         this.videoDialog.show = false;
