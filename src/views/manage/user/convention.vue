@@ -46,7 +46,6 @@
           <el-select
             v-model="queryParams.status"
             placeholder="请选择状态"
-            clearable
           >
             <el-option
               v-for="item in statusLists"
@@ -510,7 +509,7 @@
         },
         /* 修改状态 */
         handleChangeStatus (row) {
-          const { sourceId, id, status, ruleName, ruleRemark, type, action, upperLineEveryday, upperLine, risePoints } = row;
+          const { sourceId, id, status, ruleName, ruleRemark, type, action, upperLineEveryday, upperLine, points } = row;
           const user = this.$store.state.user.u_info;
           const params = {
             sourceId,
