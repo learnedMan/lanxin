@@ -109,7 +109,7 @@
         <el-table-column
           label="积分"
           align="center"
-          prop="risePoints"
+          prop="points"
         />
         <el-table-column
           label="每日最高限额"
@@ -235,13 +235,13 @@
           </el-form-item>
           <el-form-item
             label="赠送积分"
-            prop="risePoints"
+            prop="points"
           >
             <el-input
               clearable
               style="width: 200px"
               placeholder="请输入赠送积分值"
-              v-model.number="dialogForm.risePoints"
+              v-model.number="dialogForm.points"
             />
           </el-form-item>
           <el-form-item
@@ -319,7 +319,7 @@
             callback()
           }
         };
-        const checkRisePoints = (rule, value, callback) => {
+        const checkPoints = (rule, value, callback) => {
           if (value == null || value === '') {
             return callback(new Error('赠送积分值不能为空'));
           }
@@ -363,7 +363,7 @@
             ruleName: '', // 名称
             ruleRemark: '', // 说明
             type: '', // 规则类型
-            risePoints: '', // 赠送积分值
+            points: '', // 赠送积分值
             action: '', // 行为
             upperLineEveryday: '', // 每日最高限额
             upperLine: '', // 最高限额积分
@@ -385,8 +385,8 @@
             upperLine: [
               { required: true, validator: checkUpperLine, trigger: 'blur' }
             ],
-            risePoints: [
-              { required: true, validator: checkRisePoints, trigger: 'blur' }
+            points: [
+              { required: true, validator: checkPoints, trigger: 'blur' }
             ]
           }
         }
@@ -458,7 +458,7 @@
           this.dialogForm = {
             ruleName: row.ruleName,
             ruleRemark: row.ruleRemark,
-            risePoints: row.risePoints,
+            points: row.points,
             type: row.type,
             action: row.action,
             upperLineEveryday: row.upperLineEveryday,
@@ -520,7 +520,7 @@
             ruleName, // 名称
             ruleRemark, // 说明
             type, // 规则类型
-            risePoints,
+            points,
             action, // 行为
             upperLineEveryday, // 每日最高限额
             upperLine, // 最高限额积分

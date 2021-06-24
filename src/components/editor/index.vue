@@ -371,7 +371,6 @@
       videoDialogControl (val) {
         const video = `<video height="200" controls preload="metadata" poster="${val.cover}">
                   <source src="${val.url}" type="video/${val.type}">
-                  您的浏览器不支持 HTML5 video 标签。
                 </video>`
         currentEditor.execCommand('insertHtml', video);
         this.videoDialog.show = false;

@@ -76,6 +76,17 @@
               </el-option>
             </el-select>
         </el-form-item>
+
+        <el-form-item  label-width="120px" label="基础点击量随机" prop="extra.random_view_range">
+          <el-input style="width: 150px" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最小值" v-model="form.extra.random_view_range.min"></el-input> ~ 
+          <el-input style="width: 150px " oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最大值" v-model="form.extra.random_view_range.max"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="点击量系数" prop="extra.multiplying_factor">
+          <el-input style="width: 300px" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入点击量系数" v-model="form.extra.multiplying_factor"></el-input>
+        </el-form-item>
+
+
+
         <el-form-item  label-width="120px" label="LOGO："  prop="logo">
           <el-upload
             class="avatar-uploader"
@@ -126,6 +137,7 @@ import {
   getzones
   } from '@/api/manage'
 import { validUsername , validEmail } from '@/utils/validate'
+import { parse } from 'path-to-regexp';
   export default {
     name: 'architec-site',
     data() {
@@ -154,18 +166,7 @@ import { validUsername , validEmail } from '@/utils/validate'
           label: '禁用'
         }],
         dialogFormVisible: false,
-        form: {
-          name: "",
-          en_name: "",
-          logo: "",
-          extra:{
-            uni_site:''
-          },
-          status:1,
-          introduction:"",
-          site_manager_name:'',
-          site_manager_phone:''
-        },
+        form: {},
         rules: {
           name: [
             { required: true, message: "请输入站点姓名", trigger: "blur" }
@@ -197,10 +198,14 @@ import { validUsername , validEmail } from '@/utils/validate'
       }
     },
     created() {
+      this.initForm()
       this.getList();
       this.getzones();
     },
     methods:{
+      forceUpdate(){
+        this.$forceUpdate();
+      },
       handleAvatarSuccess(response, file, fileList) {
         this.form.logo = response.path;
         this.$forceUpdate();
@@ -265,6 +270,26 @@ import { validUsername , validEmail } from '@/utils/validate'
           if (this.$refs.dataForm) {
             this.$refs.dataForm.resetFields();
           }
+          this.form = {
+            name: "",
+            en_name: "",
+            logo: "",
+            extra:{
+              uni_site:''
+            },
+            status:1,
+            introduction:"",
+            site_manager_name:'',
+            site_manager_phone:'',
+            extra: {
+                uni_site_id: "",
+                random_view_range: {
+                    min:'',
+                    max:''
+                },
+                multiplying_factor:''
+            }
+          }
       },
       // 编辑站点
       editdata(row) {
@@ -283,6 +308,14 @@ import { validUsername , validEmail } from '@/utils/validate'
             this.form.extra={};
             this.form.extra.uni_site = '';
           }
+          if(!this.form.extra.multiplying_factor){
+            this.form.extra.multiplying_factor = ''
+            this.form.extra.random_view_range = {
+              min:'',
+              max:''
+            }
+          }
+
 
         })
         
