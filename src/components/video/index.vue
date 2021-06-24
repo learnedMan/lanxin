@@ -84,7 +84,7 @@
             <ul class="xl-video-tab--content-ul">
               <li v-for="(list, index) of vmsVideo" :key="index" class="xl-video-tab--content-li">
                 <h4>{{ list.title }}</h4>
-                <video height="200" controls preload="metadata">
+                <video height="200" controls preload="metadata" :poster="list.cover">
                   <source :src="list.customObj.url" :type="`video/${list.customObj.type}`">
                   您的浏览器不支持 HTML5 video 标签。
                 </video>
@@ -159,7 +159,7 @@
             <ul class="xl-video-tab--content-ul">
               <li v-for="(list, index) of xlVideo" :key="index" class="xl-video-tab--content-li">
                 <h4>{{ list.title }}</h4>
-                <video height="200" controls preload="metadata">
+                <video height="200" controls preload="metadata" :poster="list.cover">
                   <source :src="list.customObj.url" :type="`video/${list.customObj.type}`">
                   您的浏览器不支持 HTML5 video 标签。
                 </video>
@@ -264,7 +264,7 @@
       computed: {
         /* 站点id */
         site_id() {
-          return 1//this.$store.state.u_info.site_id
+          return this.$store.state.user.u_info.site_id
         },
         /* 是否显示vms栏目 */
         showVmsChannel () {
@@ -309,7 +309,8 @@
           const obj = { ...list };
           const url = {
             url: obj.customObj.url,
-            type: obj.customObj.type
+            type: obj.customObj.type,
+            cover: obj.cover
           };
           delete obj.customObj;
           this.$emit('choose', obj);
@@ -343,6 +344,7 @@
               return {
                 ...n,
                 customObj: {
+                  cover: n.cover,
                   url: arr[0]?.path,
                   type: arr[0]?.format,
                   label: '超清',

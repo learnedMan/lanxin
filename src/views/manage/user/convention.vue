@@ -109,7 +109,7 @@
         <el-table-column
           label="积分"
           align="center"
-          prop="points"
+          prop="risePoints"
         />
         <el-table-column
           label="每日最高限额"

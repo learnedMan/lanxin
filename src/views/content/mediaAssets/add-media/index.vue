@@ -560,6 +560,7 @@
           prop="channel_id"
         >
           <el-cascader
+            filterable
             v-model="dialog.form.channel_id"
             style="width: 350px"
             :options="channelsList"

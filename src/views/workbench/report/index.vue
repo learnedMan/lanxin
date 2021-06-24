@@ -635,14 +635,14 @@ export default {
       this.tableData = []
       const params = { ...this.queryParams }
       getReport(this.removePropertyOfNullFor0(params)).then(res => {
-        this.tableData = (res.data || []).map(item => ({
+        this.tableData = (res.data?.datas || []).map(item => ({
           ...item,
           reportTypeLabel: item.reportType.replace(/[\[|\]]/g, '').split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
           replyStatusLabel: this.replyOptions.find(n => n.value === item.replyStatus)?.label,
           handleStatusLabel: this.handleOption.find(n => n.value === item.handleStatus)?.label,
           mediaTypeLabel: this.mediaOptions.find(n => n.value === item.mediaId)?.label
         }))
-        this.total = res.total || 0
+        this.total = res.data?.count || 0
       }).finally(() => {
         this.loading = false
       })

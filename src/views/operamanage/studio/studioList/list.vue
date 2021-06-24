@@ -219,7 +219,7 @@
             <!-- 发布 -->
             <Iconbutton
               icontype="fb"
-              label="发布"
+              label="栏目"
               @fatherMethod="handlePublish(scope.row)"
             ></Iconbutton>
           </div>
@@ -250,6 +250,7 @@
           prop="channel_id"
         >
           <el-cascader
+            filterable
             v-model="publishDialog.form.channel_id"
             style="width: 350px"
             :options="channelsList"
@@ -392,6 +393,16 @@
           />
         </el-form-item>
         <el-form-item prop="extra.end_time" style="margin-bottom: 0;">
+        </el-form-item>
+        <el-form-item prop="extra.allow_comment" label="评论控制">
+          <el-radio-group
+            size="small"
+            v-model="dialog.form.extra.allow_comment"
+          >
+            <el-radio key="0" label="先审后发"></el-radio>
+            <el-radio key="1" label="先发后审"></el-radio>
+            <el-radio key="2" label="禁止评论"></el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item
           label-width="120px"
@@ -750,6 +761,7 @@
               banner: '',
               template_style: '240',
               cover: [], // 直播间封面
+              allow_comment: '0',
               broadcast_type: '1', // 直播类型
               statement: 'none', // 图文直播
               start_time: '', // 直播开始时间
@@ -794,6 +806,9 @@
             ],
             'extra.banner': [
               { required: true, message: '请上传顶部图片', trigger: 'change' }
+            ],
+            'extra.allow_comment': [
+              { required: true, message: '请选择评论控制', trigger: 'change' }
             ],
           }
         },
@@ -844,6 +859,7 @@
               type: 'broadcast',
               title: '', // 直播间名
               banner: '',
+              allow_comment: '0',
               template_style: '240',
               cover: [], // 直播间封面
               broadcast_type: '1', // 直播类型
