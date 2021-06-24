@@ -210,9 +210,21 @@
           autoHeightEnabled: true, // 防止内容撑高编辑器
           enableAutoSave: false,
           readonly: this.disabled
-        }, this.isMobile? {
-          toolbars: [[]]
-        } : {}), // 默认配置
+        }, this.isMobile? {toolbars: [[]]} : {
+          toolbars: [[
+            'source', '|',
+            'undo', 'redo', '|',
+            'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', '|',
+            'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
+            'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
+            'fontfamily', 'fontsize', '|',
+            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+            'link', 'unlink', '|',
+            'simpleupload', 'insertimage','imglist', 'insertvideo','|',
+            'searchreplace', '|',
+            'fullscreen'
+        ]]
+        }), // 默认配置
         editorDependencies: [
           'ueditor.config.js',
           'ueditor.all.js'

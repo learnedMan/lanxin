@@ -265,6 +265,7 @@ export default {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             })
             .catch((err) => {
+              console.log(err)
               const errData = err.response.data;
               // 重置密码
               if(errData && errData.status_code === 412) {

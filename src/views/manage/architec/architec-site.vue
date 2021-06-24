@@ -78,11 +78,11 @@
         </el-form-item>
 
         <el-form-item  label-width="120px" label="基础点击量随机" prop="extra.random_view_range">
-          <el-input style="width: 150px" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最小值" v-model="form.extra.random_view_range.min"></el-input> ~ 
-          <el-input style="width: 150px " oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最大值" v-model="form.extra.random_view_range.max"></el-input>
+          <el-input style="width: 150px" @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最小值" v-model="form.extra.random_view_range.min"></el-input> ~ 
+          <el-input style="width: 150px " @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最大值" v-model="form.extra.random_view_range.max"></el-input>
         </el-form-item>
         <el-form-item  label-width="120px" label="点击量系数" prop="extra.multiplying_factor">
-          <el-input style="width: 300px" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入点击量系数" v-model="form.extra.multiplying_factor"></el-input>
+          <el-input style="width: 300px" @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入点击量系数" v-model="form.extra.multiplying_factor"></el-input>
         </el-form-item>
 
 
@@ -274,15 +274,12 @@ import { parse } from 'path-to-regexp';
             name: "",
             en_name: "",
             logo: "",
-            extra:{
-              uni_site:''
-            },
             status:1,
             introduction:"",
             site_manager_name:'',
             site_manager_phone:'',
             extra: {
-                uni_site_id: "",
+                uni_site:'',
                 random_view_range: {
                     min:'',
                     max:''
@@ -301,6 +298,7 @@ import { parse } from 'path-to-regexp';
           //   this.form[key] = row[key];
           // }
           this.form = JSON.parse(JSON.stringify(row))
+          console.log(this.form)
           this.form.site_manager_name = this.form.user.name
           this.form.site_manager_phone = this.form.user.phone;
 
@@ -310,13 +308,10 @@ import { parse } from 'path-to-regexp';
           }
           if(!this.form.extra.multiplying_factor){
             this.form.extra.multiplying_factor = ''
-            this.form.extra.random_view_range = {
-              min:'',
-              max:''
-            }
+            this.form.extra.random_view_range = {}
+            this.form.extra.random_view_range.min = ''
+            this.form.extra.random_view_range.max = ''
           }
-
-
         })
         
 

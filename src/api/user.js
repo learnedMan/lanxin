@@ -10,7 +10,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/api/authorizations',
+    url: process.env.VUE_APP_LOGIN_API,
     method: 'post',
     data
   })
