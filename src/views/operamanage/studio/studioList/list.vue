@@ -1030,7 +1030,10 @@
       * */
       getChannels() {
         getChannels({ status: 1 }).then(res => {
-          this.channelsList = res;
+          this.channelsList = res.map(n => ({
+            ...n,
+            disabled: true
+          }));
         })
       }
     },

@@ -1264,7 +1264,6 @@ export default {
         value: 'id', // 选项值
         label: 'name', // 显示值
         multiple: true, // 多选
-        disabled: 'product_id'
       }, // 级联选择器配置
       channelsList: [], // 栏目列表
       editorPerson: ''
@@ -1499,7 +1498,10 @@ export default {
        * */
     getChannels() {
       getChannels({ status: 1 }).then(res => {
-        this.channelsList = res
+        this.channelsList = res.map(n => ({
+          ...n,
+          disabled: true
+        }))
       })
     },
     /* 获取详情数据 */

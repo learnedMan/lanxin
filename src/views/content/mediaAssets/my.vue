@@ -375,7 +375,6 @@ export default {
         emitPath: false, // 返回值是否为数组
         value: 'id', // 选项值
         label: 'name', // 显示值
-        disabled: 'product_id',
         multiple: true // 多选
       }, // 级联选择器配置
       channelsList: [], // 栏目列表
@@ -599,7 +598,6 @@ export default {
         emitPath: false, // 返回值是否为数组
         value: 'id', // 选项值
         label: 'name', // 显示值
-        disabled: 'product_id',
         multiple: isPublish // 多选
       }
       Object.assign(this.dialog, {
@@ -657,7 +655,10 @@ export default {
         * */
     getChannels() {
       getChannels({ status: 1 }).then(res => {
-        this.channelsList = res
+        this.channelsList = res.map(n => ({
+          ...n,
+          disabled: true
+        }))
       })
     }
   }
