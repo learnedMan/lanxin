@@ -185,7 +185,7 @@ export const asyncRoutes = [
     name: 'Content',
     meta: {
       title: '内容管理',
-      icon: 'component'
+      icon: 'clipboard'
     },
     children: [
       {
@@ -273,7 +273,7 @@ export const asyncRoutes = [
     name: 'Manage',
     meta: {
       title: '管理中心',
-      icon: 'component'
+      icon: 'user'
     },
     children: [
       {
@@ -415,7 +415,7 @@ export const asyncRoutes = [
     name: 'RadioTV',
     meta: {
       title: '广电管理',
-      icon: 'component'
+      icon: 'example'
     },
     children: [
       {
@@ -433,7 +433,7 @@ export const asyncRoutes = [
     redirect: '/operaManage/studio/studioList',
     meta: {
       title: '运营管理',
-      icon: 'component'
+      icon: 'table'
     },
     children: [
       {
@@ -515,7 +515,7 @@ export const AdminRoute = [{
   name: 'MBH',
   meta: {
     title: '模板化',
-    icon: 'component'
+    icon: 'list'
   },
   children: [
     {

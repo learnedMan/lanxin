@@ -305,6 +305,7 @@
       generateCanvas (img) {
         return new Promise(res => {
           const { width, height, src } = img;
+          console.log(src)
           let canvas = document.createElement("canvas");
           canvas.width = width;
           canvas.height = height;
@@ -359,20 +360,22 @@
         let imgList = Array.from(div.querySelectorAll('img')).filter(n => {
           return !n.className.includes('loadingclass')
         })
-        console.log(imgList)
         if(imgList.length) {
-          Promise.all(imgList.map(n => this.generateCanvas(n))).then((arr) => {
-            imgList.forEach(n => {
-              const obj = arr.find(item => item.old === n.src && item.now)
-              if(obj) {
-                n.src = obj.now;
-              }
+          //setTimeout(() => {
+            Promise.all(imgList.map(n => this.generateCanvas(n))).then((arr) => {
+              imgList.forEach(n => {
+                const obj = arr.find(item => item.old === n.src && item.now)
+                if(obj) {
+                  n.src = obj.now;
+                }
+              })
+              console.log(div)
+              //this.$emit('input', div.innerHTML)
+            }).catch((err) => {
+              console.log(err)
             })
-            console.log(div)
-            //this.$emit('input', div.innerHTML)
-          }).catch((err) => {
-            console.log(err)
-          })
+          //}, 1000)
+
         }else {
           //this.$emit('input', val)
         }*/
