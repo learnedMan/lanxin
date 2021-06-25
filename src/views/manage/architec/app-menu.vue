@@ -62,8 +62,8 @@
         <h4>主功能区</h4>
         <p>说明：主功能菜单在有色底区，最多支持<span style="color: red;font-size: 18px">4</span>个</p>
         <div class="table-box--btn">
-          <el-button type="primary" size="mini" @click="addCustom('main')">添加自定义菜单</el-button>
-          <el-button type="primary" size="mini" @click="addDefault('main')">添加默认菜单</el-button>
+          <el-button type="primary" size="mini" @click="addCustom('main')">新增自定义菜单</el-button>
+          <el-button type="primary" size="mini" @click="addDefault('main')">新增默认菜单</el-button>
         </div>
         <el-table
           ref="first"
@@ -114,8 +114,8 @@
         <h4>常用功能区</h4>
         <p>说明：副功能菜单在白底区，无数量限制，自动换行</p>
         <div class="table-box--btn">
-          <el-button type="primary" size="mini" @click="addCustom('frequent')">添加自定义菜单</el-button>
-          <el-button type="primary" size="mini" @click="addDefault('frequent')">添加默认菜单</el-button>
+          <el-button type="primary" size="mini" @click="addCustom('frequent')">新增自定义菜单</el-button>
+          <el-button type="primary" size="mini" @click="addDefault('frequent')">新增默认菜单</el-button>
         </div>
         <el-table
           ref="first"
@@ -166,8 +166,8 @@
         <h4>更多区域</h4>
         <p></p>
         <div class="table-box--btn">
-          <el-button type="primary" size="mini" @click="addCustom('more')">添加自定义菜单</el-button>
-          <el-button type="primary" size="mini" @click="addDefault('more')">添加默认菜单</el-button>
+          <el-button type="primary" size="mini" @click="addCustom('more')">新增自定义菜单</el-button>
+          <el-button type="primary" size="mini" @click="addDefault('more')">新增默认菜单</el-button>
         </div>
         <el-table
           ref="first"
@@ -244,7 +244,7 @@
           </el-button>
         </div>
       </el-dialog>
-      <!-- 编辑和添加自定义菜单 -->
+      <!-- 编辑和新增自定义菜单 -->
       <el-dialog
         width="600px"
         :title="dialog.title"
@@ -499,13 +499,13 @@
           ], // 默认菜单集合
           allMenuSelect: [], // 当前选中项
           defaultMenu: {
-            title: '添加默认菜单',
+            title: '新增默认菜单',
             show: false,
             key: '',
             max: 9999
           }, // 默认菜单弹框
           dialog: {
-            title: '添加自定义菜单',
+            title: '新增自定义菜单',
             show: false,
             disabledName: false, // 是否禁止修改菜单名
             key: ''
@@ -528,7 +528,7 @@
               { required: true, message: '请输入菜单名称', trigger: 'blur' }
             ],
             logo: [
-              { required: true, message: '请添加菜单logo', trigger: 'chnage' }
+              { required: true, message: '请新增菜单logo', trigger: 'chnage' }
             ],
             sort: [
               { required: true, type: 'number', message: '请输入排序', trigger: 'blur' }
@@ -584,7 +584,7 @@
           else disabledArr = this.frequent.concat(this.main).map(n => n.name);
           return disabledArr.includes(name);
         },
-        /* 添加默认菜单 */
+        /* 新增默认菜单 */
         addDefault (key) {
           this.allMenuSelect = this[key].map(n => n.name);
           this.allMenu.forEach(n => {
@@ -597,7 +597,7 @@
             max: key === 'main'? 4 : 99999
           })
         },
-        /* 确认添加默认菜单 */
+        /* 确认新增默认菜单 */
         defaultMenuEnter () {
           const data = this.patchData.extra.profile_settings || (this.patchData.extra.profile_settings = {});
           const key = this.defaultMenu.key;
@@ -615,7 +615,7 @@
         addCustom (key) {
           this.resetForm('dialogForm');
           this.dialog = {
-            title: '添加自定义菜单',
+            title: '新增自定义菜单',
             show: true,
             disabledName: false,
             add: true,
@@ -645,7 +645,7 @@
             phone
           }
         },
-        /* 确认添加和编辑 */
+        /* 确认新增和编辑 */
         dialogEnter () {
           this.$refs.dialogForm?.validate(val => {
             if(val) {

@@ -54,7 +54,7 @@
                 @click="adddata"
                 type="primary"
                 size="small"
-                >添加</el-button
+                >新增</el-button
               >
             </div>
             <el-table

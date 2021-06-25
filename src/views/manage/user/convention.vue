@@ -140,7 +140,7 @@
             <!-- 编辑 -->
             <Iconbutton
               icontype="xg"
-              label="编辑"
+              label="修改"
               @fatherMethod="handleEdit(scope.row)"
             ></Iconbutton>
             <!-- 删除 -->
@@ -442,7 +442,7 @@
           this.queryParams.page = 1;
           this.getList();
         },
-        /* 添加 */
+        /* 新增 */
         handleAdd () {
           this.resetForm('dialogForm');
           this.dialog = {
@@ -470,7 +470,7 @@
             id
           }
         },
-        /* 确认修改或添加 */
+        /* 确认修改或新增 */
         enterDialog () {
           this.$refs.dialogForm.validate(val => {
             if(val) {

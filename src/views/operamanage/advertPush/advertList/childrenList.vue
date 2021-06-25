@@ -122,7 +122,7 @@
             <!-- 编辑 -->
             <Iconbutton
               icontype="xg"
-              label="编辑"
+              label="修改"
               @fatherMethod="handleEdit(scope.row)"
             ></Iconbutton>
             <!-- 删除 -->
@@ -533,7 +533,7 @@
             id: row.id
           }
         },
-        /* 确认添加或编辑 */
+        /* 确认新增或编辑 */
         enterDialog () {
           this.$refs.dialogForm?.validate(val => {
             if(val) {
@@ -546,7 +546,7 @@
                 promise = addAdvertChild(params);
               }
               promise.then(() => {
-                this.$message.success(id? '修改成功' : '添加成功');
+                this.$message.success(id? '修改成功' : '新增成功');
                 this.dialog.show = false;
                 this.getList();
               })

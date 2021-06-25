@@ -3,7 +3,7 @@
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item>
           <!-- <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
-          <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
+          <el-button type="primary" @click="adddata" size="mini" >新增</el-button>
       </el-form-item>
     </el-form>
     <!-- 表格 -->

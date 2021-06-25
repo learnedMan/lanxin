@@ -65,7 +65,7 @@
                         <el-tab-pane label="周日" name="7"></el-tab-pane>
                     </el-tabs>
                     <div class="right" style="flex-grow:1;">
-                        <el-button @click="adddata" style="margin-bottom:20px;" type="primary" size="mini" >添加</el-button>
+                        <el-button @click="adddata" style="margin-bottom:20px;" type="primary" size="mini" >新增</el-button>
                         <el-table 
                             v-if="tableflag"
                             :header-cell-style="{background:'#eef1f6',color:'#606266'}"

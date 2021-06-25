@@ -138,7 +138,7 @@
             <!-- 编辑 -->
             <Iconbutton
               icontype="xg"
-              label="编辑"
+              label="修改"
               @fatherMethod="handleEdit(scope.row)"
             ></Iconbutton>
             <!-- 删除 -->
@@ -478,7 +478,7 @@
             }
           }
         },
-        /* 确认修改或添加 */
+        /* 确认修改或新增 */
         enterDialog () {
           this.$refs.dialogForm?.validate(val => {
             const { isAdd, id } = this.dialog;

@@ -19,7 +19,7 @@
       :limit="2"
       :file-list="fileList"
       :on-success="handleUploadSuccess">
-      <el-button size="small" type="primary">添加</el-button>
+      <el-button size="small" type="primary">新增</el-button>
     </el-upload>
   </div>
 </template>

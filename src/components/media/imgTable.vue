@@ -109,7 +109,7 @@
       type="primary"
       @click="handleAdd"
     >
-      添加
+      新增
     </el-button>-->
     <el-table
       :data="tableData"
@@ -452,7 +452,7 @@ export default {
     handleDelete(index) {
       this.value.splice(index, 1)
     },
-   /* /!* 添加 *!/
+   /* /!* 新增 *!/
     handleAdd() {
       this.value.push({
         path: '',

@@ -33,7 +33,7 @@
 </style>
 <template>
     <div class="xl-script-select">
-      <el-button type="primary" size="small" @click="showDialog">添加新闻</el-button>
+      <el-button type="primary" size="small" @click="showDialog">新增新闻</el-button>
       <ul class="xl-script-select--lists">
         <li v-for="(list, index) of chooseList" :key="list.id">
           <p>{{ list.title }}</p>

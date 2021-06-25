@@ -34,7 +34,7 @@
       @keyup.enter.native="handleInputConfirm"
       @blur="handleInputConfirm"
     />
-    <el-button v-else class="button-new-tag" size="mini" @click="showInput">+ 添加</el-button>
+    <el-button v-else class="button-new-tag" size="mini" @click="showInput">+ 新增</el-button>
   </div>
 </template>
 
@@ -54,7 +54,7 @@ export default {
   },
   data() {
     return {
-      inputVisible: false, // 显示添加框
+      inputVisible: false, // 显示新增框
       inputValue: ''
     }
   },

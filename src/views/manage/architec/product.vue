@@ -30,7 +30,7 @@
           <el-button type="info" @click="initcondition" size="mini"
             >重置</el-button
           >
-          <el-button type="primary" @click="adddata" size="mini">添加</el-button>
+          <el-button type="primary" @click="adddata" size="mini">新增</el-button>
         </el-form-item>
       </el-form>
 
@@ -234,7 +234,7 @@
               @blur="handleInputConfirm"
             >
             </el-input>
-            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加</el-button>
+            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 新增</el-button>
           </el-form-item>
           <el-form-item label-width="150px" label="重保期选项" prop="extra.user_settings">
                 <el-checkbox true-label="1" false-label="0" v-model="form.extra.user_settings.deny_register">禁止注册</el-checkbox>

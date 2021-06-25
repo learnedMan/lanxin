@@ -170,7 +170,7 @@
             <Iconbutton
               v-if="scope.row.status !== 1"
               icontype="xg"
-              label="编辑"
+              label="修改"
               @fatherMethod="handleEdit(scope.row)"
             ></Iconbutton>
             <!-- 操作记录 -->

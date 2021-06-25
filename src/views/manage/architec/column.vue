@@ -15,7 +15,7 @@
       <el-form-item>
         <!-- <el-button type="info" @click="initcondition" size="mini">重置</el-button> -->
         <!-- <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
-        <el-button type="primary" @click="adddata" size="mini">添加</el-button>
+        <el-button type="primary" @click="adddata" size="mini">新增</el-button>
       </el-form-item>
     </el-form>
     <!-- 搜索 -->
@@ -967,7 +967,7 @@ import ChildPage1 from './pages/c_page1'
             //新增
             addchannels(data).then(response => {
                   this.$message({
-                    message: '添加成功',
+                    message: '新增成功',
                     type: 'success'
                   });
                   this.dialogFormVisible = false;
