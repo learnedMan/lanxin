@@ -443,7 +443,7 @@
                   v-model="dialog.form.extra.robot_settings.view.min"
                   :controls="false"
                   :precision="0"
-                  :max="dialog.form.extra.robot_settings.view.max || 100"
+                  :max="dialog.form.extra.robot_settings.view.max || 0"
                   placeholder="请输入"
                   clearable
                 ></el-input-number>
@@ -455,7 +455,6 @@
                   :controls="false"
                   :precision="0"
                   :min="dialog.form.extra.robot_settings.view.min || 0"
-                  :max="100"
                   placeholder="请输入"
                   clearable
                 ></el-input-number>
@@ -471,6 +470,7 @@
                 <el-input-number
                   v-model="dialog.form.extra.praise_base_num"
                   :controls="false"
+                  :precision="0"
                   placeholder="请输入"
                   clearable
                 ></el-input-number> 个

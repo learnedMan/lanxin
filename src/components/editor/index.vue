@@ -185,6 +185,7 @@
   import VueUeditorWrap from 'vue-ueditor-wrap'
   import xlVideo from '@/components/video'
   import { getEditImgLists } from '@/api/content'
+  import { uploadImg } from '@/api/content.js'
   let currentEditor;
   export default {
     components: {
@@ -301,10 +302,80 @@
         this.queryParams.startdate = arr[0]
         this.queryParams.enddate = arr[1]
       },
+      generateCanvas (img) {
+        return new Promise(res => {
+          const { width, height, src } = img;
+          let canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          let context = canvas.getContext("2d");
+          let newImg = new Image();
+          newImg.src = src;
+          newImg.setAttribute('crossOrigin', 'Anonymous')
+          newImg.onload = () => {
+            context.drawImage(newImg , 0 , 0 , width , height);
+            this.$el.appendChild(canvas)
+            const shuiyin = new Image();
+            shuiyin.src = require('@/assets/c_images/product.png');
+            shuiyin.crossOrigin = 'Anonymous';
+            shuiyin.onload = function () {
+              context.drawImage(shuiyin , 10 , 10 , 10 , 10);
+              canvas.toBlob((blob) => {
+                const file = new File([blob], `${new Date().getTime()}.png`, {
+                  type: 'image/png'
+                })
+                const formData = new FormData()
+                formData.append('image', file, file.name)
+                uploadImg({
+                  url: `${process.env.VUE_APP_BASE_API}/api/upload/image`,
+                  method: 'post',
+                  data: formData
+                }).then(({ path, status_code }) => {
+                  if(status_code === 200) {
+                    res({
+                      now: path,
+                      old: src
+                    });
+                  }
+                })
+              },"image/png");
+            }
+            shuiyin.onerror = function () {
+              res({
+                now: '',
+                old: src
+              });
+            }
+          }
+        })
+      },
       /*
           * 编辑框值变化
           * */
       handleInput(val) {
+        /*let htmlContent = currentEditor.getContent();
+        let div = document.createElement("div");
+        div.innerHTML = htmlContent;
+        let imgList = Array.from(div.querySelectorAll('img')).filter(n => {
+          return !n.className.includes('loadingclass')
+        })
+        console.log(imgList)
+        if(imgList.length) {
+          Promise.all(imgList.map(n => this.generateCanvas(n))).then((arr) => {
+            imgList.forEach(n => {
+              const obj = arr.find(item => item.old === n.src && item.now)
+              if(obj) {
+                n.src = obj.now;
+              }
+            })
+            console.log(div)
+            //this.$emit('input', div.innerHTML)
+          }).catch((err) => {
+            console.log(err)
+          })
+        }else {
+          //this.$emit('input', val)
+        }*/
         this.$emit('input', val)
       },
       /* 初始化之前 */
