@@ -48,7 +48,10 @@ const actions = {
     return new Promise(resolve => {
       let accessedRoutes;
       accessedRoutes = filterAsyncRoutes(asyncRoutes, isAdministrator, permissions)
-      commit('SET_ROUTES', accessedRoutes.concat(MBH? AdminRoute : []))
+      accessedRoutes = accessedRoutes.concat(MBH? AdminRoute : []);
+      commit('SET_ROUTES', accessedRoutes)
+
+
       resolve(accessedRoutes)
     })
   }
