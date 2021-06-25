@@ -78,6 +78,7 @@
     />
     <el-dialog
       width="900px"
+      top="20px"
       :title="dialog.title"
       :visible.sync="dialog.show"
       append-to-body

@@ -448,13 +448,8 @@
             v-show="switchVal"
           >
           </el-date-picker>
-          <el-switch
-            size="small"
-            v-model="switchVal"
-            @change="switchChange"
-            active-text="自定义时间"
-            inactive-text="立即推送">
-          </el-switch>
+          <el-radio v-model="switchVal" :label="true">自定义时间</el-radio>
+          <el-radio v-model="switchVal" :label="false">立即推送</el-radio>
         </el-form-item>
         <el-form-item
           label="是否推送给个人:"

@@ -1124,6 +1124,11 @@ export default {
                 relatedLabel: '对应矩阵栏目ID'
               },
               {
+                label: '专题',
+                value: 'topic',
+                relatedLabel: '专题栏目ID'
+              },
+              {
                 label: '活动',
                 value: 'activity',
                 relatedLabel: '活动ID'
