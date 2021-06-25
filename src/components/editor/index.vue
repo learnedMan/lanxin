@@ -78,6 +78,7 @@
     />
     <el-dialog
       width="900px"
+      top="20px"
       :title="dialog.title"
       :visible.sync="dialog.show"
       append-to-body
@@ -221,7 +222,7 @@
             'fontfamily', 'fontsize', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
             'link', 'unlink', '|',
-            'simpleupload', 'insertimage','imglist', 
+            'simpleupload', 'insertimage','imglist',
             // 'insertvideo',
             '|',
             'searchreplace', '|',

@@ -588,7 +588,7 @@ export default {
       this.loading = true
       this.selection = []
       this.tableData = []
-      const params = { ...this.queryParams }
+      const params = { ...this.queryParams, reviewer_id: this.$store.state.user.u_info.id }
       getNews(this.removePropertyOfNullFor0(params)).then(res => {
         let statusLabel
         this.tableData = (res.data || []).map(n => {
