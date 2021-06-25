@@ -25,7 +25,7 @@
             >搜索</el-button>
           <el-button type="info" @click="initcondition" size="mini"
             >重置</el-button>
-            <el-button type="primary" @click="adddata" size="mini">添加</el-button>
+            <el-button type="primary" @click="adddata" size="mini">新增</el-button>
             <el-button type="primary" @click="back" size="mini">返回上一级</el-button>
         </el-form-item>
       </el-form>
@@ -188,7 +188,7 @@
                     :limit="1"
                     :before-remove="beforeRemove"
                     name="image">
-                    <el-button size="small" type="primary">添加</el-button>
+                    <el-button size="small" type="primary">新增</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传一个包，若已存在，请删除后再重新上传</div>
                 </el-upload> -->
             </el-form-item>
@@ -406,7 +406,7 @@ export default {
             //新增
             addproduct_versions(data).then(response => {
                   this.$message({
-                    message: '添加成功',
+                    message: '新增成功',
                     type: 'success'
                   });
                   this.dialogFormVisible = false;

@@ -54,7 +54,7 @@
             </el-table-column>
           </el-table>
 
-          <!-- 添加或修改栏目对话框 -->
+          <!-- 新增或修改栏目对话框 -->
           <el-dialog :title="title" :visible.sync="open" width="500px">
             <el-form ref="form" :model="templateform" :rules="rules" label-width="80px">
               <el-form-item label="栏目名称" prop="catalogName">

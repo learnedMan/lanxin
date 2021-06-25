@@ -84,8 +84,8 @@
                 </el-col>
             </el-row>
 
-            <!-- 添加栏目对话框 -->
-            <el-dialog title="添加栏目" :visible.sync="open" width="500px">
+            <!-- 新增栏目对话框 -->
+            <el-dialog title="新增栏目" :visible.sync="open" width="500px">
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                     <el-form-item label="布局">
                       <el-select @change="layoutchange" v-model="layout" placeholder="请选择">

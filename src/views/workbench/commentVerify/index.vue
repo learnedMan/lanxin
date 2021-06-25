@@ -19,7 +19,7 @@
       <div slot="action">
         <el-button size="mini" type="primary" @click="resetSearch">重置</el-button>
         <el-button size="mini" type="primary" @click="handleQuery">搜索</el-button>
-        <!--<el-button size="mini" type="primary">添加评论</el-button>-->
+        <!--<el-button size="mini" type="primary">新增评论</el-button>-->
         <el-button size="mini" type="success" @click="batchAgreeOrRefused('approve')" :disabled="disabledBatchAction">批量通过</el-button>
         <el-button size="mini" type="warning" @click="batchAgreeOrRefused('reject')" :disabled="disabledBatchAction">批量拒绝</el-button>
       </div>

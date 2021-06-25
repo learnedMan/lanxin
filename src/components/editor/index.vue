@@ -223,7 +223,7 @@
             'fontfamily', 'fontsize', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
             'link', 'unlink', '|',
-            'simpleupload', 'insertimage','imglist',
+            'simpleupload', 'insertimage','imglist', 'attachment',
             // 'insertvideo',
             '|',
             'searchreplace', '|',
@@ -456,10 +456,16 @@
       },
       /* 视频弹框 */
       videoDialogControl (val) {
+      //   <video style="width:300px;display:inline-block;" scale="0.0" title="安吉长龙山水电站" poster="http://img.cztv.com/cms_upload/cms_1624591586_LeiHPwfsPi.png" controls="" controlslist="" disablepictureinpicture="" form_repository="vms" preload="meta">
+      //     <source src="http://ali-v.cztv.com/cztv/vod/2021/06/25/9b17fc8528b445c2a035f9796157ca49/h264_1500k_mp4.mp4" id="684381" type="video/mp4"/>
+      // </video>&nbsp;
+
+
+
         const video =
-                `<video poster="${val.cover}" class="edui-upload-video" controls="" preload="none" width="420" height="280" src="http://img.cztv.com/uploads/ueditor/php/upload/video/20210624/1624540592393574.mp4" data-setup="{}">
+                `<p><video style="width:300px;display:inline-block;" poster="${val.cover}" class="" controls="" preload="none" width="420" src="${val.url}" data-setup="{}">
                     <source src="${val.url}" type="video/mp4"/>
-                </video>`
+                </video>&nbsp;</p><b style='display:none;'>.</b>`
         currentEditor.execCommand('insertHtml', video);
         this.videoDialog.show = false;
       },

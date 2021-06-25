@@ -14,7 +14,7 @@
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="handleQuery" style="margin-right:50px;" size="mini">搜索</el-button>
-            <el-button type="primary" @click="adddata" size="mini" >添加</el-button>
+            <el-button type="primary" @click="adddata" size="mini" >新增</el-button>
             <el-button type="success" @click="changearrstatus(1)" :disabled="multipleSelection.length==0" size="mini" >批量启用</el-button>
             <el-button type="warning" @click="changearrstatus(2)" :disabled="multipleSelection.length==0" size="mini" >批量禁用</el-button>
             <el-button type="danger" @click="changearrstatus(0)" :disabled="multipleSelection.length==0" size="mini" >批量冻结</el-button>
@@ -612,6 +612,12 @@ import { validUsername , validEmail } from '@/utils/validate'
         //   this.form[key] = row[key];
         // }
         this.form = JSON.parse(JSON.stringify(row))
+        console.log(this.form)
+        if(!this.form.extra){
+          this.form.extra = {}
+        }
+
+
         this.getChannelsList()
         try {
           var arr = this.form.extra.channel_limit.split(',');

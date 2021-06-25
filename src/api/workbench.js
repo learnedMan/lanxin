@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import request2 from '@/utils/request_old'
+import request3 from '@/utils/request_old2'
 import $http from '@/utils/$http'
 
 /* -------------------------审核拒绝原因--------------------------------*/
@@ -111,8 +112,8 @@ export function reportReply(data) {
 
 /* 获取列表 */
 export function getCommentLists(data) {
-  return $http({
-    url: '/api/intranet/comment/listConsole',
+  return request3({
+    url: '/new/intranet/comment/listConsole',
     method: 'post',
     data
   })
@@ -120,16 +121,16 @@ export function getCommentLists(data) {
 
 /* 通过或拒绝评论 */
 export function commentAction(str) {
-  return $http({
-    url: `/api/intranet/comment/manage/${str}`,
+  return request3({
+    url: `/new/intranet/comment/manage/${str}`,
     method: 'get'
   })
 }
 
 /* 批量通过或拒绝 */
 export function batchCommentAction(data) {
-  return $http({
-    url: '/api/intranet/comment/operate',
+  return request3({
+    url: '/new/intranet/comment/operate',
     method: 'post',
     data
   })
@@ -137,8 +138,8 @@ export function batchCommentAction(data) {
 
 /* 禁言用户 */
 export function disableSendMsg(data) {
-  return $http({
-    url: '/api/intranet/comment/noTalkUser',
+  return request3({
+    url: '/new/intranet/comment/noTalkUser',
     method: 'post',
     data
   })
@@ -146,8 +147,8 @@ export function disableSendMsg(data) {
 
 /* 取消禁言 */
 export function releaseShutup(data) {
-  return $http({
-    url: '/api/intranet/comment/cancelNoTalkUser',
+  return request3({
+    url: '/new/intranet/comment/cancelNoTalkUser',
     method: 'post',
     data
   })

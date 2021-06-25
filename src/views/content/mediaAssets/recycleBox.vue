@@ -43,7 +43,7 @@
             </template>
       </el-table-column>
       <el-table-column label="作者" align="center" prop="author_name" :show-overflow-tooltip="true" />
-      <el-table-column label="编辑" align="center" prop="editor_name" :show-overflow-tooltip="true" />
+      <el-table-column label="修改" align="center" prop="editor_name" :show-overflow-tooltip="true" />
       <el-table-column label="状态" align="center" :show-overflow-tooltip="true" >
             <template slot-scope="scope">
                 <span>{{scope.row.status | formatstatus}}</span>

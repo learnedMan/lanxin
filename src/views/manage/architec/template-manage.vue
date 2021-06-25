@@ -187,7 +187,7 @@
                 <!-- 编辑 -->
                 <Iconbutton
                   icontype="xg"
-                  label="编辑"
+                  label="修改"
                   @fatherMethod="handleEditList(scope.row)"
                 ></Iconbutton>
                 <!-- 删除 -->
@@ -208,7 +208,7 @@
           @pagination="getList"
         />
       </div>
-      <!-- 添加目录 -->
+      <!-- 新增目录 -->
       <el-dialog
         width="400px"
         title="新增目录"
@@ -430,7 +430,7 @@
           },
           listRule: {
             domain: { required: true, message: '请选择域名', trigger: 'change' },
-            name: { required: true, message: '请添加名称', trigger: 'blur' },
+            name: { required: true, message: '请新增名称', trigger: 'blur' },
             path: { validator: pathValidator, trigger: 'blur' }
           }
         }
@@ -455,12 +455,12 @@
             }
           })
         },
-        /* 添加目录 */
+        /* 新增目录 */
         handleAdd () {
           this.resetForm('directoryForm');
           this.directory.show = true;
         },
-        /* 确认添加目录 */
+        /* 确认新增目录 */
         directoryDialog () {
           this.$refs.directoryForm?.validate(val => {
             if(val) {

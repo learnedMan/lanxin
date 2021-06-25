@@ -63,7 +63,7 @@
             :limit.sync="queryParams.pageSize"
             @pagination="getList"
           />
-          <!-- 添加或修改产品对话框 -->
+          <!-- 新增或修改产品对话框 -->
           <el-dialog :title="title" :visible.sync="open" width="500px">
             <el-form ref="form" :model="templateform" :rules="rules" label-width="80px">
               <el-form-item label="产品名称" prop="templateName">
