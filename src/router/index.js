@@ -506,58 +506,59 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/mbh',
-    component: Layout,
-    redirect: '/mbh/index',
-    name: 'MBH',
-    meta: {
-      title: '模板化',
-      icon: 'component'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/mbh/index'), // Parent router-view
-        name: 'index',
-        meta: { title: '产品管理' }
-      },
-      {
-        path: 'productstylelist',
-        component: () => import('@/views/mbh/productstylelist'), // Parent router-view
-        name: 'productstylelist',
-        meta: { title: '产品样式列表' },
-        hidden: true
-      },
-      {
-        path: 'catalog',
-        component: () => import('@/views/mbh/catalog'), // Parent router-view
-        name: 'catalog',
-        meta: { title: '栏目管理' }
-      },
-      {
-        path: 'setmeal',
-        component: () => import('@/views/mbh/setmeal'), // Parent router-view
-        name: 'setmeal',
-        meta: { title: '套餐管理' },
-        hidden: true
-      },
-      {
-        path: 'setmealDetails',
-        component: () => import('@/views/mbh/setmealDetails'), // Parent router-view
-        name: 'setmealDetails',
-        meta: { title: '套餐详情' },
-        hidden: true
-      },
-      {
-        path: 'stylelist',
-        component: () => import('@/views/mbh/stylelist'), // Parent router-view
-        name: 'stylelist',
-        meta: { title: '基础样式列表' }
-      }
-    ]
-  },
 ]
+
+export const AdminRoute = [{
+  path: '/mbh',
+  component: Layout,
+  redirect: '/mbh/index',
+  name: 'MBH',
+  meta: {
+    title: '模板化',
+    icon: 'component'
+  },
+  children: [
+    {
+      path: 'index',
+      component: () => import('@/views/mbh/index'), // Parent router-view
+      name: 'index',
+      meta: { title: '产品管理' }
+    },
+    {
+      path: 'productstylelist',
+      component: () => import('@/views/mbh/productstylelist'), // Parent router-view
+      name: 'productstylelist',
+      meta: { title: '产品样式列表' },
+      hidden: true
+    },
+    {
+      path: 'catalog',
+      component: () => import('@/views/mbh/catalog'), // Parent router-view
+      name: 'catalog',
+      meta: { title: '栏目管理' }
+    },
+    {
+      path: 'setmeal',
+      component: () => import('@/views/mbh/setmeal'), // Parent router-view
+      name: 'setmeal',
+      meta: { title: '套餐管理' },
+      hidden: true
+    },
+    {
+      path: 'setmealDetails',
+      component: () => import('@/views/mbh/setmealDetails'), // Parent router-view
+      name: 'setmealDetails',
+      meta: { title: '套餐详情' },
+      hidden: true
+    },
+    {
+      path: 'stylelist',
+      component: () => import('@/views/mbh/stylelist'), // Parent router-view
+      name: 'stylelist',
+      meta: { title: '基础样式列表' }
+    }
+  ]
+}]
 
 export const defaultRoutes = [
   { path: '*', redirect: '/404', hidden: true }

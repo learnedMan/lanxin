@@ -1,4 +1,4 @@
-import { asyncRoutes, constantRoutes, defaultRoutes } from '@/router'
+import { asyncRoutes, constantRoutes, defaultRoutes, AdminRoute } from '@/router'
 
 
 
@@ -44,10 +44,11 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, { roles, permissions }) {
     let isAdministrator = !!roles.find(n => n.name === 'Administrator');
+    let MBH = isAdministrator && !!roles.find(n => n.name === 'Admin');
     return new Promise(resolve => {
       let accessedRoutes;
       accessedRoutes = filterAsyncRoutes(asyncRoutes, isAdministrator, permissions)
-      commit('SET_ROUTES', accessedRoutes)
+      commit('SET_ROUTES', accessedRoutes.concat(MBH? AdminRoute : []))
       resolve(accessedRoutes)
     })
   }
