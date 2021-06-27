@@ -155,6 +155,14 @@
               :before-upload="beforeAvatarUpload">
               <img v-if="form.extra.cover" :src="form.extra.cover" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <div v-show="form.extra.cover" style="line-height: 30px;height: 30px">
+                <span
+                class="xl-cropper-icon"
+                @click.stop="handleRemove('cover')"
+              >
+                <i class="el-icon-delete" />
+              </span>
+              </div>
             </el-upload>
           </el-form-item>
           <el-form-item label-width="150px" label="栏目Logo:" prop="extra.logo">
@@ -168,6 +176,14 @@
               :before-upload="beforeAvatarUpload">
               <img v-if="form.extra.logo" :src="form.extra.logo" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <div v-show="form.extra.logo" style="line-height: 30px;height: 30px">
+                <span
+                class="xl-cropper-icon"
+                @click.stop="handleRemove('logo')"
+              >
+                <i class="el-icon-delete" />
+              </span>
+              </div>
             </el-upload>
           </el-form-item>
 
@@ -201,7 +217,7 @@
             clearable></el-cascader>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">
-            <el-select @change="catalogchange" v-model="form.extra.template_style" prop="extra.template_style" placeholder="请选择">
+            <el-select clearable="" @change="catalogchange" v-model="form.extra.template_style" prop="extra.template_style" placeholder="请选择">
               <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.catalogCode">
               </el-option>
             </el-select>
@@ -217,7 +233,7 @@
           </el-form-item>
 
           <el-form-item el-form-item label-width="150px" label="(模板化)样式:" prop="extra.template_json_id">
-            <el-select v-model="form.extra.template_json_id" placeholder="请选择">
+            <el-select clearable="" v-model="form.extra.template_json_id" placeholder="请选择">
               <el-option v-for="item in styleoptions" :key="item.id" :label="item.styleName" :value="item.id">
               </el-option>
             </el-select>
@@ -341,10 +357,12 @@
       </div>
     </el-dialog>
     <!-- 新增/修改栏目弹窗 -->
+
   </div>
 </template>
 
 <script>
+import Cropper from '@/components/Cropper'
 import { 
   getChannels,
   getproduct,
@@ -392,7 +410,8 @@ import ChildPage1 from './pages/c_page1'
   export default {
     name: 'column',
     components: {
-      ChildPage1
+      ChildPage1,
+      Cropper
     },
     data() {
       var mytoken = sessionStorage.getItem("token");
@@ -614,6 +633,26 @@ import ChildPage1 from './pages/c_page1'
       },
     },
     methods:{
+      /* 解析路径返回值 */
+      parseObj(item) {
+        const arr = item.key.split('.')
+        const val = arr.reduce((obj, key) => obj[key], this.from)
+        return item.component === 'select' ? val && val.toString().split(',') : val
+      },
+      /* 值变化 */
+      handleInput(val, item) {
+        const arr = item.key.split('.')
+        const type = item.type || 'string'
+        if (type === 'number') val = parseInt(val) || ''
+        arr.reduce((obj, key) => {
+          if (key === arr[arr.length - 1]) obj[key] = item.component === 'select' ? val.join() : val
+          else return obj[key]
+        }, this.from)
+      },
+      handleRemove(keyval){
+        this.form.extra[keyval] = '';
+        this.$forceUpdate()
+      },
       yulanfn(){
         window.open('http://10.30.10.158/view/#/mt?id='+this.form.extra.template_json_id)
       },
@@ -635,6 +674,9 @@ import ChildPage1 from './pages/c_page1'
       // },
 
       catalogchange(){
+        if(!this.form.extra.template_style){
+          return
+        }
         this.styleoptions = [];
         this.form.extra.template_json_id = '';
           var data = {

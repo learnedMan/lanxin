@@ -4,7 +4,7 @@
     padding: 0 20px;
     &--tree {
       display: inline-block;
-      min-width: 240px;
+      // min-width: 240px;
       border-right: 1px solid #f3f3f3;
       padding: 20px 0 0 30px;
       background-color: #fff;
@@ -503,7 +503,7 @@
 <script>
 import { getChannels } from '@/api/manage'
 import { addPushDetail} from '@/api/operamanage'
-import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort } from '@/api/content'
+import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail } from '@/api/content'
 import NewDetail from './reviewNews/detail'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 import { dateFormat } from "@/utils/costum";
@@ -769,6 +769,7 @@ export default {
     },
     /* 新增推送 */
     handlePush (row) {
+      console.log(row)
       const { type, id, title, link, cover } = row;
       this.resetForm('dialogForm');
       this.switchVal = false;
@@ -784,7 +785,13 @@ export default {
           ...(link? { link } : {})
         }
       })
-      this.pushDialog.show = true;
+      getNewDetail(row.id).then(res => {
+        console.log(res)
+        this.dialogForm.content = res.extra.intro
+        this.pushDialog.show = true;
+
+      })
+      // console.log(this.dialogForm)
     },
     /* 确认推送 */
     enterPushDialog () {

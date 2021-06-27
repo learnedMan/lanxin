@@ -80,6 +80,10 @@ Vue.config.productionTip = false
 // import'./assets/UEditor/ueditor.all.js'
 // import'./assets/UEditor/ueditor.parse.min.js'
 
+// 防止重复点击
+import "@/utils/banreclick.js"
+
+
 new Vue({
   el: '#app',
   router,

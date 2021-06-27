@@ -281,7 +281,7 @@
               v-model="dialogForm.extra.link.url"
               placeholder="请输入链接地址，如：https://www.baidu.com"
               clearable
-              style="width: 194px"
+              style="width: 350px"
             />
           </el-form-item>
           <el-form-item

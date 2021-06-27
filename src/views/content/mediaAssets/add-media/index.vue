@@ -72,6 +72,7 @@
           type="primary"
           size="small"
           @click="handleDraft"
+          v-points = "1500"
         >
           保存稿件
         </el-button>
@@ -79,6 +80,7 @@
           type="primary"
           size="small"
           @click="handlePreview"
+          v-points = "1500"
         >
           保存并预览
         </el-button>
@@ -579,6 +581,7 @@
         <el-button
           type="primary"
           @click="enterDialog"
+          v-points = '1500'
         >
           确 定
         </el-button>
