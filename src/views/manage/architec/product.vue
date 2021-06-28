@@ -209,7 +209,7 @@
           </el-form-item>
           <el-form-item label-width="150px" label="评论控制" prop="extra.comment_control">
                 <el-radio-group v-model="form.extra.comment_control">
-                    <el-radio :label="'3'">不做控制</el-radio>
+                    <!-- <el-radio :label="'3'">不做控制</el-radio> -->
                     <el-radio :label="'1'">先发后审</el-radio>
                     <el-radio :label="'2'">先审后发</el-radio>
                     <el-radio :label="'0'">禁止评论</el-radio>
@@ -236,11 +236,11 @@
             </el-input>
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 新增</el-button>
           </el-form-item>
-          <el-form-item label-width="150px" label="重保期选项" prop="extra.user_settings">
+          <!-- <el-form-item label-width="150px" label="重保期选项" prop="extra.user_settings">
                 <el-checkbox true-label="1" false-label="0" v-model="form.extra.user_settings.deny_register">禁止注册</el-checkbox>
                 <el-checkbox true-label="1" false-label="0" v-model="form.extra.user_settings.deny_modify">禁止修改用户信息</el-checkbox>
                 <el-checkbox true-label="1" false-label="0" v-model="form.extra.user_settings.deny_OAuth">禁止第三方登录</el-checkbox>
-          </el-form-item>
+          </el-form-item> -->
         </div>
 
         <div class="fr" style="width: 50%">
