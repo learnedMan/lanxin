@@ -36,7 +36,7 @@
 <template>
   <el-container class="xl-mobile-news">
     <el-header height="auto" class="xl-mobile-news--header" v-if="editorPerson">
-      <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
+      <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿
     </el-header>
     <el-main style="padding: 10px 0">
       <el-tabs v-model="from.extra.type" class="xl-mobile-news--tab" @tab-click="handleTabChange">

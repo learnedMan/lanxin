@@ -147,6 +147,13 @@
             >
               搜索
             </el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleAdd"
+            >
+              新增新闻
+            </el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -708,6 +715,11 @@ export default {
     })
   },
   methods: {
+    /* 新增新闻 */
+    handleAdd () {
+      const { id } = this.$route.query;
+      this.$router.push({ name: 'Add-media', query: { redirect: 'SeeSection', channelId: id } })
+    },
     /* 推送时间问题 */
     switchChange () {
       this.$nextTick(() => {

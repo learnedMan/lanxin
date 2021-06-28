@@ -65,13 +65,14 @@
   <el-container class="xl-add-media">
     <el-header class="xl-add-media--header" height="auto" :style="{ justifyContent: isEdit && editorPerson? 'space-between' : 'flex-end' }">
       <div style="font-size: 14px;color: #606266;flex: 1" v-if="isEdit && editorPerson && !disabled">
-        <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
+        <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿
       </div>
       <div v-if="!disabled">
         <el-button
           type="primary"
           size="small"
           @click="handleDraft"
+          v-if="!onlyPublish"
           v-points = "1500"
         >
           保存稿件
@@ -80,6 +81,7 @@
           type="primary"
           size="small"
           @click="handlePreview"
+          v-if="!onlyPublish"
           v-points = "1500"
         >
           保存并预览
@@ -94,7 +96,7 @@
       </div>
     </el-header>
     <el-main style="padding: 10px 0">
-      <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange">
+      <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange('tab')">
         <el-tab-pane
           v-for="item of tabs"
           :disabled="disabled || isEdit"
@@ -262,6 +264,7 @@
                     :disabled="disabled"
                     :value="parseObj(formOptions['extra.content'].item)"
                     @input="handleInput($event, formOptions['extra.content'].item)"
+                    @changeVideoList="changeVideoList"
                   />
                 </el-form-item>
                 <!-- 视频 -->
@@ -491,7 +494,7 @@
                 v-show="initFrom().includes('extra.view_base_num')"
                 v-bind="formOptions['extra.view_base_num'].item.props"
               >
-                <el-input
+                <!--<el-input
                   :value="parseObj(formOptions['extra.view_base_num'].item)"
                   :rows="4"
                   v-bind="formOptions['extra.view_base_num'].item.componentProps"
@@ -499,7 +502,17 @@
                   size="small"
                   style="width: 200px"
                   @input="handleInput($event, formOptions['extra.view_base_num'].item)"
-                />
+                />-->
+                <el-input-number
+                  :controls="false"
+                  :precision="0"
+                  :min="viewBaseInterval.min"
+                  :max="viewBaseInterval.max"
+                  v-model="from.extra.view_base_num"
+                  :placeholder="basePlaceholder"
+                  style="width: 200px"
+                  clearable
+                ></el-input-number>
               </el-form-item>
               <!-- 点赞量 -->
               <el-form-item
@@ -581,7 +594,6 @@
         <el-button
           type="primary"
           @click="enterDialog"
-          v-points = '1500'
         >
           确 定
         </el-button>
@@ -1233,7 +1245,7 @@ export default {
           allow_comment: '0', // 评论控制
           allow_share: '1', // 允许分享
           trans_to_audio: '1', // 同步生成语音稿件
-          view_base_num: '', // 点击量
+          view_base_num: undefined, // 点击量
           praise_base_num: '', // 点赞量
           post_base_num: '', // 转发量
           custom_rec: [], // 关联文稿
@@ -1290,6 +1302,10 @@ export default {
     disabled ({ $route }) {
       return $route.query.disabled === '1' || this.id != null;
     },
+    /* 是否只有发布按钮 */
+    onlyPublish ({ $route }) {
+      return $route.query.channelId
+    },
     /* 是否为编辑 */
     isEdit ({ scriptsId }) {
       return scriptsId != null;
@@ -1297,6 +1313,22 @@ export default {
     /* 当前已有的标签页 */
     visitedViews() {
       return this.$store.state.tagsView.visitedViews
+    },
+    /* 点击量区间 */
+    viewBaseInterval ({ $store: { state: { user: { u_info } } } }) {
+      const extra = u_info.site.extra || {};
+      const multiple = Number(extra.multiplying_factor || 1);
+      const max = Number(extra.random_view_range?.max || 0) * multiple || Infinity;
+      const min = Number(extra.random_view_range?.min || 0) * multiple;
+      return {
+        min,
+        max
+      }
+    },
+    /* 基础点击量的提示 */
+    basePlaceholder ({ viewBaseInterval: { max, min } }) {
+      if(max === Infinity) return `请输入大于${min}的的正整数`;
+      return `请输入${min}-${max}的正整数`
     }
   },
   async created() {
@@ -1399,15 +1431,16 @@ export default {
     handleReturn() {
       const fullPath = this.$route.fullPath
       const view = this.visitedViews.find(n => n.fullPath === fullPath)
-      const { redirect = 'All-media' } = this.$route.query;
-      this.$router.push({ name: redirect });
+      const { redirect = 'All-media', channelId } = this.$route.query;
+      this.$router.push({ name: redirect, query: channelId? { id: channelId } : {} });
       this.$store.dispatch('tagsView/delView', view)
     },
     /*
         * 保存数据
         * */
     handleSave(tip, cb) {
-      const channel_id = this.dialog.form.channel_id
+      const { channelId } = this.$route.query
+      const channel_id = channelId? [ channelId ] : this.dialog.form.channel_id
       const currentTabsFromItem = this.initFrom()
       const type = this.from.extra.type
       const id = this.scriptsId;
@@ -1471,6 +1504,10 @@ export default {
     handlePublish() {
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
+          const { channelId } = this.$route.query
+          if(channelId) return this.handleSave('保存并发布成功', () => {
+            this.handleReturn();
+          })
           this.dialog.show = true
         }else {
           this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
@@ -1478,15 +1515,27 @@ export default {
       })
     },
     /* tab变化 */
-    handleTabChange() {
+    handleTabChange(val) {
       const currentTabsFromItem = this.initFrom()
       this.currentTabsFromRules = currentTabsFromItem.reduce((obj, key) => ({
         ...obj,
         [key]: this.formOptions[key].rule
       }), {})
       this.$nextTick(() => {
-          this.$refs.submitForm?.clearValidate()
+        if(val === 'tab') {
+          Object.assign(this.from.extra, {
+            content: '',
+            video_extra: {
+              video_list: []
+            }
+          })
+        }
+        this.$refs.submitForm?.clearValidate()
       })
+    },
+    /* 修改视频列表数据 */
+    changeVideoList (val) {
+
     },
     /* 获取标签列表 */
     getLabels() {
@@ -1505,7 +1554,7 @@ export default {
        * 获取栏目列表
        * */
     getChannels() {
-      getChannels({ status: 1 }).then(res => {
+      getChannels().then(res => {
         this.channelsList = res.map(n => ({
           ...n,
           disabled: true
