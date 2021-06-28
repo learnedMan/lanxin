@@ -32,18 +32,21 @@
             tabindex="1"
           />
         </el-form-item>
-        <el-form-item prop="password" class="username">
+        <el-form-item prop="password" class="username" >
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
           <el-input
             ref="password"
-            type="password"
+            :type="eyeflag?'text':'password'"
             v-model.trim="loginForm.password"
             placeholder="请输入密码"
             name="password"
             tabindex="2"
           />
+          <i style="display: inline-block;height: 100%;vertical-align: bottom;margin-left:20px;">
+            <img style="width:20px;cursor:pointer;" @click="eyeflag = !eyeflag" :src="eyeflag?openeye:closeeye" alt="">
+            </i>
         </el-form-item>
 
         <el-form-item prop="yzcode" class="yzcode">
@@ -87,6 +90,9 @@ import { validUsername  } from '@/utils/validate'
 import { getcode , getSiteList , login} from '@/api/login'
 import changePass from '@/views/dashboard/user/changePass.vue'
 
+import closeeye from '@/assets/c_images/closeeye.png'
+import openeye from '@/assets/c_images/openeye.png'
+
 export default {
   name: 'Login',
   components: {
@@ -117,6 +123,9 @@ export default {
       }
     }
     return {
+      closeeye,
+      openeye,
+      eyeflag:false,
       loginForm: {//登录绑定
         username: '',
         password: '',

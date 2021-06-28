@@ -1,6 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .xl-studio-list {
-
+    
   }
 </style>
 <template>
@@ -783,9 +783,9 @@
             }
           },
           rules: {
-            channels: [
-              { required: true, message: '请选择栏目', trigger: 'change' }
-            ],
+            // channels: [
+            //   { required: true, message: '请选择栏目', trigger: 'change' }
+            // ],
             'extra.title': [
               { required: true, message: '请输入直播间名称', trigger: 'blur' }
             ],

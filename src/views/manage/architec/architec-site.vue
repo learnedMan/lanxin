@@ -78,15 +78,29 @@
         </el-form-item>
 
         <el-form-item  label-width="120px" label="基础点击量随机" prop="extra.random_view_range">
-          <el-input style="width: 150px" @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最小值" v-model="form.extra.random_view_range.min"></el-input> ~ 
-          <el-input style="width: 150px " @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最大值" v-model="form.extra.random_view_range.max"></el-input>
+          <el-input-number 
+          @input="forceUpdate()" 
+          :precision="0" 
+          :max="form.extra.random_view_range.max || 0"
+          :controls="false" 
+          v-model="form.extra.random_view_range.min"></el-input-number>
+           ~ 
+           <el-input-number 
+          @input="forceUpdate()" 
+          :precision="0" 
+          :min="form.extra.random_view_range.min || 0"
+          :controls="false" 
+          v-model="form.extra.random_view_range.max"></el-input-number>
+          <!-- <el-input style="width: 150px" @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最小值" v-model="form.extra.random_view_range.min"></el-input> ~  -->
+          <!-- <el-input style="width: 150px " @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最大值" v-model="form.extra.random_view_range.max"></el-input> -->
         </el-form-item>
         <el-form-item  label-width="120px" label="点击量系数" prop="extra.multiplying_factor">
-          <el-input style="width: 300px" @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入点击量系数" v-model="form.extra.multiplying_factor"></el-input>
+          <el-input-number 
+          @input="forceUpdate()" 
+          :precision="0" 
+          :controls="false" 
+          v-model="form.extra.multiplying_factor"></el-input-number>
         </el-form-item>
-
-
-
         <el-form-item  label-width="120px" label="LOGO："  prop="logo">
           <el-upload
             class="avatar-uploader"

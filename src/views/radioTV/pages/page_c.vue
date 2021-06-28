@@ -125,7 +125,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <Pageclist :_channel_id="_channel_id" v-if="showlist" />
+        <Pageclist @back="back" :showlist="showlist" :_channel_id="_channel_id" v-if="showlist" />
       </div>
         </el-col>
       </el-row>
@@ -337,6 +337,9 @@ export default {
     },
   },
   methods: {
+    back(val){
+      this.showlist = val
+    },
     golist(res) {
       this._channel_id = res.id;
       this.showlist = true;

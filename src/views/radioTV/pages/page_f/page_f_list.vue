@@ -131,6 +131,10 @@ export default {
       _channel_id:{
         type:Number,
         default:0
+      },
+      showlist:{
+        type:Boolean,
+        default:true
       }
     },
     data () {
@@ -178,7 +182,7 @@ export default {
             return isLt;
         },
         back(){
-            this.$parent.showlist = false;
+            this.$emit('back',false)
         },
         getList(){
             this.loading = true;
