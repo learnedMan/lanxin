@@ -62,7 +62,7 @@
 <template>
   <el-container class="xl-news-media">
     <el-header height="40px" style="background-color: #fff;line-height: 40px" v-if="!disabled && editorPerson">
-      <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿，为避免内容提交覆盖，请与相关人员沟通后提交保存和发布。
+      <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿
     </el-header>
     <el-main style="padding: 10px 0">
       <el-tabs v-model="from.extra.type" class="xl-news-media--tab" @tab-click="handleTabChange">
@@ -492,7 +492,7 @@
                 v-show="initFrom().includes('extra.view_base_num')"
                 v-bind="formOptions['extra.view_base_num'].item.props"
               >
-                <el-input
+                <!--<el-input
                   :value="parseObj(formOptions['extra.view_base_num'].item)"
                   :rows="4"
                   v-bind="formOptions['extra.view_base_num'].item.componentProps"
@@ -500,7 +500,17 @@
                   size="small"
                   style="width: 200px"
                   @input="handleInput($event, formOptions['extra.view_base_num'].item)"
-                />
+                />-->
+                <el-input-number
+                  :controls="false"
+                  :precision="0"
+                  :min="viewBaseInterval.min"
+                  :max="viewBaseInterval.max"
+                  v-model="from.extra.view_base_num"
+                  :placeholder="basePlaceholder"
+                  style="width: 200px"
+                  clearable
+                ></el-input-number>
               </el-form-item>
               <!-- 点赞量 -->
               <el-form-item
@@ -1251,7 +1261,7 @@ export default {
           allow_comment: '0', // 评论控制
           allow_share: '1', // 允许分享
           trans_to_audio: '1', // 同步生成语音新闻
-          view_base_num: '', // 点击量
+          view_base_num: undefined, // 点击量
           praise_base_num: '', // 点赞量
           post_base_num: '', // 转发量
           custom_rec: [], // 关联文稿
@@ -1293,6 +1303,22 @@ export default {
     /* 上传接口 */
     actionUrl() {
       return `${process.env.VUE_APP_BASE_API}/api/upload/image`
+    },
+    /* 点击量区间 */
+    viewBaseInterval ({ $store: { state: { user: { u_info } } } }) {
+      const extra = u_info.site.extra || {};
+      const multiple = Number(extra.multiplying_factor || 1);
+      const max = Number(extra.random_view_range?.max || 0) * multiple || Infinity;
+      const min = Number(extra.random_view_range?.min || 0) * multiple;
+      return {
+        min,
+        max
+      }
+    },
+    /* 基础点击量的提示 */
+    basePlaceholder ({ viewBaseInterval: { max, min } }) {
+      if(max === Infinity) return `请输入大于${min}的的正整数`;
+      return `请输入${min}-${max}的正整数`
     }
   },
   watch: {

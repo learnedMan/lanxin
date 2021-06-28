@@ -654,7 +654,7 @@ export default {
         * 获取栏目列表
         * */
     getChannels() {
-      getChannels({ status: 1 }).then(res => {
+      getChannels().then(res => {
         this.channelsList = res.map(n => ({
           ...n,
           disabled: true

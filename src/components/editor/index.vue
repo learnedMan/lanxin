@@ -176,7 +176,7 @@
       :visible.sync="videoDialog.show"
       append-to-body
     >
-      <xl-video @choose-url="videoDialogControl"></xl-video>
+      <xl-video @choose-url="videoDialogControl" @choose="videoDialogChoose"></xl-video>
     </el-dialog>
   </div>
 </template>
@@ -302,25 +302,65 @@
         this.queryParams.startdate = arr[0]
         this.queryParams.enddate = arr[1]
       },
+      /* 设置水印位置 */
+      setPosition (val, width, height, b = 0.1) {
+        const widthPercentage = Math.floor(width * b);
+        const heightPercentage = Math.floor(height * b);
+        let data = {};
+        switch (val) {
+          case '1': // 左上角
+            data = { left: 0, top: 0 }
+            break
+          case '2': // 正上方
+            data = { left: Math.floor(width / 2 - widthPercentage / 2), top: 0 };
+            break
+          case '3': // 右上角
+            data = { left: Math.floor(width - widthPercentage), top: 0 };
+            break
+          case '4': // 左边
+            data = { left: 0, top: Math.floor(height / 2 - heightPercentage / 2) };
+            break;
+          case '5': // 正中间
+            data = { left: Math.floor(width / 2 - widthPercentage / 2), top: Math.floor(height / 2 - heightPercentage / 2) };
+            break;
+          case '6': // 右边
+            data = { left: Math.floor(width - widthPercentage), top: Math.floor(height / 2 - heightPercentage / 2) };
+            break;
+          case '7': // 左下角
+            data = { left: 0, top: Math.floor(height - heightPercentage) };
+            break;
+          case '8': // 正下方
+            data = { left: Math.floor(width / 2 - widthPercentage / 2), top: Math.floor(height - heightPercentage) };
+            break
+          case '9': // 右下角
+            data = { left: Math.floor(width - widthPercentage), top: Math.floor(height - heightPercentage) };
+        }
+        return {
+          ...data,
+          width: widthPercentage,
+          height: heightPercentage
+        }
+      },
+      /* 添加水印图片 */
       generateCanvas (img) {
         return new Promise(res => {
-          const { width, height, src } = img;
-          console.log(src)
-          let canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          let context = canvas.getContext("2d");
+          const { src } = img;
           let newImg = new Image();
           newImg.src = src;
           newImg.setAttribute('crossOrigin', 'Anonymous')
           newImg.onload = () => {
+            const { width, height } = newImg;
+            let canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            let context = canvas.getContext("2d");
             context.drawImage(newImg , 0 , 0 , width , height);
-            this.$el.appendChild(canvas)
             const shuiyin = new Image();
             shuiyin.src = require('@/assets/c_images/product.png');
             shuiyin.crossOrigin = 'Anonymous';
-            shuiyin.onload = function () {
-              context.drawImage(shuiyin , 10 , 10 , 10 , 10);
+            shuiyin.onload = () => {
+              const position = this.setPosition('5', width, height);
+              context.drawImage(shuiyin, position.left, position.top, position.width, position.height);
               canvas.toBlob((blob) => {
                 const file = new File([blob], `${new Date().getTime()}.png`, {
                   type: 'image/png'
@@ -354,30 +394,27 @@
           * 编辑框值变化
           * */
       handleInput(val) {
-        /*let htmlContent = currentEditor.getContent();
+        /*let htmlContent = val;
         let div = document.createElement("div");
         div.innerHTML = htmlContent;
-        let imgList = Array.from(div.querySelectorAll('img')).filter(n => {
-          return !n.className.includes('loadingclass')
+        let imgList = Array.from(div.querySelectorAll('img')).filter(img => {
+          return !img.className.includes('loadingclass') && !img.dataset.canvas
         })
         if(imgList.length) {
-          //setTimeout(() => {
-            Promise.all(imgList.map(n => this.generateCanvas(n))).then((arr) => {
-              imgList.forEach(n => {
-                const obj = arr.find(item => item.old === n.src && item.now)
-                if(obj) {
-                  n.src = obj.now;
-                }
-              })
-              console.log(div)
-              //this.$emit('input', div.innerHTML)
-            }).catch((err) => {
-              console.log(err)
+          Promise.all(imgList.map(n => this.generateCanvas(n))).then((arr) => {
+            imgList.forEach(img => {
+              const item = arr.find(item => item.old === img.src)
+              if(item) {
+                img.src = item.now;
+                img.setAttribute('data-canvas', '1');
+              }
             })
-          //}, 1000)
-
+            this.$emit('input', div.innerHTML)
+          }).catch((err) => {
+            console.log(err)
+          })
         }else {
-          //this.$emit('input', val)
+          this.$emit('input', val)
         }*/
         this.$emit('input', val)
       },
@@ -464,13 +501,16 @@
       // </video>&nbsp;
 
 
-
         const video =
                 `<p><video style="width:300px;display:inline-block;" poster="${val.cover}" class="" controls="" preload="none" width="420" src="${val.url}" data-setup="{}">
                     <source src="${val.url}" type="video/mp4"/>
                 </video>&nbsp;</p><b style='display:none;'>.</b>`
         currentEditor.execCommand('insertHtml', video);
         this.videoDialog.show = false;
+      },
+      /* 用于传递给文稿或新闻的视频列表数据 */
+      videoDialogChoose (val) {
+        this.$emit('changeVideoList', val)
       },
       /* 获取图库数据 */
       getList() {
