@@ -2,6 +2,16 @@
   .xl-see-section {
     display: flex;
     padding: 0 20px;
+    .el-tree-node__label{
+      width: 100%;
+          white-space: normal;
+          align-items: start;
+      }
+      .xl-see-section--tree .el-tree-node__content{
+        height: auto;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+      }
     &--tree {
       display: inline-block;
       // min-width: 240px;
@@ -51,265 +61,276 @@
 </style>
 <template>
   <div class="xl-see-section">
-    <div class="xl-see-section--tree">
-      <el-tree
-        ref="tree"
-        :data="channelsList"
-        node-key="id"
-        :props="props"
-        :expand-on-click-node="false"
-        :default-expanded-keys="defaultExpandedKeys"
-        @current-change="treeChange"
-      />
-    </div>
-    <div class="xl-see-section--content">
-      <div class="search">
-        <el-form
-          ref="queryForm"
-          :model="queryParams"
-          :inline="true"
-        >
-          <el-form-item
-            label="新闻名称:"
-            prop="keyword"
+
+    <el-row>
+      <el-col :span="4">
+        <div class="xl-see-section--tree" style="width:100%;overflow:hidden;">
+          <el-tree
+           style="width:100%;"
+            ref="tree"
+            :data="channelsList"
+            node-key="id"
+            :props="props"
+            :expand-on-click-node="false"
+            :default-expanded-keys="defaultExpandedKeys"
+            @current-change="treeChange"
+          />
+        </div>
+      </el-col>
+      <el-col :span="20">
+        <div class="xl-see-section--content">
+          <div class="search">
+            <el-form
+              ref="queryForm"
+              :model="queryParams"
+              :inline="true"
+            >
+              <el-form-item
+                label="新闻名称:"
+                prop="keyword"
+              >
+                <el-input
+                  v-model="queryParams.keyword"
+                  placeholder="请输入关键字"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @keyup.enter.native="handleQuery"
+                />
+              </el-form-item>
+              <el-form-item
+                label="新闻类型:"
+                prop="type"
+              >
+                <el-select
+                  v-model="queryParams.type"
+                  size="small"
+                  placeholder="请选择类型"
+                  clearable
+                >
+                  <el-option
+                    v-for="item in typeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                label="新闻状态:"
+                prop="status"
+              >
+                <el-select
+                  v-model="queryParams.status"
+                  size="small"
+                  placeholder="请选择状态"
+                  clearable
+                >
+                  <el-option
+                    v-for="item in [{ value: '', label: '全部' }].concat(statusOptions)"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="创建日期:">
+                <el-date-picker
+                  v-model="dateValue"
+                  size="small"
+                  type="daterange"
+                  align="right"
+                  unlink-panels
+                  range-separator="~"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  @change="handleDateChange"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="handleReset"
+                >
+                  重置
+                </el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="handleQuery"
+                >
+                  搜索
+                </el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="handleAdd"
+                >
+                  新增新闻
+                </el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+          <el-table
+            ref="multipleTable"
+            v-loading="loading"
+            :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
+            :data="tableData"
+            border
+            tooltip-effect="dark"
+            style="width: 100%"
           >
-            <el-input
-              v-model="queryParams.keyword"
-              placeholder="请输入关键字"
-              clearable
-              size="small"
-              style="width: 200px"
-              @keyup.enter.native="handleQuery"
+            <el-table-column
+              label="新闻ID"
+              align="center"
+              prop="id"
             />
-          </el-form-item>
-          <el-form-item
-            label="新闻类型:"
-            prop="type"
-          >
-            <el-select
-              v-model="queryParams.type"
-              size="small"
-              placeholder="请选择类型"
-              clearable
+            <el-table-column
+              label="新闻封面"
+              align="center"
+              prop="id"
+              width="120"
             >
-              <el-option
-                v-for="item in typeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="新闻状态:"
-            prop="status"
-          >
-            <el-select
-              v-model="queryParams.status"
-              size="small"
-              placeholder="请选择状态"
-              clearable
+              <template slot-scope="scope">
+                <el-image
+                  style="width: 50px; height: 50px"
+                  :src="scope.row.cover || useravatar"
+                  fit="cover"
+                >
+                  <img slot="error" :src="useravatar" alt="" style="width: 100%;height: 100%">
+                </el-image>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="新闻标题"
+              align="center"
+              prop="title"
+              :show-overflow-tooltip="true"
             >
-              <el-option
-                v-for="item in [{ value: '', label: '全部' }].concat(statusOptions)"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="创建日期:">
-            <el-date-picker
-              v-model="dateValue"
-              size="small"
-              type="daterange"
-              align="right"
-              unlink-panels
-              range-separator="~"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              @change="handleDateChange"
+              <template slot-scope="scope">
+                <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="新闻类型"
+              align="center"
+              prop="typeLabel"
             />
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              size="mini"
-              @click="handleReset"
+            <el-table-column
+              label="状态"
+              align="center"
             >
-              重置
-            </el-button>
-            <el-button
-              type="primary"
-              size="mini"
-              @click="handleQuery"
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.status"
+                  @change="statusChange(scope.row)"
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in statusOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="作者"
+              align="center"
+              prop="author_name"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+              label="排序"
+              align="center"
             >
-              搜索
-            </el-button>
-            <el-button
-              type="primary"
-              size="mini"
-              @click="handleAdd"
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="handleSort(scope.row)"
+                >
+                  {{ scope.row.sort }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="发布时间"
+              align="center"
+              prop="created_at"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+              label="操作"
+              align="center"
+              width="440"
             >
-              新增新闻
-            </el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-      <el-table
-        ref="multipleTable"
-        v-loading="loading"
-        :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
-        :data="tableData"
-        border
-        tooltip-effect="dark"
-        style="width: 100%"
-      >
-        <el-table-column
-          label="新闻ID"
-          align="center"
-          prop="id"
-        />
-        <el-table-column
-          label="新闻封面"
-          align="center"
-          prop="id"
-          width="120"
-        >
-          <template slot-scope="scope">
-            <el-image
-              style="width: 50px; height: 50px"
-              :src="scope.row.cover || useravatar"
-              fit="cover"
-            >
-              <img slot="error" :src="useravatar" alt="" style="width: 100%;height: 100%">
-            </el-image>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="新闻标题"
-          align="center"
-          prop="title"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">
-            <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="新闻类型"
-          align="center"
-          prop="typeLabel"
-        />
-        <el-table-column
-          label="状态"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <el-select
-              v-model="scope.row.status"
-              @change="statusChange(scope.row)"
-              size="small"
-            >
-              <el-option
-                v-for="item in statusOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="作者"
-          align="center"
-          prop="author_name"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="排序"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <el-button
-              type="text"
-              size="small"
-              @click="handleSort(scope.row)"
-            >
-              {{ scope.row.sort }}
-            </el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="发布时间"
-          align="center"
-          prop="created_at"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="操作"
-          align="center"
-          width="440"
-        >
-          <template slot-scope="scope">
-            <div class="verify-table-action">
-              <!-- 置顶和取消置顶 -->
-              <Iconbutton
-                :icontype="scope.row.top === 1? 'qxzd' : 'zd'"
-                :label="scope.row.top === 1? '取消置顶' : '置顶'"
-                @fatherMethod="handlePlaced(scope.row)"
-              ></Iconbutton>
-              <!-- 查看 -->
-              <Iconbutton
-                v-if="scope.row.status === 1"
-                icontype="ckxq"
-                label="查看详情"
-                @fatherMethod="handleWatch(scope.row)"
-              ></Iconbutton>
-              <!-- 编辑 -->
-              <Iconbutton
-                v-if="scope.row.status !== 1"
-                icontype="xg"
-                label="修改"
-                @fatherMethod="handleEdit(scope.row)"
-              ></Iconbutton>
-              <!-- 删除 -->
-              <Iconbutton
-                icontype="sc"
-                label="删除"
-                @fatherMethod="handleListDelete(scope.row)"
-              ></Iconbutton>
-              <!-- 预览 -->
-              <Iconbutton
-                icontype="yl"
-                label="预览"
-                @fatherMethod="handlePreview(scope.row)"
-              ></Iconbutton>
-              <!-- 推送 -->
-              <Iconbutton
-                icontype="ts"
-                label="推送"
-                @fatherMethod="handlePush(scope.row)"
-              ></Iconbutton>
-              <!-- 操作记录 -->
-              <Iconbutton
-                icontype="czjl"
-                label="操作记录"
-                @fatherMethod="handleHistory(scope.row)"
-              ></Iconbutton>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination
-        v-show="total > 0"
-        :total="total"
-        :page.sync="queryParams.page"
-        :limit.sync="queryParams.pageSize"
-        @pagination="getList"
-      />
-    </div>
+              <template slot-scope="scope">
+                <div class="verify-table-action">
+                  <!-- 置顶和取消置顶 -->
+                  <Iconbutton
+                    :icontype="scope.row.top === 1? 'qxzd' : 'zd'"
+                    :label="scope.row.top === 1? '取消置顶' : '置顶'"
+                    @fatherMethod="handlePlaced(scope.row)"
+                  ></Iconbutton>
+                  <!-- 查看 -->
+                  <Iconbutton
+                    v-if="scope.row.status === 1"
+                    icontype="ckxq"
+                    label="查看详情"
+                    @fatherMethod="handleWatch(scope.row)"
+                  ></Iconbutton>
+                  <!-- 编辑 -->
+                  <Iconbutton
+                    v-if="scope.row.status !== 1"
+                    icontype="xg"
+                    label="修改"
+                    @fatherMethod="handleEdit(scope.row)"
+                  ></Iconbutton>
+                  <!-- 删除 -->
+                  <Iconbutton
+                    icontype="sc"
+                    label="删除"
+                    @fatherMethod="handleListDelete(scope.row)"
+                  ></Iconbutton>
+                  <!-- 预览 -->
+                  <Iconbutton
+                    icontype="yl"
+                    label="预览"
+                    @fatherMethod="handlePreview(scope.row)"
+                  ></Iconbutton>
+                  <!-- 推送 -->
+                  <Iconbutton
+                    icontype="ts"
+                    label="推送"
+                    @fatherMethod="handlePush(scope.row)"
+                  ></Iconbutton>
+                  <!-- 操作记录 -->
+                  <Iconbutton
+                    icontype="czjl"
+                    label="操作记录"
+                    @fatherMethod="handleHistory(scope.row)"
+                  ></Iconbutton>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+          <pagination
+            v-show="total > 0"
+            :total="total"
+            :page.sync="queryParams.page"
+            :limit.sync="queryParams.pageSize"
+            @pagination="getList"
+          />
+        </div>
+      </el-col>
+    </el-row>  
+
+
+
     <!-- 编辑新闻 -->
     <el-dialog
       width="1200px"
