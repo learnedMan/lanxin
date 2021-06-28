@@ -1266,7 +1266,6 @@ export default {
         title: '选择视频',
         show: false,
       }, // 选择视频弹框
-      videoLists: [], // 视频列表
       dialog: {
         show: false,
         multiple: false, // 批量单选  单个多选
@@ -1286,6 +1285,7 @@ export default {
         multiple: true, // 多选
       }, // 级联选择器配置
       channelsList: [], // 栏目列表
+      editorVideoLists: [], // 编辑器视频集合
       editorPerson: ''
     }
   },
@@ -1435,6 +1435,16 @@ export default {
       this.$router.push({ name: redirect, query: channelId? { id: channelId } : {} });
       this.$store.dispatch('tagsView/delView', view)
     },
+    /* 处理编辑器中的视频数据 */
+    delEditorVideo (content) {
+      let div = document.createElement("div");
+      div.innerHTML = content;
+      let videoList = Array.from(div.querySelectorAll('video'));
+      if(videoList.length) {
+        return this.editorVideoLists.filter(n => videoList.find(item => item.title === n.title && item.cover === n.poster));
+      }
+      return []
+    },
     /*
         * 保存数据
         * */
@@ -1468,6 +1478,11 @@ export default {
         type: obj.target_obj
       }
       delete obj.target_obj;
+      if(obj.extra.type === 'news') {
+        obj.extra.video_extra = {
+          video_list: this.delEditorVideo(obj.extra.content)
+        }
+      }
       changeScripts(id, obj).then((res) => {
         this.$message.success(tip)
         this.dialog.show = false;
@@ -1524,7 +1539,6 @@ export default {
       this.$nextTick(() => {
         if(val === 'tab') {
           Object.assign(this.from.extra, {
-            content: '',
             video_extra: {
               video_list: []
             }
@@ -1535,7 +1549,7 @@ export default {
     },
     /* 修改视频列表数据 */
     changeVideoList (val) {
-
+      this.editorVideoLists.push(val);
     },
     /* 获取标签列表 */
     getLabels() {
@@ -1611,6 +1625,7 @@ export default {
             } // 外链
           }
         }// 表单
+        this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
         if(!this.disabled) this.dialog.form.channel_id = res.news.map(n => n.channel_id)
       })
     },

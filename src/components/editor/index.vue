@@ -500,9 +500,8 @@
       //     <source src="http://ali-v.cztv.com/cztv/vod/2021/06/25/9b17fc8528b445c2a035f9796157ca49/h264_1500k_mp4.mp4" id="684381" type="video/mp4"/>
       // </video>&nbsp;
 
-
         const video =
-                `<p><video style="width:300px;display:inline-block;" poster="${val.cover}" class="" controls="" preload="none" width="420" src="${val.url}" data-setup="{}">
+                `<p><video style="width:300px;display:inline-block;" title="${val.title}" poster="${val.cover}" class="" controls="" preload="none" width="420" src="${val.url}" data-setup="{}">
                     <source src="${val.url}" type="video/mp4"/>
                 </video>&nbsp;</p><b style='display:none;'>.</b>`
         currentEditor.execCommand('insertHtml', video);

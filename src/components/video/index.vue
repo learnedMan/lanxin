@@ -310,7 +310,8 @@
           const url = {
             url: obj.customObj.url,
             type: obj.customObj.type,
-            cover: obj.cover
+            cover: obj.cover,
+            title: obj.title
           };
           delete obj.customObj;
           this.$emit('choose', obj);

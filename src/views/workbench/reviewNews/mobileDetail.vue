@@ -39,7 +39,7 @@
       <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿
     </el-header>
     <el-main style="padding: 10px 0">
-      <el-tabs v-model="from.extra.type" class="xl-mobile-news--tab" @tab-click="handleTabChange">
+      <el-tabs v-model="from.extra.type" class="xl-mobile-news--tab" @tab-click="handleTabChange('tab')">
         <el-tab-pane
           :disabled="disabled"
           v-for="item of tabs"
@@ -88,6 +88,7 @@
             v-if="editorInit"
             :value="parseObj(formOptions['extra.content'].item)"
             @input="handleInput($event, formOptions['extra.content'].item)"
+            @changeVideoList="changeVideoList"
           />
         </el-form-item>
       </el-form>
@@ -241,6 +242,7 @@
               content: '', // 编辑器内容
             }
           }, // 表单
+          editorVideoLists: [], // 编辑器视频集合
           editorInit: false,
           status: 0
         }
@@ -276,16 +278,37 @@
           }
           return arr
         },
+        /* 处理编辑器中的视频数据 */
+        delEditorVideo (content) {
+          let div = document.createElement("div");
+          div.innerHTML = content;
+          let videoList = Array.from(div.querySelectorAll('video'));
+          if(videoList.length) {
+            return this.editorVideoLists.filter(n => videoList.find(item => item.title === n.title && item.cover === n.poster));
+          }
+          return []
+        },
         /* tab变化 */
-        handleTabChange() {
+        handleTabChange(val) {
           const currentTabsFromItem = this.initFrom()
           this.currentTabsFromRules = currentTabsFromItem.reduce((obj, key) => ({
             ...obj,
             [key]: this.formOptions[key].rule
           }), {})
           this.$nextTick(() => {
+            if(val === 'tab') {
+              Object.assign(this.from.extra, {
+                video_extra: {
+                  video_list: []
+                }
+              })
+            }
             this.$refs.submitForm?.clearValidate()
           })
+        },
+        /* 修改视频列表数据 */
+        changeVideoList (val) {
+          this.editorVideoLists.push(val);
         },
         /*
           * 保存数据
@@ -293,6 +316,11 @@
         handleSave() {
           this.$refs.submitForm.validate(valid => {
             if (valid) {
+              if(this.from.extra.type === 'news') {
+                this.from.extra.video_extra = {
+                  video_list: this.delEditorVideo(this.from.extra.content)
+                }
+              }
               changeNews(this.id, this.from).then(() => {
                 this.$message.success('保存草稿成功!')
                 this.$emit('refresh')
@@ -369,6 +397,7 @@
               editor_name: res.editor_name, // 编辑
               extra
             }// 表单
+            this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
           })
         },
         async getData() {
