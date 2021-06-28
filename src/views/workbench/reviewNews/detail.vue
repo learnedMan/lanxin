@@ -65,7 +65,7 @@
       <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿
     </el-header>
     <el-main style="padding: 10px 0">
-      <el-tabs v-model="from.extra.type" class="xl-news-media--tab" @tab-click="handleTabChange">
+      <el-tabs v-model="from.extra.type" class="xl-news-media--tab" @tab-click="handleTabChange('tab')">
         <el-tab-pane
           disabled
           v-for="item of tabs"
@@ -234,6 +234,7 @@
                     :disabled="disabled"
                     :value="parseObj(formOptions['extra.content'].item)"
                     @input="handleInput($event, formOptions['extra.content'].item)"
+                    @changeVideoList="changeVideoList"
                   />
                 </el-form-item>
                 <!-- 视频 -->
@@ -1286,7 +1287,6 @@ export default {
         width: '',
         height: ''
       }, // 选择视频弹框
-      videoLists: [], // 视频列表
       cascaderOption: {
         checkStrictly: true, // 是否强制父子不关联
         emitPath: false, // 返回值是否为数组
@@ -1295,6 +1295,7 @@ export default {
         multiple: true // 多选
       }, // 级联选择器配置
       editorPerson: '', // 编辑人员集合
+      editorVideoLists: [], // 编辑器视频集合
       tagLists: [],
       editorInit: false
     }
@@ -1417,6 +1418,16 @@ export default {
       }
       return arr
     },
+    /* 处理编辑器中的视频数据 */
+    delEditorVideo (content) {
+      let div = document.createElement("div");
+      div.innerHTML = content;
+      let videoList = Array.from(div.querySelectorAll('video'));
+      if(videoList.length) {
+        return this.editorVideoLists.filter(n => videoList.find(item => item.title === n.title && item.cover === n.poster));
+      }
+      return []
+    },
     /*
           * 保存数据
           * */
@@ -1448,6 +1459,11 @@ export default {
             type: obj.target_obj
           }
           delete obj.target_obj;
+          if(obj.extra.type === 'news') {
+            obj.extra.video_extra = {
+              video_list: this.delEditorVideo(obj.extra.content)
+            }
+          }
           changeNews(this.id, obj).then(({ statu_code, message }) => {
             this.handleClose()
             if(statu_code) {
@@ -1467,15 +1483,26 @@ export default {
       this.$emit('update:visible', false)
     },
     /* tab变化 */
-    handleTabChange() {
+    handleTabChange(val) {
       const currentTabsFromItem = this.initFrom()
       this.currentTabsFromRules = currentTabsFromItem.reduce((obj, key) => ({
         ...obj,
         [key]: this.formOptions[key].rule
       }), {})
       this.$nextTick(() => {
-          this.$refs.submitForm?.clearValidate()
+        if(val === 'tab') {
+          Object.assign(this.from.extra, {
+            video_extra: {
+              video_list: []
+            }
+          })
+        }
+        this.$refs.submitForm?.clearValidate()
       })
+    },
+    /* 修改视频列表数据 */
+    changeVideoList (val) {
+      this.editorVideoLists.push(val);
     },
     /* 获取标签列表 */
     getLabels() {
@@ -1543,6 +1570,7 @@ export default {
             } // 外链
           }
         }// 表单
+        this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
       })
     },
     /* 获取编辑人员 */
