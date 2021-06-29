@@ -201,6 +201,16 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      /* 水印 */
+      watermark: {
+        type: String,
+        default: ''
+      },
+      /* 水印位置 */
+      position: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -303,36 +313,36 @@
         this.queryParams.enddate = arr[1]
       },
       /* 设置水印位置 */
-      setPosition (val, width, height, b = 0.1) {
+      setPosition (width, height, b = 0.15) {
         const widthPercentage = Math.floor(width * b);
         const heightPercentage = Math.floor(height * b);
         let data = {};
-        switch (val) {
-          case '1': // 左上角
+        switch (this.position) {
+          case 'nw': // 左上角
             data = { left: 0, top: 0 }
             break
-          case '2': // 正上方
+          case 'north': // 正上方
             data = { left: Math.floor(width / 2 - widthPercentage / 2), top: 0 };
             break
-          case '3': // 右上角
+          case 'ne': // 右上角
             data = { left: Math.floor(width - widthPercentage), top: 0 };
             break
-          case '4': // 左边
+          case 'west': // 左边
             data = { left: 0, top: Math.floor(height / 2 - heightPercentage / 2) };
             break;
-          case '5': // 正中间
+          case 'center': // 正中间
             data = { left: Math.floor(width / 2 - widthPercentage / 2), top: Math.floor(height / 2 - heightPercentage / 2) };
             break;
-          case '6': // 右边
+          case 'east': // 右边
             data = { left: Math.floor(width - widthPercentage), top: Math.floor(height / 2 - heightPercentage / 2) };
             break;
-          case '7': // 左下角
+          case 'sw': // 左下角
             data = { left: 0, top: Math.floor(height - heightPercentage) };
             break;
-          case '8': // 正下方
+          case 'south': // 正下方
             data = { left: Math.floor(width / 2 - widthPercentage / 2), top: Math.floor(height - heightPercentage) };
             break
-          case '9': // 右下角
+          case 'se': // 右下角
             data = { left: Math.floor(width - widthPercentage), top: Math.floor(height - heightPercentage) };
         }
         return {
@@ -356,10 +366,10 @@
             let context = canvas.getContext("2d");
             context.drawImage(newImg , 0 , 0 , width , height);
             const shuiyin = new Image();
-            shuiyin.src = require('@/assets/c_images/product.png');
+            shuiyin.src = this.watermark;
             shuiyin.crossOrigin = 'Anonymous';
             shuiyin.onload = () => {
-              const position = this.setPosition('5', width, height);
+              const position = this.setPosition(width, height);
               context.drawImage(shuiyin, position.left, position.top, position.width, position.height);
               canvas.toBlob((blob) => {
                 const file = new File([blob], `${new Date().getTime()}.png`, {
@@ -394,13 +404,13 @@
           * 编辑框值变化
           * */
       handleInput(val) {
-        /*let htmlContent = val;
+        let htmlContent = val;
         let div = document.createElement("div");
         div.innerHTML = htmlContent;
         let imgList = Array.from(div.querySelectorAll('img')).filter(img => {
           return !img.className.includes('loadingclass') && !img.dataset.canvas
         })
-        if(imgList.length) {
+        if(imgList.length && this.watermark && this.position) {
           Promise.all(imgList.map(n => this.generateCanvas(n))).then((arr) => {
             imgList.forEach(img => {
               const item = arr.find(item => item.old === img.src)
@@ -415,8 +425,7 @@
           })
         }else {
           this.$emit('input', val)
-        }*/
-        this.$emit('input', val)
+        }
       },
       /* 初始化之前 */
       beforeInit(id) {

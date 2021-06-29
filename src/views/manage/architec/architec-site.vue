@@ -24,7 +24,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table 
+    <el-table
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border v-loading="loading" :data="dataList">
       <el-table-column label="站点id" align="center" prop="id" />
@@ -32,10 +32,10 @@
       <el-table-column label="站点标识" align="center" prop="en_name" :show-overflow-tooltip="true" />
       <el-table-column label="站点负责人" align="center" prop="user.name" :show-overflow-tooltip="true" />
       <el-table-column label="负责人电话" align="center" prop="user.phone" :show-overflow-tooltip="true" />
-      <el-table-column 
-        label="状态" 
-        align="center" 
-        prop="status" 
+      <el-table-column
+        label="状态"
+        align="center"
+        prop="status"
         :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <el-select @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
@@ -60,7 +60,7 @@
       @pagination="getList"
     />
     <!-- 新增/修改站点弹窗 -->
-    <el-dialog width="700px" 
+    <el-dialog width="700px"
     :close-on-click-modal = false
     :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="dataForm">
@@ -78,27 +78,27 @@
         </el-form-item>
 
         <el-form-item  label-width="120px" label="基础点击量随机" prop="extra.random_view_range">
-          <el-input-number 
-          @input="forceUpdate()" 
-          :precision="0" 
+          <el-input-number
+          @input="forceUpdate()"
+          :precision="0"
           :max="form.extra.random_view_range.max || 0"
-          :controls="false" 
+          :controls="false"
           v-model="form.extra.random_view_range.min"></el-input-number>
-           ~ 
-           <el-input-number 
-          @input="forceUpdate()" 
-          :precision="0" 
+           ~
+           <el-input-number
+          @input="forceUpdate()"
+          :precision="0"
           :min="form.extra.random_view_range.min || 0"
-          :controls="false" 
+          :controls="false"
           v-model="form.extra.random_view_range.max"></el-input-number>
           <!-- <el-input style="width: 150px" @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最小值" v-model="form.extra.random_view_range.min"></el-input> ~  -->
           <!-- <el-input style="width: 150px " @input="forceUpdate()" oninput ="value=value.replace(/[^0-9]/g,'')" autocomplete="off" placeholder="请输入最大值" v-model="form.extra.random_view_range.max"></el-input> -->
         </el-form-item>
         <el-form-item  label-width="120px" label="点击量系数" prop="extra.multiplying_factor">
-          <el-input-number 
-          @input="forceUpdate()" 
-          :precision="0" 
-          :controls="false" 
+          <el-input-number
+          @input="forceUpdate()"
+          :precision="0"
+          :controls="false"
           v-model="form.extra.multiplying_factor"></el-input-number>
         </el-form-item>
         <el-form-item  label-width="120px" label="LOGO："  prop="logo">
@@ -113,6 +113,9 @@
             <img v-if="form.logo" :src="form.logo" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="水印："  prop="extra.watermark">
+          <upload-single v-model="form.extra.watermark" />
         </el-form-item>
         <el-form-item  label-width="120px" label="蓝云租户" prop="extra.uni_site">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入蓝云租户" v-model="form.extra.uni_site"></el-input>
@@ -133,7 +136,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      
+
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeDialog">取 消</el-button>
         <el-button @click="enterDialog" type="primary">确 定</el-button>
@@ -144,7 +147,7 @@
 </template>
 
 <script>
-import { 
+import {
   getsites,
   addsites,
   editsites,
@@ -152,6 +155,7 @@ import {
   } from '@/api/manage'
 import { validUsername , validEmail } from '@/utils/validate'
 import { parse } from 'path-to-regexp';
+import uploadSingle from '@/components/Upload/uploadSingle.vue'
   export default {
     name: 'architec-site',
     data() {
@@ -205,6 +209,9 @@ import { parse } from 'path-to-regexp';
         dialogTitle:'',
         multipleSelection:[]//选中数组
       }
+    },
+    components: {
+      uploadSingle
     },
     computed: {
       VUE_APP_BASE_API(){
@@ -307,7 +314,7 @@ import { parse } from 'path-to-regexp';
         this.initForm();
         this.dialogTitle = "编辑站点";
         this.dialogType = "edit";
-        this.$nextTick(() => { 
+        this.$nextTick(() => {
           // for (let key in row) {
           //   this.form[key] = row[key];
           // }
@@ -327,7 +334,7 @@ import { parse } from 'path-to-regexp';
             this.form.extra.random_view_range.max = ''
           }
         })
-        
+
 
         this.dialogFormVisible = true;
       },
@@ -344,7 +351,7 @@ import { parse } from 'path-to-regexp';
         //       type: 'error'
         //     })
         //     return
-        // } 
+        // }
         // if(this.form.email){
         //   if(!validEmail(this.form.email)){
         //     this.$message({
@@ -352,7 +359,7 @@ import { parse } from 'path-to-regexp';
         //       type: 'error'
         //     })
         //     return
-        //   } 
+        //   }
         // }
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;

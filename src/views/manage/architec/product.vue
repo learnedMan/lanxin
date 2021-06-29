@@ -115,7 +115,7 @@
           </template>
         </el-table-column>
       </el-table>
-    
+
     <pagination
       v-show="total > 0"
       :total="total"
@@ -124,7 +124,7 @@
       @pagination="getList"
     />
     </div>
-    <Appversion :appname="appname" :page2id="page2id" v-if="showpage==2" />  
+    <Appversion :appname="appname" :page2id="page2id" v-if="showpage==2" />
     <!-- 新增/修改产品弹窗 -->
     <el-dialog
       width="1200px"
@@ -244,7 +244,7 @@
         </div>
 
         <div class="fr" style="width: 50%">
-            <el-form-item label-width="150px" label="水印" prop="extra.watermark">
+           <!-- <el-form-item label-width="150px" label="水印" prop="extra.watermark">
             <el-upload
               class="avatar-uploader"
               :action="VUE_APP_BASE_API + '/api/upload/image'"
@@ -267,7 +267,7 @@
               >
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item>-->
 
           <el-form-item label-width="150px" label="个推秘钥" prop="bluecore_mastersecret">
             <el-input
@@ -485,8 +485,8 @@ export default {
             logo_dark:"",
             introduction:"",
             comment_control:'2',
-            watermark:"",
-            watermark_position:"",
+            /*watermark:"",
+            watermark_position:"",*/
             hot_search:[]
         }
       },
@@ -529,7 +529,7 @@ export default {
       let inputValue = this.inputValue;
       if (inputValue) {
         if(!this.form.extra.hot_search){
-          this.form.extra.hot_search = [];  
+          this.form.extra.hot_search = [];
         }
         this.form.extra.hot_search.push(inputValue);
       }
@@ -600,8 +600,8 @@ export default {
             logo_dark:"",
             introduction:"",
             comment_control:'2',
-            watermark:"",
-            watermark_position:"",
+            /*watermark:"",
+            watermark_position:"",*/
             hot_search:[],
             user_settings: {
               deny_register:"0",

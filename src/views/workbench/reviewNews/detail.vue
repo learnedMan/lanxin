@@ -224,6 +224,35 @@
                     @input="handleInput($event, formOptions['extra.custom_rec'].item)"
                   ></script-select>
                 </el-form-item>
+                <!-- 使用水印 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.use_watermarks')"
+                  v-bind="formOptions['extra.use_watermarks'].item.props"
+                >
+                  <el-select
+                    :value="parseObj(formOptions['extra.use_watermarks'].item)"
+                    size="small"
+                    style="width: 200px;"
+                    clearable
+                    v-bind="formOptions['extra.use_watermarks'].item.componentProps"
+                    @input="handleInput($event, formOptions['extra.use_watermarks'].item)"
+                  >
+                    <el-option
+                      v-for="list in formOptions['extra.use_watermarks'].item.lists"
+                      :key="list.value"
+                      :label="list.label"
+                      :value="list.value"
+                    />
+                  </el-select>
+                  <!--<el-radio-group
+                    size="small"
+                    :value="parseObj(formOptions['extra.use_watermarks'].item)"
+                    @input="handleInput($event, formOptions['extra.use_watermarks'].item)"
+                    @change="handleTabChange"
+                  >
+                    <el-radio v-for="list of formOptions['extra.use_watermarks'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                  </el-radio-group>-->
+                </el-form-item>
                 <!-- 编辑器 -->
                 <el-form-item
                   v-show="initFrom().includes('extra.content')"
@@ -231,6 +260,8 @@
                 >
                   <editor
                     v-if="editorInit"
+                    :watermark="watermark"
+                    :position="parseObj(formOptions['extra.use_watermarks'].item)"
                     :disabled="disabled"
                     :value="parseObj(formOptions['extra.content'].item)"
                     @input="handleInput($event, formOptions['extra.content'].item)"
@@ -423,20 +454,6 @@
                   style="width: 200px"
                   @input="handleInput($event, formOptions['extra.source'].item)"
                 />
-              </el-form-item>
-              <!-- 使用水印 -->
-              <el-form-item
-                v-show="initFrom().includes('extra.use_watermarks')"
-                v-bind="formOptions['extra.use_watermarks'].item.props"
-              >
-                <el-radio-group
-                  size="small"
-                  :value="parseObj(formOptions['extra.use_watermarks'].item)"
-                  @input="handleInput($event, formOptions['extra.use_watermarks'].item)"
-                  @change="handleTabChange"
-                >
-                  <el-radio v-for="list of formOptions['extra.use_watermarks'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
-                </el-radio-group>
               </el-form-item>
             </div>
           </el-col>
@@ -964,24 +981,53 @@ export default {
           item: {
             key: 'extra.use_watermarks',
             props: {
-              label: '使用水印:',
+              label: '水印位置:',
               prop: 'extra.use_watermarks'
             },
-            component: 'radio', // 组件名
+            component: 'select', // 组件名
             lists: [
               {
-                label: '是',
-                value: '1'
+                value: "nw",
+                label: "左上",
               },
               {
-                label: '否',
-                value: '0'
+                value: "north",
+                label: "中上",
+              },
+              {
+                value: "ne",
+                label: "右上",
+              },
+              {
+                value: "west",
+                label: "左",
+              },
+              {
+                value: "center",
+                label: "中",
+              },
+              {
+                value: "east",
+                label: "右",
+              },
+              {
+                value: "sw",
+                label: "左下",
+              },
+              {
+                value: "south",
+                label: "中下",
+              },
+              {
+                value: "se",
+                label: "右下",
+              },
+              {
+                value: "",
+                label: "无",
               }
             ]
-          },
-          rule: [
-            { required: true, message: '请选择是否使用水印', trigger: 'change' }
-          ]
+          }
         },
         'extra.allow_comment': {
           item: {
@@ -1258,7 +1304,7 @@ export default {
           content: '', // 编辑器内容
           is_original: '1', // 是否原创
           source: '', // 来源
-          use_watermarks: '0', // 水印
+          use_watermarks: 'nw', // 水印
           allow_comment: '0', // 评论控制
           allow_share: '1', // 允许分享
           trans_to_audio: '1', // 同步生成语音新闻
@@ -1320,7 +1366,12 @@ export default {
     basePlaceholder ({ viewBaseInterval: { max, min } }) {
       if(max === Infinity) return `请输入大于${min}的的正整数`;
       return `请输入${min}-${max}的正整数`
-    }
+    },
+    /* 水印图片 */
+    watermark ({ $store: { state: { user: { u_info } } } }) {
+      const extra = u_info.site.extra || {};
+      return extra.watermark || ''
+    },
   },
   watch: {
     id: {
@@ -1348,7 +1399,7 @@ export default {
     parseObj(item) {
       const arr = item.key.split('.')
       const val = arr.reduce((obj, key) => obj[key], this.from)
-      return item.component === 'select' ? val && val.toString().split(',') : val
+      return item.component === 'select' && item.componentProps.multiple ? val && val.toString().split(',') : val
     },
     /* 值变化 */
     handleInput(val, item) {
@@ -1356,7 +1407,7 @@ export default {
       const type = item.type || 'string'
       if (type === 'number') val = parseInt(val) || ''
       arr.reduce((obj, key) => {
-        if (key === arr[arr.length - 1]) obj[key] = item.component === 'select' ? val.join() : val
+        if (key === arr[arr.length - 1]) obj[key] = item.component === 'select' && item.componentProps.multiple ? val.join() : val
         else return obj[key]
       }, this.from)
     },
@@ -1388,12 +1439,12 @@ export default {
       const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.publish_timer.status', 'extra.set_created_at']
       // 显示发布时间
       if (this.from.extra.publish_timer.status === '1') baseTopItem.push('extra.publish_timer.publish_at')
-      const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.use_watermarks', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
+      const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
       if (this.from.extra.is_original === '0') baseBottomItem.splice(2, 0, 'extra.source')
       switch (this.from.extra.type) {
         case 'news':
-          arr = [...baseTopItem, 'extra.content', 'extra.custom_rec', ...baseBottomItem]
+          arr = [...baseTopItem, 'extra.content', 'extra.custom_rec', 'extra.use_watermarks', ...baseBottomItem]
           break
         case 'video':
           arr = [...baseTopItem, 'extra.video_extra.video_list', 'extra.custom_rec', ...baseBottomItem]
@@ -1549,7 +1600,7 @@ export default {
             content: extra.content, // 编辑器内容
             is_original: (extra.is_original || '1').toString(), // 是否原创
             source: extra.source, // 来源
-            use_watermarks: (extra.use_watermarks || '0').toString(), // 水印
+            use_watermarks: extra.use_watermarks || 'nw', // 水印
             allow_comment: (extra.allow_comment || '0').toString(), // 评论控制
             allow_share: (extra.allow_share || '1').toString(), // 允许分享
             trans_to_audio: (extra.trans_to_audio || '1').toString(), // 同步生成语音新闻
