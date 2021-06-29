@@ -1542,7 +1542,7 @@ export default {
             tags: extra.tags, // 标签
             keywords: extra.keywords, // 关键词
             publish_timer: {
-              status: (extra?.publish_timer?.status ?? '1').toString(),
+              status: (extra?.publish_timer?.status ?? '0').toString(),
               publish_at: extra?.publish_timer?.publish_at ?? ''
             }, // 定时发布
             set_created_at: extra.set_created_at, // 发布时间

@@ -200,7 +200,7 @@
                 name: value,
                 oldName: value,
                 cover: '',
-                is_valid: '0',
+                is_valid: '1',
                 stream_url: '',
                 guide_video: '',
                 allow_replay: '0',

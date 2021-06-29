@@ -350,9 +350,21 @@
           if(this.dialogForm.start_time) return time.getTime() < new Date(this.dialogForm.start_time).getTime();
           return false
         }
+        const startDateValidate = (rule, value, callback) => {
+          const end = this.dialogForm.end_time;
+          if(!value) return callback(new Error('请选择开始日期!'));
+          else if(end && new Date(end).getTime() < new Date(value).getTime()) {
+            return  callback(new Error('开始时间不能大于结束时间!'))
+          }
+          callback()
+        }
         const endDateValidate = (rule, value, callback) => {
+          const start = this.dialogForm.start_time;
           if(this.dialogForm.unlimited) return callback();
-          if(!value) return callback(new Error('请选择结束日期'));
+          if(!value) return callback(new Error('请选择结束日期!'));
+          else if(start && new Date(start).getTime() > new Date(value).getTime()) {
+            return  callback(new Error('结束时间不能小于开始时间!'))
+          }
           callback()
         }
         return {
@@ -443,7 +455,7 @@
               { required: true, message: '请选择广告类型', trigger: 'change' }
             ],
             start_time: [
-              { required: true, message: '请选择开始日期时间', trigger: 'change' }
+              { required: true, validator: startDateValidate, trigger: 'change' }
             ],
             end_time: [
               { required: true, validator: endDateValidate, trigger: 'change' }
