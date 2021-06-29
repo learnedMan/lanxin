@@ -117,8 +117,20 @@
         <el-form-item  label-width="120px" label="水印："  prop="extra.watermark">
           <upload-single v-model="form.extra.watermark" />
         </el-form-item>
+        <el-form-item  label-width="120px" label="分享页域名" prop="extra.share_page_domain">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入分享页域名" v-model="form.extra.share_page_domain"></el-input>
+        </el-form-item>
         <el-form-item  label-width="120px" label="蓝云租户" prop="extra.uni_site">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入蓝云租户" v-model="form.extra.uni_site"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="签名" prop="extra.bigdata_settings.signature">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入签名" v-model="form.extra.bigdata_settings.signature"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="租户ID" prop="extra.bigdata_settings.customer_id">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入租户ID" v-model="form.extra.bigdata_settings.customer_id"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="产品ID" prop="extra.bigdata_settings.product_id">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入产品ID" v-model="form.extra.bigdata_settings.product_id"></el-input>
         </el-form-item>
         <el-form-item label-width="120px" label="负责人姓名" prop="site_manager_name">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入负责人姓名"  v-model="form.site_manager_name" ></el-input>
@@ -300,7 +312,14 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
             site_manager_name:'',
             site_manager_phone:'',
             extra: {
+                watermark: '',
                 uni_site:'',
+                share_page_domain: '',
+                bigdata_settings: {
+                  signature: '',
+                  customer_id: '',
+                  product_id: ''
+                },
                 random_view_range: {
                     min:'',
                     max:''
@@ -332,6 +351,13 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
             this.form.extra.random_view_range = {}
             this.form.extra.random_view_range.min = ''
             this.form.extra.random_view_range.max = ''
+          }
+          if(!this.form.extra.bigdata_settings) {
+            this.form.extra.bigdata_settings = {
+              signature: '',
+              customer_id: '',
+              product_id: ''
+            }
           }
         })
 

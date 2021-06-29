@@ -270,7 +270,7 @@
             })
           }
           if(this.detail.extra.statement !== 'none') arr.push({
-            label: '图文直播',
+            label: '直播图文',
             name: 'directSeeding'
           })
           arr.push({

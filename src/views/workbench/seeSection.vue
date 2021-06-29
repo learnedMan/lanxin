@@ -327,7 +327,7 @@
           />
         </div>
       </el-col>
-    </el-row>  
+    </el-row>
 
 
 
@@ -769,7 +769,7 @@ export default {
       * 获取栏目列表
       * */
     getChannels() {
-      return getChannels({ status: 1 }).then(res => {
+      return getChannels().then(res => {
         this.channelsList = res;
       })
     },

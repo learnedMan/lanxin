@@ -1,6 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .xl-studio-list {
-    
+
   }
 </style>
 <template>
@@ -399,9 +399,9 @@
             size="small"
             v-model="dialog.form.extra.allow_comment"
           >
-            <el-radio key="0" label="先审后发"></el-radio>
-            <el-radio key="1" label="先发后审"></el-radio>
-            <el-radio key="2" label="禁止评论"></el-radio>
+            <el-radio key="0" label="0">先审后发</el-radio>
+            <el-radio key="1" label="1">先发后审</el-radio>
+            <el-radio key="2" label="2">禁止评论</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item

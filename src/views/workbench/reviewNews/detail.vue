@@ -759,18 +759,6 @@ export default {
                 img: '1402-203.png'
               },
               {
-                label: '大图5',
-                value: '204',
-                count: 1,
-                img: '1402-204.png'
-              },
-              {
-                label: '大图6',
-                value: '205',
-                count: 1,
-                img: '1402-205.png'
-              },
-              {
                 label: '大图7',
                 value: '206',
                 count: 1,
