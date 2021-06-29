@@ -14,7 +14,7 @@
         width: 300px;
         margin-bottom: 10px;
         margin-right: 30px;
-        box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
         h4 {
           margin: 0;
           padding-left: 4px;

@@ -47,7 +47,7 @@
       width: 22.6%;
       justify-content: center;
       border-radius: 6px;
-      box-shadow: 2px 2px 10px 5px rgb(219 219 219 / 40%);
+      box-shadow: 2px 2px 10px 5px rgba(219, 219, 219, .4);
       margin: 10px;
       padding: 10px;
       text-align: center;
