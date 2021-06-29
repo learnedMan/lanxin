@@ -61,7 +61,6 @@
 </style>
 <template>
   <div class="xl-see-section">
-
     <el-row>
       <el-col :span="4">
         <div class="xl-see-section--tree" style="width:100%;overflow:hidden;">
@@ -278,14 +277,14 @@
                   ></Iconbutton>
                   <!-- 查看 -->
                   <Iconbutton
-                    v-if="scope.row.status === 1"
+                    v-if="scope.row.status === 1 && scope.row.type !== 'broadcast'"
                     icontype="ckxq"
                     label="查看详情"
                     @fatherMethod="handleWatch(scope.row)"
                   ></Iconbutton>
                   <!-- 编辑 -->
                   <Iconbutton
-                    v-if="scope.row.status !== 1"
+                    v-if="scope.row.status !== 1 && scope.row.type !== 'broadcast'"
                     icontype="xg"
                     label="修改"
                     @fatherMethod="handleEdit(scope.row)"
@@ -328,9 +327,6 @@
         </div>
       </el-col>
     </el-row>
-
-
-
     <!-- 编辑新闻 -->
     <el-dialog
       width="1200px"
