@@ -211,7 +211,8 @@
               type="datetime"
               placeholder="选择开始日期时间"
               align="right"
-              value-format="yyyy-MM-dd HH:mm:ss"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:00:00"
               :picker-options="pickerOptionsStart">
             </el-date-picker>
           </el-form-item>
@@ -224,7 +225,8 @@
               type="datetime"
               placeholder="选择结束日期时间"
               align="right"
-              value-format="yyyy-MM-dd HH:mm:ss"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:00:00"
               :picker-options="pickerOptionsEnd">
             </el-date-picker>
             <el-checkbox v-model="dialogForm.unlimited" @change="dialogForm.end_time = ''" style="margin-left: 10px">不限制</el-checkbox>
@@ -455,10 +457,10 @@
               { required: true, message: '请选择广告类型', trigger: 'change' }
             ],
             start_time: [
-              { required: true, validator: startDateValidate, trigger: 'change' }
+              { required: true, validator: startDateValidate, trigger: 'blur' }
             ],
             end_time: [
-              { required: true, validator: endDateValidate, trigger: 'change' }
+              { required: true, validator: endDateValidate, trigger: 'blur' }
             ],
             'extra.url': [
               { required: true, message: '请输入广告图片/视频', trigger: 'blur' }
