@@ -743,7 +743,7 @@ import ChildPage1 from './pages/c_page1'
             template_style:'',
             template_json_id:'',
             template_json:{},
-            show_num:0,
+            show_num:20,
             group:'',
             // 默认
             multi_review:[],
