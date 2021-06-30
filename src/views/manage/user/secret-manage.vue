@@ -137,6 +137,7 @@
               >
                 <el-input
                   clearable
+                  placeholder="请输入秘钥"
                   style="width: 200px"
                   v-model="dialogForm.appSrcret"
                 />
@@ -147,6 +148,7 @@
               >
                 <el-input
                   clearable
+                  placeholder="请输入App ID"
                   style="width: 200px"
                   v-model.number="dialogForm.appId"
                 />
@@ -173,6 +175,7 @@
                 prop="h5Srcret"
               >
                 <el-input
+                  placeholder="请输入H5 Srcret"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.h5Srcret"
@@ -183,6 +186,7 @@
                 prop="thirdKeyForQQ"
               >
                 <el-input
+                  placeholder="请输入第三方QQ的key"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.thirdKeyForQQ"
@@ -193,6 +197,7 @@
                 prop="duibaRedirect"
               >
                 <el-input
+                  placeholder="请输入兑吧重定向地址"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.duibaRedirect"
@@ -203,6 +208,7 @@
                 prop="duibaAppKey"
               >
                 <el-input
+                  placeholder="请输入兑吧接口Appkey"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.duibaAppKey"
@@ -213,6 +219,7 @@
                 prop="duibaSrcret"
               >
                 <el-input
+                  placeholder="请输入兑吧秘钥"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.duibaSrcret"
@@ -225,6 +232,7 @@
                 prop="alipayAppId"
               >
                 <el-input
+                  placeholder="请输入支付宝App ID"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.alipayAppId"
@@ -235,6 +243,7 @@
                 prop="alipayPrivateKey"
               >
                 <el-input
+                  placeholder="请输入支付宝私有key"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.alipayPrivateKey"
@@ -245,6 +254,7 @@
                 prop="alipayPublicKey"
               >
                 <el-input
+                  placeholder="请输入支付宝公有key"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.alipayPublicKey"
@@ -255,6 +265,7 @@
                 prop="flashAndroidAppId"
               >
                 <el-input
+                  placeholder="请输入闪验安卓AppID"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.flashAndroidAppId"
@@ -265,6 +276,7 @@
                 prop="flashAndroidAppKey"
               >
                 <el-input
+                  placeholder="请输入闪验安卓appkey"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.flashAndroidAppKey"
@@ -275,6 +287,7 @@
                 prop="flashIosAppId"
               >
                 <el-input
+                  placeholder="请输入闪验苹果AppID"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.flashIosAppId"
@@ -285,6 +298,7 @@
                 prop="flashIosAppKey"
               >
                 <el-input
+                  placeholder="请输入闪验苹果AppKey"
                   clearable
                   style="width: 200px"
                   v-model="dialogForm.flashIosAppKey"
