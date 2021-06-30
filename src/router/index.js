@@ -365,6 +365,12 @@ export const asyncRoutes = [
             meta: { title: '用户列表' }
           },
           {
+            path: 'secret-manage',
+            component: () => import('@/views/manage/user/secret-manage'),
+            name: 'Secret-manage',
+            meta: { title: '秘钥管理' }
+          },
+          {
             path: 'blacklist',
             component: () => import('@/views/manage/user/blacklist'),
             name: 'Blacklist',

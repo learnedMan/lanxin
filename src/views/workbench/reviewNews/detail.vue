@@ -972,6 +972,9 @@ export default {
               label: '水印位置:',
               prop: 'extra.use_watermarks'
             },
+            componentProps: {
+              placeholder: '请选择水印位置(无表示不使用水印)',
+            },
             component: 'select', // 组件名
             lists: [
               {
@@ -1347,9 +1350,9 @@ export default {
     /* 点击量区间 */
     viewBaseInterval ({ $store: { state: { user: { u_info } } } }) {
       const extra = u_info.site.extra || {};
-      const multiple = Number(extra.multiplying_factor || 1);
-      const max = Number(extra.random_view_range?.max || 0) * multiple || Infinity;
-      const min = Number(extra.random_view_range?.min || 0) * multiple;
+      //const multiple = Number(extra.multiplying_factor || 1);
+      const max = Number(extra.random_view_range?.max || 0) /** multiple*/ || Infinity;
+      const min = Number(extra.random_view_range?.min || 0) /** multiple*/;
       return {
         min,
         max

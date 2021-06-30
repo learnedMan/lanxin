@@ -266,7 +266,8 @@
           const params = { ...this.queryParams };
           delete params.registerTime;
           this.loading = true;
-          getBlacklist(this.removePropertyOfNullFor0(params)).then(res => {
+          const paramsQuery = this.removePropertyOfNullFor0(params)
+          getBlacklist(Object.keys(paramsQuery).map(key => `${key}=${paramsQuery[key]}`).join('&')).then(res => {
             if(res.code == 200) {
               const data = res.data;
               this.total = data.totalCount;
