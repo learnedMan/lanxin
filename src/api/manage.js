@@ -670,6 +670,52 @@ export function getIntegral(data) {
   })
 }
 
+/*--------------------用户管理-秘钥管理---------------------------*/
+
+/* 获取列表数据 */
+export function getSecretLists(data) {
+  return request2({
+    url: '/internal/uc/qeurySrcretList',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取详情 */
+export function getSecretDetail(data) {
+  return request2({
+    url: '/internal/uc/querySrcretSet',
+    method: 'post',
+    data
+  })
+}
+
+/* 新增数据 */
+export function addSecret(data) {
+  return request2({
+    url: '/internal/uc/addSrcretSet',
+    method: 'post',
+    data
+  })
+}
+
+/* 修改数据 */
+export function changeSecret(data) {
+  return request2({
+    url: '/internal/uc/updateSrcretSet',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除秘钥 */
+export function deleteSecret(data) {
+  return request2({
+    url: '/internal/uc/deleteSrcretSet',
+    method: 'post',
+    data
+  })
+}
 
 /*--------------------用户管理-黑名单---------------------------*/
 

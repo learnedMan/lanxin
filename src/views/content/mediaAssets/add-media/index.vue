@@ -147,7 +147,6 @@
                     v-bind="formOptions['extra.intro'].item.componentProps"
                     clearable
                     size="small"
-                    style="width: 400px"
                     @input="handleInput($event, formOptions['extra.intro'].item)"
                   />
                 </el-form-item>
@@ -1359,9 +1358,9 @@ export default {
     /* 点击量区间 */
     viewBaseInterval ({ $store: { state: { user: { u_info } } } }) {
       const extra = u_info.site.extra || {};
-      const multiple = Number(extra.multiplying_factor || 1);
-      const max = Number(extra.random_view_range?.max || 0) * multiple || Infinity;
-      const min = Number(extra.random_view_range?.min || 0) * multiple;
+      //const multiple = Number(extra.multiplying_factor || 1);
+      const max = Number(extra.random_view_range?.max || 0) || Infinity;
+      const min = Number(extra.random_view_range?.min || 0);
       return {
         min,
         max
