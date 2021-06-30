@@ -147,7 +147,6 @@
                     v-bind="formOptions['extra.intro'].item.componentProps"
                     clearable
                     size="small"
-                    style="width: 400px"
                     @input="handleInput($event, formOptions['extra.intro'].item)"
                   />
                 </el-form-item>
