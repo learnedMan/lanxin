@@ -174,7 +174,7 @@ export function deletearrusers(data) {
 
 export function getuserPermission(id) {
   return request({
-    url: '/api/user/'+id+'/directPermission',
+    url: '/api/user/'+id+'/permission',
     method: 'get'
   })
 }

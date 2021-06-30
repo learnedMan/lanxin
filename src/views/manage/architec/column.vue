@@ -41,7 +41,7 @@
           <div v-else>{{getstyle(scope.row.template_style)}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
+      <el-table-column v-if="!isMobile" label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
       <el-table-column 
         label="状态" 
         align="center" 
@@ -54,7 +54,7 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column label="更新时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
+      <el-table-column v-if="!isMobile" label="更新时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
       <el-table-column label="操作" align="left" width="360px">
         <template slot-scope="scope">
           <Iconbutton icontype="xz" label="新增" @fatherMethod="adddata(scope.row)"></Iconbutton>

@@ -182,11 +182,13 @@
             style="width: 100%"
           >
             <el-table-column
+            v-if="!isMobile"
               label="新闻ID"
               align="center"
               prop="id"
             />
             <el-table-column
+            v-if="!isMobile"
               label="新闻封面"
               align="center"
               prop="id"
@@ -203,6 +205,7 @@
               </template>
             </el-table-column>
             <el-table-column
+            
               label="新闻标题"
               align="center"
               prop="title"
@@ -238,12 +241,14 @@
               </template>
             </el-table-column>
             <el-table-column
+            v-if="!isMobile"
               label="作者"
               align="center"
               prop="author_name"
               :show-overflow-tooltip="true"
             />
             <el-table-column
+            v-if="!isMobile"
               label="排序"
               align="center"
             >
@@ -258,6 +263,7 @@
               </template>
             </el-table-column>
             <el-table-column
+            v-if="!isMobile"
               label="发布时间"
               align="center"
               prop="created_at"
@@ -266,7 +272,7 @@
             <el-table-column
               label="操作"
               align="center"
-              width="440"
+              width="250"
             >
               <template slot-scope="scope">
                 <div class="verify-table-action">
@@ -280,7 +286,7 @@
                   <Iconbutton
                     v-if="scope.row.status === 1 && scope.row.type !== 'broadcast'"
                     icontype="ckxq"
-                    label="查看详情"
+                    label="详情"
                     @fatherMethod="handleWatch(scope.row)"
                   ></Iconbutton>
                   <!-- 编辑 -->

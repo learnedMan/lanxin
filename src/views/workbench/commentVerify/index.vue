@@ -330,7 +330,25 @@ export default {
           key: 'submitDate'
         }
       ],
-      tableDead: [
+      tableDead:this.isMobile?[
+        {
+          label: '评论人',
+          prop: 'nickname',
+          width: 120,
+          showOverflowTooltip: false // 超出省略号
+        },
+        {
+          label: '评论内容',
+          prop: 'content',
+          showOverflowTooltip: true // 超出省略号
+        },
+        {
+          label: '状态',
+          prop: 'statusLabel',
+          width: 80,
+          showOverflowTooltip: false // 超出省略号
+        }
+      ]: [
         {
           label: '评论ID',
           prop: 'id',

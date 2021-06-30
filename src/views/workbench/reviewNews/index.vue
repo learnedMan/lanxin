@@ -120,6 +120,7 @@
         width="55"
       />
       <el-table-column
+        v-if="!isMobile"
         label="新闻ID"
         align="center"
         prop="id"
@@ -135,6 +136,7 @@
         </template>
       </el-table-column>
       <el-table-column
+      v-if="!isMobile"
         label="发布栏目ID"
         align="center"
         prop="channel_id"
@@ -163,6 +165,7 @@
         </template>
       </el-table-column>
       <el-table-column
+      v-if="!isMobile"
         label="提交时间"
         align="center"
         prop="created_at"

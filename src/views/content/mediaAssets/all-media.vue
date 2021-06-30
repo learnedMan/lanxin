@@ -105,11 +105,13 @@
         width="55"
       />
       <el-table-column
+      v-if="!isMobile"
         label="稿件ID"
         align="center"
         prop="id"
       />
       <el-table-column
+      v-if="!isMobile"
         label="稿件封面"
         align="center"
         prop="id"
@@ -142,12 +144,14 @@
         prop="type"
       />
       <el-table-column
+      v-if="!isMobile"
         label="作者"
         align="center"
         prop="author_name"
         :show-overflow-tooltip="true"
       />
       <el-table-column
+      v-if="!isMobile"
         label="发布栏目"
         align="center"
         prop="id"
@@ -163,6 +167,7 @@
         </template>
       </el-table-column>
       <el-table-column
+      v-if="!isMobile"
         label="更新时间"
         align="center"
         prop="updated_at"

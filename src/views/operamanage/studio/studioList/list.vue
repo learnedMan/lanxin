@@ -128,6 +128,7 @@
       style="width: 100%"
     >
       <el-table-column
+      v-if="!isMobile"
         label="ID"
         align="center"
         prop="id"
@@ -168,11 +169,13 @@
         </template>
       </el-table-column>
       <el-table-column
+      v-if="!isMobile"
         label="开播时间"
         align="center"
         prop="start_time"
       />
       <el-table-column
+      v-if="!isMobile"
         label="结束时间"
         align="center"
         prop="end_time"
@@ -193,6 +196,7 @@
         </template>
       </el-table-column>
       <el-table-column
+      v-if="!isMobile"
         label="创建时间"
         align="center"
         prop="created_at"
