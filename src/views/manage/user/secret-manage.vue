@@ -409,14 +409,25 @@
         },
         /* 删除 */
         handleDelete (row) {
-          const { id } = row;
-          deleteSecret({ id: [id] }).then(({ code, msg }) => {
-            if(code == 200) {
-              this.$message.success(msg)
-            }else {
-              this.$message.error(msg)
-            }
-            this.getList()
+          const { id, sourceId } = row;
+          this.$confirm(`此操作将永久删除这条sourceId为${sourceId}的产品, 是否继续?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            deleteSecret({ id: [id] }).then(({ code, msg }) => {
+              if(code == 200) {
+                this.$message.success(msg)
+              }else {
+                this.$message.error(msg)
+              }
+              this.getList()
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
           })
         },
         /* 确认编辑或新增 */
