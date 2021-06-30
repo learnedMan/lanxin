@@ -77,7 +77,7 @@
           :show-overflow-tooltip="true"
         />
         <el-table-column
-          label="上次登录时间"
+          label="上次修改时间"
           align="center"
           prop="updated_at"
           :show-overflow-tooltip="true"
