@@ -998,7 +998,7 @@ export default {
             cover: cover && cover.path || '' // 图片
           }
         })
-        this.initSort();
+        !this.isMobile && this.initSort();
       }).finally(() => {
         this.loading = false
       })
