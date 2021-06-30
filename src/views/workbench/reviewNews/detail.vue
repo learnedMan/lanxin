@@ -1299,7 +1299,7 @@ export default {
           content: '', // 编辑器内容
           is_original: '1', // 是否原创
           source: '', // 来源
-          use_watermarks: 'nw', // 水印
+          use_watermarks: '', // 水印
           allow_comment: '0', // 评论控制
           allow_share: '1', // 允许分享
           trans_to_audio: '1', // 同步生成语音新闻
@@ -1595,7 +1595,7 @@ export default {
             content: extra.content, // 编辑器内容
             is_original: (extra.is_original || '1').toString(), // 是否原创
             source: extra.source, // 来源
-            use_watermarks: extra.use_watermarks || 'nw', // 水印
+            use_watermarks: extra.use_watermarks || '', // 水印
             allow_comment: (extra.allow_comment || '0').toString(), // 评论控制
             allow_share: (extra.allow_share || '1').toString(), // 允许分享
             trans_to_audio: (extra.trans_to_audio || '1').toString(), // 同步生成语音新闻

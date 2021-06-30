@@ -148,7 +148,7 @@
                 <el-input
                   clearable
                   style="width: 200px"
-                  v-model="dialogForm.appId"
+                  v-model.number="dialogForm.appId"
                 />
               </el-form-item>
               <el-form-item label="重保期选项：">
@@ -334,9 +334,9 @@
             sourceId: '', // 产品id
             appSrcret: '', // app秘钥
             appId: '', // appid
-            registerDisableTag: '', // 禁止注册
-            userInfoDisableTag: '', // 禁止用户修改信息
-            loginDisableTag: '', // 禁止第三方登录
+            registerDisableTag: 0, // 禁止注册
+            userInfoDisableTag: 0, // 禁止用户修改信息
+            loginDisableTag: 0, // 禁止第三方登录
             h5Srcret: '', // h5秘钥
             thirdKeyForQQ: '', // 第三方QQ的key
             duibaRedirect: '', // 兑吧重定向地址
@@ -380,7 +380,11 @@
         /* 新增 */
         handleAdd () {
           Object.keys(this.dialogForm).map(key => {
-            this.dialogForm[key] = '';
+            if(['registerDisableTag', 'userInfoDisableTag', 'loginDisableTag'].includes(key)){
+              this.dialogForm[key] = 0;
+            }else {
+              this.dialogForm[key] = '';
+            }
           })
           this.dialogForm.sourceId = this.queryParams.sourceId;
           this.dialog = {
@@ -442,6 +446,7 @@
                   }else {
                     this.$message.error(msg)
                   }
+                  this.dialog.show = false
                   this.getList()
                 })
               }else {
@@ -451,6 +456,7 @@
                   }else {
                     this.$message.error(msg)
                   }
+                  this.dialog.show = false
                   this.getList()
                 })
               }
