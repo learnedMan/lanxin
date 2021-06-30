@@ -86,7 +86,7 @@
           <template slot-scope="scope">
             <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
             <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
-            <Iconbutton icontype="appbbgl" label="app版本管理" @fatherMethod="changepage(scope.row)"></Iconbutton>
+            <Iconbutton icontype="appbbgl" label="版本" @fatherMethod="changepage(scope.row)"></Iconbutton>
             <!-- <el-button
               size="mini"
               type="text"
@@ -210,9 +210,9 @@
           <el-form-item label-width="150px" label="评论控制" prop="extra.comment_control">
                 <el-radio-group v-model="form.extra.comment_control">
                     <!-- <el-radio :label="'3'">不做控制</el-radio> -->
+                    <el-radio :label="'0'">先审后发</el-radio>
                     <el-radio :label="'1'">先发后审</el-radio>
-                    <el-radio :label="'2'">先审后发</el-radio>
-                    <el-radio :label="'0'">禁止评论</el-radio>
+                    <el-radio :label="'2'">禁止评论</el-radio>
                 </el-radio-group>
           </el-form-item>
           <el-form-item label-width="150px" label="热门搜索词" prop="extra.hot_search">
@@ -484,7 +484,7 @@ export default {
             logo:"",
             logo_dark:"",
             introduction:"",
-            comment_control:'2',
+            comment_control:'0',
             /*watermark:"",
             watermark_position:"",*/
             hot_search:[]
@@ -599,7 +599,7 @@ export default {
             logo:"",
             logo_dark:"",
             introduction:"",
-            comment_control:'2',
+            comment_control:'0',
             /*watermark:"",
             watermark_position:"",*/
             hot_search:[],

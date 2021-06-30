@@ -132,7 +132,7 @@
             <!-- 查看 -->
             <Iconbutton
               icontype="ckxq"
-              label="查看广告列表"
+              label="广告列表"
               @fatherMethod="watchList(scope.row)"
             ></Iconbutton>
             <!-- 编辑 -->

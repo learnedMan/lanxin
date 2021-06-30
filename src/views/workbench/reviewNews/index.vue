@@ -171,34 +171,34 @@
       <el-table-column
         label="操作"
         align="center"
-        width="400"
+        width="300"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
             <!-- 审批进度 -->
             <Iconbutton
               icontype="shjd"
-              label="审批进度"
+              label="进度"
               @fatherMethod="watchProgress(scope.row)"
             ></Iconbutton>
             <!-- 查看 -->
             <Iconbutton
               icontype="ckxq"
-              label="查看详情"
+              label="详情"
               @fatherMethod="goLink(scope.row)"
             ></Iconbutton>
             <!-- 通过 -->
             <Iconbutton
               v-if="scope.row.status === 0"
               icontype="shtg"
-              label="审核通过"
+              label="通过"
               @fatherMethod="handleThrough(scope.row)"
             ></Iconbutton>
             <!-- 拒绝 -->
             <Iconbutton
               v-if="scope.row.status === 0"
               icontype="shjj"
-              label="审核拒绝"
+              label="拒绝"
               @fatherMethod="handleReject(scope.row)"
             ></Iconbutton>
           </div>

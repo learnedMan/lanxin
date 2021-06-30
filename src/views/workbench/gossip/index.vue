@@ -180,27 +180,27 @@
           align="center"
           prop="createdAt"
         />
-        <el-table-column label="操作" align="center" width="300">
+        <el-table-column label="操作" align="center" width="280">
           <template slot-scope="scope">
             <div class="verify-table-action">
               <!-- 查看 -->
               <Iconbutton
                 icontype="ckxq"
-                label="查看详情"
+                label="详情"
                 @fatherMethod="watchDetail(scope.row)"
               ></Iconbutton>
               <!-- 通过 -->
               <Iconbutton
                 v-if="scope.row.status != 1"
                 icontype="shtg"
-                label="审核通过"
+                label="通过"
                 @fatherMethod="handleAgreeOrRefused(scope.row, 1)"
               ></Iconbutton>
               <!-- 拒绝 -->
               <Iconbutton
                 v-if="scope.row.status != 3"
                 icontype="shjj"
-                label="审核拒绝"
+                label="拒绝"
                 @fatherMethod="handleAgreeOrRefused(scope.row, 3)"
               ></Iconbutton>
             </div>
