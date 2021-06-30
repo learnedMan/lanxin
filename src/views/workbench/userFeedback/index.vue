@@ -281,7 +281,7 @@
           <!-- 查看 -->
           <Iconbutton
             icontype="ckxq"
-            label="查看详情"
+            label="详情"
             @fatherMethod="handleWatch(scope.row)"
           ></Iconbutton>
         </template>

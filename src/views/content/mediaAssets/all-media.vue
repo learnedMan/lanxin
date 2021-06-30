@@ -198,6 +198,12 @@
               label="删除"
               @fatherMethod="handleListDelete(scope.row)"
             ></Iconbutton>
+            <!-- 操作记录 -->
+            <Iconbutton
+              icontype="czjl"
+              label="操作记录"
+              @fatherMethod="handleHistory(scope.row)"
+            ></Iconbutton>
             <!-- 复制 -->
             <Iconbutton
               icontype="fz"
@@ -215,12 +221,6 @@
               icontype="yl"
               label="预览"
               @fatherMethod="handlePreview(scope.row)"
-            ></Iconbutton>
-            <!-- 操作记录 -->
-            <Iconbutton
-              icontype="czjl"
-              label="操作记录"
-              @fatherMethod="handleHistory(scope.row)"
             ></Iconbutton>
           </div>
         </template>

@@ -47,7 +47,7 @@
           {{ scope.row[head.prop] }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="360">
+      <el-table-column label="操作" align="center" width="280">
         <template slot-scope="scope">
           <div class="verify-table-action">
             <!-- 禁言-->
@@ -61,14 +61,14 @@
             <!-- 审批通过 -->
             <Iconbutton
               icontype="shtg"
-              label="审核通过"
+              label="通过"
               @fatherMethod="handleAgreeOrRefused(scope.row, 'approve')"
               v-if="scope.row.status != 1"
             ></Iconbutton>
             <!-- 拒绝 -->
             <Iconbutton
               icontype="shjj"
-              label="审核拒绝"
+              label="拒绝"
               @fatherMethod="handleAgreeOrRefused(scope.row, 'reject')"
               v-if="scope.row.status != 2"
             ></Iconbutton>
