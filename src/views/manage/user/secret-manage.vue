@@ -30,6 +30,7 @@
             type="primary"
             size="mini"
             @click="handleAdd"
+            v-if="total === 0"
           >
             新增
           </el-button>
@@ -87,7 +88,7 @@
       />
       <!-- 编辑和新增 -->
       <el-dialog
-        width="600px"
+        width="1000px"
         :title="dialog.title"
         :visible.sync="dialog.show"
       >
@@ -96,84 +97,201 @@
           :model="dialogForm"
           :rules="dialogRules"
           size="small"
-          label-width="120px"
+          label-width="140px"
         >
-          <el-form-item
-            label="所属产品"
-            prop="sourceId"
-          >
-            <el-select
-              style="width: 200px"
-              v-model="dialogForm.sourceId"
-              placeholder="请选择所属产品"
-              clearable
-            >
-              <el-option
-                v-for="item in productLists"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="SourceId"
-            prop="sourceId"
-          >
-            <el-input
-              disabled
-              clearable
-              style="width: 200px"
-              v-model="dialogForm.sourceId"
-            />
-          </el-form-item>
-          <el-form-item
-            label="秘钥"
-            prop="appSrcret"
-          >
-            <el-input
-              clearable
-              style="width: 200px"
-              v-model="dialogForm.appSrcret"
-            />
-          </el-form-item>
-          <el-form-item
-            label="App ID"
-            prop="appId"
-          >
-            <el-input
-              clearable
-              style="width: 200px"
-              v-model="dialogForm.appId"
-            />
-          </el-form-item>
-          <el-form-item label="重保期选项">
-            <el-col :span="8">
-              <el-form-item prop="registerDisableTag">
-                <el-checkbox v-model="dialogForm.registerDisableTag" true-label="1" false-label="0">禁止注册</el-checkbox>
+          <el-row>
+            <el-col :span="14">
+              <el-form-item
+                label="所属产品："
+                prop="sourceId"
+              >
+                <el-select
+                  style="width: 200px"
+                  disabled
+                  v-model="dialogForm.sourceId"
+                  placeholder="请选择所属产品"
+                  clearable
+                >
+                  <el-option
+                    v-for="item in productLists"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                label="SourceId："
+                prop="sourceId"
+              >
+                <el-input
+                  disabled
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.sourceId"
+                />
+              </el-form-item>
+              <el-form-item
+                label="秘钥："
+                prop="appSrcret"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.appSrcret"
+                />
+              </el-form-item>
+              <el-form-item
+                label="App ID："
+                prop="appId"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.appId"
+                />
+              </el-form-item>
+              <el-form-item label="重保期选项：">
+                <el-col :span="6">
+                  <el-form-item prop="registerDisableTag" style="margin-bottom: 0">
+                    <el-checkbox v-model="dialogForm.registerDisableTag" :true-label="1" :false-label="0">禁止注册</el-checkbox>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="9">
+                  <el-form-item prop="userInfoDisableTag" style="margin-bottom: 0">
+                    <el-checkbox v-model="dialogForm.userInfoDisableTag" :true-label="1" :false-label="0">禁止修改用户信息</el-checkbox>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="9">
+                  <el-form-item prop="loginDisableTag" style="margin-bottom: 0">
+                    <el-checkbox v-model="dialogForm.loginDisableTag" :true-label="1" :false-label="0">禁止第三方登录</el-checkbox>
+                  </el-form-item>
+                </el-col>
+              </el-form-item>
+              <el-form-item
+                label="H5 Srcret："
+                prop="h5Srcret"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.h5Srcret"
+                />
+              </el-form-item>
+              <el-form-item
+                label="第三方QQ的key："
+                prop="thirdKeyForQQ"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.thirdKeyForQQ"
+                />
+              </el-form-item>
+              <el-form-item
+                label="兑吧重定向地址："
+                prop="duibaRedirect"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.duibaRedirect"
+                />
+              </el-form-item>
+              <el-form-item
+                label="兑吧接口Appkey："
+                prop="duibaAppKey"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.duibaAppKey"
+                />
+              </el-form-item>
+              <el-form-item
+                label="兑吧秘钥："
+                prop="duibaSrcret"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.duibaSrcret"
+                />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item prop="userInfoDisableTag">
-                <el-checkbox v-model="dialogForm.userInfoDisableTag" true-label="1" false-label="0">禁止修改用户信息</el-checkbox>
+            <el-col :span="10">
+              <el-form-item
+                label="支付宝App ID："
+                prop="alipayAppId"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.alipayAppId"
+                />
+              </el-form-item>
+              <el-form-item
+                label="支付宝私有key："
+                prop="alipayPrivateKey"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.alipayPrivateKey"
+                />
+              </el-form-item>
+              <el-form-item
+                label="支付宝公有key："
+                prop="alipayPublicKey"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.alipayPublicKey"
+                />
+              </el-form-item>
+              <el-form-item
+                label="闪验安卓AppID："
+                prop="flashAndroidAppId"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.flashAndroidAppId"
+                />
+              </el-form-item>
+              <el-form-item
+                label="闪验安卓appkey："
+                prop="flashAndroidAppKey"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.flashAndroidAppKey"
+                />
+              </el-form-item>
+              <el-form-item
+                label="闪验苹果AppID："
+                prop="flashIosAppId"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.flashIosAppId"
+                />
+              </el-form-item>
+              <el-form-item
+                label="闪验苹果AppKey："
+                prop="flashIosAppKey"
+              >
+                <el-input
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.flashIosAppKey"
+                />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item prop="loginDisableTag">
-                <el-checkbox v-model="dialogForm.loginDisableTag" true-label="1" false-label="0">禁止第三方登录</el-checkbox>
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-          <el-form-item
-            label="H5 Srcret"
-            prop="h5Srcret"
-          >
-            <el-input
-              clearable
-              style="width: 200px"
-              v-model="dialogForm.h5Srcret"
-            />
-          </el-form-item>
+          </el-row>
         </el-form>
         <div
           slot="footer"
@@ -194,7 +312,7 @@
 </template>
 
 <script>
-  import { getproduct, getSecretLists } from '@/api/manage.js'
+  import { getproduct, getSecretLists, getSecretDetail, addSecret, changeSecret, deleteSecret } from '@/api/manage.js'
     export default {
       name: 'Secret-manage',
       data() {
@@ -221,11 +339,18 @@
             loginDisableTag: '', // 禁止第三方登录
             h5Srcret: '', // h5秘钥
             thirdKeyForQQ: '', // 第三方QQ的key
+            duibaRedirect: '', // 兑吧重定向地址
+            duibaAppKey: '', // 兑吧接口Appkey
+            duibaSrcret: '', // 兑吧秘钥
+            alipayAppId: '', // 支付宝appid
+            alipayPrivateKey: '', // 支付宝私钥
+            alipayPublicKey: '', // 支付宝公钥
+            flashAndroidAppId: '', // 闪验Android appId
+            flashAndroidAppKey: '', // 闪验Android appkey
+            flashIosAppId: '', // 闪验ios appid
+            flashIosAppKey: '', // 闪验ios appkey
           },
           dialogRules: {
-            sourceId: [
-              { required: true, message: '请选择所属产品', trigger: 'change' }
-            ],
             appSrcret: [
               { required: true, message: '请输入秘钥', trigger: 'blur' }
             ],
@@ -254,19 +379,72 @@
         },
         /* 新增 */
         handleAdd () {
-
+          Object.keys(this.dialogForm).map(key => {
+            this.dialogForm[key] = '';
+          })
+          this.dialogForm.sourceId = this.queryParams.sourceId;
+          this.dialog = {
+            title: '新增秘钥',
+            show: true
+          }
         },
         /* 修改 */
         handleEdit (row) {
-
+          const { sourceId, id } = row;
+          this.resetForm('dialogForm');
+          getSecretDetail({ sourceId }).then(({code, data}) => {
+            if(code == 200) {
+              Object.keys(this.dialogForm).map(key => {
+                this.dialogForm[key] = data[key];
+              })
+              this.dialog = {
+                title: '修改秘钥',
+                show: true,
+                id
+              }
+            }else {
+              this.$message.warning('获取详情失败');
+            }
+          })
         },
         /* 删除 */
         handleDelete (row) {
-
+          const { id } = row;
+          deleteSecret({ id: [id] }).then(({ code, msg }) => {
+            if(code == 200) {
+              this.$message.success(msg)
+            }else {
+              this.$message.error(msg)
+            }
+            this.getList()
+          })
         },
         /* 确认编辑或新增 */
         enterDialog () {
-
+          const id = this.dialog.id;
+          this.$refs.dialogForm.validate(val => {
+            if(val) {
+              if(id != null) {
+                changeSecret({ ...this.dialogForm, id}).then(({ code, msg }) => {
+                  if(code == 200) {
+                    this.$message.success(msg)
+                  }else {
+                    this.$message.error(msg)
+                  }
+                  this.getList()
+                })
+              }else {
+                addSecret(this.dialogForm).then(({ code, msg }) => {
+                  if(code == 200) {
+                    this.$message.success(msg)
+                  }else {
+                    this.$message.error(msg)
+                  }
+                  this.getList()
+                })
+              }
+            }
+          })
         },
         /* 获取列表数据 */
         getList () {
