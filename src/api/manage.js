@@ -670,6 +670,17 @@ export function getIntegral(data) {
   })
 }
 
+/*--------------------用户管理-秘钥管理---------------------------*/
+
+/* 获取列表数据 */
+export function getSecretLists(data) {
+  return request2({
+    url: '/internal/uc/qeurySrcretList',
+    method: 'post',
+    data
+  })
+}
+
 
 /*--------------------用户管理-黑名单---------------------------*/
 

@@ -209,7 +209,8 @@
               :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
-                <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+                <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn" v-if="scope.row.type !== 'broadcast'">{{ scope.row.title }}</el-button>
+                <span v-else>{{ scope.row.title }}</span>
               </template>
             </el-table-column>
             <el-table-column
