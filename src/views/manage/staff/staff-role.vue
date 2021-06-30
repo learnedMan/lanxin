@@ -7,7 +7,6 @@
             <el-button :disabled="multipleSelection.length!=1" @click="editdata" type="warning" size="mini" >修改</el-button>
         </el-form-item>
     </el-form>
-
     <el-table 
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border 
@@ -26,29 +25,6 @@
           <Iconbutton v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'" icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
           <Iconbutton icontype="qx" label="权限" @fatherMethod="editjurisdiction(scope.row)"></Iconbutton>
           <Iconbutton v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'" icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
-          <!-- <el-button
-            size="mini"
-            type="text"
-            style="color:#E6A23C;"
-            icon="el-icon-edit"
-            v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'"
-            @click="editdata(scope.row)"
-          >编辑</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            style="color:#67C23A;"
-            icon="el-icon-edit"
-            @click="editjurisdiction(scope.row)"
-          >权限</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            style="color:#F56C6C;"
-            icon="el-icon-delete"
-            v-if="scope.row.remarks!='超级管理员'&&scope.row.remarks!='站长'&&scope.row.remarks!='编辑'"
-            @click="handleDelete(scope.row)"
-          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -77,7 +53,6 @@
         <el-button @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
-
     <!-- 权限抽屉 -->
     <el-drawer
       :visible.sync="drawer" :with-header="false" size="40%" title="角色权限配置" v-if="drawer"
@@ -118,7 +93,6 @@ import {
   getrolepermission,
   assignrolepermission
   } from '@/api/manage'
-
   export default {
     name: 'staff-role',
     data() {
@@ -149,7 +123,6 @@ import {
         multipleSelection:[],//选中数组
         total:0,
         drawer: false,
-
         treedata: [],
         treechoosedata: [],
         defaultProps: {
@@ -157,7 +130,6 @@ import {
           label: 'remarks'
         },
         chooseid:undefined,
-
         checkflag:true
       }
     },
@@ -180,13 +152,9 @@ import {
       },
       //权限切换选中
       checkChange(data,b,c){
-        // console.log(data)
-        // console.log(b)
-        // console.log(c)
         if(!this.checkflag){
           return
         }
-
         Array.prototype.remove = function(val) {var index = this.indexOf(val);if (index > -1) {this.splice(index, 1);}};
         let thisNode = this.$refs.tree.getNode(data.id) // 获取当前节点
         var keys = this.$refs.tree.getCheckedKeys() // 获取已勾选节点的key值
@@ -222,15 +190,29 @@ import {
       nodeclick(a,b){
         // console.log(a)
         // console.log(b)
-        var keys = this.$refs.tree.getCheckedKeys()
-        if(b.checkedKeys.indexOf(a.id)>-1){
-          console.log('选中')
-          let thisNode = this.$refs.tree.getNode(a.id) // 获取当前节点
-          if(thisNode.childNodes){ //如果有子节点，那么把子节点选中
-            for(var i=0;i<thisNode.childNodes.length;i++){
-              keys.push(thisNode.childNodes[i].key)
+
+        function choosechild(arr){
+          if(arr.childNodes){
+            for(var i=0;i<arr.childNodes.length;i++){
+              keys.push(arr.childNodes[i].key)
+              if(arr.childNodes[i].childNodes){
+                choosechild(arr.childNodes[i]);
+              }
             }
           }
+        }
+
+        var keys = this.$refs.tree.getCheckedKeys()
+        if(b.checkedKeys.indexOf(a.id)>-1){//选中
+          let thisNode = this.$refs.tree.getNode(a.id) // 获取当前节点
+          console.log(thisNode)
+          choosechild(thisNode)
+          // if(thisNode.childNodes){ //如果有子节点，那么把子节点选中
+          //   for(var i=0;i<thisNode.childNodes.length;i++){
+          //     keys.push(thisNode.childNodes[i].key)
+          //   }
+          // }
+
         this.$refs.tree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
         }else{
           // console.log('不选中')

@@ -125,60 +125,6 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/workbench',
-    component: Layout,
-    redirect: '/workbench/commentVerify',
-    name: 'Workbench',
-    meta: {
-      title: '工作台',
-      icon: 'component'
-    },
-    children: [
-      {
-        path: 'commentVerify',
-        component: () => import('@/views/workbench/commentVerify/index'), // Parent router-view
-        name: 'CommentVerify',
-        meta: { title: '评论审核' }
-      },
-      {
-        path: 'reviewNews',
-        component: () => import('@/views/workbench/reviewNews/index'),
-        name: 'ReviewNews',
-        meta: { title: '新闻审核' }
-      },
-      {
-        path: 'gossip',
-        component: () => import('@/views/workbench/gossip/index'),
-        name: 'Gossip',
-        meta: { title: '爆料审核' }
-      },
-      {
-        path: 'rejectReasons',
-        component: () => import('@/views/workbench/rejectReasons'),
-        name: 'RejectReasons',
-        meta: { title: '审核拒绝原因' }
-      },
-      {
-        path: 'userFeedback',
-        component: () => import('@/views/workbench/userFeedback/index'),
-        name: 'UserFeedback',
-        meta: { title: '用户反馈' }
-      },
-      {
-        path: 'report',
-        component: () => import('@/views/workbench/report/index'),
-        name: 'Report',
-        meta: { title: '举报处理' }
-      },
-      {
-        path: 'seeSection',
-        component: () => import('@/views/workbench/seeSection'),
-        name: 'SeeSection',
-        meta: { title: '栏目数据' }
-      }
-    ]
-  },
-  {
     path: '/content',
     component: Layout,
     redirect: '/content/mediaAssets/all-media',
@@ -188,6 +134,12 @@ export const asyncRoutes = [
       icon: 'clipboard'
     },
     children: [
+      {
+        path: 'seeSection',
+        component: () => import('@/views/workbench/seeSection'),
+        name: 'SeeSection',
+        meta: { title: '栏目数据' }
+      },
       {
         path: 'mediaAssets',
         component: () => import('@/views/content/index'), // Parent router-view
@@ -203,6 +155,24 @@ export const asyncRoutes = [
             meta: { title: '所有稿件' }
           },
           {
+            path: 'my',
+            component: () => import('@/views/content/mediaAssets/my'),
+            name: 'My',
+            meta: { title: '我的稿件' }
+          },
+          {
+            path: 'labelManage',
+            component: () => import('@/views/content/mediaAssets/labelManage'),
+            name: 'LabelManage',
+            meta: { title: '标签管理' }
+          },
+          {
+            path: 'recycleBox',
+            component: () => import('@/views/content/mediaAssets/recycleBox'),
+            name: 'RecycleBox',
+            meta: { title: '回收站' }
+          },
+          {
             path: 'watch-column',
             component: () => import('@/views/content/mediaAssets/watch-column'),
             hidden: true,
@@ -215,26 +185,50 @@ export const asyncRoutes = [
             hidden: true,
             name: 'Add-media',
             meta: { title: '编辑内容' }
-          },
-          {
-            path: 'labelManage',
-            component: () => import('@/views/content/mediaAssets/labelManage'),
-            name: 'LabelManage',
-            meta: { title: '标签管理' }
-          },
-          {
-            path: 'my',
-            component: () => import('@/views/content/mediaAssets/my'),
-            name: 'My',
-            meta: { title: '我的稿件' }
-          },
-          {
-            path: 'recycleBox',
-            component: () => import('@/views/content/mediaAssets/recycleBox'),
-            name: 'RecycleBox',
-            meta: { title: '回收站' }
           }
         ]
+      },
+      {
+        path: 'studio',
+        component: () => import('@/views/operamanage/studio/index'),
+        name: 'Studio',
+        meta: { title: '直播间管理' },
+        alwaysShow: true,
+        redirect: '/operaManage/studio/studioList',
+        children: [
+          {
+            path: 'studioList',
+            component: () => import('@/views/operamanage/studio/studioList/index'),
+            name: 'StudioList',
+            meta: { title: '直播间列表' }
+          },
+          {
+            path: 'waterManage',
+            component: () => import('@/views/operamanage/studio/waterManage'),
+            hidden:true,
+            name: 'WaterManage',
+            meta: { title: '平台流水管理' }
+          },
+          {
+            path: 'accountManage',
+            component: () => import('@/views/operamanage/studio/accountManage'),
+            hidden:true,
+            name: 'AccountManage',
+            meta: { title: '平台账号管理' }
+          }
+        ]
+      },
+      {
+        path: 'column',
+        component: () => import('@/views/manage/architec/column'),
+        name: 'Column',
+        meta: { title: '栏目管理' }
+      },
+      {
+        path: 'radioTVIndex',
+        component: () => import('@/views/radioTV/radioTVIndex'), // Parent router-view
+        name: 'RadioTVIndex',
+        meta: { title: '广电管理' }
       },
       {
         path: 'mediaRepository',
@@ -261,6 +255,106 @@ export const asyncRoutes = [
             component: () => import('@/views/content/mediaRepository/classmanage'),
             name: 'Classmanage',
             meta: { title: '(媒体库)分类管理' }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: '/workbench',
+    component: Layout,
+    redirect: '/workbench/commentVerify',
+    name: 'Workbench',
+    meta: {
+      title: '工作台',
+      icon: 'component'
+    },
+    children: [
+      {
+        path: 'reviewNews',
+        component: () => import('@/views/workbench/reviewNews/index'),
+        name: 'ReviewNews',
+        meta: { title: '新闻审核' }
+      },
+      {
+        path: 'commentVerify',
+        component: () => import('@/views/workbench/commentVerify/index'), // Parent router-view
+        name: 'CommentVerify',
+        meta: { title: '评论审核' }
+      },
+      {
+        path: 'gossip',
+        component: () => import('@/views/workbench/gossip/index'),
+        name: 'Gossip',
+        meta: { title: '爆料审核' }
+      },
+      {
+        path: 'userFeedback',
+        component: () => import('@/views/workbench/userFeedback/index'),
+        name: 'UserFeedback',
+        meta: { title: '用户反馈' }
+      },
+      {
+        path: 'report',
+        component: () => import('@/views/workbench/report/index'),
+        name: 'Report',
+        meta: { title: '举报处理' }
+      },
+      {
+        path: 'rejectReasons',
+        component: () => import('@/views/workbench/rejectReasons'),
+        name: 'RejectReasons',
+        meta: { title: '审核拒绝原因' }
+      }
+    ]
+  },
+  {
+    path: '/operaManage',
+    component: Layout,
+    name: 'OperaManage',
+    redirect: '/operaManage/studio/studioList',
+    meta: {
+      title: '运营管理',
+      icon: 'table'
+    },
+    children: [
+      {
+        path: 'events',
+        component: () => import('@/views/operamanage/events'),
+        name: 'Events',
+        meta: { title: '报名' },
+      },
+      {
+        path: 'vote',
+        component: () => import('@/views/operamanage/vote'),
+        name: 'Vote',
+        meta: { title: '投票' },
+      },
+      {
+        path: 'lottery_group',
+        component: () => import('@/views/operamanage/lottery_group'),
+        name: 'Lottery_group',
+        meta: { title: '抽奖' },
+      },
+      {
+        path: 'advertPush',
+        component: () => import('@/views/operamanage/advertPush/index'),
+        name: 'AdvertPush',
+        meta: { title: '广告推送' },
+        alwaysShow: true,
+        redirect: '/operaManage/advertPush/advertList',
+        children: [
+          {
+            path: 'advertList',
+            component: () => import('@/views/operamanage/advertPush/advertList/index'),
+            name: 'AdvertList',
+            meta: { title: '广告管理' }
+          },
+          {
+            path: 'push',
+            component: () => import('@/views/operamanage/advertPush/push'),
+            name: 'Push',
+            meta: { title: '推送管理' }
           }
         ]
       }
@@ -301,18 +395,6 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/architec/product'),
             name: 'Product',
             meta: { title: '产品管理' }
-          },
-          {
-            path: 'column',
-            component: () => import('@/views/manage/architec/column'),
-            name: 'Column',
-            meta: { title: '栏目管理' }
-          },
-          {
-            path: 'app-menu',
-            component: () => import('@/views/manage/architec/app-menu'),
-            name: 'App-menu',
-            meta: { title: 'APP用户中心菜单' }
           },
           {
             path: 'template-manage',
@@ -387,6 +469,12 @@ export const asyncRoutes = [
         redirect: '/manage/system/system-sensitword',
         children: [
           {
+            path: 'app-menu',
+            component: () => import('@/views/manage/architec/app-menu'),
+            name: 'App-menu',
+            meta: { title: 'APP用户中心菜单' }
+          },
+          {
             path: 'system-sensitword',
             component: () => import('@/views/manage/system/system-sensitword'),
             name: 'System-sensitword',
@@ -408,104 +496,25 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/radioTV/index',
-    component: Layout,
-    redirect: 'radioTVIndex',
-    name: 'RadioTV',
-    meta: {
-      title: '广电管理',
-      icon: 'example'
-    },
-    children: [
-      {
-        path: 'radioTVIndex',
-        component: () => import('@/views/radioTV/radioTVIndex'), // Parent router-view
-        name: 'RadioTVIndex',
-        meta: { title: '广电管理' }
-      }
-    ]
-  },
-  {
-    path: '/operaManage',
-    component: Layout,
-    name: 'OperaManage',
-    redirect: '/operaManage/studio/studioList',
-    meta: {
-      title: '运营管理',
-      icon: 'table'
-    },
-    children: [
-      {
-        path: 'studio',
-        component: () => import('@/views/operamanage/studio/index'),
-        name: 'Studio',
-        meta: { title: '直播间管理' },
-        alwaysShow: true,
-        redirect: '/operaManage/studio/studioList',
-        children: [
-          {
-            path: 'studioList',
-            component: () => import('@/views/operamanage/studio/studioList/index'),
-            name: 'StudioList',
-            meta: { title: '直播间列表' }
-          },
-          {
-            path: 'waterManage',
-            component: () => import('@/views/operamanage/studio/waterManage'),
-            name: 'WaterManage',
-            meta: { title: '平台流水管理' }
-          },
-          {
-            path: 'accountManage',
-            component: () => import('@/views/operamanage/studio/accountManage'),
-            name: 'AccountManage',
-            meta: { title: '平台账号管理' }
-          }
-        ]
-      },
-      {
-        path: 'advertPush',
-        component: () => import('@/views/operamanage/advertPush/index'),
-        name: 'AdvertPush',
-        meta: { title: '广告推送' },
-        alwaysShow: true,
-        redirect: '/operaManage/advertPush/advertList',
-        children: [
-          {
-            path: 'advertList',
-            component: () => import('@/views/operamanage/advertPush/advertList/index'),
-            name: 'AdvertList',
-            meta: { title: '广告管理' }
-          },
-          {
-            path: 'push',
-            component: () => import('@/views/operamanage/advertPush/push'),
-            name: 'Push',
-            meta: { title: '推送管理' }
-          }
-        ]
-      },
-      {
-        path: 'events',
-        component: () => import('@/views/operamanage/events'),
-        name: 'Events',
-        meta: { title: '报名' },
-      },
-      {
-        path: 'lottery_group',
-        component: () => import('@/views/operamanage/lottery_group'),
-        name: 'Lottery_group',
-        meta: { title: '抽奖' },
-      },
-      {
-        path: 'vote',
-        component: () => import('@/views/operamanage/vote'),
-        name: 'Vote',
-        meta: { title: '投票' },
-      }
-    ]
-  },
+  // {
+  //   path: '/radioTV/index',
+  //   component: Layout,
+  //   redirect: 'radioTVIndex',
+  //   name: 'RadioTV',
+  //   meta: {
+  //     title: '广电管理',
+  //     icon: 'example'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'radioTVIndex',
+  //       component: () => import('@/views/radioTV/radioTVIndex'), // Parent router-view
+  //       name: 'RadioTVIndex',
+  //       meta: { title: '广电管理' }
+  //     }
+  //   ]
+  // },
+  
 ]
 
 export const AdminRoute = [{

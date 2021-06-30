@@ -496,15 +496,26 @@ import { validUsername , validEmail } from '@/utils/validate'
       nodeclick(a,b){
         // console.log(a)
         // console.log(b)
+        function choosechild(arr){
+          if(arr.childNodes){
+            for(var i=0;i<arr.childNodes.length;i++){
+              keys.push(arr.childNodes[i].key)
+              if(arr.childNodes[i].childNodes){
+                choosechild(arr.childNodes[i]);
+              }
+            }
+          }
+        }
         var keys = this.$refs.roletree.getCheckedKeys()
         if(b.checkedKeys.indexOf(a.id)>-1){
           // console.log('选中')
           let thisNode = this.$refs.roletree.getNode(a.id) // 获取当前节点
-          if(thisNode.childNodes){ //如果有子节点，那么把子节点选中
-            for(var i=0;i<thisNode.childNodes.length;i++){
-              keys.push(thisNode.childNodes[i].key)
-            }
-          }
+          choosechild(thisNode)
+          // if(thisNode.childNodes){ //如果有子节点，那么把子节点选中
+          //   for(var i=0;i<thisNode.childNodes.length;i++){
+          //     keys.push(thisNode.childNodes[i].key)
+          //   }
+          // }
         this.$refs.roletree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
         }else{
           // console.log('不选中')

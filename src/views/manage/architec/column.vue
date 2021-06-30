@@ -1,5 +1,5 @@
 <template>
-  <div class="column">
+  <div class="column" style="padding:30px;">
     <!-- 搜索 -->
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="产品：">
