@@ -1164,6 +1164,11 @@ export default {
                 relatedLabel: '专题栏目ID'
               },
               {
+                label: '多模块专题',
+                value: 'multi_model_topic',
+                relatedLabel: '多模块专题栏目ID'
+              },
+              {
                 label: '活动',
                 value: 'activity',
                 relatedLabel: '活动ID'

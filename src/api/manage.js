@@ -675,8 +675,8 @@ export function getIntegral(data) {
 
 /* 获取列表 */
 export function getBlacklist(data) {
-  return $http({
-    url: '/api/intranet/comment/getNoTalkUserList/page',
+  return request3({
+    url: '/new/intranet/comment/getNoTalkUserList/page',
     method: 'post',
     data
   })
@@ -684,8 +684,8 @@ export function getBlacklist(data) {
 
 /* 恢复黑名单 */
 export function blacklistRestore(data) {
-  return $http({
-    url: '/api/intranet/comment/cancelNoTalkUser',
+  return request3({
+    url: '/new/intranet/comment/cancelNoTalkUser',
     method: 'post',
     data
   })
