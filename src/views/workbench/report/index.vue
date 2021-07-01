@@ -134,24 +134,6 @@
           </el-select>
         </el-form-item>-->
         <el-form-item
-          label="举报对象类型:"
-          prop="mediaType"
-        >
-          <el-select
-            v-model="queryParams.mediaType"
-            size="small"
-            placeholder="请选择类型"
-            clearable
-          >
-            <el-option
-              v-for="item in mediaOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
           label="回复状态:"
           prop="replyStatus"
         >
@@ -266,11 +248,6 @@
         prop="mediaTitle"
       />
       <el-table-column
-        label="举报对象类型"
-        align="center"
-        prop="mediaTypeLabel"
-      />
-      <el-table-column
         label="举报类型"
         align="center"
         prop="reportTypeLabel"
@@ -366,7 +343,6 @@
           <el-form label-width="100px" style="padding-left: 10px">
             <el-form-item label="举报用户:">{{ baseInfo.reportNickname }}</el-form-item>
             <el-form-item label="举报类型:">{{ baseInfo.reportTypeLabel }}</el-form-item>
-            <el-form-item label="举报对象类型:">{{ baseInfo.mediaTypeLabel }}</el-form-item>
             <el-form-item label="举报对象:">{{ baseInfo.newTitle }}</el-form-item>
             <el-form-item label="所属新闻:">{{ baseInfo.newTitle }}</el-form-item>
             <el-form-item label="举报时间:">{{ baseInfo.reportTime }}</el-form-item>
@@ -439,7 +415,6 @@ export default {
         endReplyTime: '',
         beginReportTime: '',
         endReportTime: '',
-        mediaType: '',
         sourceId: '', // 来源id
         page: 1,
         limit: 10
@@ -568,7 +543,6 @@ export default {
       baseInfo: {
         reportNickname: '', // 用户
         reportTypeLabel: '', // 举报类型
-        mediaTypeLabel: '', // 举报对象类型
         newTitle: '', // 举报对象/所属新闻
         reportTime: '', // 举报时间
         handleStatusLabel: '' // 处理状态
@@ -640,7 +614,6 @@ export default {
           reportTypeLabel: item.reportType.replace(/[\[|\]]/g, '').split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
           replyStatusLabel: this.replyOptions.find(n => n.value === item.replyStatus)?.label,
           handleStatusLabel: this.handleOption.find(n => n.value === item.handleStatus)?.label,
-          mediaTypeLabel: this.mediaOptions.find(n => n.value === item.mediaId)?.label
         }))
         this.total = res.data?.count || 0
       }).finally(() => {
@@ -666,7 +639,6 @@ export default {
           ...(data || {}),
           reportTypeLabel: data.reportType.replace(/[\[|\]]/g, '').split(',').map(n => this.typeOptions.find(type => type.value == n)?.label).join(),
           handleStatusLabel: this.handleOption.find(n => n.value === data.handleStatus)?.label,
-          mediaTypeLabel: this.tableData.find(n => n.id === id)?.mediaTypeLabel || ''
         }
         this.reportList = (data.replyData || []).map(n => ({
           ...n,

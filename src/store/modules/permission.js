@@ -1,31 +1,27 @@
-import { asyncRoutes, constantRoutes, defaultRoutes, AdminRoute } from '@/router'
+import { asyncRoutes, constantRoutes, defaultRoutes } from '@/router'
 
 
 
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
- * @param roles
+ * @param roles  用户角色
+ * @param permissions  用户权限
  */
-export function filterAsyncRoutes(routes, isAdministrator, permissions) {
+export function filterAsyncRoutes(routes, roles, permissions) {
   const res = []
   routes.map(route => {
     const tmp = { ...route }
-    if (permissions.find(n => n.name === tmp.name) || tmp.hidden) {
+    // hidden: 默认显示   alwaysShow: 默认显示  roles: 根据角色决定
+    if (tmp.hidden || tmp.alwaysShow || tmp.roles && roles.find(role => tmp.roles.includes(role)) || permissions.find(n => n.name === tmp.permission)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, isAdministrator, permissions)
+        tmp.children = filterAsyncRoutes(tmp.children, roles, permissions)
         tmp.children.length !== 0 && !tmp.children.every(n => n.hidden) && res.push(tmp)
       }else {
-        // 站点管理需要特殊处理
-        if(tmp.name === 'Architec-site') {
-          isAdministrator && res.push(tmp)
-        }else {
-          res.push(tmp)
-        }
+        res.push(tmp)
       }
     }
   })
-
   return res
 }
 
@@ -43,15 +39,10 @@ const mutations = {
 
 const actions = {
   generateRoutes({ commit }, { roles, permissions }) {
-    let isAdministrator = !!roles.find(n => n.name === 'Administrator');
-    let MBH = isAdministrator && !!roles.find(n => n.name === 'Admin');
     return new Promise(resolve => {
       let accessedRoutes;
-      accessedRoutes = filterAsyncRoutes(asyncRoutes, isAdministrator, permissions)
-      accessedRoutes = accessedRoutes.concat(MBH? AdminRoute : []);
+      accessedRoutes = filterAsyncRoutes(asyncRoutes, roles, permissions)
       commit('SET_ROUTES', accessedRoutes)
-
-
       resolve(accessedRoutes)
     })
   }
