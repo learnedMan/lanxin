@@ -13,7 +13,7 @@ export function filterAsyncRoutes(routes, roles, permissions) {
   routes.map(route => {
     const tmp = { ...route }
     // hidden: 默认显示   alwaysShow: 默认显示  roles: 根据角色决定
-    if (tmp.hidden || tmp.alwaysShow || tmp.roles && roles.find(role => tmp.roles.includes(role)) || permissions.find(n => n.name === tmp.permission)) {
+    if (tmp.hidden || tmp.alwaysShow || tmp.roles && roles.find(role => tmp.roles.includes(role.name)) || permissions.find(n => n.name === tmp.permission)) {
       if (tmp.children) {
         tmp.children = filterAsyncRoutes(tmp.children, roles, permissions)
         tmp.children.length !== 0 && !tmp.children.every(n => n.hidden) && res.push(tmp)
