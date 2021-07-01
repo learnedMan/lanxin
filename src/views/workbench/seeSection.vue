@@ -205,15 +205,14 @@
               </template>
             </el-table-column>
             <el-table-column
-            
+
               label="新闻标题"
               align="center"
               prop="title"
               :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
-                <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn" v-if="scope.row.type !== 'broadcast'">{{ scope.row.title }}</el-button>
-                <span v-else>{{ scope.row.title }}</span>
+                <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
               </template>
             </el-table-column>
             <el-table-column
@@ -284,7 +283,7 @@
                   ></Iconbutton>
                   <!-- 查看 -->
                   <Iconbutton
-                    v-if="scope.row.status === 1 && scope.row.type !== 'broadcast'"
+                    v-if="scope.row.status === 1"
                     icontype="ckxq"
                     label="详情"
                     @fatherMethod="handleWatch(scope.row)"
@@ -805,7 +804,6 @@ export default {
     },
     /* 新增推送 */
     handlePush (row) {
-      console.log(row)
       const { type, id, title, link, cover } = row;
       this.resetForm('dialogForm');
       this.switchVal = false;
@@ -913,11 +911,15 @@ export default {
     },
     /* 查看新闻 */
     handleWatch (row) {
-      const { id } = row;
-      this.detailDialog = {
-        id,
-        show: true,
-        disabled: true
+      const { id, type, title } = row;
+      if(type === 'broadcast') {
+        this.$router.push({ name: 'StudioList', query: { title } })
+      }else {
+        this.detailDialog = {
+          id,
+          show: true,
+          disabled: true
+        }
       }
     },
     /*

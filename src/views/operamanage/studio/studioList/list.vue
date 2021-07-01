@@ -982,12 +982,12 @@
       enterChangeDialog () {
         const id = this.dialog.id;
         const params = {
-          channels: this.dialog.form.channels.join(),
           extra: {
             ...this.dialog.form.extra,
             cover: this.dialog.form.extra.cover.slice(0, this.imgCount)
           }
         };
+        if(this.dialog.form.channels) params.channels = this.dialog.form.channels.join()
         let promise;
         this.$refs.dialogForm?.validate(val => {
           if(val) {
@@ -1042,8 +1042,8 @@
       }
     },
     created() {
+      this.queryParams.keyword = this.$route.query?.title || '';
       this.getChannels();
-      this.getList();
     },
     activated() {
       this.getList();
