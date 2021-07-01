@@ -258,6 +258,7 @@ export default {
       search: {
         sourceId: '', // 产品
         dataId: this.newsId, // 新闻ID
+        nickname: '', // 评论人昵称
         userId: '', // 评论人ID
         status: 'all', // 状态
         aduitStartTime: '', // 审核时间
@@ -328,7 +329,15 @@ export default {
           label: '提交时间',
           span: 8,
           key: 'submitDate'
-        }
+        },
+        {
+          component: 'input',
+          componentSize: 'small',
+          placeholder: '请输入评论人昵称',
+          label: '评论人昵称',
+          span: 6,
+          key: 'nickname'
+        },
       ],
       tableDead:this.isMobile?[
         {

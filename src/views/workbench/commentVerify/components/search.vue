@@ -6,7 +6,7 @@
 </style>
 <template>
   <div class="xl-common-search">
-    <el-form ref="ruleForm" label-width="80px" :model="value" inline>
+    <el-form ref="ruleForm" label-width="100px" :model="value" inline>
       <el-form-item v-for="(list, index) of lists"  :label="`${list.label}:`" :prop="list.key" :key="index">
         <el-input v-if="list.component === 'input'" v-model="value[list.key]" :size="list.componentSize" :placeholder="list.placeholder" />
         <el-select v-if="list.component === 'select'" v-model="value[list.key]" :size="list.componentSize" :placeholder="list.placeholder">
