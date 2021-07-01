@@ -129,6 +129,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/content/mediaAssets/all-media',
     name: 'Content',
+    permission: 'content.manage',
     meta: {
       title: '内容管理',
       icon: 'clipboard'
@@ -138,38 +139,43 @@ export const asyncRoutes = [
         path: 'seeSection',
         component: () => import('@/views/workbench/seeSection'),
         name: 'SeeSection',
+        permission: 'content.news.list',
         meta: { title: '栏目数据' }
       },
       {
         path: 'mediaAssets',
         component: () => import('@/views/content/index'), // Parent router-view
         name: 'MediaAssets',
+        permission: 'content.script.manage',
         meta: { title: '稿件管理' },
-        alwaysShow: true,
         redirect: '/content/mediaAssets/all-media',
         children: [
           {
             path: 'all-media',
             component: () => import('@/views/content/mediaAssets/all-media'),
             name: 'All-media',
+            permission: 'content.script.list',
             meta: { title: '所有稿件' }
           },
           {
             path: 'my',
             component: () => import('@/views/content/mediaAssets/my'),
             name: 'My',
+            permission: 'content.script.list',
             meta: { title: '我的稿件' }
           },
           {
             path: 'labelManage',
             component: () => import('@/views/content/mediaAssets/labelManage'),
             name: 'LabelManage',
+            permission: 'content.tag',
             meta: { title: '标签管理' }
           },
           {
             path: 'recycleBox',
             component: () => import('@/views/content/mediaAssets/recycleBox'),
             name: 'RecycleBox',
+            permission: 'content.news.list',
             meta: { title: '回收站' }
           },
           {
@@ -192,14 +198,15 @@ export const asyncRoutes = [
         path: 'studio',
         component: () => import('@/views/operamanage/studio/index'),
         name: 'Studio',
+        permission: 'content.broadcast.manage',
         meta: { title: '直播间管理' },
-        alwaysShow: true,
         redirect: '/operaManage/studio/studioList',
         children: [
           {
             path: 'studioList',
             component: () => import('@/views/operamanage/studio/studioList/index'),
             name: 'StudioList',
+            permission: 'content.broadcast.list',
             meta: { title: '直播间列表' }
           },
           {
@@ -222,38 +229,43 @@ export const asyncRoutes = [
         path: 'column',
         component: () => import('@/views/manage/architec/column'),
         name: 'Column',
+        permission: 'content.channel.manage',
         meta: { title: '栏目管理' }
       },
       {
         path: 'radioTVIndex',
         component: () => import('@/views/radioTV/radioTVIndex'), // Parent router-view
         name: 'RadioTVIndex',
+        permission: 'content.tr.manage',
         meta: { title: '广电管理' }
       },
       {
         path: 'mediaRepository',
         component: () => import('@/views/content/index'), // Parent router-view
         name: 'MediaRepository',
+        permission: 'content.resource_repo.manage',
         meta: { title: '媒体库' },
-        alwaysShow: true,
         redirect: '/content/mediaRepository/allResources',
         children: [
           {
             path: 'allResources',
             component: () => import('@/views/content/mediaRepository/allResources'),
             name: 'AllResources',
+            permission: 'content.resource_repo.resource.list_all',
             meta: { title: '全部图片' }
           },
           {
             path: 'myResources',
             component: () => import('@/views/content/mediaRepository/myResources'),
             name: 'MyResources',
+            permission: 'content.resource_repo.resource.list',
             meta: { title: '我的图片' }
           },
           {
             path: 'classmanage',
             component: () => import('@/views/content/mediaRepository/classmanage'),
             name: 'Classmanage',
+            permission: 'content.resource_repo.category.manage',
             meta: { title: '(媒体库)分类管理' }
           }
         ]
@@ -265,6 +277,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/workbench/commentVerify',
     name: 'Workbench',
+    permission: 'work_space.manage',
     meta: {
       title: '工作台',
       icon: 'component'
@@ -274,36 +287,42 @@ export const asyncRoutes = [
         path: 'reviewNews',
         component: () => import('@/views/workbench/reviewNews/index'),
         name: 'ReviewNews',
+        permission: 'work_space.review_news',
         meta: { title: '新闻审核' }
       },
       {
         path: 'commentVerify',
         component: () => import('@/views/workbench/commentVerify/index'), // Parent router-view
         name: 'CommentVerify',
+        permission: 'work_space.review_comment',
         meta: { title: '评论审核' }
       },
       {
         path: 'gossip',
         component: () => import('@/views/workbench/gossip/index'),
         name: 'Gossip',
+        permission: 'work_space.review_tip-off',
         meta: { title: '爆料审核' }
       },
       {
         path: 'userFeedback',
         component: () => import('@/views/workbench/userFeedback/index'),
         name: 'UserFeedback',
+        permission: 'work_space.review_feedback',
         meta: { title: '用户反馈' }
       },
       {
         path: 'report',
         component: () => import('@/views/workbench/report/index'),
         name: 'Report',
+        permission: 'work_space.review_report',
         meta: { title: '举报处理' }
       },
       {
         path: 'rejectReasons',
         component: () => import('@/views/workbench/rejectReasons'),
         name: 'RejectReasons',
+        permission: 'work_space.refuse_reason',
         meta: { title: '审核拒绝原因' }
       }
     ]
@@ -312,6 +331,7 @@ export const asyncRoutes = [
     path: '/operaManage',
     component: Layout,
     name: 'OperaManage',
+    permission: 'operation.manage',
     redirect: '/operaManage/studio/studioList',
     meta: {
       title: '运营管理',
@@ -322,38 +342,43 @@ export const asyncRoutes = [
         path: 'events',
         component: () => import('@/views/operamanage/events'),
         name: 'Events',
+        alwaysShow: true,
         meta: { title: '报名' },
       },
       {
         path: 'vote',
         component: () => import('@/views/operamanage/vote'),
         name: 'Vote',
+        alwaysShow: true,
         meta: { title: '投票' },
       },
       {
         path: 'lottery_group',
         component: () => import('@/views/operamanage/lottery_group'),
         name: 'Lottery_group',
+        alwaysShow: true,
         meta: { title: '抽奖' },
       },
       {
         path: 'advertPush',
         component: () => import('@/views/operamanage/advertPush/index'),
         name: 'AdvertPush',
+        permission: 'operation.manage',
         meta: { title: '广告推送' },
-        alwaysShow: true,
         redirect: '/operaManage/advertPush/advertList',
         children: [
           {
             path: 'advertList',
             component: () => import('@/views/operamanage/advertPush/advertList/index'),
             name: 'AdvertList',
+            permission: 'operation.ad.manage',
             meta: { title: '广告管理' }
           },
           {
             path: 'push',
             component: () => import('@/views/operamanage/advertPush/push'),
             name: 'Push',
+            permission: 'operation.push.manage',
             meta: { title: '推送管理' }
           }
         ]
@@ -365,6 +390,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/manage/architec/architec-site',
     name: 'Manage',
+    permission: 'system.manage',
     meta: {
       title: '管理中心',
       icon: 'user'
@@ -374,32 +400,36 @@ export const asyncRoutes = [
         path: 'architec',
         component: () => import('@/views/manage/index'), // Parent router-view
         name: 'Architec',
+        permission: 'system.manage',
         meta: { title: '架构管理' },
-        alwaysShow: true,
         redirect: '/manage/architec/architec-site',
         children: [
           {
             path: 'architec-site',
             component: () => import('@/views/manage/architec/architec-site'),
             name: 'Architec-site',
+            roles: ['Maintainer', 'Administrator', 'Admin'],
             meta: { title: '站点管理' }
           },
           {
             path: 'channel-info',
             component: () => import('@/views/manage/architec/channel-info'),
             name: 'Channel-info',
+            roles: ['Maintainer', 'Administrator', 'Admin'],
             meta: { title: '频道信息' }
           },
           {
             path: 'product',
             component: () => import('@/views/manage/architec/product'),
             name: 'Product',
+            permission: 'system.product.manage',
             meta: { title: '产品管理' }
           },
           {
             path: 'template-manage',
             component: () => import('@/views/manage/architec/template-manage'),
             name: 'Template-manage',
+            roles: ['Administrator', 'Admin'],
             meta: { title: '模板管理' }
           }
         ]
@@ -408,26 +438,29 @@ export const asyncRoutes = [
         path: 'staff',
         component: () => import('@/views/manage/index'), // Parent router-view
         name: 'Staff',
+        permission: 'system.staff.manage',
         meta: { title: '员工管理' },
-        alwaysShow: true,
         redirect: '/manage/staff/staff-list',
         children: [
           {
             path: 'staff-list',
             component: () => import('@/views/manage/staff/staff-list'),
             name: 'Staff-list',
+            permission: 'system.staff.manage',
             meta: { title: '员工列表' }
           },
           {
             path: 'staff-jurisdiction',
             component: () => import('@/views/manage/staff/staff-jurisdiction'),
             name: 'Staff-jurisdiction',
+            roles: ['Administrator'],
             meta: { title: '权限管理' }
           },
           {
             path: 'staff-role',
             component: () => import('@/views/manage/staff/staff-role'),
             name: 'Staff-role',
+            roles: ['Maintainer', 'Administrator', 'Admin'],
             meta: { title: '角色管理' }
           }
         ]
@@ -436,32 +469,36 @@ export const asyncRoutes = [
         path: 'user',
         component: () => import('@/views/manage/index'), // Parent router-view
         name: 'User',
+        permission: 'system.user.manage',
         meta: { title: '用户管理' },
-        alwaysShow: true,
         redirect: '/manage/user/user-list',
         children: [
           {
             path: 'user-list',
             component: () => import('@/views/manage/user/user-list/index'),
             name: 'User-list',
+            permission: 'system.user.list',
             meta: { title: '用户列表' }
           },
           {
             path: 'secret-manage',
             component: () => import('@/views/manage/user/secret-manage'),
             name: 'Secret-manage',
+            permission: 'system.product.manage',
             meta: { title: '秘钥管理' }
           },
           {
             path: 'blacklist',
             component: () => import('@/views/manage/user/blacklist'),
             name: 'Blacklist',
+            permission: 'system.user.blacklist',
             meta: { title: '黑名单' }
           },
           {
             path: 'convention',
             component: () => import('@/views/manage/user/convention'),
             name: 'Convention',
+            permission: 'system.user.reward_points',
             meta: { title: '常规积分规则' }
           }
         ]
@@ -470,38 +507,97 @@ export const asyncRoutes = [
         path: 'system',
         component: () => import('@/views/manage/index'), // Parent router-view
         name: 'System',
+        permission: 'system.settings.manage',
         meta: { title: '系统设置' },
-        alwaysShow: true,
         redirect: '/manage/system/system-sensitword',
         children: [
           {
             path: 'app-menu',
             component: () => import('@/views/manage/architec/app-menu'),
             name: 'App-menu',
+            permission: 'system.settings.user_cente',
             meta: { title: 'APP用户中心菜单' }
           },
           {
             path: 'system-sensitword',
             component: () => import('@/views/manage/system/system-sensitword'),
             name: 'System-sensitword',
+            permission: 'system.settings.sensitive_word',
             meta: { title: '敏感词管理' }
           },
           {
             path: 'system-whiteList',
             component: () => import('@/views/manage/system/system-whiteList'),
             name: 'System-whiteList',
+            permission: 'system.settings.sensitive_word_white_list',
             meta: { title: '敏感词白名单' }
           },
           {
             path: 'mbhmealmange',
             component: () => import('@/views/manage/system/mbhmealmange'),
             name: 'Mbhmealmange',
+            permission: 'templatify.combo.manage',
             meta: { title: '模板化套餐发布' }
           }
         ]
       }
     ]
   },
+  {
+    path: '/mbh',
+    component: Layout,
+    redirect: '/mbh/index',
+    name: 'MBH',
+    roles: ['Administrator', 'Admin'],
+    meta: {
+      title: '模板化',
+      icon: 'list'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/mbh/index'), // Parent router-view
+        name: 'index',
+        permission: 'templatify.product.manage',
+        meta: { title: '产品管理' }
+      },
+      {
+        path: 'productstylelist',
+        component: () => import('@/views/mbh/productstylelist'), // Parent router-view
+        name: 'productstylelist',
+        meta: { title: '产品样式列表' },
+        hidden: true
+      },
+      {
+        path: 'catalog',
+        component: () => import('@/views/mbh/catalog'), // Parent router-view
+        name: 'catalog',
+        permission: 'templatify.channel.manage',
+        meta: { title: '栏目管理' }
+      },
+      {
+        path: 'setmeal',
+        component: () => import('@/views/mbh/setmeal'), // Parent router-view
+        name: 'setmeal',
+        meta: { title: '套餐管理' },
+        hidden: true
+      },
+      {
+        path: 'setmealDetails',
+        component: () => import('@/views/mbh/setmealDetails'), // Parent router-view
+        name: 'setmealDetails',
+        meta: { title: '套餐详情' },
+        hidden: true
+      },
+      {
+        path: 'stylelist',
+        component: () => import('@/views/mbh/stylelist'), // Parent router-view
+        name: 'stylelist',
+        permission: 'templatify.style.manage',
+        meta: { title: '基础样式列表' }
+      }
+    ]
+  }
   // {
   //   path: '/radioTV/index',
   //   component: Layout,
@@ -520,60 +616,8 @@ export const asyncRoutes = [
   //     }
   //   ]
   // },
-  
-]
 
-export const AdminRoute = [{
-  path: '/mbh',
-  component: Layout,
-  redirect: '/mbh/index',
-  name: 'MBH',
-  meta: {
-    title: '模板化',
-    icon: 'list'
-  },
-  children: [
-    {
-      path: 'index',
-      component: () => import('@/views/mbh/index'), // Parent router-view
-      name: 'index',
-      meta: { title: '产品管理' }
-    },
-    {
-      path: 'productstylelist',
-      component: () => import('@/views/mbh/productstylelist'), // Parent router-view
-      name: 'productstylelist',
-      meta: { title: '产品样式列表' },
-      hidden: true
-    },
-    {
-      path: 'catalog',
-      component: () => import('@/views/mbh/catalog'), // Parent router-view
-      name: 'catalog',
-      meta: { title: '栏目管理' }
-    },
-    {
-      path: 'setmeal',
-      component: () => import('@/views/mbh/setmeal'), // Parent router-view
-      name: 'setmeal',
-      meta: { title: '套餐管理' },
-      hidden: true
-    },
-    {
-      path: 'setmealDetails',
-      component: () => import('@/views/mbh/setmealDetails'), // Parent router-view
-      name: 'setmealDetails',
-      meta: { title: '套餐详情' },
-      hidden: true
-    },
-    {
-      path: 'stylelist',
-      component: () => import('@/views/mbh/stylelist'), // Parent router-view
-      name: 'stylelist',
-      meta: { title: '基础样式列表' }
-    }
-  ]
-}]
+]
 
 export const defaultRoutes = [
   { path: '*', redirect: '/404', hidden: true }
