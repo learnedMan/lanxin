@@ -223,7 +223,13 @@
           autoHeightEnabled: true, // 防止内容撑高编辑器
           enableAutoSave: false,
           readonly: this.disabled
-        }, this.isMobile? {toolbars: [[]]} : {
+        }, this.isMobile? {toolbars: [[
+          'bold', 'italic', 'underline', '|',
+          'forecolor', 'backcolor' , '|',
+          'fontfamily', 'fontsize', '|',
+          'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+          'simpleupload'
+        ]]} : {
           toolbars: [[
             'source', '|',
             'undo', 'redo', '|',
