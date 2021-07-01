@@ -65,7 +65,7 @@
       <el-col :span="4">
         <div class="xl-see-section--tree" style="width:100%;overflow:hidden;">
           <el-tree
-           style="width:100%;"
+            style="width:100%;"
             ref="tree"
             :data="channelsList"
             node-key="id"
@@ -773,6 +773,22 @@ export default {
     getChannels() {
       return getChannels().then(res => {
         this.channelsList = res;
+        function changestatusname(arr){
+          for(var i=0;i<arr.length;i++){
+            if(arr[i].status=='0'){
+              arr[i].name = arr[i].name + ' （禁用）';
+              // console.log(arr[i].name)
+              if(arr[i].children&&arr[i].children.length>0){
+                changestatusname(arr[i].children)
+              }
+            }else{
+              if(arr[i].children&&arr[i].children.length>0){
+                changestatusname(arr[i].children)
+              }
+            }
+          }
+        }
+        changestatusname(this.channelsList)
       })
     },
     /*
