@@ -152,7 +152,7 @@
             show-checkbox
             :check-strictly="true"
             @check = "nodeclick"
-            @check-change = "rolecheckChange"
+            @check-change = "permissionMenu"
             default-expand-all
             node-key="id"
             ref="roletree"
@@ -178,7 +178,7 @@
             :default-checked-keys="userroletreechoosedata"
             show-checkbox
             :check-strictly="true"
-            @check-change = "userrolecheckChange"
+            @check-change = "userrolemenu"
             default-expand-all
             node-key="id"
             ref="userroletree"
@@ -324,7 +324,6 @@ import { validUsername , validEmail } from '@/utils/validate'
         })
       },
 
-
       cancelrole(){
         this.drawer = false;
       },
@@ -406,7 +405,7 @@ import { validUsername , validEmail } from '@/utils/validate'
         })
       },
       //权限切换选中
-      userrolecheckChange(data,b,c){
+      userrolemenu(data,b,c){
         Array.prototype.remove = function(val) {
           var index = this.indexOf(val);
             if (index > -1) {
@@ -431,16 +430,40 @@ import { validUsername , validEmail } from '@/utils/validate'
         }
         this.$refs.userroletree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
       },
-      rolecheckChange(data,b,c){
+      nodeclick(a,b){//复选框点击触发
+        // console.log(a)
+        // console.log(b)
         Array.prototype.remove = function(val) {
           var index = this.indexOf(val);
             if (index > -1) {
             this.splice(index, 1);
           }
         };
-        let thisNode = this.$refs.roletree.getNode(data.id) // 获取当前节点
-        var keys = this.$refs.roletree.getCheckedKeys() // 获取已勾选节点的key值
-        if (b) { // 当前节点若被选中
+        function choosechild(arr){
+          if(arr.childNodes){
+            for(var i=0;i<arr.childNodes.length;i++){
+              keys.push(arr.childNodes[i].key)
+              if(arr.childNodes[i].childNodes){
+                choosechild(arr.childNodes[i]);
+              }
+            }
+          }
+        }
+        function removechild(arr){
+          if(arr.childNodes){
+            for(var i=0;i<arr.childNodes.length;i++){
+              keys.remove(arr.childNodes[i].key)
+              if(arr.childNodes[i].childNodes){
+                removechild(arr.childNodes[i])
+              }
+            }
+          }
+        }
+        var keys = this.$refs.roletree.getCheckedKeys()
+        let thisNode = this.$refs.roletree.getNode(a.id) // 获取当前节点
+        if(b.checkedKeys.indexOf(a.id)>-1){//------选择子节点
+          // console.log('选中')
+          choosechild(thisNode)
           for (let i = thisNode.level; i > 1; i--) { // 判断是否有父级节点
             if (!thisNode.parent.checked) { // 父级节点未被选中，则将父节点替换成当前节点，往上继续查询，并将此节点key存入keys数组
               thisNode = thisNode.parent
@@ -448,16 +471,23 @@ import { validUsername , validEmail } from '@/utils/validate'
             }
           }
         }else{
-          if(thisNode.childNodes){
-            for(var i=0;i<thisNode.childNodes.length;i++){
-              keys.remove(thisNode.childNodes[i].key)
-            }
+          // console.log(keys)
+          if(a.via_role){//禁止操作
+            this.$message({
+                message: '该权限继承自角色 需要为当前用户撤销对应角色分配才能取消',
+                type: 'warning'
+            });
+            keys.push(a.id)
+            this.$refs.roletree.setCheckedKeys(keys)
+            return
           }
+          removechild(thisNode)
         }
         this.$refs.roletree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
       },
+      permissionMenu(data,b,c){
+      },
       // 抽屉
-
       showchannel(){
         this.innerVisible = true;
         this.getChannelsList();
@@ -492,34 +522,6 @@ import { validUsername , validEmail } from '@/utils/validate'
           }
         }
         this.$refs.tree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
-      },
-      nodeclick(a,b){
-        // console.log(a)
-        // console.log(b)
-        function choosechild(arr){
-          if(arr.childNodes){
-            for(var i=0;i<arr.childNodes.length;i++){
-              keys.push(arr.childNodes[i].key)
-              if(arr.childNodes[i].childNodes){
-                choosechild(arr.childNodes[i]);
-              }
-            }
-          }
-        }
-        var keys = this.$refs.roletree.getCheckedKeys()
-        if(b.checkedKeys.indexOf(a.id)>-1){
-          // console.log('选中')
-          let thisNode = this.$refs.roletree.getNode(a.id) // 获取当前节点
-          choosechild(thisNode)
-          // if(thisNode.childNodes){ //如果有子节点，那么把子节点选中
-          //   for(var i=0;i<thisNode.childNodes.length;i++){
-          //     keys.push(thisNode.childNodes[i].key)
-          //   }
-          // }
-        this.$refs.roletree.setCheckedKeys(keys) // 将所有keys数组的节点全选中
-        }else{
-          // console.log('不选中')
-        }
       },
       handleAvatarSuccess(response, file, fileList) {
         this.form.avatar = response.path;
