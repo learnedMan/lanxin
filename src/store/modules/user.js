@@ -54,10 +54,10 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { roles : { data: roles }, avatar, permissions: { data: permissions } } = data;
-        /*if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }*/
+        let { roles : { data: roles }, avatar, permissions: { data: permissions } } = data;
+        if (!roles || roles.length <= 0) {
+          roles = ['defaultRoles']
+        }
         commit('SET_ROLES', roles)
         commit('SET_AVATAR', avatar)
         commit('SET_INFO', data)
@@ -73,7 +73,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('SET_TOKEN', '') // 清空token
       commit('SET_ROLES', []) // 清空角色
-      commit('SET_INFO', {}) // 清空用户信息
       removeToken()
       resetRouter()
       dispatch('tagsView/delAllViews', null, { root: true }) // 清空tab
@@ -86,7 +85,6 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
-      commit('SET_INFO', {}) // 清空用户信息
       removeToken()
       resolve()
     })

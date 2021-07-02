@@ -109,7 +109,7 @@
         保存
       </el-button>
       <el-button
-        v-if="status !== 1"
+        v-if="status === 0"
         type="primary"
         size="small"
         @click="handleThrough"
@@ -117,7 +117,7 @@
         通过
       </el-button>
       <el-button
-        v-if="status !== 2"
+        v-if="status === 0"
         type="primary"
         size="small"
         @click="handleReject"
