@@ -927,9 +927,10 @@ export default {
     },
     /* 查看新闻 */
     handleWatch (row) {
-      const { id, type, title } = row;
+      console.log(row)
+      const { id, type, title ,script_id } = row;
       if(type === 'broadcast') {
-        this.$router.push({ name: 'StudioList', query: { title } })
+        this.$router.push({ name: 'StudioList', query: { title:script_id } })
       }else {
         this.detailDialog = {
           id,

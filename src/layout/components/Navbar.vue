@@ -89,7 +89,7 @@ export default {
         },
         {
           label: '直播间',
-          url: '/operaManage/studio/studioList'
+          url: '/content/studio/studioList'
         }
       ]
     }
