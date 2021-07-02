@@ -150,7 +150,7 @@
                   clearable
                   placeholder="请输入App ID"
                   style="width: 200px"
-                  v-model="dialogForm.appId"
+                  v-model.number="dialogForm.appId"
                 />
               </el-form-item>
               <el-form-item label="重保期选项：">
