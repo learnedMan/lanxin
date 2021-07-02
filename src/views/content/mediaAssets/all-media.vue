@@ -119,10 +119,10 @@
       >
         <template slot-scope="scope">
           <el-image
-            style="width: 50px; height: 50px"
+            style="width: 80px; height: 45px"
             :src="scope.row.cover || useravatar"
             :preview-src-list="[scope.row.cover || useravatar]"
-            fit="cover"
+            fit="contain"
           >
             <img slot="error" :src="useravatar" alt="" style="width: 100%;height: 100%">
           </el-image>
