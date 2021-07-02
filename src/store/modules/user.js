@@ -54,9 +54,9 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { roles : { data: roles }, avatar, permissions: { data: permissions } } = data;
+        let { roles : { data: roles }, avatar, permissions: { data: permissions } } = data;
         if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
+          roles = ['defaultRoles']
         }
         commit('SET_ROLES', roles)
         commit('SET_AVATAR', avatar)

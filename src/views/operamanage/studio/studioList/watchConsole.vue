@@ -41,7 +41,7 @@
               <span>
                 结束时间: {{ detail.extra.end_time }}
                 <span style="margin-left: 10px" v-if="detail.live === 0">
-                  <el-button type="text" size="small" @click="handleSetEnd">设置</el-button>
+                  <el-button type="text" size="small" @click="handleSetEnd">调整直播结束时间</el-button>
                 </span>
                 <span style="margin-left: 10px" v-if="detail.live === 1">
                   <el-button type="text" size="small" @click="handleEnd">提前停播(点击立即停播)</el-button>

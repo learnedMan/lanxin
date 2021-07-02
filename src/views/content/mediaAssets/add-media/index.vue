@@ -609,6 +609,7 @@
         </el-button>
         <el-button
           type="primary"
+          :loading="publishLoading"
           @click="enterDialog"
         >
           确 定
@@ -1327,7 +1328,8 @@ export default {
       }, // 级联选择器配置
       channelsList: [], // 栏目列表
       editorVideoLists: [], // 编辑器视频集合
-      editorPerson: ''
+      editorPerson: '',
+      publishLoading: false, // 发布确认loading
     }
   },
   computed: {
@@ -1463,10 +1465,14 @@ export default {
         * 确认发布
         * */
     enterDialog() {
+      if(this.publishLoading) return;
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
+          this.publishLoading = true;
           this.handleSave('保存并发布成功', () => {
             this.handleReturn();
+          }).finally(() => {
+            this.publishLoading = false;
           })
         }
       })
@@ -1529,7 +1535,7 @@ export default {
           video_list: this.delEditorVideo(obj.extra.content)
         }
       }
-      changeScripts(id, obj).then((res) => {
+      return changeScripts(id, obj).then((res) => {
         this.$message.success(tip)
         this.dialog.show = false;
         cb && cb(res);
