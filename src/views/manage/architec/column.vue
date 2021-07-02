@@ -918,6 +918,7 @@ import ChildPage1 from './pages/c_page1'
           }
           // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
+          this.form.extra.linked_channel_id = this.form.extra.linked_channel_id?parseInt(this.form.extra.linked_channel_id):'';
           this.form.extra.cover = this.form.extra.cover? this.form.extra.cover[0].path:'';
           // this.form.extra.template_style = Number(this.form.extra.template_style) ;
           this.dialogFormVisible = true;

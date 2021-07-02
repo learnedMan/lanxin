@@ -222,11 +222,11 @@ export default {
       dialogType: "add",
       statusoptions: [
         {
-          value: 1,
+          value: '1',
           label: "是",
         },
         {
-          value: 2,
+          value: '0',
           label: "否",
         },
       ],
