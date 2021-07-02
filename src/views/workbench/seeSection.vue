@@ -84,6 +84,9 @@
               :model="queryParams"
               :inline="true"
             >
+              <el-form-item label="是否搜索所有栏目:" prop="isAllChannel">
+                <el-checkbox v-model="queryParams.isAllChannel"></el-checkbox>
+              </el-form-item>
               <el-form-item
                 label="新闻名称:"
                 prop="keyword"
@@ -630,6 +633,7 @@ export default {
         type: '',
         startdate: '',
         enddate: '',
+        isAllChannel: false,
         pageSize: 10,
         page: 1
       },
@@ -928,7 +932,7 @@ export default {
     /* 查看新闻 */
     handleWatch (row) {
       console.log(row)
-      const { id, type, title ,script_id } = row;
+      const { id, type ,script_id } = row;
       if(type === 'broadcast') {
         this.$router.push({ name: 'StudioList', query: { title:script_id } })
       }else {
@@ -993,10 +997,12 @@ export default {
     },
     /* 获取列表数据 */
     getList() {
-      const data = this.$refs.tree.getCurrentNode()
+      const data = this.$refs.tree.getCurrentNode();
+      const { isAllChannel } = this.queryParams;
       this.$router.push({ path: this.$route.path, query: { id: data.id }})
       this.loading = true
-      const params = { ...this.queryParams, channel_id: data.id }
+      const params = { ...this.queryParams, channel_id: isAllChannel? '' : data.id };
+      delete params.isAllChannel;
       getNews(this.removePropertyOfNullFor0(params)).then(res => {
         this.total = res.total
         this.tableData = (res.data || []).map(item => {
