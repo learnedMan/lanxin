@@ -22,7 +22,7 @@
         </el-form-item>
     </el-form>
 
-    <el-table 
+    <el-table
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
@@ -35,10 +35,10 @@
       <el-table-column label="姓名" align="center" prop="name" :show-overflow-tooltip="true" />
       <el-table-column label="手机号" align="center" prop="phone" :show-overflow-tooltip="true" />
       <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
-      <el-table-column 
-        label="状态" 
-        align="center" 
-        prop="status" 
+      <el-table-column
+        label="状态"
+        align="center"
+        prop="status"
         :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <el-select @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
@@ -133,7 +133,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      
+
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeDialog">取 消</el-button>
         <el-button @click="enterDialog" type="primary">确 定</el-button>
@@ -172,7 +172,7 @@
     >
       <el-tabs class="userrole-box" type="border-card">
         <el-tab-pane label="用户角色菜单">
-          
+
           <el-tree
             :data="userroletreedata"
             :default-checked-keys="userroletreechoosedata"
@@ -196,7 +196,7 @@
 </template>
 
 <script>
-import { 
+import {
   getUser,
   getChannels,
   addusers,
@@ -292,7 +292,7 @@ import { validUsername , validEmail } from '@/utils/validate'
     },
     computed: {
         VUE_APP_BASE_API(){
-            return process.env.VUE_APP_BASE_API!='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;
+            return process.env.VUE_APP_BASE_API=='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;
         }
     },
     created() {
@@ -504,7 +504,7 @@ import { validUsername , validEmail } from '@/utils/validate'
         var keys = this.$refs.tree.getCheckedKeys() // 获取已勾选节点的key值
         if (b) { // 当前节点若被选中
           function delchild(data){
-            if(data.childNodes!=[]){  
+            if(data.childNodes!=[]){
               for(var i=0;i<data.childNodes.length;i++){
                 if(data.childNodes[i].checked){
                   keys.remove(data.childNodes[i].key)
@@ -657,7 +657,7 @@ import { validUsername , validEmail } from '@/utils/validate'
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
       //批量删除
@@ -680,7 +680,7 @@ import { validUsername , validEmail } from '@/utils/validate'
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
       // 关闭窗口
@@ -741,7 +741,7 @@ import { validUsername , validEmail } from '@/utils/validate'
               type: 'error'
             })
             return
-        } 
+        }
         if(this.form.email){
           if(!validEmail(this.form.email)){
             this.$message({
@@ -749,7 +749,7 @@ import { validUsername , validEmail } from '@/utils/validate'
               type: 'error'
             })
             return
-          } 
+          }
         }
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;

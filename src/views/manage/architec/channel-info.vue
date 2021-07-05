@@ -40,13 +40,13 @@
             <el-button @click="reset" :disabled="editflag" type="info" size="mini" >重置</el-button>
             <el-button @click="save" :disabled="editflag" type="primary" size="mini" >保存</el-button>
         </div>
-        
+
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { 
+import {
   getsitesinfo,
   editsites
   } from '@/api/manage'
@@ -84,7 +84,7 @@ import {
     },
     computed: {
       VUE_APP_BASE_API(){
-          return process.env.VUE_APP_BASE_API!='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;
+          return process.env.VUE_APP_BASE_API=='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;
       },
       ...mapGetters([
         'sidebar',
@@ -152,7 +152,7 @@ import {
                   },  // 成功
                   (err) => {} // 失败
                 )
-                // 
+                //
             })
         },
         editfn(){

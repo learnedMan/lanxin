@@ -18,7 +18,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table 
+    <el-table
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border v-loading="loading" :data="dataList">
       <el-table-column label="ID" align="center" prop="id" />
@@ -39,7 +39,7 @@
           <template slot-scope="scope">
                 <span>{{scope.row.category | formatcategory}}</span>
             </template>
-      </el-table-column>  
+      </el-table-column>
       <el-table-column label="作者" align="center" :show-overflow-tooltip="true">
             <template slot-scope="scope">
                 <span>{{scope.row.author.name || '无'}}</span>
@@ -85,9 +85,9 @@
       @pagination="getList"
     />
     <!-- 新增/修改图片弹窗 -->
-    <el-dialog width="600px" 
-        :close-on-click-modal = false 
-        :title="dialogTitle" 
+    <el-dialog width="600px"
+        :close-on-click-modal = false
+        :title="dialogTitle"
         top="10vh"
         :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="dataForm">
@@ -127,16 +127,16 @@
           <el-input style="width: 350px" autocomplete="off" placeholder="请输入作者" v-model="form.author"></el-input>
         </el-form-item> -->
         <el-form-item  label-width="100px" label="描述" prop="description">
-          <el-input 
-            type="textarea" 
-            style="width: 350px" 
-            autocomplete="off" 
-            placeholder="请输入描述" 
+          <el-input
+            type="textarea"
+            style="width: 350px"
+            autocomplete="off"
+            placeholder="请输入描述"
             :autosize="{ minRows: 4}"
             v-model="form.description"></el-input>
         </el-form-item>
       </el-form>
-      
+
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeDialog">取 消</el-button>
         <el-button @click="enterDialog" type="primary">确 定</el-button>
@@ -146,7 +146,7 @@
 </template>
 
 <script>
-import { 
+import {
   getresources,
   getgories,
   addresources,
@@ -200,7 +200,7 @@ import {
     },
     computed: {
       VUE_APP_BASE_API() {
-        return process.env.VUE_APP_BASE_API!='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;;
+        return process.env.VUE_APP_BASE_API=='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;;
       },
     },
     created() {
@@ -213,8 +213,8 @@ import {
           let link = document.createElement('a');
           link.target = '_blank'
           link.href = this.VUE_APP_BASE_API+'/api/resources/downloadResource?file_url='+data.url;
-          link.download = data.title; 
-          link.click();  
+          link.download = data.title;
+          link.click();
       },
       handleAvatarSuccess(name,res) {
         this.form[name] = res.path;
@@ -286,7 +286,7 @@ import {
         this.initForm();
         this.dialogTitle = "编辑图片";
         this.dialogType = "edit";
-        this.$nextTick(() => { 
+        this.$nextTick(() => {
           this.form = JSON.parse(JSON.stringify(row))
           var newarr = [];
             for(var i=0;i<this.form.category.length;i++){
@@ -321,7 +321,7 @@ import {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
       toFormData(val) {

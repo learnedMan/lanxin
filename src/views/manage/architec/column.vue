@@ -21,19 +21,19 @@
     <!-- 搜索 -->
 
     <!-- 表格列表 -->
-    <el-table 
+    <el-table
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-      border 
-      v-loading="loading" 
-      :data="dataList" 
+      border
+      v-loading="loading"
+      :data="dataList"
       row-key="id"
       :tree-props="{children: 'children'}">
       <el-table-column label="栏目名称" align="left" prop="name" />
       <el-table-column label="栏目ID" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column 
-        label="(模板化)栏目分类" 
-        align="center" 
-        prop="template_style" 
+      <el-table-column
+        label="(模板化)栏目分类"
+        align="center"
+        prop="template_style"
         :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <!-- 如果是产品，那么没有样式分类，只有栏目有 -->
@@ -42,10 +42,10 @@
         </template>
       </el-table-column>
       <el-table-column v-if="!isMobile" label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
-      <el-table-column 
-        label="状态" 
-        align="center" 
-        prop="status" 
+      <el-table-column
+        label="状态"
+        align="center"
+        prop="status"
         :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <el-select :disabled="scope.row.type=='product'" @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
@@ -188,7 +188,7 @@
           </el-form-item>
 
           <!-- <el-form-item label-width="150px" label="允许发布的内容:" prop="extra.allow_news_types">
-            <el-checkbox-group 
+            <el-checkbox-group
                 v-model="form.extra.allow_news_types">
                 <el-checkbox v-for="media in medias" :label="media.label" :key="media.label">{{media.value}}</el-checkbox>
             </el-checkbox-group>
@@ -238,7 +238,7 @@
               </el-option>
             </el-select>
             <!-- <el-popover
-              
+
               placement="right"
               trigger="hover">
               <div>
@@ -327,7 +327,7 @@
             </el-form-item>
             <!-- 外链 -->
             <div v-if="form.type=='service'&&form.extra.link.type=='app_redirect'">
-              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'" 
+              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'"
                 label-width="150px" label="链接地址:" prop="extra.link.url">
                 <el-input
                   style="width: 350px"
@@ -338,7 +338,7 @@
               <div v-else></div>
             </div>
             <div v-else>
-              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'" 
+              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'"
                 label-width="150px" label="链接地址:" prop="extra.link.url">
                 <el-input
                   style="width: 350px"
@@ -348,7 +348,7 @@
               </el-form-item>
             </div>
 
-            
+
         </div>
       </el-form>
       <div class="dialog-footer" slot="footer">
@@ -363,7 +363,7 @@
 
 <script>
 import Cropper from '@/components/Cropper'
-import { 
+import {
   getChannels,
   getproduct,
   addchannels,
@@ -588,7 +588,7 @@ import ChildPage1 from './pages/c_page1'
     },
     computed: {
       VUE_APP_BASE_API() {
-        return process.env.VUE_APP_BASE_API!='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;;
+        return process.env.VUE_APP_BASE_API=='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;;
       },
       productId(){
         return this.queryParams.product_id
@@ -872,7 +872,7 @@ import ChildPage1 from './pages/c_page1'
             });
             this.getList();
         })
-        
+
       },
       // 弹窗消失的回调函数
       dialogclose(){
@@ -953,7 +953,7 @@ import ChildPage1 from './pages/c_page1'
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
       // 关闭窗口
@@ -965,7 +965,7 @@ import ChildPage1 from './pages/c_page1'
       enterDialog() {
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
-          var data = JSON.parse(JSON.stringify(this.form)) 
+          var data = JSON.parse(JSON.stringify(this.form))
           data.father = Number(data.father)
           // if(!data.father){
           //   data.father = data.father[data.father.length-1];

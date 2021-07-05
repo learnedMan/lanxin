@@ -7,7 +7,7 @@
       </el-form-item>
     </el-form>
     <!-- 表格 -->
-    <el-table 
+    <el-table
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border v-loading="loading" :data="dataList">
       <el-table-column label="ID" align="center" prop="id" />
@@ -18,10 +18,10 @@
       </el-table-column>
       <el-table-column label="频道名称" align="center" prop="name" :show-overflow-tooltip="true" />
       <el-table-column label="权重" align="center" prop="sort" :show-overflow-tooltip="true" />
-      <el-table-column 
-        label="频道状态" 
-        align="center" 
-        prop="status" 
+      <el-table-column
+        label="频道状态"
+        align="center"
+        prop="status"
         :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <el-select @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
@@ -71,7 +71,7 @@
       @pagination="getList"
     />
     <!-- 新增/修改频道弹窗 -->
-    <el-dialog width="700px" 
+    <el-dialog width="700px"
     :close-on-click-modal = false
     :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="dataForm">
@@ -118,12 +118,12 @@
             </el-input>
         </el-form-item>
         <el-form-item  label-width="120px" label="简介" prop="extra.intro">
-          <el-input 
-            :autosize="{ minRows: 4}" 
-            type="textarea" 
-            style="width: 400px" 
-            autocomplete="off" 
-            placeholder="请输入简介" 
+          <el-input
+            :autosize="{ minRows: 4}"
+            type="textarea"
+            style="width: 400px"
+            autocomplete="off"
+            placeholder="请输入简介"
             v-model="form.extra.intro"></el-input>
         </el-form-item>
         <el-form-item label-width="120px" label="是否启用" prop="status">
@@ -133,7 +133,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      
+
       <div class="dialog-footer" slot="footer">
         <el-button @click="closeDialog">取 消</el-button>
         <el-button @click="enterDialog" type="primary">确 定</el-button>
@@ -146,7 +146,7 @@
 
 <script>
 import Pagedialog from './page_a/page_a_dialog'
-import { 
+import {
   gettv_channel,
   getproduct,
   addtv_channel,
@@ -232,7 +232,7 @@ import {
     },
     computed: {
       VUE_APP_BASE_API(){
-          return process.env.VUE_APP_BASE_API!='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;
+          return process.env.VUE_APP_BASE_API=='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;
       },
     },
     watch:{
@@ -339,7 +339,7 @@ import {
         this.initForm();
         this.dialogTitle = "编辑频道";
         this.dialogType = "edit";
-        this.$nextTick(() => { 
+        this.$nextTick(() => {
           this.form = JSON.parse(JSON.stringify(row))
           this.form.forway = [];
           if(this.form.extra.has_replay==1){
@@ -370,7 +370,7 @@ import {
             this.$message({
               type: 'info',
               message: '已取消删除'
-            });          
+            });
           });
       },
       // 关闭窗口

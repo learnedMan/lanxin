@@ -4,16 +4,16 @@
         <el-table
             style="margin-top:20px;"
             :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-            border 
+            border
             v-loading="loading"
             :data="dataList">
             <el-table-column label="id" align="center" prop="script.id" :show-overflow-tooltip="true" />
             <el-table-column label="节目名称" align="center" prop="script.title" :show-overflow-tooltip="true" />
             <el-table-column label="所属节目" align="center" prop="channel.name" :show-overflow-tooltip="true" />
-            <el-table-column 
-                label="状态" 
-                align="center" 
-                prop="script.status" 
+            <el-table-column
+                label="状态"
+                align="center"
+                prop="script.status"
                 :show-overflow-tooltip="true" >
                 <template slot-scope="scope">
                 <el-select disabled @change="statuschange(scope.row)" v-model="scope.row.script.status" placeholder="请选择">
@@ -42,7 +42,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <!-- 
+        <!--
             标清<450
             高清<800
             超清<450
@@ -110,7 +110,7 @@
                     </el-select>
                 </el-form-item>
             </el-form>
-            
+
 
             <div class="dialog-footer" slot="footer">
             <el-button @click="innercloseDialog">取 消</el-button>
@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import { 
+import {
     getReplaysByChannel,
     delreplays
   } from '@/api/manage'
@@ -166,7 +166,7 @@ export default {
     },
     computed:{
         VUE_APP_BASE_API() {
-            return process.env.VUE_APP_BASE_API!='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;;
+            return process.env.VUE_APP_BASE_API=='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;;
         },
     },
     methods: {
@@ -216,7 +216,7 @@ export default {
                 this.$message({
                 type: 'info',
                 message: '已取消删除'
-                });          
+                });
             });
         },
         innercloseDialog(){
