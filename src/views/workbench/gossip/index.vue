@@ -230,6 +230,7 @@
           <el-form-item label="图片/视频:">
             <span class="xl-gossip-file" v-for="list of detail.files">
               <el-image
+                lazy
                 v-if="list.type === 2"
                 style="width: 100%; height: 100%"
                 :src="list.path"

@@ -306,6 +306,7 @@
                     <i class="el-icon-video-camera-solid" v-if="!from.extra.video_extra.video_list[0]"></i>
                     <el-image
                       v-else
+                      lazy
                       style="width: 100%;height: 100%"
                       class="el-upload-list__item-thumbnail"
                       :src="from.extra.video_extra.video_list[0].cover"

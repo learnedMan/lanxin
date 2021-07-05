@@ -138,6 +138,7 @@
                 <el-checkbox :label="list.url">{{ '' }}</el-checkbox>
               </div>
               <el-image
+                lazy
                 class="xl-editor-images-style"
                 fit="contain"
                 :src="list.url"

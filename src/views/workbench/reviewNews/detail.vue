@@ -278,6 +278,7 @@
                       v-else
                       style="width: 100%;height: 100%"
                       class="el-upload-list__item-thumbnail"
+                      lazy
                       :src="from.extra.video_extra.video_list[0].cover"
                       fit="contain"></el-image>
                   </div>

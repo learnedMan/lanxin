@@ -368,6 +368,7 @@
                 <p>{{ list.replyContent }}</p>
                 <el-image
                   v-for="(item, i) of list.replyImg"
+                  lazy
                   :key="i"
                   style="width: 100px; height: 100px"
                   :src="item"

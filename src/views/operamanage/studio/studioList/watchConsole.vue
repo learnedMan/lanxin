@@ -18,6 +18,7 @@
     <el-header height="120px" class="xl-watch-console-header">
       <div class="header--left">
         <el-image
+          lazy
           style="width: 140px; height: 100px"
           :src="detail.cover"
           fit="contain"></el-image>

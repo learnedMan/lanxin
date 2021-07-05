@@ -119,6 +119,7 @@
       >
         <template slot-scope="scope">
           <el-image
+            lazy
             style="width: 80px; height: 45px"
             :src="scope.row.cover || useravatar"
             :preview-src-list="[scope.row.cover || useravatar]"

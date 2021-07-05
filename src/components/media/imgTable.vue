@@ -258,6 +258,7 @@
               <el-image
                 class="xl-table-images-style"
                 fit="contain"
+                lazy
                 :src="list.url"
               />
               <div class="xl-table-images-info">{{ list.width }}*{{ list.height }}</div>

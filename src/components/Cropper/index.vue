@@ -106,6 +106,7 @@
           <i v-show="list.path === ''" class="el-icon-plus" />
           <div v-show="list.path" @click.stop="" style="line-height: 98px;height: 100%">
             <el-image
+              lazy
               class="el-upload-list__item-thumbnail"
               :src="list.path"
               fit="contain"

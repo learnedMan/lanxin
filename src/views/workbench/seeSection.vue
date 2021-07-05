@@ -200,6 +200,7 @@
               <template slot-scope="scope">
                 <el-image
                   style="width: 80px; height: 45px"
+                  lazy
                   :src="scope.row.cover || useravatar"
                   fit="contain"
                 >

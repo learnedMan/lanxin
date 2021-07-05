@@ -25,6 +25,7 @@
       <el-form ref="ruleForm" label-width="100px" class="demo-ruleForm" size="small">
         <el-form-item>
           <el-image
+            lazy
             style="width: 100px; height: 100px;border-radius: 50%;margin: 0 0 30px 60px"
             :src="info.avatar"
             fit="cover">

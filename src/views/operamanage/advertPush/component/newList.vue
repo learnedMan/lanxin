@@ -163,6 +163,7 @@
         >
           <template slot-scope="scope">
             <el-image
+              lazy
               style="width: 50px; height: 50px"
               :src="scope.row.cover || useravatar"
               fit="cover"

@@ -369,6 +369,7 @@
                 <div class="date">{{ list.createdAt }}</div>
                 <p>{{ list.replyContent }}</p>
                 <el-image
+                  lazy
                   v-for="(item, i) of list.replyImg"
                   :key="i"
                   style="width: 100px; height: 100px"
