@@ -10,7 +10,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: window.location.host == 'batrix-www.cztv.com'?'api/authorizations/wwwLogin':'/api/authorizations',
+    url: window.location.host.indexOf('www')!=-1?'api/authorizations/wwwLogin':'/api/authorizations',
     method: 'post',
     data
   })
