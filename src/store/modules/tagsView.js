@@ -4,6 +4,7 @@ const state = {
 }
 
 const mutations = {
+  // 标签页的新增
   ADD_VISITED_VIEW: (state, view) => {
     if (state.visitedViews.some(v => v.path === view.path)) return
     state.visitedViews.push(

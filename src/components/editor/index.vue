@@ -69,9 +69,11 @@
 <template>
   <div class="xl-editor">
     <vue-ueditor-wrap
+      ref="ueditor"
       :value="value"
       :config="config"
       :editor-dependencies="editorDependencies"
+      :destroy="true"
       @input="handleInput"
       @before-init="beforeInit"
       @ready="handleReady"
@@ -186,7 +188,7 @@
   import xlVideo from '@/components/video'
   import { getEditImgLists } from '@/api/content'
   import { uploadImg } from '@/api/content.js'
-  let currentEditor;
+  let currentEditor, currentEditorId;
   export default {
     components: {
       VueUeditorWrap,
@@ -302,7 +304,7 @@
       }
     },
     beforeDestroy() {
-      currentEditor = null
+      currentEditor = null;
     },
     created() {
       this.$once('getImgLists', () => {
@@ -436,6 +438,7 @@
       /* 初始化之前 */
       beforeInit(id) {
         if(this.isMobile || this.disabled) return
+        currentEditorId = id;
         window.UE.registerUI('135editor', (editor, uiName) => {
           /*const width = document.body.clientWidth * 0.9
           const height = window.innerHeight - 50
@@ -498,7 +501,7 @@
             this.$emit('getImgLists')
           }
         })
-        currentEditor = editor
+        currentEditor = editor;
       },
       /* 弹框控制 */
       dialogControl(status) {

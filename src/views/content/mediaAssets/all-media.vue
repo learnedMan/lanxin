@@ -298,6 +298,7 @@ import { getChannels } from '@/api/manage'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
 export default {
+  name: 'All-media',
   components: {
     VersionHistory
   },
