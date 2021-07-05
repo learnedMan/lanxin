@@ -69,7 +69,7 @@
       computed: {
         /* 上传接口 */
         actionUrl() {
-          return process.env.VUE_APP_BASE_API=='/'?window.location.host+`${process.env.VUE_APP_BASE_API}/api/upload/video`:`${process.env.VUE_APP_BASE_API}/api/upload/video`
+          return this.videourl
         },
         /* 上传的头部信息 */
         uploadHeader() {

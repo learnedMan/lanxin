@@ -106,7 +106,6 @@
           <i v-show="list.path === ''" class="el-icon-plus" />
           <div v-show="list.path" @click.stop="" style="line-height: 98px;height: 100%">
             <el-image
-              lazy
               class="el-upload-list__item-thumbnail"
               :src="list.path"
               fit="contain"
@@ -335,7 +334,7 @@ export default {
     },
     /* 上传接口 */
     actionUrl() {
-      return process.env.VUE_APP_BASE_API=='/'?window.location.host+`${process.env.VUE_APP_BASE_API}/api/upload/image`:`${process.env.VUE_APP_BASE_API}/api/upload/image`
+      return this.imgurl
     },
     /* 上传的头部信息 */
     uploadHeader() {
@@ -479,7 +478,7 @@ export default {
           type: data.type
         })
         this.uploadImgFn({
-          action: this.actionUrl,
+          action: '/api/upload/image',
           filename: 'image',
           file
         }).then(res => {

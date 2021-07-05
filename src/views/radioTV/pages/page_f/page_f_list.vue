@@ -166,7 +166,7 @@ export default {
     },
     computed:{
         VUE_APP_BASE_API() {
-            return process.env.VUE_APP_BASE_API=='/'?window.location.host+process.env.VUE_APP_BASE_API:process.env.VUE_APP_BASE_API;;
+          return this.imgurl2
         },
     },
     methods: {
