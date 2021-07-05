@@ -183,14 +183,14 @@ export const asyncRoutes = [
             component: () => import('@/views/content/mediaAssets/watch-column'),
             hidden: true,
             name: 'Watch-column',
-            meta: { title: '查看栏目' }
+            meta: { title: '查看栏目', noCache: true }
           },
           {
             path: 'add-media',
             component: () => import('@/views/content/mediaAssets/add-media'),
             hidden: true,
             name: 'Add-media',
-            meta: { title: '编辑内容' }
+            meta: { title: '编辑内容', noCache: true }
           }
         ]
       },
@@ -565,7 +565,7 @@ export const asyncRoutes = [
         path: 'productstylelist',
         component: () => import('@/views/mbh/productstylelist'), // Parent router-view
         name: 'productstylelist',
-        meta: { title: '产品样式列表' },
+        meta: { title: '产品样式列表', noCache: true },
         hidden: true
       },
       {
@@ -586,7 +586,7 @@ export const asyncRoutes = [
         path: 'setmealDetails',
         component: () => import('@/views/mbh/setmealDetails'), // Parent router-view
         name: 'setmealDetails',
-        meta: { title: '套餐详情' },
+        meta: { title: '套餐详情', noCache: true },
         hidden: true
       },
       {

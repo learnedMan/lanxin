@@ -333,7 +333,7 @@ import { getReasons } from '@/api/workbench'
 import NewDetail from './detail'
 import mobileDetail from './mobileDetail'
 export default {
-  name: 'ReviewScript',
+  name: 'ReviewNews',
   components: {
     NewDetail,
     mobileDetail

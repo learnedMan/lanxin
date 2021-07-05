@@ -630,7 +630,7 @@ import xlVideo from '@/components/video'
 import Editor from '@/components/editor'
 
 export default {
-  name: 'AddMedia',
+  name: 'Add-media',
   components: {
     Cropper,
     ImgTable,
