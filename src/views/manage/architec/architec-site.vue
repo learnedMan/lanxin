@@ -147,6 +147,13 @@
             </el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item el-form-item  label-width="120px" label="允许外部人员直接发布稿件" prop="extra.allow_www_publish">
+          <el-select v-model="form.extra.allow_www_publish" placeholder="请选择">
+            <el-option v-for="item in outloginoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
 
       <div class="dialog-footer" slot="footer">
@@ -190,10 +197,17 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
         total: 0,
         statusoptions: [{
           value: 1,
-          label: '启用'
+          label: '是'
         },{
-          value: 2,
-          label: '禁用'
+          value: 0,
+          label: '否'
+        }],
+        outloginoptions: [{
+          value: '1',
+          label: '是'
+        },{
+          value: '0',
+          label: '否'
         }],
         dialogFormVisible: false,
         form: {},

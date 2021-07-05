@@ -152,6 +152,7 @@
                   style="width: 200px"
                   v-model.number="dialogForm.appId"
                 />
+                <!-- <el-input-number :controls="false" clearable placeholder="请输入App ID" v-model="dialogForm.appId"></el-input-number> -->
               </el-form-item>
               <el-form-item label="重保期选项：">
                 <el-col :span="6">
