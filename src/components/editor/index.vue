@@ -387,7 +387,8 @@
                 const formData = new FormData()
                 formData.append('image', file, file.name)
                 uploadImg({
-                  url: `${process.env.VUE_APP_BASE_API}/api/upload/image`,
+                  url: process.env.VUE_APP_BASE_API!='/'?(window.location.host+`${process.env.VUE_APP_BASE_API}/api/upload/image`):`${process.env.VUE_APP_BASE_API}/api/upload/image`,
+                  // url: `${process.env.VUE_APP_BASE_API}/api/upload/image`,
                   method: 'post',
                   data: formData
                 }).then(({ path, status_code }) => {

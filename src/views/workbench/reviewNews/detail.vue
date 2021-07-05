@@ -1345,7 +1345,7 @@ export default {
   computed: {
     /* 上传接口 */
     actionUrl() {
-      return `${process.env.VUE_APP_BASE_API}/api/upload/image`
+      return process.env.VUE_APP_BASE_API=='/'?window.location.host+`${process.env.VUE_APP_BASE_API}/api/upload/image`:`${process.env.VUE_APP_BASE_API}/api/upload/image`
     },
     /* 点击量区间 */
     viewBaseInterval ({ $store: { state: { user: { u_info } } } }) {
