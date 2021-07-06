@@ -3,7 +3,7 @@ import { Message } from 'element-ui';
 import router from '@/router'
 // create an axios instance
 const service = axios.create({
-    baseURL: 'http://10.30.10.158/adm/fusion', // url = base url + request url
+    baseURL: process.env.VUE_APP_REQUEST2_API, // url = base url + request url
     // withCredentials: true, // send cookies when cross-domain requests
     timeout: 5000 // request timeout
   })

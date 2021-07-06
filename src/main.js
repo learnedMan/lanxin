@@ -31,6 +31,7 @@ Object.defineProperties(Vue.prototype, {
   imgurl:{ value:process.env.VUE_APP_BASE_API=='/'?`/api/upload/image`:`${process.env.VUE_APP_BASE_API}/api/upload/image`},
   imgurl2:{ value:process.env.VUE_APP_BASE_API=='/'?'':`${process.env.VUE_APP_BASE_API}`},
   videourl:{ value:process.env.VUE_APP_BASE_API=='/'?`/api/upload/video`:`${process.env.VUE_APP_BASE_API}/api/upload/video`},
+  viewurl:{value:process.env.VUE_APP_VIEW_API}
 });
 // 组件
 import Pagination from '@/components/Pagination'

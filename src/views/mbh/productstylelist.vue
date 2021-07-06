@@ -1031,7 +1031,7 @@ export default {
       this.getList();
     },
     handleView(data){
-      window.open('http://10.30.10.158/view/#/mt?id='+data.id);
+      window.open(this.viewurl+data.id);
     },
     handleDelete(data){
       this.$confirm('是否确认删除序号为"' + data.id + '"的数据项?', '警告', {

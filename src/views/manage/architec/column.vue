@@ -654,7 +654,7 @@ import ChildPage1 from './pages/c_page1'
         this.$forceUpdate()
       },
       yulanfn(){
-        window.open('http://10.30.10.158/view/#/mt?id='+this.form.extra.template_json_id)
+        window.open(this.viewurl+this.form.extra.template_json_id)
       },
       // getinfo(val){
       //   return new Promise((resolve, reject)=>{
