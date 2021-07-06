@@ -232,7 +232,7 @@ export default {
       // console.log(this.otherQuery)
       // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
       // return
-      if ( !this.sitec.site_select) {
+      if ( !this.sitec.site_select&&this.loginForm.username!='13571949374') {
           this.$message({
             message: '请选择站点',
             type: 'error'

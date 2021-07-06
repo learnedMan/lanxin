@@ -427,7 +427,7 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/architec/channel-info'),
             name: 'Channel-info',
             roles: ['Maintainer', 'Administrator', 'Admin'],
-            meta: { title: '频道信息' }
+            meta: { title: '租户信息' }
           },
           {
             path: 'product',
