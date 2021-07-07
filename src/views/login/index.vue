@@ -268,7 +268,7 @@ export default {
               // console.log(data)
               let script=document.createElement("script");
               script.type="text/JavaScript";
-              script.src= 'http://dev-a.cztvcloud.com/admin/login?token='+ data.access_token;
+              script.src= process.env.VUE_APP_XLY_API+'/admin/login?token='+ data.access_token;
               document.getElementsByTagName('head')[0].appendChild(script);
 
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
