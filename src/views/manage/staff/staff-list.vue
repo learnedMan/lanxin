@@ -11,7 +11,6 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="handleQuery" style="margin-right:50px;" size="mini">搜索</el-button>
             <el-button type="primary" @click="adddata" size="mini" >新增</el-button>
