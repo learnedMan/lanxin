@@ -8,7 +8,7 @@
 export default {
     data () {
         return {
-            src:'http://dev-a.cztvcloud.com/events/index'
+            src: process.env.VUE_APP_XLY_API+'/events/index'
         }
     }
 }
