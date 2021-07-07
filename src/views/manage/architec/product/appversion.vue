@@ -125,7 +125,7 @@
                 </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label-width="150px" :label="form.platform=='Android'?'安卓版本：':'ios版本：'" prop="version_code">
+            <el-form-item v-if="form.platform!='WEB'" label-width="150px" :label="form.platform=='Android'?'安卓版本：':'ios版本：'" prop="version_code">
                 <el-input
                 style="width: 350px"
                 autocomplete="off"
@@ -153,7 +153,7 @@
                 type="textarea"
                 ></el-input>
             </el-form-item>
-            <el-form-item label-width="150px" label="是否强制更新：" prop="status">
+            <el-form-item v-if="form.platform!='WEB'" label-width="150px" label="是否强制更新：" prop="status">
                 <el-radio-group v-model="form.status">
                     <el-radio :label="0">不启用</el-radio>
                     <el-radio :label="1">不强更</el-radio>
@@ -161,7 +161,7 @@
                 </el-radio-group>
             </el-form-item>
             <!-- ios版本：url2 -->
-            <el-form-item v-show="form.platform!='Android'" label-width="150px" label="APP Store链接：" prop="url">
+            <el-form-item v-show="form.platform!='Android'" label-width="150px" :label="form.platform=='WEB'?'链接：':'APP Store链接：'" prop="url">
                 <el-input
                 style="width: 500px"
                 autocomplete="off"
@@ -248,6 +248,10 @@ export default {
         {
           value: 'iOS',
           label: "ios",
+        },
+        {
+          value: 'WEB',
+          label: "web",
         },
       ],
       loading: false,
