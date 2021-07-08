@@ -125,7 +125,7 @@
                 </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item v-if="form.platform!='WEB'" label-width="150px" :label="form.platform=='Android'?'安卓版本：':'ios版本：'" prop="version_code">
+            <el-form-item label-width="150px" :label="form.platform=='WEB'?'web版本':form.platform=='Android'?'安卓版本：':'ios版本：'" prop="version_code">
                 <el-input
                 style="width: 350px"
                 autocomplete="off"
@@ -242,16 +242,16 @@ export default {
       ],
       platformoptions:[
         {
-          value: 'Android',
-          label: "安卓",
+          value: 'ANDROID',
+          label: "ANDROID",
         },
         {
-          value: 'iOS',
-          label: "ios",
+          value: 'IOS',
+          label: "IOS",
         },
         {
           value: 'WEB',
-          label: "web",
+          label: "WEB",
         },
       ],
       loading: false,
