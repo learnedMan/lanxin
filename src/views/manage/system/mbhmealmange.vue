@@ -201,6 +201,9 @@ import {
         },{
           value: 'IOS',
           label: 'IOS'
+        },{
+          value: 'WEB',
+          label: 'WEB'
         }],
       }
     },
