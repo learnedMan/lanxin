@@ -20,6 +20,8 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
+import { VUE_APP_BASE_API, VUE_APP_VIEW_API } from '@/utils/judgmentEvn.js'
+
 
 import { resetForm, removePropertyOfNull, removePropertyOfNullFor0, parseTime } from '@/utils/costum'
 Object.defineProperties(Vue.prototype, {
@@ -28,10 +30,10 @@ Object.defineProperties(Vue.prototype, {
   removePropertyOfNullFor0: { value: removePropertyOfNullFor0 },
   parseTime: { value: parseTime },
   isMobile: { value: /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) },
-  imgurl:{ value:process.env.VUE_APP_BASE_API=='/'?`/api/upload/image`:`${process.env.VUE_APP_BASE_API}/api/upload/image`},
-  imgurl2:{ value:process.env.VUE_APP_BASE_API=='/'?'':`${process.env.VUE_APP_BASE_API}`},
-  videourl:{ value:process.env.VUE_APP_BASE_API=='/'?`/api/upload/video`:`${process.env.VUE_APP_BASE_API}/api/upload/video`},
-  viewurl:{value:process.env.VUE_APP_VIEW_API}
+  imgurl: { value: `${ VUE_APP_BASE_API }/api/upload/image` },
+  imgurl2: { value: VUE_APP_BASE_API },
+  videourl: { value: `${ VUE_APP_BASE_API }/api/upload/video` },
+  viewurl: { value: VUE_APP_VIEW_API }
 });
 // 组件
 import Pagination from '@/components/Pagination'
