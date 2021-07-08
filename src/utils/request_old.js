@@ -1,9 +1,11 @@
 import axios from 'axios'; // 引入axios
 import { Message } from 'element-ui';
 import router from '@/router'
+import { 
+    VUE_APP_REQUEST2_API } from '@/utils/judgmentEvn.js'
 // create an axios instance
 const service = axios.create({
-    baseURL: process.env.VUE_APP_REQUEST2_API, // url = base url + request url
+    baseURL: VUE_APP_REQUEST2_API, // url = base url + request url
     // withCredentials: true, // send cookies when cross-domain requests
     timeout: 5000 // request timeout
   })

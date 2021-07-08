@@ -8,7 +8,7 @@
 export default {
     data () {
         return {
-            src: process.env.VUE_APP_XLY_API+'/events/index'
+            src: this.VUE_APP_XLY_API+'/events/index'
         }
     }
 }

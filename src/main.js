@@ -20,7 +20,12 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
-import { VUE_APP_BASE_API, VUE_APP_VIEW_API } from '@/utils/judgmentEvn.js'
+import {  VUE_APP_BASE_API,
+          VUE_APP_VIEW_API ,
+          VUE_APP_REQUEST1_API ,
+          VUE_APP_REQUEST2_API ,
+          VUE_APP_REQUEST3_API ,
+          VUE_APP_XLY_API } from '@/utils/judgmentEvn.js'
 
 
 import { resetForm, removePropertyOfNull, removePropertyOfNullFor0, parseTime } from '@/utils/costum'
@@ -33,7 +38,12 @@ Object.defineProperties(Vue.prototype, {
   imgurl: { value: `${ VUE_APP_BASE_API }/api/upload/image` },
   imgurl2: { value: VUE_APP_BASE_API },
   videourl: { value: `${ VUE_APP_BASE_API }/api/upload/video` },
-  viewurl: { value: VUE_APP_VIEW_API }
+  
+  viewurl: { value: VUE_APP_VIEW_API },
+  VUE_APP_REQUEST1_API: { value: VUE_APP_REQUEST1_API },
+  VUE_APP_REQUEST2_API: { value: VUE_APP_REQUEST2_API },
+  VUE_APP_REQUEST3_API: { value: VUE_APP_REQUEST3_API },
+  VUE_APP_XLY_API: { value: VUE_APP_XLY_API }
 });
 // 组件
 import Pagination from '@/components/Pagination'
