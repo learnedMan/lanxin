@@ -495,6 +495,13 @@
               sort: 12,
               type: 'app_redirect',
               link: '12'
+            },
+            {
+              name: '历史记录',
+              logo: '',
+              sort: 15,
+              type: 'app_redirect',
+              link: '15'
             }
           ], // 默认菜单集合
           allMenuSelect: [], // 当前选中项
