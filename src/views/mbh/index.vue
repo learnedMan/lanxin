@@ -270,7 +270,7 @@ export default {
       this.$refs['mealform'].validate(valid => {
         if (!valid) return;
         copymeal(this.mealform).then(response => {
-          if (response.code === 200) {
+          if (response.code == 200) {
             this.msgSuccess('复制成功')
             this.$refs["mealform"].resetFields();
             this.mealid = '';
@@ -380,7 +380,7 @@ export default {
         if (valid) {
           if (this.templateform.id !== undefined) {
             updatetemplate(this.templateform).then(response => {
-              if (response.code === 200) {
+              if (response.code == 200) {
                 this.msgSuccess('修改成功')
                 this.open = false
                 this.getList()
@@ -390,7 +390,7 @@ export default {
             })
           } else {
             addtemplate(this.templateform).then(response => {
-              if (response.code === 200) {
+              if (response.code == 200) {
                 this.msgSuccess('新增成功')
                 this.open = false
                 this.getList()

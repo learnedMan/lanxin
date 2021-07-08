@@ -262,7 +262,7 @@ export default {
         if (valid) {
           if (this.templateform.id !== undefined) {
             updatecatalog(this.templateform).then(response => {
-              if (response.code === 200) {
+              if (response.code == 200) {
                 this.msgSuccess('修改成功')
                 this.open = false
                 this.getList()
@@ -272,7 +272,7 @@ export default {
             })
           } else {
             addcatalog(this.templateform).then(response => {
-              if (response.code === 200) {
+              if (response.code == 200) {
                 this.msgSuccess('新增成功')
                 this.open = false
                 this.getList()
