@@ -410,7 +410,7 @@ export default {
       console.log(data)
       updatestyle2(data).then(response => {
         // console.log(response)
-        if (response.code === 200) {
+        if (response.code == 200) {
           this.msgSuccess('修改成功')
           this.getList();
         } else {
@@ -423,7 +423,7 @@ export default {
       console.log(data)
       updatestyle(data).then(response => {
         // console.log(response)
-        if (response.code === 200) {
+        if (response.code == 200) {
           this.msgSuccess('修改成功')
           this.getList();
         } else {
@@ -668,7 +668,7 @@ export default {
           // 修改
           updatestyle(this.formData).then(response => {
             // console.log(response)
-            if (response.code === 200) {
+            if (response.code == 200) {
               this.msgSuccess('修改成功')
               this.back();
               this.getList();
@@ -680,7 +680,7 @@ export default {
           // 新增
           addstyle(this.formData).then(response => {
             // console.log(response)
-            if (response.code === 200) {
+            if (response.code == 200) {
               this.msgSuccess('新增成功')
               this.back();
               this.getList();

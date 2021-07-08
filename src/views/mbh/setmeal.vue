@@ -114,7 +114,7 @@ export default {
       console.log(data)
       updatemeal(data).then(response => {
         // console.log(response)
-        if (response.code === 200) {
+        if (response.code == 200) {
           this.msgSuccess('修改成功')
           this.getList();
         } else {

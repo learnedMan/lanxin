@@ -277,7 +277,7 @@ export default {
             // 新增
             mealaddOne(dataaddOne).then(response => {
                 console.log(response)
-                if (response.code === 200) {
+                if (response.code == 200) {
                     this.msgSuccess('新增成功');
                     // this.open = false;
                     // this.$refs["form"].resetFields();
@@ -366,7 +366,7 @@ export default {
                 "templateId":Number(this.templateid)
             };
             updatemeal(addmealdata).then(response => {
-                if (response.code === 200) {
+                if (response.code == 200) {
                     // this.msgSuccess('修改成功')
                 } else {
                     this.setmealname = '';
@@ -449,7 +449,7 @@ export default {
                 "catalogId":Number(data.catalogId)
             };
             updatemealdetail(editmealdata).then(response => {
-                if (response.code === 200) {
+                if (response.code == 200) {
                     // this.msgSuccess('修改成功')
                     // this.getList()
                 } else {
@@ -515,7 +515,7 @@ export default {
                 //     "data":this.tableData
                 // };
                 // updatemealdetail(editmealdata).then(response => {
-                //     if (response.code === 200) {
+                //     if (response.code == 200) {
                 //         this.msgSuccess('修改成功')
                 //         // this.getList()
                 //         this.back()
@@ -541,7 +541,7 @@ export default {
                     "data":this.tableData
                 };
                 addmealdetail(addmealdata).then(response => {
-                    if (response.code === 200) {
+                    if (response.code == 200) {
                         this.msgSuccess('新增成功')
                         // this.getList()
                         this.back()
