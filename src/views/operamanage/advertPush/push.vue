@@ -585,7 +585,7 @@
             push_to: {
               type: extra.push_to.type,
               terminal: extra.push_to.terminal,
-              cid: extra.push_to.cid.join()
+              cid: extra.push_to.cid?.join() || ''
             },
             push_time: extra.push_time
           };
