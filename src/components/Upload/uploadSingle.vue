@@ -63,7 +63,7 @@
   >
     <div v-if="value" class="img-box">
       <img :src="value" class="avatar">
-      <div class="img-box-hover">
+      <div class="img-box-hover" v-if="delBtn">
         <i class="el-icon-delete" @click.stop="$emit('input', '')" />
       </div>
     </div>
@@ -77,6 +77,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    delBtn: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
