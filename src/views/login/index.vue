@@ -181,6 +181,9 @@ export default {
     getsiteFn(){//获取站点
       getSiteList().then(response => {
         this.sitec.site_data = response;
+        const siteId = window.localStorage.getItem('siteId');
+        if(siteId) this.sitec.site_select = siteId;
+        else this.sitec.site_select = response[0]?.id || '';
       })
     },
     getcodeFn(){//获取验证码
@@ -226,6 +229,7 @@ export default {
         }
       })
       this.sitec.site_select = e;
+      window.localStorage.setItem('siteId', e)
     },
     handleLogin() {
       // console.log(this.redirect)
