@@ -371,7 +371,11 @@ import {
           if (!valid) return;
           if (this.dialogType=='edit') {
             //修改
-            // console.log(this.form)
+            for(var i=0;i<this.mealList.length;i++){
+              if(this.mealList[i].id==this.form.mealId){
+                this.form.mealName = this.mealList[i].mealName
+              }
+            }
             editPublish(this.form).then(response => {
                   this.$message({
                     message: '修改成功',
