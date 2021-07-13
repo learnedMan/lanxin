@@ -18,7 +18,7 @@
         />
       </el-form-item>
       <el-form-item>
-          <el-button type="info" @click="initcondition" size="mini" >重置</el-button>
+          <el-button type="primary" @click="initcondition" size="mini" >重置</el-button>
           <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
           <el-button type="success" @click="recovery" :disabled="multipleSelection.length==0" size="mini" >批量恢复</el-button>
       </el-form-item>

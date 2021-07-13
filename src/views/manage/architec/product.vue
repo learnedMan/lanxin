@@ -27,7 +27,7 @@
           <el-button type="primary" @click="handleQuery" size="mini"
             >搜索</el-button
           >
-          <el-button type="info" @click="initcondition" size="mini"
+          <el-button type="primary" @click="initcondition" size="mini"
             >重置</el-button
           >
           <el-button type="primary" @click="adddata" size="mini">新增</el-button>
