@@ -419,7 +419,17 @@
         },
         /* 拉黑 */
         handleDelete (row) {
-          const { id } = row;
+          const { userId, sourceId } = row;
+          disableSendMsg({
+            sourceId: sourceId,
+            userId: userId,
+            expiresIn: 7 * 24 * 60 * 60
+          }).then(({ code, msg }) => {
+            this.$message.success(code == 200? '拉黑成功' : msg);
+            if(code == 200) {
+              this.getList();
+            }
+          })
         },
         /* 获取列表数据 */
         getList () {

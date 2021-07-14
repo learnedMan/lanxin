@@ -313,7 +313,7 @@
         >
           <el-input
             v-model="dialog.form.extra.title"
-            placeholder="请输入标签名称"
+            placeholder="请输入直播间名称"
             clearable
             size="small"
             style="width: 200px"

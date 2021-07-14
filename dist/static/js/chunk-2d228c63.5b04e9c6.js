@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d228c63"],{db2a:function(n,t,e){"use strict";e.r(t);var c=function(){var n=this,t=n.$createElement,e=n._self._c||t;return e("div",{staticStyle:{padding:"30px"}},[n._v(" 敏感词设置 ")])},a=[],l=e("2877"),u={},i=Object(l["a"])(u,c,a,!1,null,null,null);t["default"]=i.exports}}]);

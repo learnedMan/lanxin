@@ -36,7 +36,7 @@
             </el-date-picker>
       </el-form-item>
       <el-form-item>
-          <el-button type="info" @click="initcondition" size="mini" >重置</el-button>
+          <el-button type="primary" @click="initcondition" size="mini" >重置</el-button>
           <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
           <el-button type="primary" @click="adddata" size="mini" >新增</el-button>
       </el-form-item>
@@ -201,6 +201,9 @@ import {
         },{
           value: 'IOS',
           label: 'IOS'
+        },{
+          value: 'WEB',
+          label: 'WEB'
         }],
       }
     },
@@ -368,7 +371,11 @@ import {
           if (!valid) return;
           if (this.dialogType=='edit') {
             //修改
-            // console.log(this.form)
+            for(var i=0;i<this.mealList.length;i++){
+              if(this.mealList[i].id==this.form.mealId){
+                this.form.mealName = this.mealList[i].mealName
+              }
+            }
             editPublish(this.form).then(response => {
                   this.$message({
                     message: '修改成功',
@@ -380,12 +387,12 @@ import {
           }else{
             // 新增
             addPublish(this.form).then(response => {
-                  this.$message({
-                    message: '新建成功',
-                    type: 'success'
-                  });
-                  this.dialogFormVisible = false;
-                  this.getList();
+              this.$message({
+                message: '新建成功',
+                type: 'success'
+              });
+              this.dialogFormVisible = false;
+              this.getList();
             })
           }
         })

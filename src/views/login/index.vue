@@ -181,6 +181,14 @@ export default {
     getsiteFn(){//获取站点
       getSiteList().then(response => {
         this.sitec.site_data = response;
+        const siteId = window.localStorage.getItem('siteId');
+        if(siteId) {
+          this.sitec.site_select = siteId;
+          this.sitec.site_select_all = response.find(n => n.id == siteId);
+        } else {
+          this.sitec.site_select = response[0]?.id || '';
+          this.sitec.site_select_all = response[0];
+        }
       })
     },
     getcodeFn(){//获取验证码
@@ -226,6 +234,7 @@ export default {
         }
       })
       this.sitec.site_select = e;
+      window.localStorage.setItem('siteId', e)
     },
     handleLogin() {
       // console.log(this.redirect)
@@ -268,7 +277,7 @@ export default {
               // console.log(data)
               let script=document.createElement("script");
               script.type="text/JavaScript";
-              script.src= process.env.VUE_APP_XLY_API+'/admin/login?token='+ data.access_token;
+              script.src= this.VUE_APP_XLY_API+'/admin/login?token='+ data.access_token;
               document.getElementsByTagName('head')[0].appendChild(script);
 
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
