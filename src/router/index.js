@@ -13,7 +13,7 @@ import Layout from '@/layout'
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
  *
  * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
+ * defaultShow: true               if set true, will always show the root menu
  *                                if not set alwaysShow, when item has more than one children route,
  *                                it will becomes nested mode, otherwise not show the root menu
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
@@ -152,6 +152,31 @@ export const asyncRoutes = [
         name: 'SeeSection',
         permission: 'content.news.list',
         meta: { title: '栏目数据' }
+      },
+      {
+        path: 'projectManage',
+        component: () => import('@/views/workbench/projectManage/index'),
+        name: 'ProjectManage',
+        permission: 'content.topic',
+        //allow: true, // 不管是否有子路由  只要有权限就显示
+        meta: { title: '专题管理' },
+        /*redirect: '/content/projectManage/projectLists',
+        children: [
+          {
+            path: 'projectLists',
+            component: () => import('@/views/workbench/projectManage/lists'),
+            name: 'ProjectLists',
+            hidden: true,
+            meta: { title: '专题管理列表' }
+          },
+          {
+            path: 'projectDetail/:id',
+            component: () => import('@/views/workbench/projectManage/detail'),
+            name: 'ProjectDetail',
+            hidden: true,
+            meta: { title: '子专题', noView: true }
+          },
+        ]*/
       },
       {
         path: 'mediaAssets',

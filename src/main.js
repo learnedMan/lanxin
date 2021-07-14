@@ -22,6 +22,7 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 
 import { resetForm, removePropertyOfNull, removePropertyOfNullFor0, parseTime } from '@/utils/costum'
+import { changeChannelName } from '@/utils'
 Object.defineProperties(Vue.prototype, {
  /* resetForm: { value: resetForm },*/
   removePropertyOfNull: { value: removePropertyOfNull },
@@ -53,6 +54,7 @@ Vue.prototype.msgSuccess = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'success' })
 }
 Vue.prototype.resetForm = resetForm;
+Vue.prototype.changeChannelName = changeChannelName;
 
 Vue.prototype.msgError = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'error' })

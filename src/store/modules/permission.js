@@ -15,8 +15,8 @@ export function filterAsyncRoutes(routes, roles, permissions) {
     // hidden: 默认显示   defaultShow: 默认显示  roles: 根据角色决定
     if (tmp.hidden || tmp.defaultShow || tmp.roles && roles.find(role => tmp.roles.includes(role.name)) || permissions.find(n => n.name === tmp.permission)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles, permissions)
-        tmp.children.length !== 0 && !tmp.children.every(n => n.hidden) && res.push(tmp)
+        tmp.children = filterAsyncRoutes(tmp.children, roles, permissions);
+        (tmp.children.length !== 0 && !tmp.children.every(n => n.hidden) || tmp.allow) && res.push(tmp);
       }else {
         res.push(tmp)
       }

@@ -222,3 +222,72 @@ export function getVideos(params) {
   })
 }
 
+/*-------------------------专题管理--------------------------------*/
+
+/* 获取列表数据 */
+export function getTopicList(params) {
+  return request({
+    url: '/api/channels/getSpecialChannels',
+    method: 'get',
+    params
+  })
+}
+
+/* 新增专题 */
+export function addTopic(data) {
+  return request({
+    url: '/api/channels',
+    method: 'post',
+    data
+  })
+}
+/* 修改专题 */
+export function changeTopic(id, data) {
+  return request({
+    url: `/api/channels/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 修改专题发布状态 */
+export function changeTopicStatus(data) {
+  return request({
+    url: '/api/channels/setStatus',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除专题 */
+export function deleteTopic(id) {
+  return request({
+    url: `/api/channels/${id}`,
+    method: 'delete'
+  })
+}
+
+/* 发布专题 */
+export function publishTopic(data) {
+  return request({
+    url: '/api/channels/publishSpecialChannelAsNews',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取专题详情 */
+export function getTopicDetail(id) {
+  return request({
+    url: `/api/channels/${id}/?include=father`,
+    method: 'get'
+  })
+}
+
+/* 获取子专题 */
+export function getChildTopic(id) {
+  return request({
+    url: `/api/channels/${id}/getChild`,
+    method: 'get'
+  })
+}

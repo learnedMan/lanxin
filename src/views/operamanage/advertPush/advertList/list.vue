@@ -28,7 +28,7 @@
         </el-form-item>
         <el-form-item
           label="广告位:"
-          prop="keyword"
+          prop="name"
         >
           <el-input
             v-model="queryParams.name"
@@ -116,7 +116,6 @@
             <el-select
               v-model="scope.row.status"
               @change="changeStatus(scope.row)"
-              clearable
             >
               <el-option
                 v-for="item in statusOptions.filter(n => n.value !== '')"
@@ -350,7 +349,7 @@
               label: '广告代码',
               value: 6
             }
-            
+
           ],
           queryParams: {
             name: '',

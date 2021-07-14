@@ -355,3 +355,15 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+
+/* 修改栏目名称 */
+export function changeChannelName(arr) {
+  arr.forEach(obj => {
+    if(obj.status == 0) {
+      obj.name = `${obj.name} （禁用）`;
+    }
+    if(obj.children && obj.children.length) {
+      changeChannelName(obj.children)
+    }
+  })
+}

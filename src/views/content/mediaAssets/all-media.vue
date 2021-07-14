@@ -646,6 +646,7 @@ export default {
           ...n,
           disabled: true
         }))
+        this.changeChannelName(this.channelsList)
       })
     }
   }

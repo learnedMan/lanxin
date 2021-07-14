@@ -1484,8 +1484,8 @@ export default {
     handleReturn() {
       const fullPath = this.$route.fullPath
       const view = this.visitedViews.find(n => n.fullPath === fullPath)
-      const { redirect = 'All-media', channelId } = this.$route.query;
-      this.$router.push({ name: redirect, query: channelId? { id: channelId } : {} });
+      const { redirect = 'All-media', channelId, father } = this.$route.query;
+      this.$router.push({ name: redirect, query: channelId? Object.assign({ id: channelId }, father? { father } : {}) : {} });
       this.$store.dispatch('tagsView/delView', view)
     },
     /* 处理编辑器中的视频数据 */
