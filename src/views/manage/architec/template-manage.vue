@@ -94,7 +94,7 @@
               <el-button
                 type="text"
                 icon="el-icon-delete"
-                @click.stop="handleRemove(node, data)">
+                @click.stop="handleDirRemove(node, data)">
               </el-button>
             </span>
           </span>
@@ -265,6 +265,7 @@
         width="500px"
         :title="dialog.title"
         :visible.sync="dialog.show"
+        v-if="dialog.show"
       >
         <el-form
           ref="dialogForm"
@@ -517,7 +518,7 @@
           });
         },
         /* 删除目录 */
-        handleRemove (node, data) {
+        handleDirRemove (node, data) {
           const { name, path } = data;
           this.$confirm(`此操作将永久删除该${name}目录, 是否继续?`, '提示', {
             confirmButtonText: '确定',
@@ -531,6 +532,7 @@
                 this.$message.success(message)
                 await this.getChannels();
                 this.$refs.tree.setCurrentKey(this.currentKey);
+                this.getList();
               }else {
                 this.$message.warning(message)
               }
@@ -592,7 +594,7 @@
         handleRemove () {
           this.listFrom.upload = '';
         },
-        /* 确认编辑或删除 */
+        /* 确认编辑或新增 */
         entryDialog () {
           this.$refs.dialogForm?.validate(val => {
             if(val) {
@@ -601,7 +603,7 @@
               const formData = new FormData();
               formData.append('name', params.name);
               formData.append('domain', params.domain);
-              formData.append('domain', params.path);
+              formData.append('path', params.path);
               if(params.upload) formData.append('upload', params.upload);
               let promise;
               if(id) {
@@ -609,17 +611,19 @@
               }else {
                 promise = addH5List(formData)
               }
-              promise.then(() => {
+              promise.then(async () => {
                 this.$message.success(id? '修改成功' : '新增成功');
                 this.dialog.show = false;
                 this.getList();
+                await this.getChannels();
+                this.$refs.tree.setCurrentKey(this.currentKey);
               })
             }
           })
         },
         /* 删除列表 */
         handleDeleteList (row) {
-          const { id } = row;
+          const { id, path } = row;
           this.$confirm(`此操作将永久删除该id为${id}的文件, 是否继续?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -628,6 +632,15 @@
             deleteH5List(id).then(() => {
               this.$message.success('删除成功');
               this.getList();
+              deleteDirectory({
+                path
+              }).then(async ({ message, status_code }) => {
+                if(status_code === 200) {
+                  this.getChannels();
+                }else {
+                  this.$message.warning(message)
+                }
+              })
             })
           }).catch(() => {
             this.$message({
