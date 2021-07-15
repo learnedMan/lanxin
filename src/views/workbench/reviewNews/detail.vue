@@ -101,7 +101,6 @@
                     v-bind="formOptions['extra.title'].item.componentProps"
                     clearable
                     size="small"
-                    style="width: 200px"
                     @input="handleInput($event, formOptions['extra.title'].item)"
                   />
                 </el-form-item>
@@ -162,11 +161,9 @@
                   <!-- 输入框 -->
                   <el-input
                     :value="parseObj(formOptions['extra.subtitle'].item)"
-                    :rows="4"
                     v-bind="formOptions['extra.subtitle'].item.componentProps"
                     clearable
                     size="small"
-                    style="width: 200px"
                     @input="handleInput($event, formOptions['extra.subtitle'].item)"
                   />
                 </el-form-item>
