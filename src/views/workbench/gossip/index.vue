@@ -3,8 +3,8 @@
     padding: 30px;
     &-file {
       display: inline-block;
-      width: 100px;
-      height: 100px;
+      width: 300px;
+      height: 200px;
       margin-right: 10px;
       background-color: #409eff;
     }
