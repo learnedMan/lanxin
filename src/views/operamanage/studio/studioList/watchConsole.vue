@@ -68,7 +68,7 @@
         </el-tabs>
       </el-aside>
       <el-main style="position: relative">
-        <component :is="currentView" v-bind="[$props, { newId: detail.news_id }]"></component>
+        <component :is="currentView" v-bind="[$props, { newId: detail.news_id, uuid: detail.extra.comment_uuid }]"></component>
       </el-main>
     </el-container>
     <!-- 设置开播时间 -->

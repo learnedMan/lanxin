@@ -1,5 +1,5 @@
 <template>
-    <comment-verify :news-id="`${newId}`"></comment-verify>
+    <comment-verify :news-id="`${uuid}`"></comment-verify>
 </template>
 
 <script>
@@ -10,7 +10,7 @@
         commentVerify
       },
       props: {
-        newId: Number
+        uuid: String
       }
     }
 </script>

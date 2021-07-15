@@ -9,12 +9,11 @@
     align-items: center;
   }
   .el-tree-node__content {
-    padding-right: 20px;
+    padding-right: 10px;
     position: relative;
     height: 40px;
     .el-tree-node__expand-icon {
-      position: absolute;
-      right: 0;
+      display: none;
     }
     &:hover {
       background-color: #ecf5ff;
@@ -39,19 +38,24 @@
     }
   }
   .custom-tree-node {
-    flex: 1;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 14px;
-    padding-right: 8px;
+    &--name {
+      max-width: 50%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 }
 </style>
 <template>
   <div class="xl-project-detail">
     <el-row>
-      <el-col :span="4" style="border-right: 1px solid #f3f3f3;" v-if="hasChildTopic">
+      <el-col :span="6" style="border-right: 1px solid #f3f3f3;" v-if="hasChildTopic">
         <h3 class="xl-project-detail--title">
           <span>子专题</span>
           <span>
@@ -61,7 +65,7 @@
               icon="el-icon-folder-add"
               @click="handleTopicAdd">
               </el-button>
-            <el-switch v-model="switchAction"></el-switch>
+            <!--<el-switch v-model="switchAction"></el-switch>-->
           </span>
         </h3>
         <el-tree
@@ -71,26 +75,51 @@
           node-key="id"
           default-expand-all
           :expand-on-click-node="false"
-          @current-change="treeChange"
+          @node-click="treeChange"
         >
-          <span class="custom-tree-node" slot-scope="{ node, data }">
-            <span>{{ data.name }}</span>
-            <span v-show="switchAction">
+          <span class="custom-tree-node" slot-scope="{ node, data }" @click.stop="">
+            <span class="custom-tree-node--name">{{ data.name }}</span>
+            <span>
+              <!-- 上移 -->
+              <el-button
+                type="text"
+                icon="el-icon-top"
+                v-if="data.id !== (channelsList[0] && channelsList[0].id)"
+                @click.stop="handleTopicSort('up', data)">
+              </el-button>
+              <!-- 下移 -->
+              <el-button
+                type="text"
+                icon="el-icon-bottom"
+                v-if="data.id !== (channelsList[channelsList.length - 1] && channelsList[channelsList.length - 1].id)"
+                @click.stop="handleTopicSort('down', data)">
+              </el-button>
+              <!-- 编辑 -->
               <el-button
                 type="text"
                 icon="el-icon-edit"
                 @click.stop="handleTopicEdit(data)">
               </el-button>
+              <!-- 删除 -->
               <el-button
                 type="text"
                 icon="el-icon-delete"
                 @click.stop="handleTopicRemove(node, data)">
               </el-button>
+              <!-- 状态 -->
+              <el-switch
+                style="margin-left: 10px"
+                :value="data.status"
+                size="small"
+                :active-value="1"
+                :inactive-value="0"
+                @input="changeStatus(data)"
+              ></el-switch>
             </span>
           </span>
         </el-tree>
       </el-col>
-      <el-col :span="hasChildTopic? 20 : 24" style="padding-left: 20px;">
+      <el-col :span="hasChildTopic? 18 : 24" style="padding-left: 20px;">
         <div class="search">
           <el-form
             ref="queryForm"
@@ -554,6 +583,7 @@
     getChildTopic,
     addTopic,
     changeTopic,
+    changeTopicStatus,
     deleteTopic,
     getNews,
     changeNewsSort,
@@ -563,6 +593,7 @@
     getNewDetail,
     addPushDetail
   } from '@/api/content'
+  import { setSortchannels } from '@/api/manage'
   import Sortable from 'sortablejs'
   import { dateFormat } from "@/utils/costum";
   import NewDetail from '@/views/workbench/reviewNews/detail.vue'
@@ -811,6 +842,34 @@
               message: '取消输入'
             });
           });
+        },
+        /* 专题排序 */
+        handleTopicSort (direction, data) {
+          const { id } = data;
+          const index = this.channelsList.findIndex(n => n.id === id);
+          let params = {};
+          if(direction === 'up') {
+            params[this.channelsList[index].id] = this.channelsList[index - 1].sort;
+            params[this.channelsList[index - 1].id] = this.channelsList[index].sort;
+          }else {
+            params[this.channelsList[index].id] = this.channelsList[index + 1].sort;
+            params[this.channelsList[index + 1].id] = this.channelsList[index].sort;
+          }
+          setSortchannels(params).then(() => {
+            this.$message.success('修改成功');
+            this.getChildTopic();
+          })
+        },
+        /* 修改专题状态 */
+        changeStatus (data) {
+          const { status, id } = data;
+          changeTopicStatus({
+            status: status === 1? 0 : 1,
+            ids: `${id}`
+          }).then(() => {
+            this.$message.success('修改状态成功')
+            this.getChildTopic();
+          })
         },
         /* 修改子专题 */
         handleTopicEdit (data) {
@@ -1087,7 +1146,8 @@
         },
         /* 获取列表数据 */
         getList () {
-          this.loading = true
+          if(this.hasChildTopic && this.channelsList.length === 0) return;
+          this.loading = true;
           const params = { ...this.queryParams, channel_id: this.currentKey };
           getNews(this.removePropertyOfNullFor0(params)).then(res => {
             this.total = res.total
