@@ -568,6 +568,12 @@
             title: '新增',
             show: true
           }
+          this.listFrom = {
+            domain: '',
+            path: '',
+            name: '',
+            upload: ''
+          }
         },
         /* 编辑列表 */
         handleEditList (row) {

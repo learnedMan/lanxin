@@ -77,9 +77,9 @@
           :expand-on-click-node="false"
           @node-click="treeChange"
         >
-          <span class="custom-tree-node" slot-scope="{ node, data }" @click.stop="">
+          <span class="custom-tree-node" slot-scope="{ node, data }">
             <span class="custom-tree-node--name">{{ data.name }}</span>
-            <span>
+            <span @click.stop="">
               <!-- 上移 -->
               <el-button
                 type="text"
