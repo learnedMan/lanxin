@@ -39,8 +39,8 @@ Object.defineProperties(Vue.prototype, {
   imgurl: { value: `${ VUE_APP_BASE_API }/api/upload/image` },
   imgurl2: { value: VUE_APP_BASE_API },
   videourl: { value: `${ VUE_APP_BASE_API }/api/upload/video` },
-  
   viewurl: { value: VUE_APP_VIEW_API },
+  xlsxUrl: { value: `${ VUE_APP_BASE_API }/api/channels/importProgramFromExcel` },
   VUE_APP_REQUEST1_API: { value: VUE_APP_REQUEST1_API },
   VUE_APP_REQUEST2_API: { value: VUE_APP_REQUEST2_API },
   VUE_APP_REQUEST3_API: { value: VUE_APP_REQUEST3_API },

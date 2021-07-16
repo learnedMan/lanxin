@@ -513,7 +513,7 @@
         class="dialog-footer"
       >
         <el-button @click="dialog.show = false">取 消</el-button>
-        <el-button type="primary" @click="enterChangeDialog">确 定</el-button>
+        <el-button type="primary" @click="enterChangeDialog" v-loading="dialogLoading">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -816,6 +816,7 @@
             ],
           }
         },
+        dialogLoading: false, // 防止连续点击
         publishDialog: {
           show: false,
           title: '发布栏目',
@@ -991,11 +992,14 @@
         let promise;
         this.$refs.dialogForm?.validate(val => {
           if(val) {
+            this.dialogLoading = true;
             promise = id? editStudio(id, params) : addStudio(params);
             promise.then(() => {
               this.$message.success(`${this.dialog.title}成功!`);
               this.dialog.show = false;
               this.getList();
+            }).finally(() => {
+              this.dialogLoading = false;
             })
           }
         })

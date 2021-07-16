@@ -1,13 +1,32 @@
 <template>
   <div class="page_a_dialog">
     <!-- 新增/修改频道弹窗 -->
-    <el-dialog width="1200px" 
+    <el-dialog width="1200px"
         :show-close= false
         :close-on-press-escape = false
         :close-on-click-modal = false
-        title="编辑节目单模板" 
         v-if="dialogFormVisible"
-        :visible.sync="dialogFormVisible">
+        :visible.sync="dialogFormVisible"
+        v-loading="importLoading"
+        element-loading-text="模板导入中..."
+    >
+        <span slot="title" class="el-dialog__title">
+          <span>编辑节目单模板</span>
+          <el-button type="primary" size="small" style="margin-left: 20px" @click="downProgramme">下载节目单模板</el-button>
+          <el-upload
+            class="upload-demo"
+            name="excel"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-exce"
+            :action="actionUrl"
+            :headers="uploadHeader"
+            :on-success="handleAvatarSuccess"
+            :on-error="handleAvatarError"
+            :before-upload="beforeAvatarUpload"
+            :show-file-list="false"
+          >
+            <el-button size="small" type="primary">导入模板</el-button>
+          </el-upload>
+        </span>
           <el-dialog
             width="540px"
             :title="dialogTitle"
@@ -65,10 +84,10 @@
                     </el-tabs>
                     <div class="right" style="flex-grow:1;">
                         <el-button @click="adddata" style="margin-bottom:20px;" type="primary" size="mini" >新增</el-button>
-                        <el-table 
+                        <el-table
                             v-if="tableflag"
                             :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-                            border 
+                            border
                             :data="dataList">
                             <el-table-column label="节目名称" align="center" prop="name" :show-overflow-tooltip="true" />
                             <el-table-column label="开始时间" align="center" prop="time" :show-overflow-tooltip="true" />
@@ -110,8 +129,9 @@
 </template>
 
 <script>
-import { 
-  edittv_channel
+import {
+  edittv_channel,
+
   } from '@/api/manage'
 import { isArray } from '@/utils/validate';
   export default {
@@ -143,6 +163,7 @@ import { isArray } from '@/utils/validate';
             label: '否'
           }],
           data:'',
+        importLoading: false
       }
     },
     filters: {
@@ -156,6 +177,19 @@ import { isArray } from '@/utils/validate';
     },
     created() {
       this.initForm();
+    },
+    computed: {
+      /* 上传接口 */
+      actionUrl() {
+        return this.xlsxUrl
+      },
+      /* 上传的头部信息 */
+      uploadHeader() {
+        const Authorization = sessionStorage.getItem('token')
+        return {
+          Authorization
+        }
+      }
     },
     methods:{
         getdata(data){
@@ -254,7 +288,7 @@ import { isArray } from '@/utils/validate';
           }).then(() => {
               if(this.data.extra.template.type=='daily'){
 
-                this.dayList.splice(this.editIndex,1); 
+                this.dayList.splice(this.editIndex,1);
 
                 // this.datalistformat(this.weekList[this.dayList])
                 this.datalistformat(this.dayList)
@@ -266,7 +300,7 @@ import { isArray } from '@/utils/validate';
                   type: 'success'
                 });
               }else if(this.data.extra.template.type=='weekly'){
-                this.weekList[this.weekday].splice(this.editIndex,1); 
+                this.weekList[this.weekday].splice(this.editIndex,1);
                 this.datalistformat(this.weekList[this.weekday])
                 this.dataList = this.weekList[this.weekday];
                 this.innerVisible = false;
@@ -280,7 +314,7 @@ import { isArray } from '@/utils/validate';
             this.$message({
               type: 'info',
               message: '已取消删除'
-            });          
+            });
           });
         },
         innercloseDialog(){
@@ -339,7 +373,7 @@ import { isArray } from '@/utils/validate';
                   }
                 }
 
-                this.dayList.splice(this.editIndex,1,data); 
+                this.dayList.splice(this.editIndex,1,data);
 
                 this.datalistformat(this.dayList)
                 this.dataList = this.dayList;
@@ -354,7 +388,7 @@ import { isArray } from '@/utils/validate';
                     return
                   }
                 }
-                this.weekList[this.weekday].splice(this.editIndex,1,data); 
+                this.weekList[this.weekday].splice(this.editIndex,1,data);
                 this.datalistformat(this.weekList[this.weekday])
                 this.dataList = this.weekList[this.weekday];
                 this.innerVisible = false;
@@ -439,12 +473,41 @@ import { isArray } from '@/utils/validate';
             this.dataList = [];
           }
           // console.log(this.dataList)
+        },
+      /* 下载节目单 */
+      downProgramme () {
+        const origin = location.origin;
+        window.location.href = `${origin}/api/channels/downloadProgramTemplate`;
+      },
+      /* 上传前 */
+      beforeAvatarUpload () {
+        this.importLoading = true;
+      },
+      /* 导入模板成功 */
+      handleAvatarSuccess (res) {
+        if (res.status_code >= 200 && res.status_code < 300) {
+          this.$message.success('导入成功!')
+          this.$parent.getList();
+          this.dialogFormVisible = false;
+        } else {
+          this.$message.error('导入失败!')
         }
+        this.importLoading = false;
+      },
+      /* 导入失败 */
+      handleAvatarError (res) {
+        this.$message.error('导入失败, 服务故障!');
+        this.importLoading = false;
+      }
     }
   }
 
 </script>
 <style lang="scss">
+  .upload-demo {
+    display: inline-block;
+    margin-left: 20px;
+  }
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
