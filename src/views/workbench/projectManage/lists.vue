@@ -647,10 +647,10 @@
         /* 发布栏目 */
         async handlePublish (row) {
           this.resetForm('publishForm');
-          const { id, extra: { topic_script_id } } = row;
+          const { id, extra: { special_channel_script_id } } = row;
           let channel = [];
-          if(topic_script_id) {
-            await getScriptDetail(topic_script_id).then(res => {
+          if(special_channel_script_id) {
+            await getScriptDetail(special_channel_script_id).then(res => {
               channel = (res.channel || []).map(n => n.id);
             })
           }
