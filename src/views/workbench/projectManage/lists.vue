@@ -698,7 +698,9 @@
         * 获取栏目列表
         * */
         getChannels() {
-          getChannels().then(res => {
+          getChannels({
+            with_special_channels: 'topic'
+          }).then(res => {
             this.channelsList = res.map(n => ({
               ...n,
               disabled: true
