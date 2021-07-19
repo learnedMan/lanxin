@@ -830,7 +830,8 @@
                     path: '',
                     intro: ''
                   }
-                ]
+                ],
+                template_style: '240'
               }
             }).then(async () => {
               this.$message.success('添加成功!');
