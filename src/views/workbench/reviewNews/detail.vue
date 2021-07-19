@@ -347,6 +347,40 @@
                     @input="handleInput($event, formOptions['extra.link.id'].item)"
                   />
                 </el-form-item>
+                <!-- 薪资区间 -->
+                <el-form-item
+                  v-show="initFrom().includes('extra.salary_range.min')"
+                  label="薪资区间:"
+                  label-width="100px"
+                >
+                  <el-col :span="4">
+                    <el-form-item v-bind="formOptions['extra.salary_range.min'].item.props">
+                      <el-input-number
+                        :controls="false"
+                        :precision="0"
+                        :max="from.extra.salary_range.max || Infinity"
+                        v-model="from.extra.salary_range.min"
+                        v-bind="formOptions['extra.salary_range.min'].item.componentProps"
+                        style="width: 100%"
+                        clearable
+                      ></el-input-number>
+                    </el-form-item>
+                  </el-col>
+                  <el-col class="line" :span="2" style="text-align: center">-</el-col>
+                  <el-col :span="4">
+                    <el-form-item v-bind="formOptions['extra.salary_range.max'].item.props">
+                      <el-input-number
+                        :controls="false"
+                        :precision="0"
+                        :min="from.extra.salary_range.min || 0"
+                        v-model="from.extra.salary_range.max"
+                        v-bind="formOptions['extra.salary_range.max'].item.componentProps"
+                        style="width: 100%"
+                        clearable
+                      ></el-input-number>
+                    </el-form-item>
+                  </el-col>
+                </el-form-item>
               </el-col>
             </el-row>
           </el-col>
@@ -1254,6 +1288,28 @@ export default {
           rule: [
             { required: true, message: '请输入链接地址', trigger: 'blur' }
           ]
+        },
+        'extra.salary_range.min': {
+          item: {
+            key: 'extra.salary_range.min',
+            props: {
+              prop: 'extra.salary_range.min'
+            },
+            componentProps: {
+              placeholder: '请输入最小薪资'
+            }
+          }
+        },
+        'extra.salary_range.max': {
+          item: {
+            key: 'extra.salary_range.max',
+            props: {
+              prop: 'extra.salary_range.max'
+            },
+            componentProps: {
+              placeholder: '请输入最大薪资'
+            }
+          }
         }
       }),
       tabs: [
@@ -1315,7 +1371,11 @@ export default {
             type: 'target_obj', // 链接类型
             id: '', // 链接对象
             url: '' // 链接地址
-          } // 外链
+          }, // 外链
+          salary_range: {
+            min: undefined,
+            max: undefined
+          }
         }
       }, // 表单
       videoDialog: {
@@ -1446,7 +1506,7 @@ export default {
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
           break
         case 'outer_link':
-          arr = [...baseTopItem, 'extra.link.type']
+          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max']
           const type = this.from.extra.link.type;
           if (type === 'target_obj'){
             arr.push('target_obj');
@@ -1611,7 +1671,11 @@ export default {
               type: link_type, // 链接类型
               id: extra.link && extra.link.id || '', // 链接对象
               url: extra.link && extra.link.url || '' // 链接地址
-            } // 外链
+            }, // 外链
+            salary_range: {
+              min: extra.salary_range?.min || undefined,
+              max: extra.salary_range?.max || undefined
+            }
           }
         }// 表单
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
