@@ -1,5 +1,11 @@
-<style type="text/scss" lang="scss" scoped>
-
+<style type="text/scss" lang="scss">
+  .custom-picker {
+    .el-time-spinner {
+      .el-time-spinner__wrapper:nth-child(2) {
+        display: none;
+      }
+    }
+  }
 </style>
 <template>
     <div class="xl-children-list">
@@ -146,6 +152,7 @@
         :title="dialog.title"
         :close-on-click-modal="false"
         :visible.sync="dialog.show"
+        v-if="dialog.show"
       >
         <el-form
           ref="dialogForm"
@@ -207,11 +214,12 @@
             prop="start_time"
           >
             <el-date-picker
+              popper-class="custom-picker"
               v-model="dialogForm.start_time"
               type="datetime"
               placeholder="选择开始日期时间"
               align="right"
-              format="yyyy-MM-dd HH:mm"
+              format="yyyy-MM-dd HH"
               value-format="yyyy-MM-dd HH:00:00"
               :picker-options="pickerOptionsStart">
             </el-date-picker>
@@ -221,11 +229,12 @@
             prop="end_time"
           >
             <el-date-picker
+              popper-class="custom-picker"
               v-model="dialogForm.end_time"
               type="datetime"
               placeholder="选择结束日期时间"
               align="right"
-              format="yyyy-MM-dd HH:mm"
+              format="yyyy-MM-dd HH"
               value-format="yyyy-MM-dd HH:00:00"
               :picker-options="pickerOptionsEnd">
             </el-date-picker>
@@ -349,7 +358,7 @@
           return false
         }
         const disabledDateEnd = time => {
-          if(this.dialogForm.start_time) return time.getTime() < new Date(this.dialogForm.start_time).getTime();
+          if(this.dialogForm.start_time) return time.getTime() <= new Date(this.dialogForm.start_time).getTime() - 24 * 60 * 60 * 1000;
           return false
         }
         const startDateValidate = (rule, value, callback) => {

@@ -266,11 +266,11 @@
           <!-- 封面样式 -->
           <el-form-item
             label="封面样式:"
-            prop="extra.template_style"
+            prop="extra.news_style.template_style"
           >
             <el-radio-group
               size="small"
-              v-model="dialog.form.extra.template_style"
+              v-model="dialog.form.extra.news_style.template_style"
               @change="handleCoverChange"
             >
               <el-radio
@@ -291,10 +291,10 @@
           </el-form-item>
           <!-- 封面图片 -->
           <el-form-item
-            prop="extra.cover"
+            prop="extra.news_style.cover"
           >
             <cropper
-              v-model="dialog.form.extra.cover"
+              v-model="dialog.form.extra.news_style.cover"
               :count="imgCount"
             />
           </el-form-item>
@@ -303,6 +303,25 @@
             prop="extra.background"
           >
             <upload-single v-model="dialog.form.extra.background"></upload-single>
+          </el-form-item>
+          <el-form-item
+            label="(模板化)栏目:"
+            prop="extra.template_style"
+          >
+            <el-select clearable @change="catalogchange" v-model="dialog.form.extra.template_style" placeholder="请选择">
+              <el-option v-for="item in catalogOptions" :key="item.id" :label="item.catalogName" :value="`${item.catalogCode}`">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="(模板化)样式:"
+            prop="extra.template_json_id"
+          >
+            <el-select clearable v-model="dialog.form.extra.template_json_id" placeholder="请选择">
+              <el-option v-for="item in styleOptions" :key="item.id" :label="item.styleName" :value="`${item.id}`">
+              </el-option>
+            </el-select>
+            <el-button v-if="dialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
           </el-form-item>
           <el-form-item
             label="多级专题:"
@@ -323,7 +342,7 @@
 </template>
 
 <script>
-  import { getproduct, getChannels } from '@/api/manage'
+  import { getproduct, getChannels, cateloglist, stylelist } from '@/api/manage'
   import Cropper from '@/components/Cropper'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
   import { getTopicList, addTopic, changeTopic, changeTopicStatus, deleteTopic, publishTopic, getScriptDetail } from '@/api/content'
@@ -481,6 +500,8 @@
             }
           ],
           imgCount: 1,
+          catalogOptions: [], // 模板化栏目数据
+          styleOptions: [], // 模板化样式
           dialog: {
             show: false,
             title: '新增专题',
@@ -488,8 +509,12 @@
               name: '',
               status: 1,
               extra: {
-                template_style: '240',
-                cover: [],
+                news_style: {
+                  template_style: '240',
+                  cover: [],
+                },
+                template_style: '',
+                template_json_id: '',
                 topic_type: 1, // 1简单聚合2多模块聚合
                 introduction: '',
                 background: ''
@@ -499,10 +524,10 @@
               name: [
                 { required: true, message: '请输入标题', trigger: 'blur' }
               ],
-              'extra.template_style': [
+              'extra.news_style.template_style': [
                 { required: true, message: '请选择封面样式', trigger: 'change' }
               ],
-              'extra.cover': [
+              'extra.news_style.cover': [
                 { validator: coverValidator, trigger: 'change' }
               ],
               'extra.background': [
@@ -519,7 +544,8 @@
             const data = res.data || []
             this.productLists = data.map(n => ({
               label: n.name,
-              value: n.id
+              value: n.id,
+              source_id: n.source_id
             }));
             this.queryParams.product_id = data?.[0]?.id;
           });
@@ -548,7 +574,22 @@
           Object.assign(this.dialog, {
             title: '新增专题',
             show: true,
-            id: ''
+            id: '',
+            form: {
+              name: '',
+              status: 1,
+              extra: {
+                news_style: {
+                  template_style: '240',
+                  cover: [],
+                },
+                template_style: '',
+                template_json_id: '',
+                topic_type: 1, // 1简单聚合2多模块聚合
+                introduction: '',
+                background: ''
+              }
+            }
           })
         },
         /* 修改状态 */
@@ -573,14 +614,19 @@
               name: row.name,
               status: row.status,
               extra: {
+                news_style: {
+                  template_style: row.extra.news_style?.template_style || '240',
+                  cover: row.extra.news_style?.cover || [],
+                },
                 template_style: row.extra.template_style,
-                cover: row.extra.cover,
+                template_json_id: row.extra.template_json_id,
                 topic_type: row.extra.topic_type,
                 introduction: row.extra.introduction,
                 background: row.extra.background
               }
             }
           })
+          this.catalogchange(row.extra.template_style, false)
         },
         /* 封面图片数量变化 */
         handleCoverChange (val) {
@@ -598,7 +644,10 @@
                 type: 'topic',
                 extra: {
                   ...this.dialog.form.extra,
-                  cover: this.dialog.form.extra.cover.slice(0, this.imgCount)
+                  news_style: {
+                    template_style: this.dialog.form.extra.news_style.template_style,
+                    cover: this.dialog.form.extra.news_style.cover.slice(0, this.imgCount)
+                  }
                 }
               }
               let promise = id? changeTopic(id, params) : addTopic(params);
@@ -707,12 +756,36 @@
             }));
             this.changeChannelName(this.channelsList)
           })
-        }
+        },
+        /* 获取模板化栏目数据 */
+        getCatelog () {
+          cateloglist().then(res => {
+            this.catalogOptions = res.data.list;
+          })
+        },
+        /* 联动模板化样式 */
+        catalogchange (val, isClear = true) {
+          isClear && (this.dialog.form.extra.template_json_id = '');
+          this.styleOptions = [];
+          if(!val) return;
+          const sourceId = this.productLists.find(n => n.value === this.queryParams.product_id)?.source_id;
+          let data = {
+            "catalogCode": val,
+            "sourceId": sourceId
+          }
+          stylelist(data).then(res => {
+            this.styleOptions = res.data || [];
+          })
+        },
+        yulanfn(){
+          window.open(this.viewurl + this.dialog.form.extra.template_json_id)
+        },
       },
       async created() {
         await this.getProductList();
         this.getList();
         this.getChannels();
+        this.getCatelog();
       }
     }
 </script>

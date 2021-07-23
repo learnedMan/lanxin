@@ -574,6 +574,59 @@
     >
       <version-history :id="history.id" type="news"></version-history>
     </el-dialog>
+    <!-- 新增或修改子专题 -->
+    <el-dialog
+      width="500px"
+      :title="topicDialog.title"
+      :visible.sync="topicDialog.show"
+    >
+      <el-form
+        ref="topicForm"
+        :model="topicDialog.form"
+        :rules="topicDialog.rules"
+        label-width="120px"
+        size="small"
+      >
+        <el-form-item
+          label="标题:"
+          prop="name"
+        >
+          <el-input
+            v-model="topicDialog.form.name"
+            placeholder="请输入专题名"
+            clearable
+            size="small"
+            style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item
+          label="(模板化)栏目:"
+          prop="extra.template_style"
+        >
+          <el-select clearable @change="catalogchange" v-model="topicDialog.form.extra.template_style" placeholder="请选择">
+            <el-option v-for="item in catalogOptions" :key="item.id" :label="item.catalogName" :value="`${item.catalogCode}`">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="(模板化)样式:"
+          prop="extra.template_json_id"
+        >
+          <el-select clearable v-model="topicDialog.form.extra.template_json_id" placeholder="请选择">
+            <el-option v-for="item in styleOptions" :key="item.id" :label="item.styleName" :value="`${item.id}`">
+            </el-option>
+          </el-select>
+          <el-button v-if="topicDialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="topicDialog.show = false">取 消</el-button>
+        <el-button type="primary" @click="enterTopicChange">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -593,7 +646,7 @@
     getNewDetail,
     addPushDetail
   } from '@/api/content'
-  import { setSortchannels } from '@/api/manage'
+  import { setSortchannels, cateloglist, stylelist, getproduct } from '@/api/manage'
   import Sortable from 'sortablejs'
   import { dateFormat } from "@/utils/costum";
   import NewDetail from '@/views/workbench/reviewNews/detail.vue'
@@ -786,9 +839,62 @@
             show: false,
             id: ''
           }, // 历史记录弹框
+          catalogOptions: [], // 模板化栏目数据
+          styleOptions: [], // 模板化样式
+          productLists: [],
+          topicDialog: {
+            show: false,
+            title: '新增',
+            form: {
+              name: '',
+              extra: {
+                template_style: '',
+                template_json_id: '',
+              }
+            },
+            rules: {
+              name: [
+                { required: true, message: '请输入标题', trigger: 'blur' }
+              ]
+            }
+          }
         }
       },
       methods: {
+        /* 获取产品列表 */
+        getProductList () {
+          return getproduct({}).then(res => {
+            const data = res.data || []
+            this.productLists = data.map(n => ({
+              label: n.name,
+              value: n.id,
+              source_id: n.source_id
+            }));
+          });
+        },
+        /* 获取模板化栏目数据 */
+        getCatelog () {
+          cateloglist().then(res => {
+            this.catalogOptions = res.data.list;
+          })
+        },
+        /* 联动模板化样式 */
+        catalogchange (val, isClear = true) {
+          isClear && (this.topicDialog.form.extra.template_json_id = '');
+          this.styleOptions = [];
+          if(!val) return;
+          const sourceId = this.productLists.find(n => n.value === this.product_id)?.source_id;
+          let data = {
+            "catalogCode": val,
+            "sourceId": sourceId
+          }
+          stylelist(data).then(res => {
+            this.styleOptions = res.data || [];
+          })
+        },
+        yulanfn(){
+          window.open(this.viewurl + this.dialog.form.extra.template_json_id)
+        },
         /* 获取详情 */
         getTopicDetail () {
           return getTopicDetail(this.id).then(res => {
@@ -811,38 +917,58 @@
         },
         /* 添加子专题 */
         handleTopicAdd () {
-          this.$prompt('请输入专题名', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            inputValidator: (val) => {
-              return val != null && val.trim() !== '';
-            },
-            inputErrorMessage: '请输入专题名'
-          }).then(({ value }) => {
-            addTopic({
-              name: value,
-              father: this.id,
-              status: 1,
-              type: 'topic',
+          this.resetForm('topicForm');
+          Object.assign(this.topicDialog, {
+            show: true,
+            title: '新增专题',
+            form: {
+              name: '',
               extra: {
-                cover: [
-                  {
-                    path: '',
-                    intro: ''
-                  }
-                ],
-                template_style: '240'
+                template_style: '',
+                template_json_id: '',
               }
-            }).then(async () => {
-              this.$message.success('添加成功!');
-              this.getChildTopic();
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '取消输入'
-            });
-          });
+            }
+          })
+        },
+        /* 修改子专题 */
+        handleTopicEdit (data) {
+          this.resetForm('topicForm');
+          const { name, id, extra: { template_style = '', template_json_id = '' } } = data;
+          Object.assign(this.topicDialog, {
+            show: true,
+            title: '修改专题',
+            id,
+            form: {
+              name,
+              extra: {
+                template_style,
+                template_json_id,
+              }
+            }
+          })
+          this.catalogchange(template_style, false);
+        },
+        /* 确认专题新增或修改 */
+        enterTopicChange () {
+          this.$refs.topicForm?.validate(val => {
+            if(val) {
+              const { id } = this.topicDialog;
+              const promise = id? changeTopic(id, {
+                ...this.topicDialog.form,
+                father: this.id
+              }) : addTopic({
+                father: this.id,
+                status: 1,
+                type: 'topic',
+                ...this.topicDialog.form
+              })
+              promise.then(() => {
+                this.$message.success(id? '修改成功' : '添加成功!');
+                this.topicDialog.show = false;
+                this.getChildTopic();
+              })
+            }
+          })
         },
         /* 专题排序 */
         handleTopicSort (direction, data) {
@@ -871,34 +997,6 @@
             this.$message.success('修改状态成功')
             this.getChildTopic();
           })
-        },
-        /* 修改子专题 */
-        handleTopicEdit (data) {
-          const { name, id } = data;
-          this.$prompt('请输入目录名', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            inputValue: data.name,
-            inputValidator: (val) => {
-              return val != null && val.trim() !== '';
-            },
-            inputErrorMessage: '请输入目录名'
-          }).then(({ value }) => {
-            if(name !== value) {
-              changeTopic(id, {
-                name: value,
-                father: this.id
-              }).then(() => {
-                this.$message.success('修改成功!');
-                this.getChildTopic();
-              })
-            }
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '取消输入'
-            });
-          });
         },
         /* 删除子专题 */
         handleTopicRemove (node, data) {
@@ -1201,6 +1299,8 @@
           this.currentKey = this.id;
           this.getList();
         }
+        this.getProductList();
+        this.getCatelog();
       }
     }
 </script>

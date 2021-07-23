@@ -623,6 +623,10 @@ export default {
         {
           label: '已下线',
           value: 2
+        },
+        {
+          label: '待定时发布',
+          value: 5
         }
       ], // 状态集合
       props: Object.freeze({
