@@ -329,6 +329,12 @@
           >
             <el-switch v-model="dialog.form.extra.topic_type" active-value="2" inactive-value="1"></el-switch>
           </el-form-item>
+          <el-form-item
+            label="允许分享:"
+            prop="extra.allow_share"
+          >
+            <el-switch v-model="dialog.form.extra.allow_share" active-value="1" inactive-value="0"></el-switch>
+          </el-form-item>
         </el-form>
         <div
           slot="footer"
@@ -513,6 +519,7 @@
                   template_style: '240',
                   cover: [],
                 },
+                allow_share: '0', // 分享
                 template_style: '',
                 template_json_id: '',
                 topic_type: 1, // 1简单聚合2多模块聚合
@@ -583,6 +590,7 @@
                   template_style: '240',
                   cover: [],
                 },
+                allow_share: '0',
                 template_style: '',
                 template_json_id: '',
                 topic_type: 1, // 1简单聚合2多模块聚合
@@ -618,6 +626,7 @@
                   template_style: row.extra.news_style?.template_style || '240',
                   cover: row.extra.news_style?.cover || [],
                 },
+                allow_share: row.extra.allow_share || '0',
                 template_style: row.extra.template_style,
                 template_json_id: row.extra.template_json_id,
                 topic_type: row.extra.topic_type,

@@ -18,6 +18,7 @@
             name="excel"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-exce"
             :action="actionUrl"
+            :data="actionData"
             :headers="uploadHeader"
             :on-success="handleAvatarSuccess"
             :on-error="handleAvatarError"
@@ -188,6 +189,11 @@ import { isArray } from '@/utils/validate';
         const Authorization = sessionStorage.getItem('token')
         return {
           Authorization
+        }
+      },
+      actionData ({ data = {} }) {
+        return {
+          channel_id: data.id
         }
       }
     },
