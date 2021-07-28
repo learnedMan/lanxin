@@ -293,6 +293,24 @@
             </el-select>
           </el-form-item>
           <el-form-item
+            label="类型:"
+            prop="type"
+          >
+            <el-select
+              style="width: 240px"
+              v-model="listFrom.type"
+              placeholder="请选择类型"
+              clearable
+            >
+              <el-option
+                v-for="item in typeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
             label="名称:"
             prop="name"
           >
@@ -366,7 +384,7 @@
         const pathValidator = (rule, value, callback) => {
           if(value.trim() === '') {
             callback()
-          }else if(!/(\/[\w\/]*)?\w+/.test(value)) {
+          }else if(!/(\/([\w\/]?)*)?(\w+)?/.test(value)) {
             callback(new Error('请输入正确的路径'))
           }else {
             callback()
@@ -418,19 +436,39 @@
               label: '租户',
               value: 2
             }
-          ],
+          ], // 域名
+          typeOptions: [
+            {
+              label: '新闻分享页',
+              value: '1'
+            },
+            {
+              label: '直播间分享页',
+              value: '2'
+            },
+            {
+              label: '专题分享页',
+              value: '3'
+            },
+            {
+              label: '其他',
+              value: '0'
+            }
+          ], // 类型
           dialog: {
             show: false,
             title: '新增'
           },
           listFrom: {
             domain: '',
+            type: '',
             path: '',
             name: '',
             upload: ''
           },
           listRule: {
             domain: { required: true, message: '请选择域名', trigger: 'change' },
+            type: { required: true, message: '请选择类型', trigger: 'change' },
             name: { required: true, message: '请新增名称', trigger: 'blur' },
             path: { validator: pathValidator, trigger: 'blur' }
           }
@@ -572,17 +610,19 @@
             domain: '',
             path: '',
             name: '',
+            type: '',
             upload: ''
           }
         },
         /* 编辑列表 */
         handleEditList (row) {
-          const { id, name, domain, path } = row;
+          const { id, name, domain, path, type } = row;
           this.resetForm('dialogForm');
           this.listFrom = {
             name,
             domain,
             path,
+            type,
             upload: ''
           }
           this.dialog = {
@@ -610,6 +650,7 @@
               formData.append('name', params.name);
               formData.append('domain', params.domain);
               formData.append('path', params.path);
+              formData.append('type', params.type);
               if(params.upload) formData.append('upload', params.upload);
               let promise;
               if(id) {
