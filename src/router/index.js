@@ -633,6 +633,26 @@ export const asyncRoutes = [
         meta: { title: '基础样式列表' }
       }
     ]
+  },
+  {
+    path: '/report',
+    component: Layout,
+    redirect: '/report/statistics',
+    permission: 'statistics.manage',
+    name: 'Report',
+    meta: {
+      title: '统计及报表',
+      icon: 'form'
+    },
+    children: [
+      {
+        path: 'statistics',
+        component: () => import('@/views/report/statistics'),
+        permission: 'statistics.news',
+        name: 'Statistics',
+        meta: { title: '发稿统计' },
+      },
+    ]
   }
   // {
   //   path: '/radioTV/index',

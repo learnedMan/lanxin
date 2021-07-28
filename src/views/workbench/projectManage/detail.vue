@@ -644,8 +644,8 @@
     changeNewsStatus,
     deleteNews,
     getNewDetail,
-    addPushDetail
   } from '@/api/content'
+  import { addPushDetail } from '@/api/operamanage'
   import { setSortchannels, cateloglist, stylelist, getproduct } from '@/api/manage'
   import Sortable from 'sortablejs'
   import { dateFormat } from "@/utils/costum";
