@@ -538,6 +538,26 @@
           this.total = res.total
         })
       },
+      /*获取编辑器内第一张图片地址; editor_:编辑器单例*/
+      get_editor_img( editor_){
+            let sourceReg = /<img.*?(?:>|\/>)/gi,
+            srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i,
+            edc = editor_.getContent(),
+            matches = edc.match(sourceReg)
+            if ( matches ) {
+                let source_src_matches = matches[0].match(srcReg)
+                if ( source_src_matches[1]) {
+                    return source_src_matches[1]
+                }
+                return null
+            }
+            return null
+      },
+      /*截取正文的前xx字*/
+      get_editor_prefixlength( editor_,slen){
+          let edc = editor_.getContent()
+          return edc.slice(0,slen)
+      },
     }
   }
 </script>
