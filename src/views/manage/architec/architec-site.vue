@@ -137,6 +137,9 @@
           <el-form-item  label-width="120px" label="大数据产品ID" prop="extra.bigdata_settings.product_id">
             <el-input style="width: 300px" autocomplete="off" placeholder="请输入大数据产品ID" v-model="form.extra.bigdata_settings.product_id"></el-input>
           </el-form-item>
+          <el-form-item  label-width="120px" label="大数据秘钥" prop="extra.bigdata_settings.secret">
+            <el-input style="width: 300px" autocomplete="off" placeholder="请输入大数据秘钥" v-model="form.extra.bigdata_settings.secret"></el-input>
+          </el-form-item>
           <el-form-item label-width="120px" label="负责人姓名" prop="site_manager_name">
             <el-input style="width: 300px" autocomplete="off" placeholder="请输入负责人姓名"  v-model="form.site_manager_name" ></el-input>
           </el-form-item>
@@ -341,7 +344,8 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
                 bigdata_settings: {
                   signature: '',
                   customer_id: '',
-                  product_id: ''
+                  product_id: '',
+                  secret:''
                 },
                 random_view_range: {
                     min:'',
@@ -379,7 +383,8 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
             this.form.extra.bigdata_settings = {
               signature: '',
               customer_id: '',
-              product_id: ''
+              product_id: '',
+              secret:''
             }
           }
         })
