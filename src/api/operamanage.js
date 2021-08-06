@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import request2 from '@/utils/request_old'
 
 /*-------------------------直播间列表--------------------------------*/
 
@@ -198,3 +199,11 @@ export function deletePushDetail(id) {
     method: 'delete'
   })
 }
+
+
+
+
+/*-------------------------社区管理--------------------------------*/
+
+
+
