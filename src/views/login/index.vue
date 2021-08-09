@@ -74,6 +74,8 @@
         >登录</el-button>
       </el-form>
     </div>
+
+    <div class="login-bottom"></div>
     <change-pass
       :phone="loginForm.username"
       :zone_id="sitec.site_select_all.zone_id || ''"
@@ -330,6 +332,17 @@ $w:#fff;
   overflow: hidden;
   background: url($images+'/login_images/loginbg.jpg') no-repeat center;
   background-size: cover;
+  .login-bottom{
+    position: absolute;
+    bottom: 27px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 520px;
+    height: 27px;
+    background: url($images+'/login_images/loginbot.png') no-repeat center;
+    background-size: cover;
+  }
   .loginbox{
     width: 320px;
     height: 520px;
