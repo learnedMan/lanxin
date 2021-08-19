@@ -557,6 +557,15 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'auth_link',
             label: '授权外链'
+          },{
+            value: 'tv',
+            label: '电视'
+          },{
+            value: 'radio',
+            label: '广播'
+          },{
+            value: 'two_clo吧',
+            label: '二列列表'
           },
         ],
         medias:[{
