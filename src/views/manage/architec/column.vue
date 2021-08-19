@@ -564,7 +564,7 @@ import ChildPage1 from './pages/c_page1'
             value: 'radio',
             label: '广播'
           },{
-            value: 'two_clo吧',
+            value: 'two_col吧',
             label: '二列列表'
           },
         ],
