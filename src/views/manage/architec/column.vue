@@ -522,6 +522,15 @@ import ChildPage1 from './pages/c_page1'
         },{
           value: 'video',
           label: '视频'
+        },{
+          value: 'v_channel',
+          label: '视听'
+        },{
+          value: 'service',
+          label: '服务'
+        },{
+          value: 'interact',
+          label: '互动'
         }],
         catalogoptions:[],
         styleoptions:[],
@@ -564,9 +573,15 @@ import ChildPage1 from './pages/c_page1'
             value: 'radio',
             label: '广播'
           },{
-            value: 'two_col吧',
+            value: 'two_col',
             label: '二列列表'
-          },
+          },{
+            value: 'multi_layer',
+            label: '多层级'
+          },{
+            value: 'map_matrix',
+            label: '地图矩阵'
+          }
         ],
         medias:[{
             value: '新闻',
