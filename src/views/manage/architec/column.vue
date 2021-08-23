@@ -581,6 +581,9 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'map_matrix',
             label: '地图矩阵'
+          },{
+            value: 'float',
+            label: '悬浮球'
           }
         ],
         medias:[{
