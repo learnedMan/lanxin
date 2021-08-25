@@ -34,10 +34,22 @@
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border v-loading="loading" :data="dataList">
       <el-table-column label="话题id" align="center" prop="id" />
-      <el-table-column label="话题名称" align="center" prop="name" :show-overflow-tooltip="true" />
-      <el-table-column label="话题标识" align="center" prop="en_name" :show-overflow-tooltip="true" />
-      <el-table-column label="话题负责人" align="center" prop="user.name" :show-overflow-tooltip="true" />
-      <el-table-column label="负责人电话" align="center" prop="user.phone" :show-overflow-tooltip="true" />
+      <el-table-column label="话题背景图" align="center" prop="name" :show-overflow-tooltip="true" />
+      <el-table-column label="话题名称" align="center" prop="en_name" :show-overflow-tooltip="true" />
+      <el-table-column label="话题简介" align="center" prop="user.name" :show-overflow-tooltip="true" />
+      <el-table-column label="排序" align="center" prop="user.phone" :show-overflow-tooltip="true" />
+      <el-table-column
+        label="对外展示"
+        align="center"
+        prop="status"
+        :show-overflow-tooltip="true" >
+        <template slot-scope="scope">
+          <el-select @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
+            <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </template>
+      </el-table-column>
       <el-table-column
         label="状态"
         align="center"
@@ -51,7 +63,6 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
-      <el-table-column label="上次登录时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
       <el-table-column width="200px" label="操作" align="center">
         <template slot-scope="scope">
           <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
@@ -189,8 +200,6 @@ import {
   editsites,
   getzones
   } from '@/api/manage'
-import { validUsername , validEmail } from '@/utils/validate'
-import { parse } from 'path-to-regexp';
 import uploadSingle from '@/components/Upload/uploadSingle.vue'
   export default {
     name: 'architec-site',
@@ -367,9 +376,6 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
         this.dialogTitle = "编辑话题";
         this.dialogType = "edit";
         this.$nextTick(() => {
-          // for (let key in row) {
-          //   this.form[key] = row[key];
-          // }
           this.form = JSON.parse(JSON.stringify(row))
           console.log(this.form)
           this.form.site_manager_name = this.form.user.name
@@ -394,8 +400,6 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
             }
           }
         })
-
-
         this.dialogFormVisible = true;
       },
       // 关闭窗口
@@ -405,22 +409,6 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
       },
       // 确定弹窗
       enterDialog() {
-        // if(!validUsername(this.form.phone)){
-        //     this.$message({
-        //       message: '请输入正确的手机号',
-        //       type: 'error'
-        //     })
-        //     return
-        // }
-        // if(this.form.email){
-        //   if(!validEmail(this.form.email)){
-        //     this.$message({
-        //       message: '请输入正确的邮箱',
-        //       type: 'error'
-        //     })
-        //     return
-        //   }
-        // }
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
           if (this.dialogType=='edit') {
@@ -428,19 +416,12 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
             // console.log(this.form)
             var data = this.form;
             editsites(data.id,data).then(response => {
-              // if (response.status_code >= 200 && response.status_code < 300) {
-                  this.$message({
-                    message: '修改成功',
-                    type: 'success'
-                  });
-                  this.dialogFormVisible = false;
-                  this.getList();
-              // }else {
-              //     this.$message({
-              //       message: response.message,
-              //       type: 'warning'
-              //     });
-              // }
+                this.$message({
+                  message: '修改成功',
+                  type: 'success'
+                });
+                this.dialogFormVisible = false;
+                this.getList();
             })
           }else{
             // 新增
@@ -452,22 +433,13 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
                 return obj;
             }
             removePropertyOfNull(data)
-            // console.log(data)
-            // return
             addsites(data).then(response => {
-              // if (response.status_code >= 200 && response.status_code < 300) {
-                  this.$message({
-                    message: '新建成功',
-                    type: 'success'
-                  });
-                  this.dialogFormVisible = false;
-                  this.getList();
-              // }else {
-              //     this.$message({
-              //       message: response.message,
-              //       type: 'warning'
-              //     });
-              // }
+                this.$message({
+                  message: '新建成功',
+                  type: 'success'
+                });
+                this.dialogFormVisible = false;
+                this.getList();
             })
           }
         })
