@@ -451,6 +451,14 @@
               value: '3'
             },
             {
+              label: '新闻详情页',
+              value: '4'
+            },
+            {
+              label: '新闻评论页',
+              value: '5'
+            },
+            {
               label: '其他',
               value: '0'
             }
