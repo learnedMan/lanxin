@@ -192,6 +192,34 @@ export function getGossipDetail(params) {
   })
 }
 
+/*-------------------------帖子审核--------------------------------*/
+
+/* 获取列表 */
+export function getPostLists(data) {
+  return request2({
+    url: '/internal/social/post/list',
+    method: 'post',
+    data
+  })
+}
+
+/* 修改状态 */
+export function changePostStatus(data) {
+  return request2({
+    url: '/internal/social/post/verify',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取详情 */
+export function getPostDetail(params) {
+  return request2({
+    url: '/internal/social/post/Info',
+    method: 'post',
+    params
+  })
+}
 
 
 

@@ -204,6 +204,74 @@ export function deletePushDetail(id) {
 
 
 /*-------------------------社区管理--------------------------------*/
+/* 获取话题管理列表 */
+export function getTopicList(params) {
+  return request2({
+    url: '/internal/social/topic/list',
+    method: 'post',
+    params
+  })
+}
 
+/* 添加话题 */
+export function addTopic(data) {
+  return request2({
+    url: '/internal/social/topic/add',
+    method: 'post',
+    data
+  })
+}
 
+/* 修改话题 */
+export function editTopic( data) {
+  return request2({
+    url: '/internal/social/topic/update',
+    method: 'post',
+    data
+  })
+}
 
+/* 删除话题 */
+export function delTopic(data) {
+  return request2({
+    url: '/internal/social/topic/del',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取分类管理列表 */
+export function getClassifyList(params) {
+  return request2({
+    url: '/internal/social/classify/list',
+    method: 'post',
+    params
+  })
+}
+
+/* 添加分类 */
+export function addClassify(data) {
+  return request2({
+    url: '/internal/social/classify/add',
+    method: 'post',
+    data
+  })
+}
+
+/* 修改分类 */
+export function editClassify( data) {
+  return request2({
+    url: '/internal/social/classify/update',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除分类 */
+export function delClassify(data) {
+  return request2({
+    url: '/internal/social/classify/del',
+    method: 'post',
+    data
+  })
+}

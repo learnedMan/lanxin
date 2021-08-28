@@ -341,6 +341,13 @@ export const asyncRoutes = [
         meta: { title: '爆料审核' }
       },
       {
+        path: 'posts',
+        component: () => import('@/views/workbench/posts/index'),
+        name: 'Posts',
+        permission: 'work_space.review_posts',
+        meta: { title: '帖子审核' }
+      },
+      {
         path: 'userFeedback',
         component: () => import('@/views/workbench/userFeedback/index'),
         name: 'UserFeedback',
