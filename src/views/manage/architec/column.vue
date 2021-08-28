@@ -584,6 +584,12 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'float',
             label: '悬浮球'
+          },{
+            value: 'vod_list',
+            label: '视频点播列表'
+          },{
+            value: 'community',
+            label: '社区'
           }
         ],
         medias:[{
