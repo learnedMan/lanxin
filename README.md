@@ -1,4 +1,6 @@
-t
+YAPI地址：http://10.30.10.158:3000/
+公共账号："admin1@admin.com"，密码："ymfe.org"
+
 <p align="center">
   <img width="320" src="https://wpimg.wallstcn.com/ecc53a42-d79b-42e2-8852-5126b810a4c8.svg">
 </p>
