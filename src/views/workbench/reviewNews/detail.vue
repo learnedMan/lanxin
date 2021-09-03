@@ -301,7 +301,7 @@
                     @input="handleInput($event, formOptions['extra.link.type'].item)"
                     @change="handleTabChange"
                   >
-                    <el-radio v-for="list of formOptions['extra.link.type'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                    <el-radio style="margin-bottom:15px;" v-for="list of formOptions['extra.link.type'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <!-- 链接地址 -->
@@ -1220,6 +1220,11 @@ export default {
                 label: '活动',
                 value: 'activity',
                 relatedLabel: '活动ID'
+              },
+              {
+                label: '视频点播列表',
+                value: 'vod_list',
+                relatedLabel: '栏目id'
               },
               {
                 label: '内部其他功能',
