@@ -165,11 +165,11 @@
               @fatherMethod="watchList(scope.row)"
             ></Iconbutton>
             <!-- 发布 -->
-            <Iconbutton
+            <!-- <Iconbutton
               icontype="fb"
               label="栏目"
               @fatherMethod="handlePublish(scope.row)"
-            ></Iconbutton>
+            ></Iconbutton> -->
           </template>
         </el-table-column>
       </el-table>

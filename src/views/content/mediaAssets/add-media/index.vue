@@ -1206,6 +1206,11 @@ export default {
                 relatedLabel: '活动ID'
               },
               {
+                label: '视频点播列表',
+                value: 'vod_list',
+                relatedLabel: '栏目id'
+              },
+              {
                 label: '内部其他功能',
                 value: 'internal_link',
                 relatedLabel: '对应功能ID'

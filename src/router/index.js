@@ -341,6 +341,13 @@ export const asyncRoutes = [
         meta: { title: '爆料审核' }
       },
       {
+        path: 'posts',
+        component: () => import('@/views/workbench/posts/index'),
+        name: 'Posts',
+        permission: 'work_space.review_posts',
+        meta: { title: '帖子审核' }
+      },
+      {
         path: 'userFeedback',
         component: () => import('@/views/workbench/userFeedback/index'),
         name: 'UserFeedback',
@@ -395,30 +402,30 @@ export const asyncRoutes = [
         defaultShow: true,
         meta: { title: '抽奖' },
       },
-      // {
-      //   path: 'community',
-      //   component: () => import('@/views/operamanage/community/index'),
-      //   name: 'Community',
-      //   permission: 'operation.community',
-      //   meta: { title: '社区管理' },
-      //   redirect: '/operaManage/community/classmanage',
-      //   children: [
-      //     {
-      //       path: 'classmanage',
-      //       component: () => import('@/views/operamanage/community/classmanage/index'),
-      //       name: 'Classmanage',
-      //       permission: 'operation.classmanage.community',
-      //       meta: { title: '分类管理' }
-      //     },
-      //     {
-      //       path: 'topic',
-      //       component: () => import('@/views/operamanage/community/topic/index'),
-      //       name: 'Topic',
-      //       permission: 'operation.topic.community',
-      //       meta: { title: '话题管理' }
-      //     }
-      //   ]
-      // },
+      {
+        path: 'community',
+        component: () => import('@/views/operamanage/community/index'),
+        name: 'Community',
+        permission: 'operation.community',
+        meta: { title: '社区管理' },
+        redirect: '/operaManage/community/classmanage',
+        children: [
+          {
+            path: 'classmanage',
+            component: () => import('@/views/operamanage/community/classmanage/index'),
+            name: 'Classmanage',
+            permission: 'operation.classmanage.community',
+            meta: { title: '分类管理' }
+          },
+          {
+            path: 'topic',
+            component: () => import('@/views/operamanage/community/topic/index'),
+            name: 'Topic',
+            permission: 'operation.topic.community',
+            meta: { title: '话题管理' }
+          }
+        ]
+      },
       {
         path: 'advertPush',
         component: () => import('@/views/operamanage/advertPush/index'),
