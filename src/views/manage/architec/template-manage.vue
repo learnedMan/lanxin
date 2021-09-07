@@ -616,7 +616,7 @@
           }
           this.listFrom = {
             domain: '',
-            path: '',
+            upload_path: '',
             name: '',
             type: '',
             upload: ''
@@ -624,12 +624,12 @@
         },
         /* 编辑列表 */
         handleEditList (row) {
-          const { id, name, domain, path, type } = row;
+          const { id, name, domain, upload_path, type } = row;
           this.resetForm('dialogForm');
           this.listFrom = {
             name,
             domain,
-            path,
+            upload_path,
             type,
             upload: ''
           }
@@ -657,7 +657,7 @@
               const formData = new FormData();
               formData.append('name', params.name);
               formData.append('domain', params.domain);
-              formData.append('path', params.path);
+              formData.append('upload_path', params.upload_path);
               formData.append('type', params.type);
               if(params.upload) formData.append('upload', params.upload);
               let promise;
