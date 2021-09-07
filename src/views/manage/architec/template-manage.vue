@@ -323,10 +323,10 @@
           </el-form-item>
           <el-form-item
             label="路径:"
-            prop="path"
+            prop="upload_path"
           >
             <el-input
-              v-model.trim="listFrom.path"
+              v-model.trim="listFrom.upload_path"
               placeholder="请输入路径(不填按年月日来生成路径)"
               clearable
               style="width: 240px"
@@ -470,7 +470,7 @@
           listFrom: {
             domain: '',
             type: '',
-            path: '',
+            upload_path: '',
             name: '',
             upload: ''
           },
@@ -478,7 +478,7 @@
             domain: { required: true, message: '请选择域名', trigger: 'change' },
             type: { required: true, message: '请选择类型', trigger: 'change' },
             name: { required: true, message: '请新增名称', trigger: 'blur' },
-            path: { validator: pathValidator, trigger: 'blur' }
+            upload_path: { validator: pathValidator, trigger: 'blur' }
           }
         }
       },
