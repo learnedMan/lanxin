@@ -1,5 +1,14 @@
 import request, { download } from '@/utils/statistics'
 
+/* 获取点击量 */
+export function getMultiHits(data) {
+  return request({
+    url: '/api/algo/getMultiHits',
+    method: 'post',
+    data: data
+  })
+}
+
 // 查询按部门发稿量
 export function listDepartmentKpi(data) {
   return request({

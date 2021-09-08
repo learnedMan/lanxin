@@ -183,12 +183,19 @@
             border
             tooltip-effect="dark"
             style="width: 100%"
+            :key="tablekey"
           >
             <el-table-column
             v-if="!isMobile"
               label="新闻ID"
               align="center"
               prop="id"
+            />
+            <el-table-column
+            v-if="!isMobile"
+              label="点击量"
+              align="center"
+              prop="hits"
             />
             <el-table-column
             v-if="!isMobile"
@@ -536,6 +543,7 @@
 
 <script>
 import { getChannels } from '@/api/manage'
+import { getMultiHits } from '@/api/statistics'
 import { addPushDetail} from '@/api/operamanage'
 import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail } from '@/api/content'
 import NewDetail from './reviewNews/detail'
@@ -560,6 +568,7 @@ export default {
       return `${hour}:${minute}:${second} - 23:59:59`
     }
     return {
+      tablekey:false,
       channelsList: [], // 栏目
       typeOptions: [
         {
@@ -745,6 +754,12 @@ export default {
       this.product_id = this.$refs.tree.getCurrentNode()?.product_id || '';
       this.getList()
     })
+  },
+  computed:{
+    /* 当前站点租户 */
+    customerId() {
+      return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id
+    },
   },
   methods: {
     /* 新增新闻 */
@@ -1012,6 +1027,26 @@ export default {
             typeLabel: type && type.label || '',
             cover: cover && cover.path || '' // 图片
           }
+        })
+
+        let arr = (this.tableData || []).map(item => {
+          return item.id
+        })
+        let data = {
+          customer_id:this.customerId,
+          product_id:this.product_id,
+          itemIds:arr
+        }
+        getMultiHits(data).then(res=>{ //请求点击量
+          let idarr = res.data;
+          this.tableData.forEach((item,index,arr)=>{
+            idarr.forEach((_item,_index,_arr)=>{
+              if(item.id==_item.item_id){
+                this.tableData[index].hits = _item.hits;
+              }
+            })
+          })
+          this.tablekey = !this.tablekey;
         })
         !this.isMobile && this.initSort();
       }).finally(() => {
