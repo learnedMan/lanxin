@@ -23241,7 +23241,6 @@ UE.plugins['catchremoteimage'] = function () {
         
         //背景图片所在标签
         var backgroundimages = [];
-        //console.log("背景图片个数：" + backgroundimagestags.length);
         for (var i = 0, backci; backci = backgroundimagestags[i++];) {
  
             var bstyle = backci.style;
