@@ -23205,7 +23205,6 @@ UE.plugins['catchremoteimage'] = function () {
     });
 
     me.addListener("catchRemoteImage", function () {
-
         var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
             catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
             catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
@@ -23229,7 +23228,6 @@ UE.plugins['catchremoteimage'] = function () {
                 }
                 return false;
             };
-            console.log(catcherLocalDomain)
         for (var i = 0, ci; ci = imgs[i++];) {
             if (ci.getAttribute("word_img")) {
                 continue;
@@ -23262,7 +23260,6 @@ UE.plugins['catchremoteimage'] = function () {
             }
             //console.log("remoteImages个数：" + remoteImages.length);
         }
-
         if (remoteImages.length) {
             catchremoteimage(remoteImages, {
                 //成功抓取
@@ -23279,7 +23276,7 @@ UE.plugins['catchremoteimage'] = function () {
                     for (i = 0; ci = imgs[i++];) {
                         oldSrc = ci.getAttribute("_src") || ci.src || "";
                         for (j = 0; cj = list[j++];) {
-                            if (oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+                            if ( cj.state == "SUCCESS") {  //抓取失败时不做替换处理
                                 newSrc = catcherUrlPrefix + cj.url;
                                 domUtils.setAttributes(ci, {
                                     "src": newSrc,
@@ -23292,7 +23289,7 @@ UE.plugins['catchremoteimage'] = function () {
                     for (var a = 0; a < backgroundimages.length; a++) {
                         oldSrc = backgroundimages[a] || "";
                         for (j = 0; cj = list[j++];) {
-                            if (oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+                            if ( cj.state == "SUCCESS") {  //抓取失败时不做替换处理
                                 newSrc = catcherUrlPrefix + cj.url;
                                 me.document.body.innerHTML.replace(oldSrc, newSrc);
                                 break;
