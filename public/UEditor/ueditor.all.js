@@ -23242,7 +23242,7 @@ UE.plugins['catchremoteimage'] = function () {
         //背景图片所在标签
         var backgroundimages = [];
         for (var i = 0, backci; backci = backgroundimagestags[i++];) {
- 
+        //console.log("背景图片个数：" + backgroundimagestags.length);
             var bstyle = backci.style;
             var backgroundimgurltag = bstyle['background-image'] || bstyle['background'] || "";
             if (backgroundimgurltag != null && backgroundimgurltag != "" && backgroundimgurltag!="initial") {
