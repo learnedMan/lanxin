@@ -23210,6 +23210,8 @@ UE.plugins['catchremoteimage'] = function () {
             catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
             catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
             catcherFieldName = me.getOpt('catcherFieldName');
+        
+            catcherLocalDomain = ["cztv.com","cztvcloud.com"]
 
         var remoteImages = [],
             imgs = domUtils.getElementsByTagName(me.document, "img"),
@@ -23227,12 +23229,13 @@ UE.plugins['catchremoteimage'] = function () {
                 }
                 return false;
             };
-
+            console.log(catcherLocalDomain)
         for (var i = 0, ci; ci = imgs[i++];) {
             if (ci.getAttribute("word_img")) {
                 continue;
             }
             var src = ci.getAttribute("_src") || ci.src || "";
+
             if (/^(https?|ftp):/i.test(src) && !test(src, catcherLocalDomain)) {
                 remoteImages.push(src);
             }
