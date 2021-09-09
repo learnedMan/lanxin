@@ -249,6 +249,7 @@
             'fullscreen'
         ]]
         }), // 默认配置
+
         editorDependencies: [
           'ueditor.config.js',
           'ueditor.all.js'
