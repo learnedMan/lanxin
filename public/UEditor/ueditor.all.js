@@ -23205,7 +23205,6 @@ UE.plugins['catchremoteimage'] = function () {
     });
 
     me.addListener("catchRemoteImage", function () {
-
         var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
             catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
             catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
@@ -23236,7 +23235,6 @@ UE.plugins['catchremoteimage'] = function () {
                 remoteImages.push(src);
             }
         }
-
         if (remoteImages.length) {
             catchremoteimage(remoteImages, {
                 //成功抓取
