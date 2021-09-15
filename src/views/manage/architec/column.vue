@@ -531,6 +531,9 @@ import ChildPage1 from './pages/c_page1'
         },{
           value: 'interact',
           label: '互动'
+        },{
+          value: 'live',
+          label: '直播'
         }],
         catalogoptions:[],
         styleoptions:[],
@@ -578,6 +581,9 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'multi_layer',
             label: '多层级'
+          },{
+            value: 'multi_layer2',
+            label: '多层级二'
           },{
             value: 'map_matrix',
             label: '地图矩阵'
