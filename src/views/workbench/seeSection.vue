@@ -191,12 +191,12 @@
               align="center"
               prop="id"
             />
-            <!-- <el-table-column
+            <el-table-column
             v-if="!isMobile"
               label="点击量"
               align="center"
               prop="hits"
-            /> -->
+            />
             <el-table-column
             v-if="!isMobile"
               label="新闻封面"
