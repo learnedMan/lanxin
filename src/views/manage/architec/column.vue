@@ -256,7 +256,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="菜单分组:" prop="extra.group">
-            <el-select v-model="form.extra.group" placeholder="请选择">
+            <el-select v-model="form.extra.group" placeholder="请选择" clearable>
               <el-option v-for="item in groupoptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>

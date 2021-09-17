@@ -183,14 +183,14 @@ export default {
     getsiteFn(){//获取站点
       getSiteList().then(response => {
         this.sitec.site_data = response;
-        const siteId = window.localStorage.getItem('siteId');
-        if(siteId) {
-          this.sitec.site_select = Number(siteId) ;
-          this.sitec.site_select_all = response.find(n => n.id == siteId);
-        } else {
-          this.sitec.site_select = response[0]?.id || '';
-          this.sitec.site_select_all = response[0];
-        }
+        // const siteId = window.localStorage.getItem('siteId');
+        // if(siteId) {
+        //   this.sitec.site_select = Number(siteId) ;
+        //   this.sitec.site_select_all = response.find(n => n.id == siteId);
+        // } else {
+        //   this.sitec.site_select = response[0]?.id || '';
+        //   this.sitec.site_select_all = response[0];
+        // }
       })
     },
     getcodeFn(){//获取验证码

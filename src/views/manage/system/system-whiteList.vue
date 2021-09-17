@@ -21,8 +21,8 @@
     <el-table 
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border v-loading="loading" :data="dataList">
-      <el-table-column label="ID" align="center" prop="Id" />
-      <el-table-column label="白名单" align="center" prop="Keywords" :show-overflow-tooltip="true" />
+      <el-table-column label="ID" align="center" prop="id" />
+      <el-table-column label="白名单" align="center" prop="keyword" :show-overflow-tooltip="true" />
       <el-table-column width="160px" label="操作" align="center">
         <template slot-scope="scope">
           <!-- <el-button
@@ -129,7 +129,7 @@ import {
       getList(){
           this.loading = true;
         getWhitelist(this.queryParams).then(response => {
-          // console.log(response)
+          console.log('res',response)
           this.loading = false;
           this.dataList = response.page.list;
           this.totalCount = response.page.totalCount;
