@@ -188,8 +188,8 @@ export default {
           this.sitec.site_select = Number(siteId) ;
           this.sitec.site_select_all = response.find(n => n.id == siteId);
         } else {
-          this.sitec.site_select = response[0]?.id || '';
-          this.sitec.site_select_all = response[0];
+          // this.sitec.site_select = response[0]?.id || '';
+          //this.sitec.site_select_all = response[0];
         }
       })
     },

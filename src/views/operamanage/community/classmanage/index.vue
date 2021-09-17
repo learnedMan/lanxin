@@ -89,9 +89,9 @@
         <el-form-item  label-width="120px" label="分类排序" prop="sort">
           <el-input-number :controls="false" autocomplete="off" v-model="form.sort"></el-input-number>
         </el-form-item>
-        <el-form-item label-width="120px" label="是否末级" prop="isEnd">
+        <el-form-item label-width="120px" label="是否末级" prop="is_end">
             <span style="color:red;">注意：选择后不可更改！</span>
-            <el-radio-group :disabled="!editfalg" v-model="form.isEnd">
+            <el-radio-group :disabled="!editfalg" v-model="form.is_end">
               <el-radio style="margin-bottom:10px;" :label="0">是(该分类作为末级，不可在此基础上创建子级)</el-radio>
               <el-radio :label="1">不是(该分类可创建子级，用户发帖对应子级)</el-radio>
             </el-radio-group>
@@ -128,6 +128,7 @@ import {
       var mytoken = sessionStorage.getItem('token');
       return {
         importHeaders: {Authorization: mytoken},//传图片时的token
+        radio: 0,
         // 查询参数
         queryParams: {
           page: 1,
@@ -271,7 +272,7 @@ import {
             name:"",
             sort:0,
             status:0,
-            isEnd:0,
+            is_end:0,
             level:2,
             sourceId:this.queryParams.sourceId
           }
@@ -282,7 +283,7 @@ import {
         this.dialogTitle = "编辑分类";
         this.dialogType = "edit";
         this.form = JSON.parse(JSON.stringify(row))
-        // console.log(this.form)
+        //console.log('form',this.form)
         this.dialogFormVisible = true;
       },
       //删除分类
