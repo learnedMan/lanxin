@@ -256,7 +256,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="菜单分组:" prop="extra.group">
-            <el-select v-model="form.extra.group" placeholder="请选择">
+            <el-select v-model="form.extra.group" placeholder="请选择" clearable>
               <el-option v-for="item in groupoptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
@@ -531,6 +531,9 @@ import ChildPage1 from './pages/c_page1'
         },{
           value: 'interact',
           label: '互动'
+        },{
+          value: 'live',
+          label: '直播'
         }],
         catalogoptions:[],
         styleoptions:[],
@@ -578,6 +581,9 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'multi_layer',
             label: '多层级'
+          },{
+            value: 'multi_layer2',
+            label: '多层级二'
           },{
             value: 'map_matrix',
             label: '地图矩阵'
