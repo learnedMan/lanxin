@@ -761,6 +761,9 @@ export default {
     customerId() {
       return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id
     },
+    siteId() {
+      return this.$store.state.user.u_info.site.id
+    },
   },
   methods: {
     /* 新增新闻 */
@@ -1037,7 +1040,7 @@ export default {
         })
         let data = {
           customer_id:this.customerId,
-          product_id:this.product_id,
+          product_id:this.siteId,
           itemIds:arr
         }
         getMultiHits(data).then(res=>{ //请求点击量
