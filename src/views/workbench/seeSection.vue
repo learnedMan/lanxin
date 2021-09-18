@@ -761,8 +761,8 @@ export default {
     customerId() {
       return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id
     },
-    siteId() {
-      return this.$store.state.user.u_info.site.id
+    product_id_dsj() {
+      return this.$store.state.user.u_info.site.extra.bigdata_settings.product_id
     },
   },
   methods: {
@@ -1040,20 +1040,23 @@ export default {
         })
         let data = {
           customer_id:this.customerId,
-          product_id:this.siteId,
+          product_id:this.product_id_dsj,
           itemIds:arr
         }
-        getMultiHits(data).then(res=>{ //请求点击量
-          let idarr = res.data;
-          this.tableData.forEach((item,index,arr)=>{
-            idarr.forEach((_item,_index,_arr)=>{
-              if(item.id==_item.item_id){
-                this.tableData[index].hits = _item.hits;
-              }
+        if(arr.length!=0){
+          getMultiHits(data).then(res=>{ //请求点击量
+            let idarr = res.data;
+            this.tableData.forEach((item,index,arr)=>{
+              idarr.forEach((_item,_index,_arr)=>{
+                if(item.id==_item.item_id){
+                  this.tableData[index].hits = _item.hits;
+                }
+              })
             })
+            this.tablekey = !this.tablekey;
           })
-          this.tablekey = !this.tablekey;
-        })
+        }
+        
         !this.isMobile && this.initSort();
       }).finally(() => {
         this.loading = false
