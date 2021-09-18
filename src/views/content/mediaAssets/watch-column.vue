@@ -57,6 +57,7 @@
       <el-table-column
         label="新闻名称"
         align="center"
+        width="140"
         prop="title"
         :show-overflow-tooltip="true"
       >

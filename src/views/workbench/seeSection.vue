@@ -219,6 +219,7 @@
 
               label="新闻标题"
               align="center"
+              width="140"
               prop="title"
               :show-overflow-tooltip="true"
             >
