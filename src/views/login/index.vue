@@ -65,7 +65,7 @@
           />
           <div class="sendbtn" @click="getcodeFn">{{getcodeval}}</div>
         </el-form-item>
-
+          <div style="font-size: 14px;color: #ccc;cursor: pointer;" @click="forgetPass">忘记密码</div>
         <el-button
           type="primary"
           style="width:100%;margin-bottom:30px;"
@@ -228,6 +228,24 @@ export default {
             }
           },1000)
       })
+    },
+    forgetPass() { //忘记密码
+      if ( !this.sitec.site_select) {
+          this.$message({
+            message: '请选择站点',
+            type: 'error'
+          })
+          return
+      }
+      if(!this.loginForm.username){
+          this.$message({
+            message: '请输入手机号',
+            type: 'error'
+          })
+          return
+      }
+      const changePass = this.$refs.changePass;
+      changePass.dialog.show = true;
     },
     sites_change(e){
       this.sitec.site_data.forEach((value,index,array)=>{

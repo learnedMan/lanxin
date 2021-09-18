@@ -230,6 +230,7 @@
           >
             <el-date-picker
               popper-class="custom-picker"
+              ref="endTime"
               v-model="dialogForm.end_time"
               type="datetime"
               placeholder="选择结束日期时间"
@@ -238,7 +239,7 @@
               value-format="yyyy-MM-dd HH:00:00"
               :picker-options="pickerOptionsEnd">
             </el-date-picker>
-            <el-checkbox v-model="dialogForm.unlimited" @change="dialogForm.end_time = ''" style="margin-left: 10px">不限制</el-checkbox>
+            <el-checkbox v-model="dialogForm.unlimited" @change="endAction" style="margin-left: 10px">不限制</el-checkbox>
           </el-form-item>
           <el-form-item
             label="是否允许跳过:"
@@ -525,6 +526,12 @@
             show: true
           }
           this.dialogForm.product_id = this.params.product_id;
+        },
+        endAction() {
+          this.dialogForm.end_time = ''
+          if(this.dialogForm.unlimited) {
+            this.$refs['dialogForm'].clearValidate(['end_time']);
+          }
         },
         /* 编辑广告 */
         handleEdit (row) {
