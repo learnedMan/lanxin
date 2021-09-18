@@ -764,6 +764,9 @@ export default {
     product_id_dsj() {
       return this.$store.state.user.u_info.site.extra.bigdata_settings.product_id || '1'
     },
+    multiplying_factor(){
+      return this.$store.state.user.u_info.site.extra.multiplying_factor || 1
+    }
   },
   methods: {
     /* 新增新闻 */
@@ -1043,13 +1046,14 @@ export default {
           product_id:this.product_id_dsj,
           itemIds:arr
         }
+        // multiplying_factor
         if(arr.length!=0){
           getMultiHits(data).then(res=>{ //请求点击量
             let idarr = res.data;
             this.tableData.forEach((item,index,arr)=>{
               idarr.forEach((_item,_index,_arr)=>{
                 if(item.id==_item.item_id){
-                  this.tableData[index].hits = _item.hits;
+                  this.tableData[index].hits = parseInt(_item.hits)*parseInt(this.multiplying_factor)+parseInt(this.tableData[index].view_base_num) || 0;
                 }
               })
             })
