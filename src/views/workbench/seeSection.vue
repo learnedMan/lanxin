@@ -759,10 +759,10 @@ export default {
   computed:{
     /* 当前站点租户 */
     customerId() {
-      return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id
+      return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id || '1'
     },
     product_id_dsj() {
-      return this.$store.state.user.u_info.site.extra.bigdata_settings.product_id
+      return this.$store.state.user.u_info.site.extra.bigdata_settings.product_id || '1'
     },
   },
   methods: {
