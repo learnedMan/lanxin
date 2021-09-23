@@ -454,6 +454,7 @@ import ChildPage1 from './pages/c_page1'
         // 查询参数
         queryParams: {
           product_id: "",
+          with_special_channels: 'topic',
         },
         catalogid:'',//栏目id
 
