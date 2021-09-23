@@ -23190,70 +23190,81 @@ UE.plugins['customstyle'] = function() {
 /**
  * 远程图片抓取,当开启本插件时所有不符合本地域名的图片都将被抓取成为本地服务器上的图片
  */
-UE.plugins['catchremoteimage'] = function () {
+ UE.plugins['catchremoteimage'] = function() {
     var me = this,
         ajax = UE.ajax;
-
-    /* 设置默认值 */
-    if (me.options.catchRemoteImageEnable === false) return;
+    if(me.options.catchRemoteImageEnable === false) return;
     me.setOpt({
         catchRemoteImageEnable: false
     });
-
-    me.addListener("afterpaste", function () {
+    me.addListener("afterpaste", function() {
         me.fireEvent("catchRemoteImage");
     });
-
-    me.addListener("catchRemoteImage", function () {
-
+    me.addListener("catchRemoteImage", function() {
         var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
             catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
             catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
             catcherFieldName = me.getOpt('catcherFieldName');
-
         var remoteImages = [],
             imgs = domUtils.getElementsByTagName(me.document, "img"),
-            test = function (src, urls) {
-                if (src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(src)) {
+            backgroundimagestags = domUtils.getElementsByTagName(me.document, "section span div p "),
+            test = function(src, urls) {
+                if(src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(src)) {
                     return true;
                 }
-                if (urls) {
-                    for (var j = 0, url; url = urls[j++];) {
-                        if (src.indexOf(url) !== -1) {
+                if(urls) {
+                    for(var j = 0, url; url = urls[j++];) {
+                        if(src.indexOf(url) !== -1) {
                             return true;
                         }
                     }
                 }
                 return false;
             };
-
-        for (var i = 0, ci; ci = imgs[i++];) {
-            if (ci.getAttribute("word_img")) {
+        for(var i = 0, ci; ci = imgs[i++];) {
+            if(ci.getAttribute("word_img")) {
                 continue;
             }
             var src = ci.getAttribute("_src") || ci.src || "";
-            if (/^(https?|ftp):/i.test(src) && !test(src, catcherLocalDomain)) {
+            if(/^(https?|ftp):/i.test(src) && !test(src, catcherLocalDomain)) {
                 remoteImages.push(src);
             }
         }
-
-        if (remoteImages.length) {
+        var backgroundimages = [];
+        for(var i = 0, backci; backci = backgroundimagestags[i++];) {
+            var bstyle = backci.style;
+            var backgroundimgurltag = bstyle['background-image'] || bstyle['background'] || "";
+            if(backgroundimgurltag != null && backgroundimgurltag != "" && backgroundimgurltag != "initial" && backgroundimgurltag != "none") {
+                var backsrc = backgroundimgurltag.split("(")[1].split(")")[0].replace(/\"/g, "") ||
+                    backgroundimgurltag.split("(")[1].split(")")[0].replace(/\"/g, "") ||
+                    "";
+                if(backsrc != null && backsrc != "") {
+                    if(/^(https?|ftp):/i.test(backsrc) && !test(backsrc, catcherLocalDomain)) {
+                        backgroundimages.push(backsrc);
+                        remoteImages.push(backsrc);
+                    }
+                }
+            }
+        }
+        // console.log(remoteImages)
+        if(remoteImages.length) {
+            me.fireEvent('catchremoteimgstart');
             catchremoteimage(remoteImages, {
-                //成功抓取
-                success: function (r) {
+                success: function(r) {
                     try {
-                        var info = r.state !== undefined ? r:eval("(" + r.responseText + ")");
-                    } catch (e) {
+                        var info = r.state !== undefined ? r : eval("(" + r.responseText + ")");
+                    } catch(e) {
                         return;
                     }
-
-                    /* 获取源路径和新路径 */
                     var i, j, ci, cj, oldSrc, newSrc, list = info.list;
-
-                    for (i = 0; ci = imgs[i++];) {
+                    // console.log(imgs)
+                    for(i = 0; ci = imgs[i++];) {
                         oldSrc = ci.getAttribute("_src") || ci.src || "";
-                        for (j = 0; cj = list[j++];) {
-                            if (oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+                        for(j = 0; cj = list[j++];) {
+                            // console.log(oldSrc)
+                            // console.log(cj.source)
+                            // console.log(cj.state)
+                            if(oldSrc == cj.source && cj.state == "SUCCESS") {
                                 newSrc = catcherUrlPrefix + cj.url;
                                 domUtils.setAttributes(ci, {
                                     "src": newSrc,
@@ -23263,32 +23274,184 @@ UE.plugins['catchremoteimage'] = function () {
                             }
                         }
                     }
+                    var bodyHtml = me.document.body.innerHTML;
+                    // console.log(backgroundimages)
+                    for(var a = 0; a < backgroundimages.length; a++) {
+                        oldSrc = backgroundimages[a] || "";
+                        for(j = 0; cj = list[j++];) {
+                            if(oldSrc == cj.source && cj.state == "SUCCESS") {
+                                newSrc = catcherUrlPrefix + cj.url;
+                                bodyHtml = bodyHtml.replace(oldSrc, newSrc);
+                                break;
+                            }
+                        }
+                    }
+                    me.document.body.innerHTML = bodyHtml;
                     me.fireEvent('catchremotesuccess')
                 },
-                //回调失败，本次请求超时
-                error: function () {
+                error: function() {
                     me.fireEvent("catchremoteerror");
                 }
             });
         }
-
+        // 请求
         function catchremoteimage(imgs, callbacks) {
             var params = utils.serializeParam(me.queryCommandValue('serverparam')) || '',
-                url = utils.formatUrl(catcherActionUrl + (catcherActionUrl.indexOf('?') == -1 ? '?':'&') + params),
+                url = utils.formatUrl(catcherActionUrl + (catcherActionUrl.indexOf('?') == -1 ? '?' : '&') + params),
                 isJsonp = utils.isCrossDomainUrl(url),
                 opt = {
-                    'method': 'POST',
-                    'dataType': isJsonp ? 'jsonp':'',
-                    'timeout': 60000, //单位：毫秒，回调请求超时设置。目标用户如果网速不是很快的话此处建议设置一个较大的数值
+                    'method': 'GET',
+                    'dataType': isJsonp ? 'jsonp' : '',
+                    'timeout': 120000,
                     'onsuccess': callbacks["success"],
                     'onerror': callbacks["error"]
                 };
             opt[catcherFieldName] = imgs;
             ajax.request(url, opt);
         }
-
     });
 };
+//  UE.plugins['catchremoteimage'] = function () {
+//     var me = this,
+//         ajax = UE.ajax;
+
+//     /* 设置默认值 */
+//     if (me.options.catchRemoteImageEnable === false) return;
+//     me.setOpt({
+//         catchRemoteImageEnable: false
+//     });
+
+//     me.addListener("afterpaste", function () {
+//         me.fireEvent("catchRemoteImage");
+//     });
+
+//     me.addListener("catchRemoteImage", function () {
+
+//         var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
+//             catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
+//             catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
+//             catcherFieldName = me.getOpt('catcherFieldName');
+        
+//             // catcherLocalDomain = ["cztv.com","cztvcloud.com"]
+
+//         var remoteImages = [],
+//             imgs = domUtils.getElementsByTagName(me.document, "img"),
+//             backgroundimagestags = domUtils.getElementsByTagName(me.document, "section span div p "),//抓取背景图片所在的标签
+//             test = function (src, urls) {
+//                 if (src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(src)) {
+//                     return true;
+//                 }
+//                 if (urls) {
+//                     for (var j = 0, url; url = urls[j++];) {
+//                         if (src.indexOf(url) !== -1) {
+//                             return true;
+//                         }
+//                     }
+//                 }
+//                 return false;
+//             };
+
+//         for (var i = 0, ci; ci = imgs[i++];) {
+//             if (ci.getAttribute("word_img")) {
+//                 continue;
+//             }
+//             var src = ci.getAttribute("_src") || ci.src || "";
+//             if (/^(https?|ftp):/i.test(src) && !test(src, catcherLocalDomain)) {
+//                 remoteImages.push(src);
+//             }
+//         }
+//         //背景图片所在标签
+//         var backgroundimages = [];
+//         //console.log("背景图片个数：" + backgroundimagestags.length);
+//         for (var i = 0, backci; backci = backgroundimagestags[i++];) {
+ 
+//             var bstyle = backci.style;
+//             var backgroundimgurltag = bstyle['background-image'] || bstyle['background'] || "";
+//             if (backgroundimgurltag != null && backgroundimgurltag != "" && backgroundimgurltag!="initial") {
+//                 var backsrc = backgroundimgurltag.split("(")[1].split(")")[0].replace(/\"/g, "")
+//                               || backgroundimgurltag.split("(")[1].split(")")[0].replace(/\"/g, "")
+//                               || "";
+//                 //console.log("ci_src：" + backsrc);
+//                 if (backsrc != null && backsrc != "") {
+//                     if (/^(https?|ftp):/i.test(backsrc) && !test(backsrc, catcherLocalDomain)) {
+//                         backgroundimages.push(backsrc);
+//                         remoteImages.push(backsrc);
+//                     }
+//                 }
+//             }
+//             //console.log("remoteImages个数：" + remoteImages.length);
+//         }
+//         if (remoteImages.length) {
+//             catchremoteimage(remoteImages, {
+//                 //成功抓取
+//                 success: function (r) {
+//                     try {
+//                         var info = r.state !== undefined ? r:eval("(" + r.responseText + ")");
+//                     } catch (e) {
+//                         return;
+//                     }
+//                     console.log(info.list)
+//                     /* 获取源路径和新路径 */
+//                     var i, j, ci, cj, oldSrc, newSrc, list = info.list;
+
+//                     for (i = 0; ci = imgs[i++];) {
+//                         oldSrc = ci.getAttribute("_src") || ci.src || "";
+//                         for (j = 0; cj = list[j++];) {
+//                             if (oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+//                                 newSrc = catcherUrlPrefix + cj.url;
+//                                 domUtils.setAttributes(ci, {
+//                                     "src": newSrc,
+//                                     "_src": newSrc
+//                                 });
+//                                 break;
+//                             }
+//                         }
+//                     }
+//                     //背景图片地址的替换
+//                     var bodyHtml = me.document.body.innerHTML;
+//                     //console.log("上传之前html：" + bodyHtml);
+//                     for (var a = 0; a < backgroundimages.length; a++) {
+//                         oldSrc = backgroundimages[a] || "";
+						
+//                         for (j = 0; cj = list[j++];) {
+//                             if (oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+//                                 newSrc = catcherUrlPrefix + cj.url;
+								
+//                                 //console.log("上传之后oldSrc：" + oldSrc);
+//                                 //console.log("上传之后newSrc：" + newSrc);
+//                                 //console.log("上传之后html：" + me.document.body.innerHTML.replace(oldSrc, newSrc));
+//                                 // bodyHtml = bodyHtml.replace(oldSrc, newSrc);
+//                                 me.document.body.innerHTML.replace(oldSrc, newSrc);
+//                                 break;
+//                             }
+//                         }
+//                     }
+//                     me.fireEvent('catchremotesuccess')
+//                 },
+//                 //回调失败，本次请求超时
+//                 error: function () {
+//                     me.fireEvent("catchremoteerror");
+//                 }
+//             });
+//         }
+
+//         function catchremoteimage(imgs, callbacks) {
+//             var params = utils.serializeParam(me.queryCommandValue('serverparam')) || '',
+//                 url = utils.formatUrl(catcherActionUrl + (catcherActionUrl.indexOf('?') == -1 ? '?':'&') + params),
+//                 isJsonp = utils.isCrossDomainUrl(url),
+//                 opt = {
+//                     'method': 'GET',
+//                     'dataType': isJsonp ? 'jsonp':'',
+//                     'timeout': 60000, //单位：毫秒，回调请求超时设置。目标用户如果网速不是很快的话此处建议设置一个较大的数值
+//                     'onsuccess': callbacks["success"],
+//                     'onerror': callbacks["error"]
+//                 };
+//             opt[catcherFieldName] = imgs;
+//             ajax.request(url, opt);
+//         }
+
+//     });
+// };
 
 // plugins/snapscreen.js
 /**

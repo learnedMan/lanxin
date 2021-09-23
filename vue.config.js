@@ -58,7 +58,7 @@ module.exports = {
         changeOrigin: true
       },
       '/laravel-u-editor-server/server': {
-        target: 'http://batrix-local.cztv.com/',
+        target: 'http://batrix-a-local.cztv.com',
         changeOrigin: true,
       }
     },

@@ -132,6 +132,7 @@
       <el-table-column
         label="稿件标题"
         align="center"
+        width="140"
         prop="title"
         :show-overflow-tooltip="true"
       >
@@ -146,7 +147,7 @@
       />
       <el-table-column
       v-if="!isMobile"
-        label="作者"
+        label="编辑"
         align="center"
         prop="author_name"
         :show-overflow-tooltip="true"

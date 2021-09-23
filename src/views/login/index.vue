@@ -65,7 +65,7 @@
           />
           <div class="sendbtn" @click="getcodeFn">{{getcodeval}}</div>
         </el-form-item>
-
+          <div style="font-size: 14px;color: #ccc;cursor: pointer;" @click="forgetPass">忘记密码</div>
         <el-button
           type="primary"
           style="width:100%;margin-bottom:30px;"
@@ -183,14 +183,14 @@ export default {
     getsiteFn(){//获取站点
       getSiteList().then(response => {
         this.sitec.site_data = response;
-        const siteId = window.localStorage.getItem('siteId');
-        if(siteId) {
-          this.sitec.site_select = Number(siteId) ;
-          this.sitec.site_select_all = response.find(n => n.id == siteId);
-        } else {
-          this.sitec.site_select = response[0]?.id || '';
-          this.sitec.site_select_all = response[0];
-        }
+        // const siteId = window.localStorage.getItem('siteId');
+        // if(siteId) {
+        //   this.sitec.site_select = Number(siteId) ;
+        //   this.sitec.site_select_all = response.find(n => n.id == siteId);
+        // } else {
+        //   this.sitec.site_select = response[0]?.id || '';
+        //   this.sitec.site_select_all = response[0];
+        // }
       })
     },
     getcodeFn(){//获取验证码
@@ -228,6 +228,24 @@ export default {
             }
           },1000)
       })
+    },
+    forgetPass() { //忘记密码
+      if ( !this.sitec.site_select) {
+          this.$message({
+            message: '请选择站点',
+            type: 'error'
+          })
+          return
+      }
+      if(!this.loginForm.username){
+          this.$message({
+            message: '请输入手机号',
+            type: 'error'
+          })
+          return
+      }
+      const changePass = this.$refs.changePass;
+      changePass.dialog.show = true;
     },
     sites_change(e){
       this.sitec.site_data.forEach((value,index,array)=>{

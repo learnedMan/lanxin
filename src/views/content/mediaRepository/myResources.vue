@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column label="作者" align="center" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-                <span>{{scope.row.author.name || '无'}}</span>
+                <span>{{scope.row.author?scope.row.author.name:"无" || '无'}}</span>
             </template>
       </el-table-column>
       <el-table-column label="大小" align="center" prop="size" :show-overflow-tooltip="true" />

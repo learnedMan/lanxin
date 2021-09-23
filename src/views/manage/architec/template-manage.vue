@@ -323,10 +323,10 @@
           </el-form-item>
           <el-form-item
             label="路径:"
-            prop="path"
+            prop="upload_path"
           >
             <el-input
-              v-model.trim="listFrom.path"
+              v-model.trim="listFrom.upload_path"
               placeholder="请输入路径(不填按年月日来生成路径)"
               clearable
               style="width: 240px"
@@ -470,7 +470,7 @@
           listFrom: {
             domain: '',
             type: '',
-            path: '',
+            upload_path: '',
             name: '',
             upload: ''
           },
@@ -478,7 +478,7 @@
             domain: { required: true, message: '请选择域名', trigger: 'change' },
             type: { required: true, message: '请选择类型', trigger: 'change' },
             name: { required: true, message: '请新增名称', trigger: 'blur' },
-            path: { validator: pathValidator, trigger: 'blur' }
+            upload_path: { validator: pathValidator, trigger: 'blur' }
           }
         }
       },
@@ -616,7 +616,7 @@
           }
           this.listFrom = {
             domain: '',
-            path: '',
+            upload_path: '',
             name: '',
             type: '',
             upload: ''
@@ -624,12 +624,12 @@
         },
         /* 编辑列表 */
         handleEditList (row) {
-          const { id, name, domain, path, type } = row;
+          const { id, name, domain, upload_path, type } = row;
           this.resetForm('dialogForm');
           this.listFrom = {
             name,
             domain,
-            path,
+            upload_path,
             type,
             upload: ''
           }
@@ -657,7 +657,7 @@
               const formData = new FormData();
               formData.append('name', params.name);
               formData.append('domain', params.domain);
-              formData.append('path', params.path);
+              formData.append('upload_path', params.upload_path);
               formData.append('type', params.type);
               if(params.upload) formData.append('upload', params.upload);
               let promise;

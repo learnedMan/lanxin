@@ -183,12 +183,19 @@
             border
             tooltip-effect="dark"
             style="width: 100%"
+            :key="tablekey"
           >
             <el-table-column
             v-if="!isMobile"
               label="新闻ID"
               align="center"
               prop="id"
+            />
+            <el-table-column
+            v-if="!isMobile"
+              label="点击量"
+              align="center"
+              prop="hits"
             />
             <el-table-column
             v-if="!isMobile"
@@ -212,6 +219,7 @@
 
               label="新闻标题"
               align="center"
+              width="140"
               prop="title"
               :show-overflow-tooltip="true"
             >
@@ -245,7 +253,7 @@
             </el-table-column>
             <el-table-column
             v-if="!isMobile"
-              label="作者"
+              label="编辑"
               align="center"
               prop="author_name"
               :show-overflow-tooltip="true"
@@ -536,6 +544,7 @@
 
 <script>
 import { getChannels } from '@/api/manage'
+import { getMultiHits } from '@/api/statistics'
 import { addPushDetail} from '@/api/operamanage'
 import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail } from '@/api/content'
 import NewDetail from './reviewNews/detail'
@@ -560,6 +569,7 @@ export default {
       return `${hour}:${minute}:${second} - 23:59:59`
     }
     return {
+      tablekey:false,
       channelsList: [], // 栏目
       typeOptions: [
         {
@@ -745,6 +755,18 @@ export default {
       this.product_id = this.$refs.tree.getCurrentNode()?.product_id || '';
       this.getList()
     })
+  },
+  computed:{
+    /* 当前站点租户 */
+    customerId() {
+      return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id || '1'
+    },
+    product_id_dsj() {
+      return this.$store.state.user.u_info.site.extra.bigdata_settings.product_id || '1'
+    },
+    multiplying_factor(){
+      return this.$store.state.user.u_info.site.extra.multiplying_factor || 1
+    }
   },
   methods: {
     /* 新增新闻 */
@@ -953,6 +975,8 @@ export default {
       }).then(() => {
         this.$message.success('修改状态成功')
         this.getList();
+      }).catch(()=>{
+        this.getList()
       })
     },
     /*
@@ -1013,6 +1037,30 @@ export default {
             cover: cover && cover.path || '' // 图片
           }
         })
+
+        let arr = (this.tableData || []).map(item => {
+          return item.id
+        })
+        let data = {
+          customer_id:this.customerId,
+          product_id:this.product_id_dsj,
+          itemIds:arr
+        }
+        // multiplying_factor
+        if(arr.length!=0){
+          getMultiHits(data).then(res=>{ //请求点击量
+            let idarr = res.data;
+            this.tableData.forEach((item,index,arr)=>{
+              idarr.forEach((_item,_index,_arr)=>{
+                if(item.id==_item.item_id){
+                  this.tableData[index].hits = parseInt(_item.hits)*parseInt(this.multiplying_factor)+parseInt(this.tableData[index].view_base_num) || 0;
+                }
+              })
+            })
+            this.tablekey = !this.tablekey;
+          })
+        }
+        
         !this.isMobile && this.initSort();
       }).finally(() => {
         this.loading = false

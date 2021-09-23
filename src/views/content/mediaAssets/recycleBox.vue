@@ -7,10 +7,10 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="作者：">
+      <el-form-item label="编辑：">
         <el-input
           v-model="queryParams.author_name"
-          placeholder="请输入作者姓名"
+          placeholder="请输入编辑姓名"
           clearable
           size="small"
           style="width: 200px"
@@ -42,7 +42,7 @@
                 <span>{{scope.row.type | formattype}}</span>
             </template>
       </el-table-column>
-      <el-table-column label="作者" align="center" prop="author_name" :show-overflow-tooltip="true" />
+      <el-table-column label="编辑" align="center" prop="author_name" :show-overflow-tooltip="true" />
       <el-table-column label="修改" align="center" prop="editor_name" :show-overflow-tooltip="true" />
       <el-table-column label="状态" align="center" :show-overflow-tooltip="true" >
             <template slot-scope="scope">

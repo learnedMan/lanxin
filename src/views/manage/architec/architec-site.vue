@@ -119,8 +119,8 @@
           </el-form-item>
         </div>
         <div class="form-r" style="width:50%;padding-left:50px;">
-          <el-form-item  label-width="120px" label="分享页域名" prop="extra.share_page_domain">
-            <el-input style="width: 300px" autocomplete="off" placeholder="请输入分享页域名" v-model="form.extra.share_page_domain"></el-input>
+          <el-form-item  label-width="120px" label="个性化域名" prop="extra.custom_domain">
+            <el-input style="width: 300px" autocomplete="off" placeholder="请输入个性化域名" v-model="form.extra.custom_domain"></el-input>
           </el-form-item>
           <el-form-item  label-width="120px" label="蓝云租户" prop="extra.uni_site">
             <el-input style="width: 300px" autocomplete="off" placeholder="请输入蓝云租户" v-model="form.extra.uni_site"></el-input>
@@ -340,7 +340,7 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
                 watermark: '',
                 uni_site:'',
                 vms_site_id:'',
-                share_page_domain: '',
+                custom_domain: '',
                 bigdata_settings: {
                   signature: '',
                   customer_id: '',
