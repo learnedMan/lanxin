@@ -548,6 +548,13 @@ export const asyncRoutes = [
             meta: { title: '用户列表' }
           },
           {
+            path: 'query-list',
+            component: () => import('@/views/manage/user/user-list/query-list'),
+            name: 'Query-list',
+            permission: 'system.user.queryList',
+            meta: { title: '邀请量查询' }
+          },
+          {
             path: 'secret-manage',
             component: () => import('@/views/manage/user/secret-manage'),
             name: 'Secret-manage',
