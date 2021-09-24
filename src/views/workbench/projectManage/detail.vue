@@ -228,7 +228,7 @@
           :data="tableData"
           border
           tooltip-effect="dark"
-          style="width: 100%"
+          style="width: 100%;overflow: auto"
         >
           <el-table-column
             v-if="!isMobile"

@@ -377,6 +377,56 @@
                     @input="handleInput($event, formOptions['extra.link.id'].item)"
                   />
                 </el-form-item>
+                <el-row>
+                  <el-col :span="8">
+                    <!-- 活动地址 -->
+                    <el-form-item
+                      v-show="initFrom().includes('extra.activity_address')"
+                      v-bind="formOptions['extra.activity_address'].item.props"
+                    >
+                      <el-input
+                        :value="parseObj(formOptions['extra.activity_address'].item)"
+                        v-bind="formOptions['extra.activity_address'].item.componentProps"
+                        clearable
+                        size="small"
+                        style="width: 200px"
+                        @input="handleInput($event, formOptions['extra.activity_address'].item)"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <!-- 活动开始时间 -->
+                    <el-form-item
+                      v-show="initFrom().includes('extra.activity_start_time')"
+                      v-bind="formOptions['extra.activity_start_time'].item.props"
+                    >
+                      <el-date-picker
+                        type="datetime"
+                        size="small"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        placeholder="选择日期时间"
+                        :value="parseObj(formOptions['extra.activity_start_time'].item)"
+                        @input="handleInput($event, formOptions['extra.activity_start_time'].item)"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <!-- 活动结束时间 -->
+                    <el-form-item
+                      v-show="initFrom().includes('extra.activitu_end_time')"
+                      v-bind="formOptions['extra.activitu_end_time'].item.props"
+                    >
+                      <el-date-picker
+                        type="datetime"
+                        size="small"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        placeholder="选择日期时间"
+                        :value="parseObj(formOptions['extra.activitu_end_time'].item)"
+                        @input="handleInput($event, formOptions['extra.activitu_end_time'].item)"
+                      />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
                 <!-- 薪资区间 -->
                 <el-form-item
                   v-show="initFrom().includes('extra.salary_range.min')"
@@ -1203,7 +1253,7 @@ export default {
               {
                 label: '活动',
                 value: 'activity',
-                relatedLabel: '活动ID'
+                // relatedLabel: '活动地址'
               },
               {
                 label: '视频点播列表',
@@ -1211,10 +1261,14 @@ export default {
                 relatedLabel: '栏目id'
               },
               {
-                label: '内部其他功能',
-                value: 'internal_link',
-                relatedLabel: '对应功能ID'
-              }
+                label: '无跳转',
+                value: 'none',
+              },
+              // {
+              //   label: '内部其他功能',
+              //   value: 'internal_link',
+              //   relatedLabel: '对应功能ID'
+              // }
             ]
           },
           rule: [
@@ -1282,6 +1336,48 @@ export default {
             { required: true, message: '请输入链接地址', trigger: 'blur' }
           ]
         },
+        'extra.activity_address': {
+          item: {
+            key: 'extra.activity_address',
+            props: {
+              label: '活动地址:',
+              prop: 'extra.activity_address'
+            },
+            component: 'input', // 组件名
+            componentProps: {
+              placeholder: '请输入活动地址'
+            }
+          },
+          rule: [
+            { required: true, message: '请输入活动地址', trigger: 'blur' }
+          ]
+        },
+        'extra.activity_start_time': {
+          item: {
+            key: 'extra.activity_start_time',
+            props: {
+              label: '开始时间:',
+              prop: 'extra.activity_start_time'
+            },
+            component: 'date' // 组件名
+          },
+          rule: [
+            { required: true, message: '请选择活动开始时间', trigger: 'change' }
+          ]
+        },
+        'extra.activitu_end_time': {
+          item: {
+            key: 'extra.activitu_end_time',
+            props: {
+              label: '结束时间:',
+              prop: 'extra.activitu_end_time'
+            },
+            component: 'date' // 组件名
+          },
+          rule: [
+            { required: true, message: '请选择活动结束时间', trigger: 'change' }
+          ]
+        },
         'extra.salary_range.min': {
           item: {
             key: 'extra.salary_range.min',
@@ -1339,6 +1435,9 @@ export default {
           tags: '', // 标签
           keywords: '', // 关键词
           set_created_at: '', // 发布时间
+          activity_address: '',//活动地址
+          activity_start_time: '', //活动开始时间
+          activitu_end_time: '', //活动结束时间
           content: '', // 编辑器内容
           is_original: '1', // 是否原创
           source: '', // 来源
@@ -1512,9 +1611,11 @@ export default {
           const type = this.from.extra.link.type;
           if (type === 'target_obj'){
             arr.push('target_obj');
-          } else if(['outer_link', 'auth_link', 'newspaper'].includes(type)) {
+          } else if(['outer_link', 'auth_link', 'newspaper'].includes(type)) { 
             arr.push('extra.link.url')
-          } else {
+          }else if(type === 'activity') {
+            arr.push('extra.activity_address','extra.activity_start_time','extra.activitu_end_time')
+          } else if(type !== 'none') {
             const current = this.formOptions['extra.link.type'].item.lists.find(n => n.value === type);
             this.formOptions['extra.link.id'].item.props.label = `${current.relatedLabel}:`;
             this.formOptions['extra.link.id'].rule.message = `请输入${current.relatedLabel}`;
@@ -1588,11 +1689,13 @@ export default {
         }),
         channels: channel_id.join() // 关联到多个栏目
       };
+      if(obj.extra.link && obj.extra.link.type === 'activity') obj.extra.link.url = obj.extra.activity_address
       if(obj.extra.link && obj.extra.link.type === 'target_obj') obj.extra.link = {
         ...obj.extra.link,
         type: obj.target_obj
       }
       delete obj.target_obj;
+      delete obj.extra.activity_address;
       if(obj.extra.type === 'news') {
         obj.extra.video_extra = {
           video_list: this.delEditorVideo(obj.extra.content)
@@ -1718,6 +1821,9 @@ export default {
             tags: extra.tags, // 标签
             keywords: extra.keywords, // 关键词
             set_created_at: extra.set_created_at, // 发布时间
+            activity_start_time: extra.activity_start_time, //活动开始时间
+            activitu_end_time: extra.activitu_end_time, //活动结束时间
+            activity_address: extra.link && extra.link.url || '', // 活动地址
             content: extra.content, // 编辑器内容
             is_original: (extra.is_original || '1').toString(), // 是否原创
             source: extra.source, // 来源

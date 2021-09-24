@@ -408,6 +408,15 @@
             <el-radio key="2" label="2">禁止评论</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item prop="extra.allow_share" label="允许分享">
+          <el-radio-group
+            size="small"
+            v-model="dialog.form.extra.allow_share"
+          >
+            <el-radio key="1" label="1">是</el-radio>
+            <el-radio key="0" label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item
           label-width="120px"
           label="直播间简介:"
@@ -766,6 +775,7 @@
               template_style: '240',
               cover: [], // 直播间封面
               allow_comment: '0',
+              allow_share: '1', // 允许分享
               broadcast_type: '1', // 直播类型
               statement: 'none', // 图文直播
               start_time: '', // 直播开始时间
@@ -813,6 +823,9 @@
             ],
             'extra.allow_comment': [
               { required: true, message: '请选择评论控制', trigger: 'change' }
+            ],
+             'extra.allow_share': [ 
+              { required: true, message: '请选择是否允许分享', trigger: 'change' }
             ],
           }
         },
@@ -865,6 +878,7 @@
               title: '', // 直播间名
               banner: '',
               allow_comment: '0',
+              allow_share: '1',
               template_style: '240',
               cover: [], // 直播间封面
               broadcast_type: '1', // 直播类型
