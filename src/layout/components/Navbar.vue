@@ -9,7 +9,7 @@
         <el-button type="primary" size="mini" v-for="btn of btns" @click="$router.push(btn.url)">{{btn.label}}</el-button>
       </div>
       <el-button
-        v-if="u_info.site_list.length !== 0"
+        v-if="changeSite"
         style="color:#999;margin-right:30px;"
         type="text"
         icon="el-icon-sort"
@@ -103,6 +103,15 @@ export default {
     ]),
     avatarImg () {
       return this.avatar? `${this.avatar}?imageView2/1/w/80/h/80` : require('@/assets/c_images/useravatar.jpg')
+    },
+    changeSite(){
+      let flag = false;
+      (this.u_info.roles.data || []).forEach((e)=>{
+        if(e.name=='Administrator'||e.name=='Admin'){
+          flag = true;
+        }
+      })
+      return flag
     }
   },
   created(){
