@@ -217,6 +217,38 @@
       }
     },
     data() {
+      // let toolbars_xz = window.location.host.indexOf('localhost')>-1?
+      let toolbars_xz = window.location.host.indexOf('pub.cztvcloud.com')>-1?
+      [[
+            'source', '|',
+            'undo', 'redo', '|',
+            'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', '|',
+            'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
+            'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
+            'fontfamily', 'fontsize', '|',
+            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+            'link', 'unlink', '|',
+            'simpleupload', 'insertimage','imglist', 'attachment',
+            'insertvideo',
+            '|',
+            'searchreplace', '|',
+            'fullscreen'
+      ]]:
+      [[
+            'source', '|',
+            'undo', 'redo', '|',
+            'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', '|',
+            'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
+            'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
+            'fontfamily', 'fontsize', '|',
+            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+            'link', 'unlink', '|',
+            'simpleupload', 'insertimage','imglist', 'attachment',
+            // 'insertvideo',
+            '|',
+            'searchreplace', '|',
+            'fullscreen'
+      ]];
       return {
         config: Object.assign({
           UEDITOR_HOME_URL: '/UEditor/', // 编辑器库的位置
@@ -233,21 +265,7 @@
           'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
           'simpleupload'
         ]]} : {
-          toolbars: [[
-            'source', '|',
-            'undo', 'redo', '|',
-            'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', '|',
-            'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
-            'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
-            'fontfamily', 'fontsize', '|',
-            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
-            'link', 'unlink', '|',
-            'simpleupload', 'insertimage','imglist', 'attachment',
-            // 'insertvideo',
-            '|',
-            'searchreplace', '|',
-            'fullscreen'
-        ]]
+          toolbars: toolbars_xz
         }), // 默认配置
 
         editorDependencies: [
