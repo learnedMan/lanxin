@@ -483,6 +483,29 @@
           })
           return btn
         }, undefined, id)
+        window.UE.registerUI('xiumi-editor', (editor, uiName) => {
+          const width = document.body.clientWidth * 0.9
+          const height = window.innerHeight - 50
+          const btn = new window.UE.ui.Button({
+            name   : 'xiumi-connect-'+uiName,
+            cssRules: `background-image: url("https://dl.xiumi.us/connect/ue/xiumi-connect-icon.png") !important;background-size: 85%;background-position: center;background-repeat: no-repeat;`,
+            title: '秀米编辑器',
+            onclick: function() {
+              var dialog = new UE.ui.Dialog({
+                iframeUrl: `${editor.options.UEDITOR_HOME_URL}xiumi-ue-dialog-v5.html`,
+                cssRules: `width: ${width}px; height: ${height}px;`,
+                editor   : editor,
+                name     : 'xiumi-connect',
+                title    : "",
+              });
+              dialog.render();
+              dialog.open();
+            }
+          })
+          return btn
+        }, undefined, id)
+
+
         window.UE.registerUI('videoList', (editor, uiName) => {
           const btn = new window.UE.ui.Button({
             name: 'btn-dialog-' + uiName,
