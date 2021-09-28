@@ -333,6 +333,19 @@
               v-model="form.extra.policy.user_policy"
             ></el-input>
           </el-form-item>
+          <el-form-item label-width="150px" label="是否开启社区" prop="extra.enable_community">
+                <el-radio-group v-model="form.extra.enable_community">
+                    <el-radio :label="'1'">是</el-radio>
+                    <el-radio :label="'0'">否</el-radio>
+                </el-radio-group>
+          </el-form-item>
+          <el-form-item label-width="150px" label="社区评论设置" prop="extra.community_comment">
+                <el-radio-group v-model="form.extra.community_comment">
+                    <el-radio :label="'0'">先审后发</el-radio>
+                    <el-radio :label="'1'">先发后审</el-radio>
+                    <el-radio :label="'2'">禁止评论</el-radio>
+                </el-radio-group>
+          </el-form-item>
         </div>
       </el-form>
       <el-dialog
@@ -485,6 +498,8 @@ export default {
             logo_dark:"",
             introduction:"",
             comment_control:'0',
+            community_comment: '0', //社区评论设置
+            enable_community: '1', //是否开启社区
             /*watermark:"",
             watermark_position:"",*/
             hot_search:[]
@@ -600,6 +615,8 @@ export default {
             logo_dark:"",
             introduction:"",
             comment_control:'0',
+            community_comment: '0', //社区评论设置
+            enable_community: '1', //是否开启社区
             /*watermark:"",
             watermark_position:"",*/
             hot_search:[],

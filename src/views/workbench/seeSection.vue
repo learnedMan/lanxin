@@ -182,7 +182,7 @@
             :data="tableData"
             border
             tooltip-effect="dark"
-            style="width: 100%"
+            style="width: 100%;overflow: auto"
             :key="tablekey"
           >
             <el-table-column

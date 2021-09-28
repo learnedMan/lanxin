@@ -25,43 +25,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item
-          label="用户名:"
-          prop="nickName"
-        >
-          <el-input
-            v-model="queryParams.nickName"
-            placeholder="请输入用户名"
-            clearable
-            style="width: 200px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="手机号:"
-          prop="mobile"
-        >
-          <el-input
-            v-model="queryParams.mobile"
-            placeholder="请输入手机号"
-            clearable
-            style="width: 200px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="邀请码:"
-          prop="invitationCode"
-        >
-          <el-input
-            v-model.number="queryParams.invitationCode"
-            placeholder="请输入邀请码"
-            clearable
-            style="width: 200px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="注册时间:">
+          <el-form-item label="被邀请人注册时间:">
           <el-date-picker
             v-model="queryParams.registerTime"
             type="daterange"
@@ -77,13 +41,34 @@
             @change="handleDateChange"
           />
         </el-form-item>
+        <el-form-item
+          prop="mobile"
+        >
+          <el-input
+            v-model="queryParams.textareaValue"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入手机号或者邀请码进行搜索,多个以逗号隔开"
+            clearable
+            style="width: 900px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
         <el-form-item>
-          <el-button
+           <el-button
             type="primary"
             size="mini"
-            @click="goQuery"
+						v-if="!importFlag"
+            @click="handleImport"
           >
-            邀请量查询
+            导出
+          </el-button>
+					<el-button
+            type="primary"
+            size="mini"
+            v-else
+          >
+						<a :href="importUrl">导出</a>
           </el-button>
           <el-button
             type="primary"
@@ -276,6 +261,7 @@
 <script>
   import { getproduct, getUserLists, getUserDetail, editDetail } from '@/api/manage'
   import { disableSendMsg, releaseShutup /* 拉黑用户 */} from '@/api/workbench'
+	import {  fileImport } from '@/api/statistics'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
     export default {
@@ -318,6 +304,7 @@
             limit: 10,
             nickName: '',
             mobile: '',
+            textareaValue: '',
             invitationCode: '',
             registerBeginTime: '',
             registerEndTime: '',
@@ -344,6 +331,18 @@
           }
         }
       },
+			computed: {
+        importFlag () {
+					const { textareaValue,registerTime } = this.queryParams
+         return textareaValue || registerTime ? true : false
+        },
+				importUrl () {
+					const { sourceId } = this.queryParams
+					let mobile = this.getStr(this.tableData)
+					let str = `http://10.30.10.158/adm/fusion/internal/uc/excelUserData?sourceId=${sourceId}&mobile=${mobile}`
+					return str
+				}
+      },
       methods: {
         /* 获取产品列表 */
         getProductList () {
@@ -358,6 +357,7 @@
         },
         /* 重置 */
         handleReset () {
+          this.queryParams.textareaValue = ''
           Object.assign(this.queryParams, {
             registerBeginTime: '',
             registerEndTime: '',
@@ -370,6 +370,42 @@
           this.queryParams.page = 1;
           this.getList();
         },
+				/*字符串拼接*/
+				getStr (arr) {
+					let str = ''
+					arr && arr.map(v=>{
+						str += v.mobile + ','
+					})
+					return str.slice(0,-1)
+				},
+         /* 导出 */
+        handleImport () {
+					this.$alert('请搜索你所需要导出的数据', '', {
+								confirmButtonText: '确定',
+								callback: action => {
+									// this.$message({
+									// 	type: 'info',
+									// 	message: `action: ${ action }`
+									// });
+								}
+							});
+        },
+        /*提取手机号或者邀请号*/
+        getPhone () {
+          let  val = this.queryParams.textareaValue,arr = [];
+          let phoneCodeVerification = /^[1][3,4,5,7,8][0-9]{9}$/;
+          let phone = '',code = ''
+          arr = val.split(/,|，|\s+/)
+          arr.map(v=>{
+              if(phoneCodeVerification.test(v)) {
+                phone += v + ','
+              }else{
+                code += v + ','
+              }
+          })
+          this.queryParams.mobile = phone.slice(0,-1) || ''
+          this.queryParams.invitationCode = code.slice(0,-1) || ''
+        },
         /* 修改注册时间 */
         handleDateChange (val) {
           const arr = val || ['', ''];
@@ -380,11 +416,6 @@
         invitedRecord (row) {
           const { id } = row;
           this.$emit('invitedRecord', id);
-        },
-         /*邀请量查询*/
-        goQuery () {
-          //  this.$emit('queryList');
-           this.$router.push({ name: 'Query-list'})
         },
         /* 查看积分值 */
         integralValue (row) {
@@ -446,9 +477,11 @@
         /* 获取列表数据 */
         getList () {
           this.loading = true;
+          this.getPhone()
           const params = { ...this.queryParams };
           delete params.registerTime;
-          // console.log('params',params)
+          delete params.textareaValue;
+					console.log('params',params)
           getUserLists(this.removePropertyOfNullFor0(params)).then(res => {
             if(res.code == 200) {
               const data = res.data;
