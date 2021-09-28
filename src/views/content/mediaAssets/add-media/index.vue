@@ -551,11 +551,11 @@
                   style="width: 200px"
                   @input="handleInput($event, formOptions['extra.view_base_num'].item)"
                 />-->
+                <!-- :min="viewBaseInterval.min"
+                  :max="viewBaseInterval.max" -->
                 <el-input-number
                   :controls="false"
                   :precision="0"
-                  :min="viewBaseInterval.min"
-                  :max="viewBaseInterval.max"
                   v-model="from.extra.view_base_num"
                   :placeholder="basePlaceholder"
                   style="width: 200px"
@@ -1597,6 +1597,9 @@ export default {
         obj.extra.video_extra = {
           video_list: this.delEditorVideo(obj.extra.content)
         }
+      }
+      if(!obj.extra.view_base_num&&obj.extra.view_base_num!=0){
+        obj.extra.view_base_num = Math.floor(Math.random()*(this.viewBaseInterval.max-this.viewBaseInterval.min+1)+this.viewBaseInterval.min);
       }
       return changeScripts(id, obj).then((res) => {
         this.$message.success(tip)
