@@ -601,11 +601,11 @@
                   style="width: 200px"
                   @input="handleInput($event, formOptions['extra.view_base_num'].item)"
                 />-->
+                <!-- :min="viewBaseInterval.min"
+                  :max="viewBaseInterval.max" -->
                 <el-input-number
                   :controls="false"
                   :precision="0"
-                  :min="viewBaseInterval.min"
-                  :max="viewBaseInterval.max"
                   v-model="from.extra.view_base_num"
                   :placeholder="basePlaceholder"
                   style="width: 200px"
@@ -865,6 +865,18 @@ export default {
                 value: '206',
                 count: 1,
                 img: '1402-206.png'
+              },
+              {
+                label: '活动列表',
+                value: '204',
+                count: 1,
+                img: '1402-204.png'
+              },
+              {
+                label: '活动大图',
+                value: '205',
+                count: 1,
+                img: '1402-205.png'
               }
             ]
           },
@@ -1261,14 +1273,14 @@ export default {
                 relatedLabel: '栏目id'
               },
               {
+                label: '多层级',
+                value: 'm_level',
+                relatedLabel: '栏目id'
+              },
+              {
                 label: '无跳转',
                 value: 'none',
-              },
-              // {
-              //   label: '内部其他功能',
-              //   value: 'internal_link',
-              //   relatedLabel: '对应功能ID'
-              // }
+              }
             ]
           },
           rule: [
@@ -1607,7 +1619,7 @@ export default {
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
           break
         case 'outer_link':
-          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max'];
+          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max','extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num'];
           const type = this.from.extra.link.type;
           if (type === 'target_obj'){
             arr.push('target_obj');
@@ -1700,6 +1712,10 @@ export default {
         obj.extra.video_extra = {
           video_list: this.delEditorVideo(obj.extra.content)
         }
+      }
+      obj.status = 1
+      if(!obj.extra.view_base_num&&obj.extra.view_base_num!=0){
+        obj.extra.view_base_num = Math.floor(Math.random()*(this.viewBaseInterval.max-this.viewBaseInterval.min+1)+this.viewBaseInterval.min);
       }
       return changeScripts(id, obj).then((res) => {
         this.$message.success(tip)
@@ -1797,7 +1813,7 @@ export default {
     },
     /* 获取详情数据 */
     getList() {
-      const id = this.scriptsId;
+      const id = this.scriptsId; 
       if (id == null) return
       return (this.fetchSuggestions? this.fetchSuggestions() : getScriptDetail(id)).then(res => {
         const extra = res.extra;
