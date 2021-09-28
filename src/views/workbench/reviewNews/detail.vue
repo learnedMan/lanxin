@@ -1631,7 +1631,7 @@ export default {
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
           break
         case 'outer_link':
-          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max']
+          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max',,'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
           const type = this.from.extra.link.type;
           if (type === 'target_obj'){
             arr.push('target_obj');
