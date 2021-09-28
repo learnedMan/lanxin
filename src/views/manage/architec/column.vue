@@ -534,6 +534,27 @@ import ChildPage1 from './pages/c_page1'
         },{
           value: 'live',
           label: '直播'
+        },{
+          value: 'mall',
+          label: '商城'
+        },{
+          value: 'practice',
+          label: '文明实践'
+        },{
+          value: 'ask_politics',
+          label: '问政'
+        },{
+          value: 'community',
+          label: '社区'
+        },{
+          value: 'education',
+          label: '教育'
+        },{
+          value: 'activity',
+          label: '活动'
+        },{
+          value: 'm_level',
+          label: '多层级'
         }],
         catalogoptions:[],
         styleoptions:[],
