@@ -24,13 +24,13 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery" size="mini"
+          <el-button v-points = "1500" type="primary" @click="handleQuery" size="mini"
             >搜索</el-button
           >
-          <el-button type="primary" @click="initcondition" size="mini"
+          <el-button v-points = "1500" type="primary" @click="initcondition" size="mini"
             >重置</el-button
           >
-          <el-button type="primary" @click="adddata" size="mini">新增</el-button>
+          <el-button v-points = "1500" type="primary" @click="adddata" size="mini">新增</el-button>
         </el-form-item>
       </el-form>
 
@@ -87,7 +87,7 @@
             <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
             <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
             <Iconbutton icontype="appbbgl" label="版本" @fatherMethod="changepage(scope.row)"></Iconbutton>
-            <!-- <el-button
+            <!-- <el-button v-points = "1500"
               size="mini"
               type="text"
               icon="el-icon-edit"
@@ -95,7 +95,7 @@
               @click="editdata(scope.row)"
               >修改</el-button
             >
-            <el-button
+            <el-button v-points = "1500"
               size="mini"
               type="text"
               icon="el-icon-delete"
@@ -103,7 +103,7 @@
               @click="deldata(scope.row)"
               >删除</el-button
             >
-            <el-button
+            <el-button v-points = "1500"
               v-if="scope.row.type=='app'"
               size="mini"
               type="text"
@@ -234,7 +234,7 @@
               @blur="handleInputConfirm"
             >
             </el-input>
-            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 新增</el-button>
+            <el-button v-points = "1500" v-else class="button-new-tag" size="small" @click="showInput">+ 新增</el-button>
           </el-form-item>
           <!-- <el-form-item label-width="150px" label="重保期选项" prop="extra.user_settings">
                 <el-checkbox true-label="1" false-label="0" v-model="form.extra.user_settings.deny_register">禁止注册</el-checkbox>
@@ -302,7 +302,7 @@
               placeholder="请输入（版本由数字与点组成，如1.0.1）"
               v-model="form.extra.policy.version"
             ></el-input>
-            <el-button v-show="dialogType!='add'" @click="innerVisible = true" style="margin-left:20px;" type="primary" size="small">查看历史版本</el-button>
+            <el-button v-points = "1500" v-show="dialogType!='add'" @click="innerVisible = true" style="margin-left:20px;" type="primary" size="small">查看历史版本</el-button>
           </el-form-item>
           <el-form-item label-width="150px" label="弹窗详情" prop="extra.policy.intro">
             <el-input
@@ -382,8 +382,8 @@
 
       </el-dialog>
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
   </div>

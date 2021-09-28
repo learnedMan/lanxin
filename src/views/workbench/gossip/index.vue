@@ -107,27 +107,27 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
           >
             搜索
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="success"
             @click="batchAgreeOrRefused(1)"
             :disabled="disabledBatchAction"
           >批量通过</el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="warning"
             @click="batchAgreeOrRefused(3)"
@@ -248,7 +248,7 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialog.show = false">
+          <el-button v-points = "1500" @click="dialog.show = false">
             关 闭
           </el-button>
         </div>

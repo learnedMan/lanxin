@@ -32,7 +32,7 @@
       <h3>{{ detail.title }}</h3>
       <p class="xl-preview-script--url">
         <span>{{ this.url }}</span>
-        <el-button
+        <el-button v-points = "1500"
           style="margin-left: 10px"
           type="text"
           icon="el-icon-copy-document"

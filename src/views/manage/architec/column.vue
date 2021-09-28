@@ -13,9 +13,9 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <!-- <el-button type="info" @click="initcondition" size="mini">重置</el-button> -->
-        <!-- <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
-        <el-button type="primary" @click="adddata" size="mini">新增</el-button>
+        <!-- <el-button v-points = "1500" type="info" @click="initcondition" size="mini">重置</el-button> -->
+        <!-- <el-button v-points = "1500" type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
+        <el-button v-points = "1500" type="primary" @click="adddata" size="mini">新增</el-button>
       </el-form-item>
     </el-form>
     <!-- 搜索 -->
@@ -62,7 +62,7 @@
           <Iconbutton v-if="scope.row.b_sort!='begin'" icontype="sy" label="上移" @fatherMethod="move(scope.$index, scope.row, 'up')"></Iconbutton>
           <Iconbutton v-if="scope.row.e_sort!='end'" icontype="xy" label="下移" @fatherMethod="move(scope.$index, scope.row, 'down')"></Iconbutton>
           <Iconbutton v-if="scope.row.type!='product'" icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
-          <!-- <el-button
+          <!-- <el-button v-points = "1500"
             size="mini"
             type="text"
             style="color:#E6A23C;"
@@ -70,7 +70,7 @@
             @click="editdata(scope.row)"
             v-if="scope.row.type!='product'"
           >修改</el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="text"
             style="color:#F56C6C;"
@@ -78,20 +78,20 @@
             @click="handleDelete(scope.row)"
             v-if="scope.row.type!='product'"
           >删除</el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-document-add"
             @click="adddata(scope.row)"
           >新增</el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-top"
             :disabled="scope.row.b_sort=='begin'"
             @click="move(scope.$index, scope.row, 'up')"
           >上移</el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-bottom"
@@ -228,7 +228,7 @@
               <div>
                 <img :src="mbhimg[form.extra.template_style]?mbhimg[form.extra.template_style]:mbhimg.zanwu" alt="">
               </div>
-              <el-button slot="reference">预览</el-button>
+              <el-button v-points = "1500" slot="reference">预览</el-button>
             </el-popover> -->
           </el-form-item>
 
@@ -244,7 +244,7 @@
               <div>
                 <img :src="mbhimg[form.extra.template_style]?mbhimg[form.extra.template_style]:mbhimg.zanwu" alt="">
               </div> -->
-              <el-button v-if="form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
+              <el-button v-points = "1500" v-if="form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
             <!-- </el-popover> -->
           </el-form-item>
 
@@ -352,8 +352,8 @@
         </div>
       </el-form>
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 新增/修改栏目弹窗 -->
@@ -534,6 +534,24 @@ import ChildPage1 from './pages/c_page1'
         },{
           value: 'live',
           label: '直播'
+        },{
+          value: 'mall',
+          label: '商城'
+        },{
+          value: 'practice',
+          label: '文明实践'
+        },{
+          value: 'ask_politics',
+          label: '问政'
+        },{
+          value: 'community',
+          label: '社区'
+        },{
+          value: 'education',
+          label: '教育'
+        },{
+          value: 'activity',
+          label: '活动'
         }],
         catalogoptions:[],
         styleoptions:[],

@@ -18,9 +18,9 @@
         />
       </el-form-item>
       <el-form-item>
-          <el-button type="primary" @click="initcondition" size="mini" >重置</el-button>
-          <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
-          <el-button type="success" @click="recovery" :disabled="multipleSelection.length==0" size="mini" >批量恢复</el-button>
+          <el-button v-points = "1500" type="primary" @click="initcondition" size="mini" >重置</el-button>
+          <el-button v-points = "1500" type="primary" @click="handleQuery" size="mini">搜索</el-button>
+          <el-button v-points = "1500" type="success" @click="recovery" :disabled="multipleSelection.length==0" size="mini" >批量恢复</el-button>
       </el-form-item>
     </el-form>
 
@@ -52,7 +52,7 @@
       <el-table-column label="删除时间" align="center" prop="deleted_at" :show-overflow-tooltip="true" />
       <el-table-column width="100px" label="操作" align="center">
           <template slot-scope="scope">
-            <!-- <el-button
+            <!-- <el-button v-points = "1500"
                 size="mini"
                 type="text"
                 icon="el-icon-finished"

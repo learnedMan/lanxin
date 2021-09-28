@@ -68,25 +68,23 @@
         <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿
       </div>
       <div v-if="!disabled">
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           size="small"
           @click="handleDraft"
           v-if="!onlyPublish"
-          v-points = "1500"
         >
           保存稿件
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           size="small"
           @click="handlePreview"
           v-if="!onlyPublish"
-          v-points = "1500"
         >
           保存并预览
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           size="small"
           @click="handlePublish"
@@ -471,6 +469,35 @@
               <el-row class="xl-add-media--title">
                 <el-col :span="24">发布设置</el-col>
               </el-row>
+              <!-- 定时发布 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.publish_timer.status')"
+                v-bind="formOptions['extra.publish_timer.status'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.publish_timer.status'].item)"
+                  @input="handleInput($event, formOptions['extra.publish_timer.status'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.publish_timer.status'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <!-- 定时发布时间 -->
+              <el-form-item
+                label-width="130"
+                v-show="initFrom().includes('extra.publish_timer.publish_at')"
+                v-bind="formOptions['extra.publish_timer.publish_at'].item.props"
+              >
+                <el-date-picker
+                  type="datetime"
+                  size="small"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  placeholder="选择日期时间"
+                  :value="parseObj(formOptions['extra.publish_timer.publish_at'].item)"
+                  @input="handleInput($event, formOptions['extra.publish_timer.publish_at'].item)"
+                />
+              </el-form-item>
               <!-- 发布时间 -->
               <el-form-item
                 v-show="initFrom().includes('extra.set_created_at')"
@@ -686,10 +713,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialog.show = false">
+        <el-button v-points = "1500" @click="dialog.show = false">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           :loading="publishLoading"
           @click="enterDialog"
@@ -703,7 +730,7 @@
 
 <script>
 import Cropper from '@/components/Cropper'
-import { getLabels, getScriptDetail, changeScripts, getEditorPerson } from '@/api/content'
+import { getLabels, getScriptDetail, changeScripts, getEditorPerson, getNewDetail } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from '@/components/media/tag'
 import ImgTable from '@/components/media/imgTable'
@@ -725,6 +752,11 @@ export default {
     id: {
       type: [Number, String],
       default: null
+    },
+  /* 类型 */
+    typeDetails: {
+      type: String,
+      default: 'script'
     },
     /* 自定义请求函数 */
     fetchSuggestions: Function
@@ -924,6 +956,46 @@ export default {
             },
             component: 'tag', // 组件名
           }
+        },
+        'extra.publish_timer.status': {
+          item: {
+            key: 'extra.publish_timer.status',
+            props: {
+              label: '定时发布:',
+              prop: 'extra.publish_timer.status'
+            },
+            component: 'radio', // 组件名
+            lists: [
+              {
+                label: '是',
+                value: '1'
+              },
+              {
+                label: '否',
+                value: '0'
+              },
+              {
+                label: '已处理',
+                value: '2'
+              }
+            ]
+          },
+          rule: [
+            { required: true, message: '请选择是否定时发布', trigger: 'change' }
+          ]
+        },
+        'extra.publish_timer.publish_at': {
+          item: {
+            key: 'extra.publish_timer.publish_at',
+            props: {
+              label: '定时发布时间:',
+              prop: 'extra.publish_timer.publish_at'
+            },
+            component: 'date' // 组件名
+          },
+          rule: [
+            { required: true, message: '请选择定时发布时间', trigger: 'change' }
+          ]
         },
         'extra.set_created_at': {
           item: {
@@ -1434,6 +1506,10 @@ export default {
           intro: '', // 简介
           tags: '', // 标签
           keywords: '', // 关键词
+          publish_timer: {
+            publish_at: '',
+            status: '0'
+          }, // 定时发布
           set_created_at: '', // 发布时间
           activity_address: '',//活动地址
           activity_start_time: '', //活动开始时间
@@ -1554,6 +1630,7 @@ export default {
     await this.getLabels()
     await this.getList()
     this.handleTabChange()
+    console.log('id', this.id)
   },
   methods: {
     /* 解析路径返回值 */
@@ -1592,7 +1669,9 @@ export default {
       this.formOptions['extra.cover'].item.componentProps.count = template_style?.count || 1
       // 基础显示的item
       const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.set_created_at']
+      if (this.typeDetails === 'news') baseTopItem.push('extra.publish_timer.status')
       // 显示发布时间
+      if (this.typeDetails === 'news' && this.from.extra.publish_timer.status === '1') baseTopItem.push('extra.publish_timer.publish_at')
       const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
       if (this.from.extra.is_original === '0') baseBottomItem.splice(2, 0, 'extra.source')
@@ -1623,6 +1702,7 @@ export default {
           }
           break
       }
+      console.log('arr------', arr)
       return arr
     },
     /*
@@ -1701,6 +1781,7 @@ export default {
           video_list: this.delEditorVideo(obj.extra.content)
         }
       }
+      obj.status = 1
       return changeScripts(id, obj).then((res) => {
         this.$message.success(tip)
         this.dialog.show = false;
@@ -1750,6 +1831,7 @@ export default {
     /* tab变化 */
     handleTabChange(val) {
       const currentTabsFromItem = this.initFrom()
+      console.log('currentTabsFromItem', currentTabsFromItem)
       this.currentTabsFromRules = currentTabsFromItem.reduce((obj, key) => ({
         ...obj,
         [key]: this.formOptions[key].rule
@@ -1797,9 +1879,19 @@ export default {
     },
     /* 获取详情数据 */
     getList() {
-      const id = this.scriptsId;
+      console.log('typeDetails', this.typeDetails)
+      let id = this.scriptsId,promsie = null
+      if (this.typeDetails === 'script') {
+          id = this.scriptsId
+          promsie = getScriptDetail(id)
+      } else if (this.typeDetails === 'news') {
+          id = this.id
+          promsie = getNewDetail(id)
+      }
+      console.log('getList id', id)
       if (id == null) return
-      return (this.fetchSuggestions? this.fetchSuggestions() : getScriptDetail(id)).then(res => {
+      return (this.fetchSuggestions? this.fetchSuggestions() : promsie).then(res => {
+        console.log('res 详情',res)
         const extra = res.extra;
         let link_type = extra.link && extra.link.type || '';
         let target_obj = '';
@@ -1820,6 +1912,10 @@ export default {
             intro: extra.intro, // 简介
             tags: extra.tags, // 标签
             keywords: extra.keywords, // 关键词
+             publish_timer: {
+              status: (extra?.publish_timer?.status ?? '0').toString(),
+              publish_at: extra?.publish_timer?.publish_at ?? ''
+            }, // 定时发布
             set_created_at: extra.set_created_at, // 发布时间
             activity_start_time: extra.activity_start_time, //活动开始时间
             activitu_end_time: extra.activitu_end_time, //活动结束时间

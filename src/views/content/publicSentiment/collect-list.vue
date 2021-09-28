@@ -1,33 +1,17 @@
 <style type="text/scss" lang="scss" scoped>
-.xl-project-lists {
+.xl-collect-lists {
   padding: 30px;
 }
 </style>
 <template>
-    <div class="xl-project-lists">
+    <div class="xl-collect-lists">
       <el-form
         ref="queryForm"
         :model="queryParams"
         :inline="true"
       >
-        <el-form-item
-          label="所属产品:"
-        >
-          <el-select
-            v-model="queryParams.product_id"
-            placeholder="请选择所属产品"
-            @change="handleQuery"
-          >
-            <el-option
-              v-for="item in productLists"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          label="标题:"
+      <el-form-item
+          label="订阅号/来源:"
           prop="keyword"
         >
           <el-input
@@ -40,11 +24,11 @@
           />
         </el-form-item>
         <el-form-item
-          label="启用状态:"
-          prop="status"
+          label="状态:"
+          prop="is_valid"
         >
           <el-select
-            v-model="queryParams.status"
+            v-model="queryParams.is_valid"
             size="small"
             placeholder="请选择状态"
             clearable
@@ -65,7 +49,7 @@
             size="small"
             unlink-panels
             range-separator="~"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             @change="handleDateChange"
@@ -105,21 +89,21 @@
         v-loading="loading"
       >
         <el-table-column
-          label="专题ID"
+          label="ID"
           align="center"
           prop="id"
         />
         <el-table-column
-          label="标题"
+          label="订阅号"
           align="center"
-          prop="name"
+          prop="account"
           showOverflowTooltip
         >
         </el-table-column>
         <el-table-column
-          label="专题类型"
+          label="来源"
           align="center"
-          prop="topic_type_label"
+          prop="source"
         />
         <el-table-column
           label="状态"
@@ -127,7 +111,7 @@
         >
           <template slot-scope="scope">
             <el-select
-              v-model="scope.row.status"
+              v-model="scope.row.is_valid"
               @change="changeStatus(scope.row)"
             >
               <el-option
@@ -159,11 +143,11 @@
               @fatherMethod="handleDelete(scope.row)"
             ></Iconbutton>
             <!-- 查看 -->
-            <Iconbutton
+            <!-- <Iconbutton
               icontype="ckxq"
               label="详情"
               @fatherMethod="watchList(scope.row)"
-            ></Iconbutton>
+            ></Iconbutton> -->
             <!-- 发布 -->
             <!-- <Iconbutton
               icontype="fb"
@@ -237,18 +221,69 @@
           label-width="120px"
           size="small"
         >
+          <el-form-item  label="稿件来源" prop="extra.type">
+            <el-radio-group v-model="dialog.form.extra.type">
+                <el-radio :label="'wechat'">微信</el-radio>
+                <el-radio :label="'weibo'">微博</el-radio>
+                <el-radio :label="'media'">客户端/网站/报纸</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item
-            label="标题:"
+            label="采集名称:"
             prop="name"
           >
             <el-input
               v-model="dialog.form.name"
-              placeholder="请输入标题"
+              placeholder="请输入采集名称"
               clearable
               size="small"
               style="width: 200px"
             />
           </el-form-item>
+           <el-form-item
+            label="来源名称:"
+            prop="source"
+          >
+            <el-input
+              v-model="dialog.form.source"
+              placeholder="请输入来源名称"
+              clearable
+              size="small"
+              style="width: 200px"
+            />
+          </el-form-item>
+           <el-form-item
+            label="来源logo:"
+            prop="extra.logo"
+          >
+            <upload-single v-model="dialog.form.extra.logo"></upload-single>
+          </el-form-item>
+          <el-form-item
+            label="来源账号:"
+            prop="account"
+          >
+            <el-input
+              v-model="dialog.form.account"
+              placeholder="请输入来源名称"
+              clearable
+              size="small"
+              style="width: 200px"
+            />
+          </el-form-item>
+          <el-form-item
+            label-width="120px"
+            label="分发栏目"
+            prop="channel_id"
+          >
+          <el-cascader
+            filterable
+            v-model="dialog.form.channel_id"
+            style="width: 200px"
+            :options="channelsList"
+            :props="cascaderOption"
+            clearable
+          />
+        </el-form-item>
           <el-form-item
             label="简介:"
             prop="extra.introduction"
@@ -263,77 +298,17 @@
               style="width: 400px"
             />
           </el-form-item>
-          <!-- 封面样式 -->
-          <el-form-item
-            label="封面样式:"
-            prop="extra.news_style.template_style"
-          >
-            <el-radio-group
-              size="small"
-              v-model="dialog.form.extra.news_style.template_style"
-              @change="handleCoverChange"
-            >
-              <el-radio
-                v-for="list of template_styleLists"
-                :key="list.value"
-                :label="list.value"
-                style="line-height: 32px"
-              >
-                <el-popover
-                  placement="top"
-                  trigger="hover"
-                >
-                  <span slot="reference">{{ list.label }}</span>
-                  <img :src="require(`@/assets/media/${list.img}`)" alt="" width="300px" />
-                </el-popover>
-              </el-radio>
+          <el-form-item  label="默认发布" prop="extra.auto_publish">
+            <el-radio-group v-model="dialog.form.extra.auto_publish">
+                <el-radio :label="'1'">是</el-radio>
+                <el-radio :label="'0'">否</el-radio>
             </el-radio-group>
           </el-form-item>
-          <!-- 封面图片 -->
-          <el-form-item
-            prop="extra.news_style.cover"
-          >
-            <cropper
-              v-model="dialog.form.extra.news_style.cover"
-              :count="imgCount"
-            />
-          </el-form-item>
-          <el-form-item
-            label="背景图:"
-            prop="extra.background"
-          >
-            <upload-single v-model="dialog.form.extra.background"></upload-single>
-          </el-form-item>
-          <el-form-item
-            label="(模板化)栏目:"
-            prop="extra.template_style"
-          >
-            <el-select clearable @change="catalogchange" v-model="dialog.form.extra.template_style" placeholder="请选择">
-              <el-option v-for="item in catalogOptions" :key="item.id" :label="item.catalogName" :value="`${item.catalogCode}`">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="(模板化)样式:"
-            prop="extra.template_json_id"
-          >
-            <el-select clearable v-model="dialog.form.extra.template_json_id" placeholder="请选择">
-              <el-option v-for="item in styleOptions" :key="item.id" :label="item.styleName" :value="`${item.id}`">
-              </el-option>
-            </el-select>
-            <el-button v-points = "1500" v-if="dialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
-          </el-form-item>
-          <el-form-item
-            label="多级专题:"
-            prop="extra.topic_type"
-          >
-            <el-switch v-model="dialog.form.extra.topic_type" active-value="2" inactive-value="1"></el-switch>
-          </el-form-item>
-          <el-form-item
-            label="允许分享:"
-            prop="extra.allow_share"
-          >
-            <el-switch v-model="dialog.form.extra.allow_share" active-value="1" inactive-value="0"></el-switch>
+          <el-form-item  label="是否启用" prop="extra.is_valid">
+            <el-radio-group v-model="dialog.form.extra.is_valid">
+                <el-radio :label="'1'">是</el-radio>
+                <el-radio :label="'0'">否</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-form>
         <div
@@ -351,10 +326,10 @@
   import { getproduct, getChannels, cateloglist, stylelist } from '@/api/manage'
   import Cropper from '@/components/Cropper'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
-  import { getTopicList, addTopic, changeTopic, changeTopicStatus, deleteTopic, publishTopic, getScriptDetail } from '@/api/content'
-
+  import { getCollectList,changeCollectStatus,deleteCollect, changeCollect, publishTopic, getScriptDetail,addCollect } from '@/api/content'
+  import { mapGetters } from 'vuex'
     export default {
-      name: 'ProjectLists',
+      name: 'collectList',
       components: {
         Cropper,
         uploadSingle
@@ -378,13 +353,14 @@
         }
         return {
           queryParams: {
-            product_id: '', // 所属产品
-            type: 'topic',
-            status: '',
+            // product_id: '', // 所属产品
+            // type: 'topic',
+            is_valid: '',
+            site_id: '',
             keyword: '',
             createDate: '',
-            startdate: '',
-            enddate: '',
+            start_date: '',
+            endd_ate: '',
             page: 1,
             pageSize: 10
           },
@@ -411,7 +387,7 @@
             emitPath: false, // 返回值是否为数组
             value: 'id', // 选项值
             label: 'name', // 显示值
-            multiple: true // 多选
+            multiple: false // 多选
           }, // 级联选择器配置
           channelsList: [],
           publishDialog: {
@@ -425,143 +401,63 @@
               channels: [{ required: true, message: '请选择栏目', trigger: 'change' }]
             }
           },
-          template_styleLists: [
-            {
-              label: '纯文本',
-              value: '240',
-              count: 1,
-              img: '1402-240.png'
-            },
-            {
-              label: '三图下文本',
-              value: '230',
-              count: 3,
-              img: '1402-230.png'
-            },
-            {
-              label: '三图上文本',
-              value: '231',
-              count: 3,
-              img: '1402-231.png'
-            },
-            {
-              label: '左图+标题1',
-              value: '220',
-              count: 1,
-              img: '1402-220.png'
-            },
-            {
-              label: '左图+标题2',
-              value: '222',
-              count: 1,
-              img: '1402-222.png'
-            },
-            {
-              label: '右图+标题',
-              value: '221',
-              count: 1,
-              img: '1402-221.png'
-            },
-            {
-              label: '播放器2',
-              value: '211',
-              count: 1,
-              img: '1402-211.png'
-            },
-            {
-              label: '播放器3',
-              value: '212',
-              count: 1,
-              img: '1402-212.png'
-            },
-            {
-              label: '大图1',
-              value: '200',
-              count: 1,
-              img: '1402-200.png'
-            },
-            {
-              label: '大图2',
-              value: '201',
-              count: 1,
-              img: '1402-201.png'
-            },
-            {
-              label: '大图3',
-              value: '202',
-              count: 1,
-              img: '1402-202.png'
-            },
-            {
-              label: '大图4',
-              value: '203',
-              count: 1,
-              img: '1402-203.png'
-            },
-            {
-              label: '大图7',
-              value: '206',
-              count: 1,
-              img: '1402-206.png'
-            }
-          ],
           imgCount: 1,
           catalogOptions: [], // 模板化栏目数据
           styleOptions: [], // 模板化样式
           dialog: {
             show: false,
-            title: '新增专题',
+            title: '新增采集',
             form: {
-              name: '',
-              status: 1,
+              name: '', //采集名称
+              source: '', //来源名称
+              account: '',
+              channel_id: '', //分发栏目id
               extra: {
-                news_style: {
-                  template_style: '240',
-                  cover: [],
-                },
-                allow_share: '0', // 分享
-                template_style: '',
-                template_json_id: '',
-                topic_type: 1, // 1简单聚合2多模块聚合
+                type: '', //稿件类型
+                auto_publish: '', //默认发布
+                is_valid: '', //是否启用
                 introduction: '',
-                background: ''
+                logo: '', //来源logo
               }
             },
             rules: {
               name: [
-                { required: true, message: '请输入标题', trigger: 'blur' }
+                { required: true, message: '请输入采集名称', trigger: 'blur' }
               ],
-              'extra.news_style.template_style': [
-                { required: true, message: '请选择封面样式', trigger: 'change' }
+              source: [
+                { required: true, message: '请输入来源名称', trigger: 'blur' }
               ],
-              'extra.news_style.cover': [
-                { validator: coverValidator, trigger: 'change' }
+              account: [
+                { required: true, message: '请输入来源账号', trigger: 'blur' }
               ],
-              'extra.background': [
-                { required: true, message: '请选择背景图片', trigger: 'change' }
+              'extra.is_valid': [
+                { required: true, message: '请选择是否启用', trigger: 'change' }
+              ],
+              'extra.auto_publish': [
+               { required: true, message: '请选择是否默认发布', trigger: 'blur' }
+              ],
+              'extra.logo': [
+                { required: true, message: '请选择来源logo', trigger: 'change' }
               ]
             }
           }
         }
       },
-      methods: {
-        /* 获取产品列表 */
-        getProductList () {
-          return getproduct({}).then(res => {
-            const data = res.data || []
-            this.productLists = data.map(n => ({
-              label: n.name,
-              value: n.id,
-              source_id: n.source_id
-            }));
-            this.queryParams.product_id = data?.[0]?.id;
-          });
+      computed: {
+      /* 站点id */
+        site_id() {
+         return this.$store.state.user.u_info.site_id
         },
+        ...mapGetters([
+        'u_info'
+        ])
+      },
+      methods: {
         /* 修改时间 */
         handleDateChange (val) {
           const arr = val || ['', ''];
-          this.queryParams.startdate = arr[0];
-          this.queryParams.enddate = arr[1];
+          this.queryParams.start_date = arr[0];
+          this.queryParams.endd_ate = arr[1];
         },
         /* 重置 */
         handleReset () {
@@ -579,32 +475,29 @@
         handleAdd () {
           this.resetForm('dialogForm');
           Object.assign(this.dialog, {
-            title: '新增专题',
+            title: '新增采集',
             show: true,
             id: '',
             form: {
-              name: '',
-              status: 1,
+              name: '', //采集名称
+              source: '', //来源名称
+              account: '',
+              channel_id: '', //分发栏目id
               extra: {
-                news_style: {
-                  template_style: '240',
-                  cover: [],
-                },
-                allow_share: '0',
-                template_style: '',
-                template_json_id: '',
-                topic_type: 1, // 1简单聚合2多模块聚合
+                type: 'wechat', //稿件类型
+                auto_publish: '1', //默认发布
+                is_valid: '1', //是否启用
                 introduction: '',
-                background: ''
+                logo: '', //来源logo
               }
-            }
+            },
           })
         },
         /* 修改状态 */
         changeStatus (row) {
-          const { status, id } = row;
-          changeTopicStatus({
-            status,
+          const { is_valid, id } = row;
+          changeCollectStatus({
+            status: is_valid,
             ids: `${id}`
           }).then(() => {
             this.$message.success('修改状态成功')
@@ -614,52 +507,43 @@
         /* 编辑 */
         handleEdit (row) {
           this.resetForm('dialogForm');
+          console.log('row',row)
           Object.assign(this.dialog, {
-            title: '编辑专题',
+            title: '编辑采集',
             show: true,
             id: row.id,
             form: {
-              name: row.name,
-              status: row.status,
+              name: row.name, //采集名称
+              source: row.source, //来源名称
+              account: row.account,
+              channel_id: row.channel_id, //分发栏目id
               extra: {
-                news_style: {
-                  template_style: row.extra.news_style?.template_style || '240',
-                  cover: row.extra.news_style?.cover || [],
-                },
-                allow_share: row.extra.allow_share || '0',
-                template_style: row.extra.template_style,
-                template_json_id: row.extra.template_json_id,
-                topic_type: row.extra.topic_type,
-                introduction: row.extra.introduction,
-                background: row.extra.background
+                type: row.type, //稿件类型
+                auto_publish: String(row.auto_publish), //默认发布
+                is_valid: String(row.is_valid), //是否启用
+                introduction: row.introduction,
+                logo: row.logo, //来源logo
               }
-            }
+            },
           })
-          this.catalogchange(row.extra.template_style, false)
+          // this.catalogchange(row.extra.template_style, false)
         },
         /* 封面图片数量变化 */
         handleCoverChange (val) {
           this.imgCount = this.template_styleLists.find(n => n.value === val)?.count || 1;
         },
-        /* 确认新增或编辑专题 */
+        /* 确认新增或编辑采集 */
         enterChangeDialog () {
           this.$refs.dialogForm?.validate(val => {
             if(val) {
               const id = this.dialog.id;
-              const params = {
-                name: this.dialog.form.name,
-                status: this.dialog.form.status,
-                product_id: this.queryParams.product_id,
-                type: 'topic',
-                extra: {
-                  ...this.dialog.form.extra,
-                  news_style: {
-                    template_style: this.dialog.form.extra.news_style.template_style,
-                    cover: this.dialog.form.extra.news_style.cover.slice(0, this.imgCount)
-                  }
-                }
-              }
-              let promise = id? changeTopic(id, params) : addTopic(params);
+              const params = { ...this.dialog.form,...this.dialog.form.extra}
+              params.zone_id = this.u_info.zone_id
+              params.site_id = this.u_info.site_id
+              delete params.extra
+              console.log('this.dialog',this.dialog.form)
+              console.log('params',params)
+              let promise = id? changeCollect(id, params) : addCollect(params);
               promise.then(() => {
                 this.$message.success(`${this.dialog.title}成功!`);
                 this.dialog.show = false;
@@ -671,12 +555,12 @@
         /* 删除专题 */
         handleDelete (row) {
           const { id } = row;
-          this.$confirm(`此操作将永久删除这条ID为${id}的专题, 是否继续?`, '提示', {
+          this.$confirm(`此操作将永久删除这条ID为${id}的订阅号, 是否继续?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            deleteTopic(id).then(() => {
+            deleteCollect(id).then(() => {
               this.$message({
                 message: '删除成功',
                 type: 'success'
@@ -739,13 +623,15 @@
         },
         /* 获取列表数据 */
         getList () {
+          this.queryParams.site_id = this.u_info.site_id
           const params = { ...this.queryParams };
           delete params.createDate;
           this.loading = true;
-          getTopicList(this.removePropertyOfNullFor0(params)).then(res => {
+          console.log('params',params)
+          getCollectList(this.removePropertyOfNullFor0(params)).then(res => {
+            console.log('res',res.data)
             this.tableData = (res.data || []).map(n => ({
               ...n,
-              topic_type_label: n.extra.topic_type == 2? '多模块聚合' : '简单聚合'
             }));
             this.total = res.total || 0;
           }).finally(() => {
@@ -772,29 +658,15 @@
             this.catalogOptions = res.data.list;
           })
         },
-        /* 联动模板化样式 */
-        catalogchange (val, isClear = true) {
-          isClear && (this.dialog.form.extra.template_json_id = '');
-          this.styleOptions = [];
-          if(!val) return;
-          const sourceId = this.productLists.find(n => n.value === this.queryParams.product_id)?.source_id;
-          let data = {
-            "catalogCode": val,
-            "sourceId": sourceId
-          }
-          stylelist(data).then(res => {
-            this.styleOptions = res.data || [];
-          })
-        },
         yulanfn(){
           window.open(this.viewurl + this.dialog.form.extra.template_json_id)
         },
       },
       async created() {
-        await this.getProductList();
         this.getList();
         this.getChannels();
         this.getCatelog();
+        console.log('u_info',this.u_info)
       }
     }
 </script>

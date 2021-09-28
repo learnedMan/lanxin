@@ -33,7 +33,7 @@
 </style>
 <template>
     <div class="xl-script-select">
-      <el-button type="primary" size="small" @click="showDialog">新增新闻</el-button>
+      <el-button v-points = "1500" type="primary" size="small" @click="showDialog">新增新闻</el-button>
       <ul class="xl-script-select--lists">
         <li v-for="(list, index) of chooseList" :key="list.id">
           <p>{{ list.title }}</p>
@@ -81,14 +81,14 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleReset"
             >
               重置
             </el-button>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleQuery"
@@ -140,10 +140,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialog.show = false">
+          <el-button v-points = "1500" @click="dialog.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="enterDialog"
           >

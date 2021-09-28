@@ -24,9 +24,9 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-          <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
-          <el-button type="primary" @click="initcondition" size="mini" >重置</el-button>
-          <el-button type="primary" @click="adddata('')" size="mini" >新增</el-button>
+          <el-button v-points = "1500" type="primary" @click="handleQuery" size="mini">搜索</el-button>
+          <el-button v-points = "1500" type="primary" @click="initcondition" size="mini" >重置</el-button>
+          <el-button v-points = "1500" type="primary" @click="adddata('')" size="mini" >新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -104,8 +104,8 @@
           </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
 

@@ -151,21 +151,21 @@
                 />
               </el-form-item>
               <el-form-item>
-                <el-button
+                <el-button v-points = "1500"
                   type="primary"
                   size="mini"
                   @click="handleReset"
                 >
                   重置
                 </el-button>
-                <el-button
+                <el-button v-points = "1500"
                   type="primary"
                   size="mini"
                   @click="handleQuery"
                 >
                   搜索
                 </el-button>
-                <el-button
+                <el-button v-points = "1500"
                   type="primary"
                   size="mini"
                   @click="handleAdd"
@@ -224,7 +224,7 @@
               :show-overflow-tooltip="true"
             >
               <template slot-scope="scope">
-                <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+                <el-button v-points = "1500" type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
               </template>
             </el-table-column>
             <el-table-column
@@ -264,7 +264,7 @@
               align="center"
             >
               <template slot-scope="scope">
-                <el-button
+                <el-button v-points = "1500"
                   type="text"
                   size="small"
                   @click="handleSort(scope.row)"
@@ -354,6 +354,9 @@
       v-if="detailDialog.show"
     >
       <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" />
+      <!-- <scripts-details 
+       style="padding: 10px;margin: 0"
+      typeDetails="news" :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" /> -->
     </el-dialog>
     <!-- 修改排序 -->
     <el-dialog
@@ -394,10 +397,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="sortDialog.show = false">
+        <el-button v-points = "1500" @click="sortDialog.show = false">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="enterSortDialog"
         >
@@ -519,10 +522,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="pushDialog.show = false">
+        <el-button v-points = "1500" @click="pushDialog.show = false">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="enterPushDialog"
         >
@@ -548,6 +551,7 @@ import { getMultiHits } from '@/api/statistics'
 import { addPushDetail} from '@/api/operamanage'
 import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail } from '@/api/content'
 import NewDetail from './reviewNews/detail'
+import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 import { dateFormat } from "@/utils/costum";
 import uploadSingle from '@/components/Upload/uploadSingle.vue'
@@ -557,6 +561,7 @@ export default {
   name: 'SeeSection',
   components: {
     NewDetail,
+    scriptsDetails,
     VersionHistory,
     uploadSingle
   },

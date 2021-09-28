@@ -56,21 +56,21 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleAdd"
           >
             新增
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
@@ -277,10 +277,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialog.show = false">
+          <el-button v-points = "1500" @click="dialog.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="enterDialog"
           >

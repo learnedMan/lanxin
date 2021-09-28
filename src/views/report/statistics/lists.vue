@@ -27,21 +27,21 @@
               />
             </el-form-item>
             <el-form-item>
-              <el-button
+              <el-button v-points = "1500"
                 type="primary"
                 size="mini"
                 @click="handleReset('department')"
               >
                 重置
               </el-button>
-              <el-button
+              <el-button v-points = "1500"
                 type="primary"
                 size="mini"
                 @click="handleQuery('department')"
               >
                 搜索
               </el-button>
-              <el-button
+              <el-button v-points = "1500"
                 type="warning"
                 size="mini"
                 @click="handleImport('department')"
@@ -105,21 +105,21 @@
               />
             </el-form-item>
             <el-form-item>
-              <el-button
+              <el-button v-points = "1500"
                 type="primary"
                 size="mini"
                 @click="handleReset('person')"
               >
                 重置
               </el-button>
-              <el-button
+              <el-button v-points = "1500"
                 type="primary"
                 size="mini"
                 @click="handleQuery('person')"
               >
                 搜索
               </el-button>
-              <el-button
+              <el-button v-points = "1500"
                 type="warning"
                 size="mini"
                 @click="handleImport('person')"

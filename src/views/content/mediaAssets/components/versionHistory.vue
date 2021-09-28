@@ -19,7 +19,7 @@
         <el-table-column prop="operation" label="操作记录" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleWatch(scope.row)"

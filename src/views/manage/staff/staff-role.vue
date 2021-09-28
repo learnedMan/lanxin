@@ -2,9 +2,9 @@
   <div class="staff-jurisdiction">
     <el-form ref="queryForm" :inline="true">
         <el-form-item>
-            <el-button type="primary" @click="adddata(0)" size="mini" >新增</el-button>
-            <el-button :disabled="multipleSelection.length<1" @click="delarrdata" type="danger" size="mini" >批量删除</el-button>
-            <el-button :disabled="multipleSelection.length!=1" @click="editdata" type="warning" size="mini" >修改</el-button>
+            <el-button v-points = "1500" type="primary" @click="adddata(0)" size="mini" >新增</el-button>
+            <el-button v-points = "1500" :disabled="multipleSelection.length<1" @click="delarrdata" type="danger" size="mini" >批量删除</el-button>
+            <el-button v-points = "1500" :disabled="multipleSelection.length!=1" @click="editdata" type="warning" size="mini" >修改</el-button>
         </el-form-item>
     </el-form>
     <el-table 
@@ -49,8 +49,8 @@
         </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 权限抽屉 -->
@@ -76,8 +76,8 @@
         </el-tab-pane>
       </el-tabs>
       <div class="clearflex" style="margin-right:20px;margin-top:20px;">
-            <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
-            <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
+            <el-button v-points = "1500" class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
+            <el-button v-points = "1500" class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
           </div>
     </el-drawer>
   </div>

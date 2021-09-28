@@ -72,21 +72,21 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
           >
             搜索
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             :disabled="selection.length === 0"
@@ -94,7 +94,7 @@
           >
             批量通过
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="warning"
             size="mini"
             :disabled="selection.length === 0"
@@ -133,7 +133,7 @@
         :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">
-          <el-button type="text" @click="goLink(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+          <el-button v-points = "1500" type="text" @click="goLink(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -265,10 +265,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleDialogClose">
+        <el-button v-points = "1500" @click="handleDialogClose">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="handleDialogClose('confirm')"
         >
