@@ -239,7 +239,7 @@
 </template>
 
 <script>
-import { getScriptDetail, deleteNews, changeNews, changeNewsStatus } from '@/api/content'
+import { getArticleDetail, deleteNews, changeNews, changeNewsStatus } from '@/api/content'
 import { getUser } from '@/api/manage'
 import newDetail from '@/views/workbench/reviewNews/detail.vue'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
@@ -363,7 +363,7 @@ export default {
     getList() {
       const { id } = this.$route.query
       this.loading = true
-      getScriptDetail(id).then(res => {
+      getArticleDetail(id).then(res => {
         this.tableData = (res.news || []).map(item => {
           const type = this.typeOptions.find(n => item.type === n.value)
           const status = this.statusOptions.find(n => item.status === n.value)
@@ -472,6 +472,7 @@ export default {
     /* 查看详情 */
     handleWatch (row) {
       const { id } = row;
+      console.log('id',id)
       this.dialog = {
         title: '查看详情',
         show: true,

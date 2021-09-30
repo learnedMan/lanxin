@@ -12,7 +12,7 @@
         :inline="true"
       >
         <el-form-item
-          label="稿件名称:"
+          label="媒资名称:"
           prop="keyword"
         >
           <el-input
@@ -24,23 +24,18 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
-          label="稿件类型:"
-          prop="type"
+         <el-form-item
+          label="所属订阅号:"
+          prop="source"
         >
-          <el-select
-            v-model="queryParams.type"
-            size="small"
-            placeholder="请选择类型"
+          <el-input
+            v-model="queryParams.source"
+            placeholder="请输入所属订阅号"
             clearable
-          >
-            <el-option
-              v-for="item in typeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+            size="small"
+            style="width: 200px"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
         <el-form-item label="创建日期:">
           <el-date-picker
@@ -73,13 +68,6 @@
             搜索
           </el-button>
           <el-button v-points = "1500"
-            type="primary"
-            size="mini"
-            @click="handleAdd"
-          >
-            新增
-          </el-button>
-          <el-button v-points = "1500"
             type="success"
             size="mini"
             :disabled="selection.length === 0"
@@ -108,6 +96,7 @@
       v-if="!isMobile"
         label="稿件ID"
         align="center"
+        width="80"
         prop="id"
       />
       <el-table-column
@@ -132,7 +121,6 @@
       <el-table-column
         label="稿件标题"
         align="center"
-        width="140"
         prop="title"
         :show-overflow-tooltip="true"
       >
@@ -140,22 +128,16 @@
           <el-button v-points = "1500" type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column
-        label="稿件类型"
+       <el-table-column
+        label="所属订阅号"
         align="center"
-        prop="type"
-      />
-      <el-table-column
-      v-if="!isMobile"
-        label="编辑"
-        align="center"
-        prop="author_name"
-        :show-overflow-tooltip="true"
+        prop="source"
       />
       <el-table-column
       v-if="!isMobile"
         label="发布栏目"
         align="center"
+        width="100"
         prop="id"
       >
         <template slot-scope="scope">
@@ -169,12 +151,6 @@
         </template>
       </el-table-column>
       <el-table-column
-      v-if="!isMobile"
-        label="更新时间"
-        align="center"
-        prop="updated_at"
-      />
-      <el-table-column
         label="操作"
         align="center"
         width="300"
@@ -187,29 +163,10 @@
               label="查看详情"
               @fatherMethod="handleWatch(scope.row)"
             ></Iconbutton>
-            <!-- 编辑 -->
-            <Iconbutton
-              icontype="xg"
-              label="修改"
-              @fatherMethod="handleEdit(scope.row)"
-            ></Iconbutton>
-            <!-- 一键下线 -->
             <Iconbutton
               icontype="xx"
               label="下线"
               @fatherMethod="handleOffline(scope.row)"
-            ></Iconbutton>
-            <!-- 删除 -->
-            <Iconbutton
-              icontype="sc"
-              label="删除"
-              @fatherMethod="handleListDelete(scope.row)"
-            ></Iconbutton>
-            <!-- 操作记录 -->
-            <Iconbutton
-              icontype="czjl"
-              label="操作记录"
-              @fatherMethod="handleHistory(scope.row)"
             ></Iconbutton>
             <!-- 复制 -->
             <Iconbutton
@@ -222,12 +179,6 @@
               icontype="fb"
               label="栏目"
               @fatherMethod="handleDialogShow('publish', scope.row)"
-            ></Iconbutton>
-            <!-- 预览 -->
-            <Iconbutton
-              icontype="yl"
-              label="预览"
-              @fatherMethod="handlePreview(scope.row)"
             ></Iconbutton>
           </div>
         </template>
@@ -295,7 +246,7 @@
 </template>
 
 <script>
-import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript, offlineNews } from '@/api/content'
+import { getCollectArticleList, deleteScript, PatchScriptCollect, batchPublishScriptCollect, copyScriptCollect, collectOfflineNews } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
@@ -308,7 +259,7 @@ export default {
     return {
       queryParams: {
         keyword: '',
-        type: '',
+        source: '',
         startdate: '',
         enddate: '',
         pageSize: 10,
@@ -323,20 +274,16 @@ export default {
           value: ''
         },
         {
-          label: '新闻',
-          value: 'news'
+          label: '微信',
+          value: 'wechat'
         },
         {
-          label: '图集',
-          value: 'album'
+          label: '微博',
+          value: 'weibo'
         },
         {
-          label: '视频',
-          value: 'video'
-        },
-        {
-          label: '外链',
-          value: 'outer_link'
+          label: '媒体',
+          value: 'media'
         }
       ], // 稿件类型
       pickerOptions: {
@@ -446,23 +393,10 @@ export default {
       this.loading = true
       this.selection = []
       this.tableData = []
-      getScripts(this.removePropertyOfNull(this.queryParams)).then(res => {
+      getCollectArticleList(this.removePropertyOfNull(this.queryParams)).then(res => {
         this.tableData = (res.data || []).map(item => {
-          const type = this.typeOptions.find(n => item.type === n.value)
-          const cover = item.cover[0]
-          /* {
-              title: '', // 稿件标题
-              type: '', // 稿件类型
-              id: '', // 稿件id
-              cover: '', // 图片(Array)
-              author_name: '', // 作者
-              status: '', // 状态
-              created_at: '', // 创建时间
-            }*/
           return {
             ...item,
-            type: type && type.label || '',
-            cover: cover && cover.path || '' // 图片
           }
         })
         this.total = res.total
@@ -480,12 +414,13 @@ export default {
       * 查看栏目
       * */
     handleListWatch(row) {
-      this.$router.push(`/content/mediaAssets/watch-column?id=${row.id}&redirect=All-media`)
+      this.$router.push(`/content/publicSentiment/watch-column?id=${row.id}&redirect=collect-article`)
+    // this.$router.push(`/content/mediaAssets/watch-column?id=${row.id}&redirect=All-media`)
     },
     /* 复制稿件 */
     handleListCopy (row) {
       const { id, title } = row;
-      copyScript(id, {
+      copyScriptCollect(id, {
         title: `[副本]${title}`
       }).then(({ id, message }) => {
         if(id) {
@@ -526,7 +461,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        offlineNews(id).then(({ message, status_code }) => {
+        collectOfflineNews(id).then(({ message, status_code }) => {
           this.$message({
             message: message,
             type: status_code === 200? 'success' : 'warning'
@@ -573,6 +508,7 @@ export default {
       * 弹框显示
       * */
     handleDialogShow(ident, row) {
+        console.log('row', row)
       let id; let channel_id = []
       const isPublish = ident === 'publish' // 是否为列表发布
       if (isPublish) {
@@ -614,7 +550,7 @@ export default {
         if (val) {
           // 多个稿件关联到单个栏目
           if (isArray) {
-            batchPublishScript({
+            batchPublishScriptCollect({
               ids: ids.join(),
               channel_id: channels
             }).then(() => {
@@ -624,7 +560,7 @@ export default {
             })
           } else {
             // 单个稿件关联到多个栏目
-            PatchScript(ids, {
+            PatchScriptCollect(ids, {
               channels: channels.join()
             }).then(() => {
               this.$message({

@@ -291,3 +291,101 @@ export function getChildTopic(id) {
     method: 'get'
   })
 }
+
+/*-------------------------采集管理--------------------------------*/
+
+/* 获取列表数据 */
+export function getCollectList(params) {
+  return request({
+    url: '/api/subscriptions',
+    method: 'get',
+    params
+  })
+}
+
+/* 修改采集发布状态 */
+export function changeCollectStatus(data) {
+  return request({
+    url: '/api/subscriptions/setStatus',
+    method: 'post',
+    data
+  })
+}
+
+/* 新增采集 */
+export function addCollect(data) {
+  return request({
+    url: '/api/subscriptions',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除订阅 */
+export function deleteCollect(id) {
+  return request({
+    url: `/api/subscriptions/${id}`,
+    method: 'delete'
+  })
+}
+
+/* 修改采集 */
+export function changeCollect(id, data) {
+  return request({
+    url: `/api/subscriptions/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 获取采集文章列表 */
+export function getCollectArticleList(query) {
+  return request({
+    url: '/api/TPNews/',
+    method: 'get',
+    params: query
+  })
+}
+
+/* 获取采集文章详情 */
+export function getArticleDetail(id) {
+  return request({
+    url: `/api/TPNews/${id}`,
+    method: 'get'
+  })
+}
+
+/* 采集下新闻一键下线 */
+export function collectOfflineNews(id) {
+  return request({
+    url: `/api/TPNews/pullAll/${id}`,
+    method: 'post',
+  })
+}
+
+/*采集复制文稿*/
+export function copyScriptCollect(id, data) {
+  return request({
+    url: `/api/TPNews/duplicate/${id}`,
+    method: 'post',
+    data
+  })
+}
+
+/* 发布稿件到多个栏目 */
+export function PatchScriptCollect(id, data) {
+  return request({
+    url: `/api/TPNews/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 批量发布到单个栏目 */
+export function batchPublishScriptCollect(data) {
+  return request({
+    url: `/api/scripts/pushTPNewsToChannel`,
+    method: 'post',
+    data
+  })
+}

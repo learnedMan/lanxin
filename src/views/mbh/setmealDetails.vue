@@ -10,7 +10,7 @@
                         @blur="editmeal"
                         :style="{width: '30%'}"
                         ></el-input>
-                        <el-button type="primary" v-if="id" icon="el-icon-document-add" size="mini" @click="handleAddCatalog" style="margin:0 10px 0 20px;">增加栏目</el-button>
+                        <el-button v-points = "1500" type="primary" v-if="id" icon="el-icon-document-add" size="mini" @click="handleAddCatalog" style="margin:0 10px 0 20px;">增加栏目</el-button>
                     </el-form-item>
                 </el-col>
             </el-form>
@@ -51,13 +51,13 @@
                     <template slot-scope="scope">
                         <Iconbutton icontype="yl" label="预览" @fatherMethod="handleview(scope.row)"></Iconbutton>
                         <Iconbutton icontype="sc" label="删除" @fatherMethod="handledelete(scope.row)"></Iconbutton>
-                        <!-- <el-button
+                        <!-- <el-button v-points = "1500"
                         size="mini"
                         type="text"
                         icon="el-icon-view"
                         @click="handleview(scope.row)"
                         >预览</el-button>
-                        <el-button
+                        <el-button v-points = "1500"
                         v-if="id"
                         size="mini"
                         type="text"
@@ -69,14 +69,14 @@
             </el-table>
             <el-row :gutter="10" class="mb8" style="margin-top:50px;">
                 <el-col :span="1.5" style="margin-right:30px;">
-                    <el-button
+                    <el-button v-points = "1500"
                     type="primary"
                     size="small"
                     @click="submitForm"
                     >确定</el-button>
                 </el-col>
                 <el-col :span="1.5" style="margin-right:30px;">
-                    <el-button
+                    <el-button v-points = "1500"
                     type="info"
                     size="small"
                     @click="back"
@@ -124,8 +124,8 @@
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitdialog">确 定</el-button>
-                <el-button @click="cancel">取 消</el-button>
+                <el-button v-points = "1500" type="primary" @click="submitdialog">确 定</el-button>
+                <el-button v-points = "1500" @click="cancel">取 消</el-button>
                 </div>
             </el-dialog>
 

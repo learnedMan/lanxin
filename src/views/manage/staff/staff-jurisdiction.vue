@@ -2,9 +2,9 @@
   <div class="staff-jurisdiction">
     <el-form ref="queryForm" :inline="true">
         <el-form-item>
-            <el-button type="primary" @click="adddata(0)" size="mini" >新增</el-button>
-            <el-button :disabled="multipleSelection.length<1" @click="delarrdata" type="danger" size="mini" >批量删除</el-button>
-            <el-button :disabled="multipleSelection.length!=1" @click="editdata" type="warning" size="mini" >修改</el-button>
+            <el-button v-points = "1500" type="primary" @click="adddata(0)" size="mini" >新增</el-button>
+            <el-button v-points = "1500" :disabled="multipleSelection.length<1" @click="delarrdata" type="danger" size="mini" >批量删除</el-button>
+            <el-button v-points = "1500" :disabled="multipleSelection.length!=1" @click="editdata" type="warning" size="mini" >修改</el-button>
         </el-form-item>
     </el-form>
 
@@ -28,20 +28,20 @@
           <Iconbutton icontype="xz" label="新增" @fatherMethod="adddata(scope.row.id)"></Iconbutton>
           <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
           <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
-          <!-- <el-button
+          <!-- <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-document-add"
             @click="adddata(scope.row.id)"
           >新增</el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="text"
             style="color:#E6A23C;"
             icon="el-icon-edit"
             @click="editdata(scope.row)"
           >修改</el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="text"
             style="color:#F56C6C;"
@@ -66,8 +66,8 @@
         </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
 

@@ -6,16 +6,20 @@
 
     <div class="right-menu">
       <div style="margin-right: 10px" v-if="!isMobile">
-        <el-button type="primary" size="mini" v-for="btn of btns" @click="$router.push(btn.url)">{{btn.label}}</el-button>
+        <el-button v-points = "1500" type="primary" size="mini" v-for="btn of btns" @click="$router.push(btn.url)">{{btn.label}}</el-button>
       </div>
-      <el-button
-        v-if="changeSite"
-        style="color:#999;margin-right:30px;"
+      <el-button v-points = "1500"
+        v-if="u_info.site_list.length !== 0"
+        style="color:#999;"
         type="text"
         icon="el-icon-sort"
         @click="handleChangeSite"
       >切换站点</el-button>
-
+      <el-button v-points = "1500"
+      type="primary" size="mini"
+      icon="el-icon-collection"
+      style="background: #F15A24;border: none;margin-right: 30px;"
+      ><a href="http://www.cztvcloud.com/lxpc_sysc" target="_blank">操作手册</a></el-button>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatarImg" class="user-avatar">
@@ -45,8 +49,8 @@
           </el-form-item>
         </el-form>
         <div class="dialog-footer" slot="footer">
-          <el-button @click="closeDialog">取 消</el-button>
-          <el-button @click="enterDialog" type="primary">确 定</el-button>
+          <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+          <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
         </div>
       </el-dialog>
 

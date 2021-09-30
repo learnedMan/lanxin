@@ -120,7 +120,7 @@
             <el-checkbox v-model="isMy" size="small">只看我传的</el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="getList"
@@ -160,10 +160,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogControl('cancel')">
+        <el-button v-points = "1500" @click="dialogControl('cancel')">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="dialogControl('confirm')"
         >

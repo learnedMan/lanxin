@@ -70,21 +70,21 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
           >
             搜索
           </el-button>
-          <!--<el-button
+          <!--<el-button v-points = "1500"
             size="mini"
             type="success"
             @click="batchRestore"

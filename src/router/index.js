@@ -231,6 +231,37 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'publicSentiment',
+        component: () => import('@/views/content/index'),
+        name: 'publicSentiment',
+        permission: 'content.collect.manage',
+        meta: { title: '舆情大数据' },
+        redirect: '/content/publicSentiment/collect-list',
+        children: [
+          {
+            path: 'collect-list',
+            component: () => import('@/views/content/publicSentiment/collect-list'),
+            name: 'collect-list',
+            permission: 'content.collect.list',
+            meta: { title: '采集管理' }
+          },
+          {
+            path: 'collect-article',
+            component: () => import('@/views/content/publicSentiment/collect-article'),
+            name: 'collect-article',
+            permission: 'content.collect.article',
+            meta: { title: '采集文章管理' }
+          },
+          {
+            path: 'watch-column',
+            component: () => import('@/views/content/publicSentiment/watch-column'),
+            hidden: true,
+            name: 'Watch-column',
+            meta: { title: '查看栏目', noCache: true }
+          },
+        ]
+      },
+      {
         path: 'studio',
         component: () => import('@/views/operamanage/studio/index'),
         name: 'Studio',

@@ -9,8 +9,8 @@
             :visible.sync="dialogVisible"
             width="800px">
             <div style="margin-bottom:20px;">
-                <el-button @click="addtransfer" type="primary" size="mini">增加一级审核人</el-button>
-                <el-button :disabled="listnum<1" @click="deltransfer" type="primary" size="mini">删除一级审核人</el-button>
+                <el-button v-points = "1500" @click="addtransfer" type="primary" size="mini">增加一级审核人</el-button>
+                <el-button v-points = "1500" :disabled="listnum<1" @click="deltransfer" type="primary" size="mini">删除一级审核人</el-button>
             </div>
             <template v-for="(item,index) in listnum">
                 <h3>第{{index+1}}级审核人：</h3>
@@ -25,12 +25,12 @@
             </template>
 
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="suretransfer">确 定</el-button>
+                <el-button v-points = "1500" type="primary" @click="suretransfer">确 定</el-button>
             </span>
         </el-dialog>
 
         <el-form-item label-width="150px" label="多级审核:" prop="extra.defaultform">
-            <el-button @click="edituser" type="primary" size="mini">编辑审核人</el-button>
+            <el-button v-points = "1500" @click="edituser" type="primary" size="mini">编辑审核人</el-button>
 
             <div v-for="(item,index) in listshowarr" :key="index">
                 <h4><span style="color:#000;">第{{index+1}}级审核人：</span>{{item}}</h4>

@@ -34,7 +34,7 @@
       @keyup.enter.native="handleInputConfirm"
       @blur="handleInputConfirm"
     />
-    <el-button v-else class="button-new-tag" size="mini" @click="showInput">+ 新增</el-button>
+    <el-button v-points = "1500" v-else class="button-new-tag" size="mini" @click="showInput">+ 新增</el-button>
   </div>
 </template>
 

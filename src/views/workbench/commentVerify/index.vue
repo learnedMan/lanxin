@@ -17,11 +17,11 @@
   <div class="xl-comment-verify" :style="{ padding: newsId? 0 : '30px' }">
     <search ref="search" v-model="search" :lists="searchLists">
       <div slot="action">
-        <el-button size="mini" type="primary" @click="resetSearch">重置</el-button>
-        <el-button size="mini" type="primary" @click="handleQuery">搜索</el-button>
-        <!--<el-button size="mini" type="primary">新增评论</el-button>-->
-        <el-button size="mini" type="success" @click="batchAgreeOrRefused('approve')" :disabled="disabledBatchAction">批量通过</el-button>
-        <el-button size="mini" type="warning" @click="batchAgreeOrRefused('reject')" :disabled="disabledBatchAction">批量拒绝</el-button>
+        <el-button v-points = "1500" size="mini" type="primary" @click="resetSearch">重置</el-button>
+        <el-button v-points = "1500" size="mini" type="primary" @click="handleQuery">搜索</el-button>
+        <!--<el-button v-points = "1500" size="mini" type="primary">新增评论</el-button>-->
+        <el-button v-points = "1500" size="mini" type="success" @click="batchAgreeOrRefused('approve')" :disabled="disabledBatchAction">批量通过</el-button>
+        <el-button v-points = "1500" size="mini" type="warning" @click="batchAgreeOrRefused('reject')" :disabled="disabledBatchAction">批量拒绝</el-button>
       </div>
     </search>
     <el-table
@@ -57,7 +57,7 @@
               @fatherMethod="handleMsgAction(scope.row)"
             ></Iconbutton>
             <!-- 回复 -->
-            <!--<el-button type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('回复', scope.row)">回复</el-button>-->
+            <!--<el-button v-points = "1500" type="text" icon="el-icon-chat-line-square" size="small" @click="handleDialogShow('回复', scope.row)">回复</el-button>-->
             <!-- 审批通过 -->
             <Iconbutton
               icontype="shtg"
@@ -95,8 +95,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button type="primary" @click="enterDialog">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" type="primary" @click="enterDialog">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -144,14 +144,14 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleInnerReset"
             >
               重置
             </el-button>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleInnerQuery"
@@ -193,7 +193,7 @@
           >
             <template slot-scope="scope">
               <!-- 选择 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-check"
                 size="small"
@@ -214,7 +214,7 @@
             autocomplete="off"
             placeholder="请选择新闻标题"
           />
-          <el-button type="primary">选择新闻</el-button>
+          <el-button v-points = "1500" type="primary">选择新闻</el-button>
         </el-form-item>
         <el-form-item label-width="120px" label="评论昵称" prop="nikeName">
           <el-input v-model="addDialog.form.nikeName" style="width: 300px" autocomplete="off" />

@@ -23,8 +23,8 @@
                       </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-              <el-button type="primary" icon="el-icon-document-add" size="mini" @click="handleAdd" style="margin:0 10px 0 20px;">增加栏目</el-button>
+              <el-button v-points = "1500" type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button v-points = "1500" type="primary" icon="el-icon-document-add" size="mini" @click="handleAdd" style="margin:0 10px 0 20px;">增加栏目</el-button>
             </el-form-item>
           </el-form>
 
@@ -38,13 +38,13 @@
               <template slot-scope="scope">
                 <Iconbutton icontype="xg" label="修改" @fatherMethod="handleUpdate(scope.row)"></Iconbutton>
                 <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
-                <!-- <el-button
+                <!-- <el-button v-points = "1500"
                   size="mini"
                   type="text"
                   icon="el-icon-circle-check"
                   @click="handleUpdate(scope.row)"
                 >修改</el-button>
-                <el-button
+                <el-button v-points = "1500"
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
@@ -81,8 +81,8 @@
               </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="submitForm">确 定</el-button>
-              <el-button @click="cancel">取 消</el-button>
+              <el-button v-points = "1500" type="primary" @click="submitForm">确 定</el-button>
+              <el-button v-points = "1500" @click="cancel">取 消</el-button>
             </div>
           </el-dialog>
         </div>
