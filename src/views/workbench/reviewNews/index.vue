@@ -284,11 +284,16 @@
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show && !isMobile"
     >
-      <new-detail
+      <!-- <new-detail
         :id="detailDialog.id"
         :visible.sync="detailDialog.show"
         @refresh="refresh"
-      />
+      /> -->
+      <scripts-details 
+      style="padding: 10px;margin: 0"
+      typeDetails="news" :id="detailDialog.id" 
+      :visible.sync="detailDialog.show" 
+      @refresh="refresh" />
     </el-dialog>
     <!-- 编辑移动端新闻 -->
     <el-dialog
@@ -332,11 +337,13 @@ import { getChannels, getUser } from '@/api/manage'
 import { getNews, changeNewsStatus } from '@/api/content'
 import { getReasons } from '@/api/workbench'
 import NewDetail from './detail'
+import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
 import mobileDetail from './mobileDetail'
 export default {
   name: 'ReviewNews',
   components: {
     NewDetail,
+    scriptsDetails,
     mobileDetail
   },
   data() {

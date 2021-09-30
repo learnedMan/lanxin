@@ -1529,7 +1529,6 @@ export default {
           }
           break
       }
-      console.log('arr 显示状态', arr)
       return arr
     },
     /* 处理编辑器中的视频数据 */

@@ -45,20 +45,29 @@
         append-to-body
         v-if="dialog.show"
       >
-        <new-detail
+        <!-- <new-detail
           v-if="type === 'news'"
           :id="id"
           :visible.sync="dialog.show"
           :fetch-suggestions="fetchSuggestions"
           :disabled="true"
-        />
-        <scripts-details
+        /> -->
+        <!-- <scripts-details
           style="padding: 10px;margin: 0"
           v-if="type === 'script'"
           :id="id"
           :visible.sync="dialog.show"
           :fetch-suggestions="fetchSuggestions"
           :disabled="true"
+        ></scripts-details> -->
+        <scripts-details
+          style="padding: 10px;margin: 0"
+          :id="id"
+          :visible.sync="dialog.show"
+          :typeDetails="type"
+          :fetch-suggestions="fetchSuggestions"
+          :disabled="true"
+          :disabledNews="true" 
         ></scripts-details>
       </el-dialog>
     </div>

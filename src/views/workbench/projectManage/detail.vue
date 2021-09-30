@@ -439,7 +439,13 @@
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show"
     >
-      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" />
+      <!-- <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" /> -->
+       <scripts-details 
+      style="padding: 10px;margin: 0"
+      typeDetails="news" :id="detailDialog.id" 
+      :visible.sync="detailDialog.show" 
+      :disabledNews="detailDialog.disabled" 
+      @refresh="refresh" />
     </el-dialog>
     <!-- 推送 -->
     <el-dialog
@@ -651,6 +657,7 @@
   import Sortable from 'sortablejs'
   import { dateFormat } from "@/utils/costum";
   import NewDetail from '@/views/workbench/reviewNews/detail.vue'
+  import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
   import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
     export default {
@@ -658,6 +665,7 @@
       props: ['id'],
       components: {
         NewDetail,
+        scriptsDetails,
         VersionHistory
       },
       data() {

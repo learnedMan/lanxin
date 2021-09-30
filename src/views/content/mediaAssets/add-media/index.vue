@@ -67,7 +67,7 @@
       <div style="font-size: 14px;color: #606266;flex: 1" v-if="isEdit && editorPerson && !disabled">
         <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿
       </div>
-      <div v-if="!disabled">
+      <div v-if="!disabled && this.typeDetails === 'script'">
         <el-button v-points = "1500"
           type="primary"
           size="small"
@@ -329,7 +329,7 @@
                     @input="handleInput($event, formOptions['extra.link.type'].item)"
                     @change="handleTabChange"
                   >
-                    <el-radio v-for="list of formOptions['extra.link.type'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                    <el-radio style="margin-bottom:15px;" v-for="list of formOptions['extra.link.type'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <!-- 链接地址 -->
@@ -674,6 +674,22 @@
         </el-row>
       </el-form>
     </el-main>
+    <el-footer class="xl-news-media--footer" height="40px" v-if="!disabled && this.typeDetails === 'news'">
+      <el-button v-points = "1500"
+        type="primary"
+        size="small"
+        @click="handleClose"
+      >
+        关闭
+      </el-button>
+      <el-button v-points = "1500"
+        type="primary"
+        size="small"
+        @click="handlePublish"
+      >
+        保存
+      </el-button>
+    </el-footer>
     <!-- 选择视频弹框 -->
     <el-dialog
       width="1000px"
@@ -730,7 +746,7 @@
 
 <script>
 import Cropper from '@/components/Cropper'
-import { getLabels, getScriptDetail, changeScripts, getEditorPerson, getNewDetail } from '@/api/content'
+import { getLabels, getScriptDetail, changeScripts, changeNews, getEditorPerson, getNewDetail, getNews } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from '@/components/media/tag'
 import ImgTable from '@/components/media/imgTable'
@@ -752,6 +768,11 @@ export default {
     id: {
       type: [Number, String],
       default: null
+    },
+   /* 是否禁用  根据typeDetails类型来判断 */
+    disabledNews: {
+      type: Boolean,
+      default: false
     },
   /* 类型 */
     typeDetails: {
@@ -1333,6 +1354,11 @@ export default {
                 relatedLabel: '栏目id'
               },
               {
+                label: '多层级',
+                value: 'm_level',
+                relatedLabel: '栏目id'
+              },
+              {
                 label: '无跳转',
                 value: 'none',
               },
@@ -1493,6 +1519,7 @@ export default {
       ], // tab按钮切换
       /* currentTabsFromItem: [], // 当前激活tab的表单显示数据*/
       currentTabsFromRules: {}, // 当前激活tab的表单验证规则
+      checkStatus: false, //审核状态
       from: {
         author_name: '', // 作者
         editor_name: '', // 编辑
@@ -1581,6 +1608,7 @@ export default {
     },
     /* 禁用 */
     disabled ({ $route }) {
+      if ( this.typeDetails === 'news') return this.disabledNews
       return $route.query.disabled === '1' || this.id != null;
     },
     /* 是否只有发布按钮 */
@@ -1630,7 +1658,6 @@ export default {
     await this.getLabels()
     await this.getList()
     this.handleTabChange()
-    console.log('id', this.id)
   },
   methods: {
     /* 解析路径返回值 */
@@ -1686,7 +1713,7 @@ export default {
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
           break
         case 'outer_link':
-          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max'];
+          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num'];
           const type = this.from.extra.link.type;
           if (type === 'target_obj'){
             arr.push('target_obj');
@@ -1702,7 +1729,6 @@ export default {
           }
           break
       }
-      console.log('arr------', arr)
       return arr
     },
     /*
@@ -1749,7 +1775,7 @@ export default {
       const channel_id = channelId? [ channelId ] : this.dialog.form.channel_id
       const currentTabsFromItem = this.initFrom()
       const type = this.from.extra.type
-      const id = this.scriptsId;
+      const id = this.typeDetails === 'script' ? this.scriptsId : this.id
       const count = this.formOptions['extra.cover'].item.componentProps.count
       let arr, keyVal
       const obj = {
@@ -1769,6 +1795,7 @@ export default {
         }),
         channels: channel_id.join() // 关联到多个栏目
       };
+      if(this.typeDetails === 'news') delete obj.channels
       if(obj.extra.link && obj.extra.link.type === 'activity') obj.extra.link.url = obj.extra.activity_address
       if(obj.extra.link && obj.extra.link.type === 'target_obj') obj.extra.link = {
         ...obj.extra.link,
@@ -1781,8 +1808,9 @@ export default {
           video_list: this.delEditorVideo(obj.extra.content)
         }
       }
-      obj.status = 1
-      return changeScripts(id, obj).then((res) => {
+      if (this.checkStatus) obj.status = 1
+      let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+      return promise.then((res) => {
         this.$message.success(tip)
         this.dialog.show = false;
         cb && cb(res);
@@ -1818,20 +1846,31 @@ export default {
     handlePublish() {
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
-          const { channelId } = this.$route.query
-          if(channelId) return this.handleSave('保存并发布成功', () => {
-            this.handleReturn();
-          })
-          this.dialog.show = true
+          if (this.typeDetails === 'script') {
+            this.checkStatus = true
+            const { channelId } = this.$route.query
+            if(channelId) return this.handleSave('保存并发布成功', () => {
+              this.handleReturn();
+            })
+            this.dialog.show = true
+          }else if (this.typeDetails === 'news') {
+            this.handleSave('保存草稿成功!', () => {
+              this.$emit('refresh')
+              this.handleClose()
+              })
+          }
         }else {
           this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
         }
       })
     },
+     /* 关闭弹框 */
+    handleClose() {
+      this.$emit('update:visible', false)
+    },
     /* tab变化 */
     handleTabChange(val) {
       const currentTabsFromItem = this.initFrom()
-      console.log('currentTabsFromItem', currentTabsFromItem)
       this.currentTabsFromRules = currentTabsFromItem.reduce((obj, key) => ({
         ...obj,
         [key]: this.formOptions[key].rule
@@ -1879,18 +1918,10 @@ export default {
     },
     /* 获取详情数据 */
     getList() {
-      console.log('typeDetails', this.typeDetails)
-      let id = this.scriptsId,promsie = null
-      if (this.typeDetails === 'script') {
-          id = this.scriptsId
-          promsie = getScriptDetail(id)
-      } else if (this.typeDetails === 'news') {
-          id = this.id
-          promsie = getNewDetail(id)
-      }
-      console.log('getList id', id)
-      if (id == null) return
-      return (this.fetchSuggestions? this.fetchSuggestions() : promsie).then(res => {
+      let promise = null
+      if (this.scriptsId == null && this.id == null) return
+      promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
+      return (this.fetchSuggestions? this.fetchSuggestions() : promise).then(res => {
         console.log('res 详情',res)
         const extra = res.extra;
         let link_type = extra.link && extra.link.type || '';
@@ -1949,7 +1980,7 @@ export default {
           }
         }// 表单
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
-        if(!this.disabled) this.dialog.form.channel_id = res.news.map(n => n.channel_id)
+        if(!this.disabled && this.typeDetails === 'script') this.dialog.form.channel_id = res.news.map(n => n.channel_id)
       })
     },
     /* 获取编辑人员 */

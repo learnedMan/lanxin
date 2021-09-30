@@ -353,10 +353,13 @@
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show"
     >
-      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" />
-      <!-- <scripts-details 
-       style="padding: 10px;margin: 0"
-      typeDetails="news" :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" /> -->
+      <!-- <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" /> -->
+      <scripts-details 
+      style="padding: 10px;margin: 0"
+      typeDetails="news" :id="detailDialog.id" 
+      :visible.sync="detailDialog.show" 
+      :disabledNews="detailDialog.disabled" 
+      @refresh="refresh" />
     </el-dialog>
     <!-- 修改排序 -->
     <el-dialog

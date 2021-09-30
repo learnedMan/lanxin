@@ -212,12 +212,19 @@
       :visible.sync="dialog.show"
       v-if="dialog.show"
     >
-      <new-detail
+      <!-- <new-detail
         :id="dialog.id"
         :visible.sync="dialog.show"
         :disabled="dialog.disabled"
         @refresh="refresh"
-      />
+      /> -->
+      <scripts-details 
+      style="padding: 10px;margin: 0"
+      typeDetails="news" 
+      :id="dialog.id" 
+      :visible.sync="dialog.show" 
+      :disabledNews="dialog.disabled" 
+      @refresh="refresh" />
     </el-dialog>
     <!-- 查看历史版本 -->
     <el-dialog
@@ -236,10 +243,11 @@ import { getScriptDetail, deleteNews, changeNews, changeNewsStatus } from '@/api
 import { getUser } from '@/api/manage'
 import newDetail from '@/views/workbench/reviewNews/detail.vue'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
-
+import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
 export default {
   components: {
     newDetail,
+    scriptsDetails,
     VersionHistory
   },
   data() {
