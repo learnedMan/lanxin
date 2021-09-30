@@ -767,8 +767,14 @@ export default {
   computed:{
     /* 当前站点租户 */
     customerId() {
-      return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id
+      return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id || '1'
     },
+    product_id_dsj() {
+      return this.$store.state.user.u_info.site.extra.bigdata_settings.product_id || '1'
+    },
+    multiplying_factor(){
+      return this.$store.state.user.u_info.site.extra.multiplying_factor || 1
+    }
   },
   methods: {
     /* 新增新闻 */
@@ -1045,20 +1051,24 @@ export default {
         })
         let data = {
           customer_id:this.customerId,
-          product_id:this.product_id,
+          product_id:this.product_id_dsj,
           itemIds:arr
         }
-        getMultiHits(data).then(res=>{ //请求点击量
-          let idarr = res.data;
-          this.tableData.forEach((item,index,arr)=>{
-            idarr.forEach((_item,_index,_arr)=>{
-              if(item.id==_item.item_id){
-                this.tableData[index].hits = _item.hits;
-              }
+        // multiplying_factor
+        if(arr.length!=0){
+          getMultiHits(data).then(res=>{ //请求点击量
+            let idarr = res.data;
+            this.tableData.forEach((item,index,arr)=>{
+              idarr.forEach((_item,_index,_arr)=>{
+                if(item.id==_item.item_id){
+                  this.tableData[index].hits = parseInt(_item.hits)*parseInt(this.multiplying_factor)+parseInt(this.tableData[index].view_base_num) || 0;
+                }
+              })
             })
+            this.tablekey = !this.tablekey;
           })
-          this.tablekey = !this.tablekey;
-        })
+        }
+        
         !this.isMobile && this.initSort();
       }).finally(() => {
         this.loading = false

@@ -107,6 +107,15 @@ export default {
     ]),
     avatarImg () {
       return this.avatar? `${this.avatar}?imageView2/1/w/80/h/80` : require('@/assets/c_images/useravatar.jpg')
+    },
+    changeSite(){
+      let flag = false;
+      (this.u_info.roles.data || []).forEach((e)=>{
+        if(e.name=='Administrator'||e.name=='Admin'){
+          flag = true;
+        }
+      })
+      return flag
     }
   },
   created(){
