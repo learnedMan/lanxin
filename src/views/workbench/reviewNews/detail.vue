@@ -383,16 +383,16 @@
                   <el-col :span="8">
                     <!-- 活动结束时间 -->
                     <el-form-item
-                      v-show="initFrom().includes('extra.activitu_end_time')"
-                      v-bind="formOptions['extra.activitu_end_time'].item.props"
+                      v-show="initFrom().includes('extra.activity_end_time')"
+                      v-bind="formOptions['extra.activity_end_time'].item.props"
                     >
                       <el-date-picker
                         type="datetime"
                         size="small"
                         value-format="yyyy-MM-dd HH:mm:ss"
                         placeholder="选择日期时间"
-                        :value="parseObj(formOptions['extra.activitu_end_time'].item)"
-                        @input="handleInput($event, formOptions['extra.activitu_end_time'].item)"
+                        :value="parseObj(formOptions['extra.activity_end_time'].item)"
+                        @input="handleInput($event, formOptions['extra.activity_end_time'].item)"
                       />
                     </el-form-item>
                   </el-col>
@@ -1398,12 +1398,12 @@ export default {
             { required: true, message: '请选择活动开始时间', trigger: 'change' }
           ]
         },
-        'extra.activitu_end_time': {
+        'extra.activity_end_time': {
           item: {
-            key: 'extra.activitu_end_time',
+            key: 'extra.activity_end_time',
             props: {
               label: '结束时间:',
-              prop: 'extra.activitu_end_time'
+              prop: 'extra.activity_end_time'
             },
             component: 'date' // 组件名
           },
@@ -1474,7 +1474,7 @@ export default {
           set_created_at: '', // 发布时间
           activity_address: '',//活动地址
           activity_start_time: '', //活动开始时间
-          activitu_end_time: '', //活动结束时间
+          activity_end_time: '', //活动结束时间
           content: '', // 编辑器内容
           is_original: '1', // 是否原创
           source: '', // 来源
@@ -1638,7 +1638,7 @@ export default {
           } else if(['outer_link', 'auth_link', 'newspaper'].includes(type)) {
             arr.push('extra.link.url')
           }else if(type === 'activity') {
-            arr.push('extra.activity_address','extra.activity_start_time','extra.activitu_end_time')
+            arr.push('extra.activity_address','extra.activity_start_time','extra.activity_end_time')
           } else if(type !== 'none') {
             const current = this.formOptions['extra.link.type'].item.lists.find(n => n.value === type);
             this.formOptions['extra.link.id'].item.props.label = `${current.relatedLabel}:`;
@@ -1784,7 +1784,7 @@ export default {
             }, // 定时发布
             set_created_at: extra.set_created_at, // 发布时间
              activity_start_time: extra.activity_start_time, //活动开始时间
-            activitu_end_time: extra.activitu_end_time, //活动结束时间
+            activity_end_time: extra.activity_end_time, //活动结束时间
             activity_address: extra.link && extra.link.url || '', // 活动地址
             content: extra.content, // 编辑器内容
             is_original: (extra.is_original || '1').toString(), // 是否原创
