@@ -351,7 +351,7 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
                     min:'',
                     max:''
                 },
-                multiplying_factor:''
+                multiplying_factor:1
             }
           }
       },
@@ -374,7 +374,7 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
             this.form.extra.uni_site = '';
           }
           if(!this.form.extra.multiplying_factor){
-            this.form.extra.multiplying_factor = ''
+            this.form.extra.multiplying_factor = 1
             this.form.extra.random_view_range = {}
             this.form.extra.random_view_range.min = ''
             this.form.extra.random_view_range.max = ''
