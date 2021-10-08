@@ -647,14 +647,14 @@
       </el-form>
     </el-main>
     <el-footer class="xl-news-media--footer" height="40px" v-if="!disabled">
-      <el-button
+      <el-button v-points = "1500"
         type="primary"
         size="small"
         @click="handleClose"
       >
         关闭
       </el-button>
-      <el-button
+      <el-button v-points = "1500"
         type="primary"
         size="small"
         @click="handleSave"
@@ -1759,6 +1759,7 @@ export default {
     getList() {
       return (this.fetchSuggestions? this.fetchSuggestions() : getNewDetail(this.id)).then(res => {
         const extra = res.extra;
+        console.log('res 详情数据', res)
         let link_type = extra.link && extra.link.type || 'target_obj';
         let target_obj = '';
         if(this.formOptions.target_obj.item.lists.find(n => n.value === link_type)) {
@@ -1815,6 +1816,7 @@ export default {
           }
         }// 表单
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
+        console.log('this from', this.from)
       })
     },
     /* 获取编辑人员 */
@@ -1827,6 +1829,7 @@ export default {
       })
     },
     async getData() {
+      console.log('id', this.id)
       await this.getList()
       this.handleTabChange()
       this.$nextTick(() => {

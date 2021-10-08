@@ -178,8 +178,8 @@
         </div>
       </div>
       <div class="xl-cropper-footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button type="primary" @click="enterDialog">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" type="primary"  @click="enterDialog">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog :visible.sync="bigImgDialog.show" append-to-body>

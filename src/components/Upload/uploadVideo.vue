@@ -34,7 +34,7 @@
       :on-progress="handleProgress"
       :on-error="handleUploadError"
     >
-      <el-button>上传视频<i class="el-icon-upload el-icon--right" style="font-size: 14px"></i></el-button>
+      <el-button v-points = "1500">上传视频<i class="el-icon-upload el-icon--right" style="font-size: 14px"></i></el-button>
     </el-upload>
     <div class="xl-upload-video--play" v-show="value" @click="play">{{ value }} <i class="el-icon-video-play"></i></div>
     <el-progress :percentage="percentage" v-show="percentage"></el-progress>

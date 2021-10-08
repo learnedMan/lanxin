@@ -31,8 +31,8 @@
               <span>
                 开播时间: {{ detail.extra.start_time }}
                 <span style="margin-left: 10px" v-if="detail.live === 0">
-                  <el-button type="text" size="small" @click="handleStart">提前开播(点击立即开播)</el-button>
-                  <el-button type="text" size="small" @click="handleDelayStart">调整开播时间</el-button>
+                  <el-button v-points = "1500" type="text" size="small" @click="handleStart">提前开播(点击立即开播)</el-button>
+                  <el-button v-points = "1500" type="text" size="small" @click="handleDelayStart">调整开播时间</el-button>
                 </span>
               </span>
             </el-col>
@@ -42,18 +42,18 @@
               <span>
                 结束时间: {{ detail.extra.end_time }}
                 <span style="margin-left: 10px" v-if="detail.live === 0">
-                  <el-button type="text" size="small" @click="handleSetEnd">调整直播结束时间</el-button>
+                  <el-button v-points = "1500" type="text" size="small" @click="handleSetEnd">调整直播结束时间</el-button>
                 </span>
                 <span style="margin-left: 10px" v-if="detail.live === 1">
-                  <el-button type="text" size="small" @click="handleEnd">提前停播(点击立即停播)</el-button>
-                  <el-button type="text" size="small" @click="handleSetEnd">调整直播结束时间</el-button>
+                  <el-button v-points = "1500" type="text" size="small" @click="handleEnd">提前停播(点击立即停播)</el-button>
+                  <el-button v-points = "1500" type="text" size="small" @click="handleSetEnd">调整直播结束时间</el-button>
                 </span>
               </span>
             </el-col>
           </el-row>
         </div>
       </div>
-      <el-button
+      <el-button v-points = "1500"
         type="success"
         size="mini"
         @click="handleReturn"
@@ -118,10 +118,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogStart.show = false">
+        <el-button v-points = "1500" @click="dialogStart.show = false">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="enterStartDialog"
         >
@@ -176,10 +176,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogEnd.show = false">
+        <el-button v-points = "1500" @click="dialogEnd.show = false">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="enterEndDialog"
         >

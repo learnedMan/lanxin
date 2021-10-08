@@ -12,9 +12,9 @@
         />
       </el-form-item> -->
       <el-form-item>
-          <!-- <el-button type="primary" @click="initcondition" size="mini" >重置</el-button> -->
-          <!-- <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
-          <el-button type="primary" @click="adddata" size="mini" >新增</el-button>
+          <!-- <el-button v-points = "1500" type="primary" @click="initcondition" size="mini" >重置</el-button> -->
+          <!-- <el-button v-points = "1500" type="primary" @click="handleQuery" size="mini">搜索</el-button> -->
+          <el-button v-points = "1500" type="primary" @click="adddata" size="mini" >新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -25,7 +25,7 @@
       <el-table-column label="白名单" align="center" prop="keyword" :show-overflow-tooltip="true" />
       <el-table-column width="160px" label="操作" align="center">
         <template slot-scope="scope">
-          <!-- <el-button
+          <!-- <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -33,7 +33,7 @@
             @click="editdata(scope.row)"
           >修改</el-button> -->
           <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
-          <!-- <el-button
+          <!-- <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -61,8 +61,8 @@
       </el-form>
       
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
 

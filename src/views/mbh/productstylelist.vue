@@ -3,19 +3,19 @@
             <h2 style="font-size:24px;">{{productname}}</h2>
             <el-row :gutter="10" class="mb8">
                 <el-col :span="1.5" style="margin-right:30px;">
-                  <el-button
+                  <el-button v-points = "1500"
                     type="primary"
                     icon="el-icon-plus"
                     size="small"
                     @click="handleAddnormal"
                   >增加样式</el-button>
-                  <el-button
+                  <el-button v-points = "1500"
                     type="primary"
                     icon="el-icon-plus"
                     size="small"
                     @click="handleAppend"
                   >导入样式</el-button>
-                  <el-button
+                  <el-button v-points = "1500"
                     type="primary"
                     icon="el-icon-plus"
                     size="small"
@@ -33,8 +33,8 @@
                           :value="item.value">
                         </el-option>
                       </el-select>
-                      <el-button style="margin-left:30px;" type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
-                      <el-button style="margin-left:30px;" type="info" icon="el-icon-back" size="small" @click="handleBack">返回</el-button>
+                      <el-button v-points = "1500" style="margin-left:30px;" type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+                      <el-button v-points = "1500" style="margin-left:30px;" type="info" icon="el-icon-back" size="small" @click="handleBack">返回</el-button>
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -115,7 +115,7 @@
               <el-table-column label="样式预览" align="center" class-name="small-padding fixed-width" width="120px">
                 <template slot-scope="scope">
                   <Iconbutton icontype="yl" label="预览" @fatherMethod="handleView(scope.row)"></Iconbutton>
-                  <!-- <el-button
+                  <!-- <el-button v-points = "1500"
                     size="mini"
                     type="text"
                     icon="el-icon-view"
@@ -128,13 +128,13 @@
                   <Iconbutton icontype="xg" label="修改" @fatherMethod="handleEdit(scope.row)"></Iconbutton>
                   <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
 
-                  <!-- <el-button
+                  <!-- <el-button v-points = "1500"
                     size="mini"
                     type="text"
                     icon="el-icon-edit"
                     @click="handleEdit(scope.row)"
                   >修改</el-button>
-                  <el-button
+                  <el-button v-points = "1500"
                     size="mini"
                     type="text"
                     icon="el-icon-delete"
@@ -155,8 +155,8 @@
                   @check-change="handleCheckChange">
                 </el-tree>
                  <div slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="stylesubmitdialog">确 定</el-button>
-                    <el-button @click="stylecancel">取 消</el-button>
+                    <el-button v-points = "1500" type="primary" @click="stylesubmitdialog">确 定</el-button>
+                    <el-button v-points = "1500" @click="stylecancel">取 消</el-button>
                   </div>
             </el-dialog>
 
@@ -176,8 +176,8 @@
                   </el-tab-pane>
                 </el-tabs>
                 <div slot="footer" class="dialog-footer">
-                  <el-button type="primary" @click="productsubmitdialog">确 定</el-button>
-                  <el-button @click="productcancel">取 消</el-button>
+                  <el-button v-points = "1500" type="primary" @click="productsubmitdialog">确 定</el-button>
+                  <el-button v-points = "1500" @click="productcancel">取 消</el-button>
                 </div>
             </el-dialog>
 
@@ -291,9 +291,9 @@
                   </el-col>
                   <el-col :span="24">
                     <el-form-item size="large">
-                      <el-button type="primary" @click="submitForm">确定</el-button>
-                      <!-- <el-button type="primary" v-show="false" @click="resetForm">重置</el-button> -->
-                      <el-button @click="back">返回</el-button>
+                      <el-button v-points = "1500" type="primary" @click="submitForm">确定</el-button>
+                      <!-- <el-button v-points = "1500" type="primary" v-show="false" @click="resetForm">重置</el-button> -->
+                      <el-button v-points = "1500" @click="back">返回</el-button>
                     </el-form-item>
                   </el-col>
                 </el-form>

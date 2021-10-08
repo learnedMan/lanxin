@@ -57,7 +57,7 @@
         <el-form-item label="登录密码">
           <div class="tip">
             <p>密码由8-16位数字、字母或符号组成,至少包含大小写字母+数字，建议您经常修改密码，以保证帐号更加安全。</p>
-            <el-button type="primary" @click="changePassword">修改密码</el-button>
+            <el-button v-points = "1500" type="primary" @click="changePassword">修改密码</el-button>
           </div>
         </el-form-item>
       </el-form>

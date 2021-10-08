@@ -65,7 +65,7 @@
         <h3 class="xl-template-manage--title">
           <span>目录</span>
           <span>
-            <el-button
+            <el-button v-points = "1500"
               style="margin-right: 6px"
               type="text"
               icon="el-icon-folder-add"
@@ -86,12 +86,12 @@
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ data.name }}</span>
             <span v-show="switchAction">
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-edit"
                 @click.stop="handleEdit(data)">
               </el-button>
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-delete"
                 @click.stop="handleDirRemove(node, data)">
@@ -120,21 +120,21 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleReset"
             >
               重置
             </el-button>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleQuery"
             >
               搜索
             </el-button>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleAddList"
@@ -249,10 +249,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="directory.show = false">
+          <el-button v-points = "1500" @click="directory.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="directoryDialog"
           >
@@ -344,7 +344,7 @@
               :on-change="handleFileChange"
               :on-remove="handleRemove"
               :auto-upload="false">
-              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+              <el-button v-points = "1500" slot="trigger" size="small" type="primary">选取文件</el-button>
             </el-upload>
           </el-form-item>
         </el-form>
@@ -352,10 +352,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialog.show = false">
+          <el-button v-points = "1500" @click="dialog.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="entryDialog"
           >
@@ -457,6 +457,10 @@
             {
               label: '新闻评论页',
               value: '5'
+            },
+            {
+              label: 'PC站',
+              value: '6'
             },
             {
               label: '其他',

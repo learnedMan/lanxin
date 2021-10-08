@@ -49,7 +49,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
@@ -62,8 +62,8 @@
         <h4>主功能区</h4>
         <p>说明：主功能菜单在有色底区，最多支持<span style="color: red;font-size: 18px">4</span>个</p>
         <div class="table-box--btn">
-          <el-button type="primary" size="mini" @click="addCustom('main')">新增自定义菜单</el-button>
-          <el-button type="primary" size="mini" @click="addDefault('main')">新增默认菜单</el-button>
+          <el-button v-points = "1500" type="primary" size="mini" @click="addCustom('main')">新增自定义菜单</el-button>
+          <el-button v-points = "1500" type="primary" size="mini" @click="addDefault('main')">新增默认菜单</el-button>
         </div>
         <el-table
           ref="first"
@@ -89,7 +89,7 @@
           >
             <template slot-scope="scope">
               <!-- 编辑 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-edit"
                 size="small"
@@ -98,7 +98,7 @@
                 编辑
               </el-button>
               <!-- 删除 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-delete"
                 size="small"
@@ -114,8 +114,8 @@
         <h4>常用功能区</h4>
         <p>说明：副功能菜单在白底区，无数量限制，自动换行</p>
         <div class="table-box--btn">
-          <el-button type="primary" size="mini" @click="addCustom('frequent')">新增自定义菜单</el-button>
-          <el-button type="primary" size="mini" @click="addDefault('frequent')">新增默认菜单</el-button>
+          <el-button v-points = "1500" type="primary" size="mini" @click="addCustom('frequent')">新增自定义菜单</el-button>
+          <el-button v-points = "1500" type="primary" size="mini" @click="addDefault('frequent')">新增默认菜单</el-button>
         </div>
         <el-table
           ref="first"
@@ -141,7 +141,7 @@
           >
             <template slot-scope="scope">
               <!-- 编辑 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-edit"
                 size="small"
@@ -150,7 +150,7 @@
                 编辑
               </el-button>
               <!-- 删除 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-delete"
                 size="small"
@@ -166,8 +166,8 @@
         <h4>更多区域</h4>
         <p></p>
         <div class="table-box--btn">
-          <el-button type="primary" size="mini" @click="addCustom('more')">新增自定义菜单</el-button>
-          <el-button type="primary" size="mini" @click="addDefault('more')">新增默认菜单</el-button>
+          <el-button v-points = "1500" type="primary" size="mini" @click="addCustom('more')">新增自定义菜单</el-button>
+          <el-button v-points = "1500" type="primary" size="mini" @click="addDefault('more')">新增默认菜单</el-button>
         </div>
         <el-table
           ref="first"
@@ -193,7 +193,7 @@
           >
             <template slot-scope="scope">
               <!-- 编辑 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-edit"
                 size="small"
@@ -202,7 +202,7 @@
                 编辑
               </el-button>
               <!-- 删除 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-delete"
                 size="small"
@@ -233,10 +233,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="defaultMenu.show = false">
+          <el-button v-points = "1500" @click="defaultMenu.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="defaultMenuEnter"
           >
@@ -360,10 +360,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialog.show = false">
+          <el-button v-points = "1500" @click="dialog.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="dialogEnter"
           >

@@ -1,6 +1,6 @@
 <template>
   <div class="iconbutton">
-    <div class="icon_button" @click="childMethod">
+    <div class="icon_button" v-points = "1500" @click="childMethod">
       <img class="img" :src="imgsrc" alt="">{{label}}
     </div>
   </div>

@@ -94,21 +94,21 @@
       </el-form>
     </el-main>
     <el-footer class="xl-mobile-news--footer" height="40px">
-      <el-button
+      <el-button v-points = "1500"
         type="primary"
         size="small"
         @click="handleClose"
       >
         关闭
       </el-button>
-      <el-button
+      <el-button v-points = "1500"
         type="primary"
         size="small"
         @click="handleSave"
       >
         保存
       </el-button>
-      <el-button
+      <el-button v-points = "1500"
         v-if="status === 0"
         type="primary"
         size="small"
@@ -116,7 +116,7 @@
       >
         通过
       </el-button>
-      <el-button
+      <el-button v-points = "1500"
         v-if="status === 0"
         type="primary"
         size="small"

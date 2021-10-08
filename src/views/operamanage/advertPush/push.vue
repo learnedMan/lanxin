@@ -71,21 +71,21 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
           >
             搜索
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleAdd"
@@ -121,7 +121,7 @@
           prop="statusLabel"
         >
           <template slot-scope="scope">
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="watchDetail(scope.row)"
@@ -234,6 +234,8 @@
               clearable
               type="textarea"
               :row="4"
+              maxlength="50"
+              show-word-limit
               style="width: 194px"
             />
           </el-form-item>
@@ -254,7 +256,7 @@
               v-model="dialogForm.linked_to.title"
               style="width: 194px"
             />
-            <el-button type="primary" size="small" @click="handleChoose" style="margin-left: 10px">选择</el-button>
+            <el-button v-points = "1500" type="primary" size="small" @click="handleChoose" style="margin-left: 10px">选择</el-button>
           </el-form-item>
           <el-form-item
             label="推送图片:"
@@ -306,10 +308,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialog.show = false">
+          <el-button v-points = "1500" @click="dialog.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="enterDialog"
           >

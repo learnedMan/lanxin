@@ -49,7 +49,7 @@
                   }}</el-radio-button>
                 </template>
               </el-radio-group>
-              <el-button
+              <el-button v-points = "1500"
                 style="margin-left: 20px"
                 @click="adddata"
                 type="primary"
@@ -98,13 +98,13 @@
                     label="删除"
                     @fatherMethod="deldata(scope.row)"
                   ></Iconbutton>
-                  <!-- <el-button
+                  <!-- <el-button v-points = "1500"
                             size="mini"
                             type="text"
                             icon="el-icon-edit"
                             style="color:#E6A23C;"
                             @click="editdata(scope.row)">修改</el-button>
-                        <el-button
+                        <el-button v-points = "1500"
                             size="mini"
                             type="text"
                             icon="el-icon-delete"
@@ -159,8 +159,8 @@
         </el-form-item>
       </el-form>
       <div class="dialog-footer" slot="footer">
-        <el-button @click="innercloseDialog">取 消</el-button>
-        <el-button @click="innerenterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="innercloseDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="innerenterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
   </div>

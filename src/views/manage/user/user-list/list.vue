@@ -78,21 +78,21 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="goQuery"
           >
             邀请量查询
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
@@ -133,7 +133,7 @@
         >
           <template slot-scope="scope">
             <span style="margin-right: 10px">{{ scope.row.invitationCode }}</span>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="small"
               @click="invitedRecord(scope.row)"
@@ -147,7 +147,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <el-button
+            <el-button v-points = "1500"
               type="text"
               size="small"
               @click="integralValue(scope.row)"
@@ -162,7 +162,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="small"
               @click="loginRecord(scope.row)"
@@ -259,10 +259,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialog.show = false">
+          <el-button v-points = "1500" @click="dialog.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="enterDialog"
           >

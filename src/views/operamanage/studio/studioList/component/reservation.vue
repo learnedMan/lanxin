@@ -14,7 +14,7 @@
 <template>
     <div class="xl-reservation">
       <div class="xl-reservation-add">
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           size="mini"
           @click="handleAdd"
@@ -24,7 +24,7 @@
       </div>
       <el-tabs v-model="activeName" closable @tab-remove="handleDelete">
         <div class="xl-reservation-save">
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleSave"

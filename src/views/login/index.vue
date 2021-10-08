@@ -66,7 +66,7 @@
           <div class="sendbtn" @click="getcodeFn">{{getcodeval}}</div>
         </el-form-item>
           <div style="font-size: 14px;color: #ccc;cursor: pointer;" @click="forgetPass">忘记密码</div>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           style="width:100%;margin-bottom:30px;"
           @click.native.prevent="handleLogin"

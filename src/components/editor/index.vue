@@ -120,7 +120,7 @@
             <el-checkbox v-model="isMy" size="small">只看我传的</el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="getList"
@@ -160,10 +160,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogControl('cancel')">
+        <el-button v-points = "1500" @click="dialogControl('cancel')">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="dialogControl('confirm')"
         >
@@ -217,6 +217,38 @@
       }
     },
     data() {
+      // let toolbars_xz = window.location.host.indexOf('localhost')>-1?
+      let toolbars_xz = window.location.host.indexOf('pub.cztvcloud.com')>-1?
+      [[
+            'source', '|',
+            'undo', 'redo', '|',
+            'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', '|',
+            'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
+            'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
+            'fontfamily', 'fontsize', '|',
+            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+            'link', 'unlink', '|',
+            'simpleupload', 'insertimage','imglist', 'attachment',
+            'insertvideo',
+            '|',
+            'searchreplace', '|',
+            'fullscreen'
+      ]]:
+      [[
+            'source', '|',
+            'undo', 'redo', '|',
+            'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', '|',
+            'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
+            'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
+            'fontfamily', 'fontsize', '|',
+            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+            'link', 'unlink', '|',
+            'simpleupload', 'insertimage','imglist', 'attachment',
+            // 'insertvideo',
+            '|',
+            'searchreplace', '|',
+            'fullscreen'
+      ]];
       return {
         config: Object.assign({
           UEDITOR_HOME_URL: '/UEditor/', // 编辑器库的位置
@@ -233,21 +265,7 @@
           'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
           'simpleupload'
         ]]} : {
-          toolbars: [[
-            'source', '|',
-            'undo', 'redo', '|',
-            'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', '|',
-            'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
-            'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
-            'fontfamily', 'fontsize', '|',
-            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
-            'link', 'unlink', '|',
-            'simpleupload', 'insertimage','imglist', 'attachment',
-            // 'insertvideo',
-            '|',
-            'searchreplace', '|',
-            'fullscreen'
-        ]]
+          toolbars: toolbars_xz
         }), // 默认配置
 
         editorDependencies: [
@@ -483,6 +501,29 @@
           })
           return btn
         }, undefined, id)
+        window.UE.registerUI('xiumi-editor', (editor, uiName) => {
+          const width = document.body.clientWidth * 0.9
+          const height = window.innerHeight - 50
+          const btn = new window.UE.ui.Button({
+            name   : 'xiumi-connect-'+uiName,
+            cssRules: `background-image: url("https://dl.xiumi.us/connect/ue/xiumi-connect-icon.png") !important;background-size: 85%;background-position: center;background-repeat: no-repeat;`,
+            title: '秀米编辑器',
+            onclick: function() {
+              var dialog = new UE.ui.Dialog({
+                iframeUrl: `${editor.options.UEDITOR_HOME_URL}xiumi-ue-dialog-v5.html`,
+                cssRules: `width: ${width}px; height: ${height}px;`,
+                editor   : editor,
+                name     : 'xiumi-connect',
+                title    : "",
+              });
+              dialog.render();
+              dialog.open();
+            }
+          })
+          return btn
+        }, undefined, id)
+
+
         window.UE.registerUI('videoList', (editor, uiName) => {
           const btn = new window.UE.ui.Button({
             name: 'btn-dialog-' + uiName,

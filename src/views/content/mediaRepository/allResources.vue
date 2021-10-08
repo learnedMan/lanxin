@@ -12,9 +12,9 @@
         />
       </el-form-item>
       <el-form-item>
-          <el-button type="primary" @click="initcondition" size="mini" >重置</el-button>
-          <el-button type="primary" @click="handleQuery" size="mini">搜索</el-button>
-          <el-button type="primary" @click="adddata" size="mini" >新增</el-button>
+          <el-button v-points = "1500" type="primary" @click="initcondition" size="mini" >重置</el-button>
+          <el-button v-points = "1500" type="primary" @click="handleQuery" size="mini">搜索</el-button>
+          <el-button v-points = "1500" type="primary" @click="adddata" size="mini" >新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -50,7 +50,7 @@
       <el-table-column label="上传时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
       <el-table-column width="220px" label="操作" align="center">
         <template slot-scope="scope">
-          <!-- <el-button
+          <!-- <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-download"
@@ -60,14 +60,14 @@
           <Iconbutton icontype="xiazai" label="下载" @fatherMethod="download(scope.row)"></Iconbutton>
           <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
           <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
-          <!-- <el-button
+          <!-- <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-edit"
             style="color:#E6A23C;"
             @click="editdata(scope.row)"
           >修改</el-button>
-          <el-button
+          <el-button v-points = "1500"
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -138,8 +138,8 @@
       </el-form>
 
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
   </div>
