@@ -72,21 +72,21 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
           >
             搜索
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             :disabled="selection.length === 0"
@@ -94,7 +94,7 @@
           >
             批量通过
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="warning"
             size="mini"
             :disabled="selection.length === 0"
@@ -133,7 +133,7 @@
         :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">
-          <el-button type="text" @click="goLink(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+          <el-button v-points = "1500" type="text" @click="goLink(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -265,10 +265,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleDialogClose">
+        <el-button v-points = "1500" @click="handleDialogClose">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="handleDialogClose('confirm')"
         >
@@ -284,11 +284,16 @@
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show && !isMobile"
     >
-      <new-detail
+      <!-- <new-detail
         :id="detailDialog.id"
         :visible.sync="detailDialog.show"
         @refresh="refresh"
-      />
+      /> -->
+      <scripts-details 
+      style="padding: 10px;margin: 0"
+      typeDetails="news" :id="detailDialog.id" 
+      :visible.sync="detailDialog.show" 
+      @refresh="refresh" />
     </el-dialog>
     <!-- 编辑移动端新闻 -->
     <el-dialog
@@ -332,11 +337,13 @@ import { getChannels, getUser } from '@/api/manage'
 import { getNews, changeNewsStatus } from '@/api/content'
 import { getReasons } from '@/api/workbench'
 import NewDetail from './detail'
+import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
 import mobileDetail from './mobileDetail'
 export default {
   name: 'ReviewNews',
   components: {
     NewDetail,
+    scriptsDetails,
     mobileDetail
   },
   data() {

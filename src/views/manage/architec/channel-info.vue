@@ -36,9 +36,9 @@
         </el-form-item>
       </el-form>
         <div style="padding-top:30px;padding-left:50px;">
-            <el-button @click="editfn" :disabled="!editflag" type="success" size="mini">编辑</el-button>
-            <el-button @click="reset" :disabled="editflag" type="info" size="mini" >重置</el-button>
-            <el-button @click="save" :disabled="editflag" type="primary" size="mini" >保存</el-button>
+            <el-button v-points = "1500" @click="editfn" :disabled="!editflag" type="success" size="mini">编辑</el-button>
+            <el-button v-points = "1500" @click="reset" :disabled="editflag" type="info" size="mini" >重置</el-button>
+            <el-button v-points = "1500" @click="save" :disabled="editflag" type="primary" size="mini" >保存</el-button>
         </div>
 
   </div>

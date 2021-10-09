@@ -56,7 +56,7 @@
           style="width: 160px;margin-right: 8px"
         ></el-input>
 
-        <el-button type="primary" @click="getCode">{{ codeNum }}</el-button>
+        <el-button v-points = "1500" type="primary" @click="getCode">{{ codeNum }}</el-button>
       </el-form-item>
       <el-form-item
         label="密码"
@@ -86,10 +86,10 @@
       slot="footer"
       class="dialog-footer"
     >
-      <el-button @click="dialog.show = false">
+      <el-button v-points = "1500" @click="dialog.show = false">
         取 消
       </el-button>
-      <el-button
+      <el-button v-points = "1500"
         type="primary"
         @click="enterDialog"
       >

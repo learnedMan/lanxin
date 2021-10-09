@@ -14,7 +14,7 @@
         :props="props">
       </el-tree>
       <div style="text-align: center">
-        <el-button type="primary" @click="confirm">确定</el-button>
+        <el-button v-points = "1500" type="primary" @click="confirm">确定</el-button>
       </div>
     </div>
 </template>

@@ -12,7 +12,7 @@
       :file-list="fileList"
       :on-success="handleUploadSuccess"
     >
-      <el-button size="small" type="primary">点击上传</el-button>
+      <el-button v-points = "1500" size="small" type="primary">点击上传</el-button>
     </el-upload>
 
     <el-dialog

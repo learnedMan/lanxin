@@ -3,14 +3,14 @@
             <h2>{{pagetitle}} — 套餐列表</h2>
             <el-row :gutter="10" class="mb8" style="margin-bottom:30px;">
                 <el-col :span="1.5" style="margin-right:30px;">
-                  <el-button
+                  <el-button v-points = "1500"
                     type="primary"
                     size="small"
                     @click="handleAdd"
                   >增加套餐</el-button>
                 </el-col>
                 <el-col :span="1.5" style="margin-right:30px;">
-                  <el-button
+                  <el-button v-points = "1500"
                     type="info"
                     size="small"
                     @click="back"
@@ -38,13 +38,13 @@
               <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
               <template slot-scope="scope">
                 <Iconbutton icontype="xg" label="修改" @fatherMethod="handleUpdate(scope.row)"></Iconbutton>
-                <!-- <el-button
+                <!-- <el-button v-points = "1500"
                   size="mini"
                   type="text"
                   icon="el-icon-circle-check"
                   @click="handleUpdate(scope.row)"
                 >修改</el-button> -->
-                <!-- <el-button
+                <!-- <el-button v-points = "1500"
                   size="mini"
                   type="text"
                   icon="el-icon-delete"

@@ -12,12 +12,12 @@
           />
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="handleQuery" style="margin-right:50px;" size="mini">搜索</el-button>
-            <el-button type="primary" @click="adddata" size="mini" >新增</el-button>
-            <el-button type="success" @click="changearrstatus(1)" :disabled="multipleSelection.length==0" size="mini" >批量启用</el-button>
-            <el-button type="warning" @click="changearrstatus(2)" :disabled="multipleSelection.length==0" size="mini" >批量禁用</el-button>
-            <el-button type="danger" @click="changearrstatus(0)" :disabled="multipleSelection.length==0" size="mini" >批量冻结</el-button>
-            <el-button type="danger" @click="delarrdata" :disabled="multipleSelection.length==0" size="mini" >批量删除</el-button>
+            <el-button v-points = "1500" type="primary" @click="handleQuery" style="margin-right:50px;" size="mini">搜索</el-button>
+            <el-button v-points = "1500" type="primary" @click="adddata" size="mini" >新增</el-button>
+            <el-button v-points = "1500" type="success" @click="changearrstatus(1)" :disabled="multipleSelection.length==0" size="mini" >批量启用</el-button>
+            <el-button v-points = "1500" type="warning" @click="changearrstatus(2)" :disabled="multipleSelection.length==0" size="mini" >批量禁用</el-button>
+            <el-button v-points = "1500" type="danger" @click="changearrstatus(0)" :disabled="multipleSelection.length==0" size="mini" >批量冻结</el-button>
+            <el-button v-points = "1500" type="danger" @click="delarrdata" :disabled="multipleSelection.length==0" size="mini" >批量删除</el-button>
         </el-form-item>
     </el-form>
 
@@ -87,8 +87,8 @@
             :props="defaultProps">
           </el-tree>
           <div class="dialog-footer" slot="footer">
-            <el-button @click="innercloseDialog">取 消</el-button>
-            <el-button @click="innerenterDialog" type="primary">确 定</el-button>
+            <el-button v-points = "1500" @click="innercloseDialog">取 消</el-button>
+            <el-button v-points = "1500" @click="innerenterDialog" type="primary">确 定</el-button>
           </div>
       </el-dialog>
       <el-form :model="form" :rules="rules" ref="dataForm">
@@ -115,7 +115,7 @@
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入邮箱" v-model="form.email"></el-input>
         </el-form-item>
         <el-form-item el-form-item  label-width="120px" label="设置栏目权限">
-           <el-button size="mini" @click="showchannel" type="success">权限</el-button>
+           <el-button v-points = "1500" size="mini" @click="showchannel" type="success">权限</el-button>
         </el-form-item>
 
         <el-form-item el-form-item  label-width="120px" label="允许外网登录" prop="extra.allow_www_login">
@@ -134,8 +134,8 @@
       </el-form>
 
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -161,8 +161,8 @@
         </el-tab-pane>
       </el-tabs>
       <div class="clearflex" style="margin-right:20px;margin-top:20px;">
-          <el-button class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
-          <el-button class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
+          <el-button v-points = "1500" class="fl-right" @click="cancelrole" size="small" type="info">取消</el-button>
+          <el-button v-points = "1500" class="fl-right" style="margin-right:15px;" @click="surerole" size="small" type="primary">确 定</el-button>
         </div>
     </el-drawer>
 
@@ -187,8 +187,8 @@
         </el-tab-pane>
       </el-tabs>
       <div class="clearflex" style="margin-right:20px;margin-top:20px;">
-        <el-button class="fl-right" @click="userrolecancelrole" size="small" type="info">取消</el-button>
-        <el-button class="fl-right" style="margin-right:15px;" @click="userrolesurerole" size="small" type="primary">确 定</el-button>
+        <el-button v-points = "1500" class="fl-right" @click="userrolecancelrole" size="small" type="info">取消</el-button>
+        <el-button v-points = "1500" class="fl-right" style="margin-right:15px;" @click="userrolesurerole" size="small" type="primary">确 定</el-button>
       </div>
     </el-drawer>
   </div>

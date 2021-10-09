@@ -12,7 +12,7 @@
     >
         <span slot="title" class="el-dialog__title">
           <span>编辑节目单模板</span>
-          <el-button type="primary" size="small" style="margin-left: 20px" @click="downProgramme">下载节目单模板</el-button>
+          <el-button v-points = "1500" type="primary" size="small" style="margin-left: 20px" @click="downProgramme">下载节目单模板</el-button>
           <el-upload
             class="upload-demo"
             name="excel"
@@ -25,7 +25,7 @@
             :before-upload="beforeAvatarUpload"
             :show-file-list="false"
           >
-            <el-button size="small" type="primary">导入模板</el-button>
+            <el-button v-points = "1500" size="small" type="primary">导入模板</el-button>
           </el-upload>
         </span>
           <el-dialog
@@ -62,8 +62,8 @@
                 </el-form-item>
             </el-form>
             <div class="dialog-footer" slot="footer">
-              <el-button @click="innercloseDialog">取 消</el-button>
-              <el-button @click="innerenterDialog" type="primary">确 定</el-button>
+              <el-button v-points = "1500" @click="innercloseDialog">取 消</el-button>
+              <el-button v-points = "1500" @click="innerenterDialog" type="primary">确 定</el-button>
             </div>
           </el-dialog>
             <span>直播节日模板：</span>
@@ -84,7 +84,7 @@
                         <el-tab-pane label="周日" name="7"></el-tab-pane>
                     </el-tabs>
                     <div class="right" style="flex-grow:1;">
-                        <el-button @click="adddata" style="margin-bottom:20px;" type="primary" size="mini" >新增</el-button>
+                        <el-button v-points = "1500" @click="adddata" style="margin-bottom:20px;" type="primary" size="mini" >新增</el-button>
                         <el-table
                             v-if="tableflag"
                             :header-cell-style="{background:'#eef1f6',color:'#606266'}"
@@ -102,13 +102,13 @@
                                 <template slot-scope="scope">
                                   <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope)"></Iconbutton>
                                   <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope)"></Iconbutton>
-                                <!-- <el-button
+                                <!-- <el-button v-points = "1500"
                                     size="mini"
                                     type="text"
                                     icon="el-icon-edit"
                                     style="color:#E6A23C;"
                                     @click="editdata(scope)">修改</el-button>
-                                <el-button
+                                <el-button v-points = "1500"
                                     size="mini"
                                     type="text"
                                     icon="el-icon-delete"
@@ -122,8 +122,8 @@
                 </div>
             </div>
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
   </div>

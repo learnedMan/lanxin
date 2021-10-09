@@ -103,7 +103,7 @@
 </style>
 <template>
   <div class="xl-table">
-    <!--<el-button
+    <!--<el-button v-points = "1500"
       icon="el-icon-plus"
       size="small"
       type="primary"
@@ -173,7 +173,7 @@
         label="操作"
       >
         <template slot-scope="scope">
-          <el-button
+          <el-button v-points = "1500"
             type="text"
             icon="el-icon-delete"
             size="small"
@@ -193,9 +193,9 @@
       :show-file-list="false"
       :on-success="handleSuccess"
       multiple >
-      <el-button size="small" type="primary">本地上传</el-button>
+      <el-button v-points = "1500" size="small" type="primary">本地上传</el-button>
     </el-upload>
-    <el-button size="small" type="primary" @click="handleImgLists">图库选择</el-button>
+    <el-button v-points = "1500" size="small" type="primary" @click="handleImgLists">图库选择</el-button>
     <el-dialog
       width="900px"
       top="20px"
@@ -238,7 +238,7 @@
             <el-checkbox v-model="isMy" size="small">只看我传的</el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="getList"
@@ -278,10 +278,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogControl('cancel')">
+        <el-button v-points = "1500" @click="dialogControl('cancel')">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="dialogControl('confirm')"
         >

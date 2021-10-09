@@ -72,7 +72,7 @@
                 />
               </el-form-item>
               <el-form-item>
-                <el-button
+                <el-button v-points = "1500"
                   type="primary"
                   size="mini"
                   @click="getVideoList('vmsParams')"
@@ -89,9 +89,9 @@
                   您的浏览器不支持 HTML5 video 标签。
                 </video>
                 <div class="bottom">
-                  <el-button type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
+                  <el-button v-points = "1500" type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
                   <el-dropdown size="mini" @command="changeVideo($event, list)">
-                    <el-button type="primary" size="mini">
+                    <el-button v-points = "1500" type="primary" size="mini">
                       {{ list.customObj.label }}<i class="el-icon-arrow-down el-icon--right"></i>
                     </el-button>
                     <el-dropdown-menu slot="dropdown" style="width: 60px;text-align: center">
@@ -147,7 +147,7 @@
                 />
               </el-form-item>
               <el-form-item>
-                <el-button
+                <el-button v-points = "1500"
                   type="primary"
                   size="mini"
                   @click="getVideoList('xlParams')"
@@ -164,9 +164,9 @@
                   您的浏览器不支持 HTML5 video 标签。
                 </video>
                 <div class="bottom">
-                  <el-button type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
+                  <el-button v-points = "1500" type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
                   <el-dropdown size="mini" @command="changeVideo($event, list)">
-                    <el-button type="primary" size="mini">
+                    <el-button v-points = "1500" type="primary" size="mini">
                       {{ list.customObj.label }}<i class="el-icon-arrow-down el-icon--right"></i>
                     </el-button>
                     <el-dropdown-menu slot="dropdown" style="width: 60px;text-align: center">

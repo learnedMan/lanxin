@@ -21,12 +21,12 @@
             @keyup.enter.native="handleQuery"/>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery" size="mini"
+          <el-button v-points = "1500" type="primary" @click="handleQuery" size="mini"
             >搜索</el-button>
-          <el-button type="info" @click="initcondition" size="mini"
+          <el-button v-points = "1500" type="info" @click="initcondition" size="mini"
             >重置</el-button>
-            <el-button type="primary" @click="adddata" size="mini">新增</el-button>
-            <el-button type="primary" @click="back" size="mini">返回上一级</el-button>
+            <el-button v-points = "1500" type="primary" @click="adddata" size="mini">新增</el-button>
+            <el-button v-points = "1500" type="primary" @click="back" size="mini">返回上一级</el-button>
         </el-form-item>
       </el-form>
     <el-table
@@ -188,14 +188,14 @@
                     :limit="1"
                     :before-remove="beforeRemove"
                     name="image">
-                    <el-button size="small" type="primary">新增</el-button>
+                    <el-button v-points = "1500" size="small" type="primary">新增</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传一个包，若已存在，请删除后再重新上传</div>
                 </el-upload> -->
             </el-form-item>
         </el-form>
       <div class="dialog-footer" slot="footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button @click="enterDialog" type="primary">确 定</el-button>
+        <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+        <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
       </div>
     </el-dialog>
 

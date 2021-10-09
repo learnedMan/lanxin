@@ -58,28 +58,28 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
           >
             搜索
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleAdd"
           >
             新增
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="success"
             size="mini"
             :disabled="selection.length === 0"
@@ -137,7 +137,7 @@
         :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">
-          <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+          <el-button v-points = "1500" type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -159,7 +159,7 @@
         prop="id"
       >
         <template slot-scope="scope">
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleListWatch(scope.row)"
@@ -271,10 +271,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="closeDialog">
+        <el-button v-points = "1500" @click="closeDialog">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="enterDialog"
         >

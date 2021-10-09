@@ -1,6 +1,6 @@
 <template>
     <div class="page_c_list">
-        <el-button type="primary" @click="back" size="mini">返回上一级</el-button>
+        <el-button v-points = "1500" type="primary" @click="back" size="mini">返回上一级</el-button>
         <el-table
             style="margin-top:20px;"
             :header-cell-style="{background:'#eef1f6',color:'#606266'}"
@@ -25,14 +25,14 @@
             <el-table-column label="创建时间" align="center" prop="script.created_at" :show-overflow-tooltip="true" />
             <el-table-column width="200px" label="操作" align="center">
                 <template slot-scope="scope">
-                <!-- <el-button
+                <!-- <el-button v-points = "1500"
                     size="mini"
                     type="text"
                     icon="el-icon-edit"
                     style="color:#E6A23C;"
                     @click="editdata(scope.row)">修改</el-button> -->
                     <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
-                <!-- <el-button
+                <!-- <el-button v-points = "1500"
                     size="mini"
                     type="text"
                     icon="el-icon-delete"
@@ -113,8 +113,8 @@
 
 
             <div class="dialog-footer" slot="footer">
-            <el-button @click="innercloseDialog">取 消</el-button>
-            <el-button @click="innerenterDialog" type="primary">确 定</el-button>
+            <el-button v-points = "1500" @click="innercloseDialog">取 消</el-button>
+            <el-button v-points = "1500" @click="innerenterDialog" type="primary">确 定</el-button>
             </div>
         </el-dialog>
     </div>

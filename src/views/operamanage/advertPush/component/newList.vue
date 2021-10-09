@@ -116,14 +116,14 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleReset"
             >
               重置
             </el-button>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleQuery"
@@ -204,7 +204,7 @@
         @pagination="getList"
       />
       <div style="text-align: center">
-        <el-button type="primary" @click="confirm">确定</el-button>
+        <el-button v-points = "1500" type="primary" @click="confirm">确定</el-button>
       </div>
     </div>
   </div>

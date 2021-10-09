@@ -59,7 +59,7 @@
         <h3 class="xl-project-detail--title">
           <span>子专题</span>
           <span>
-            <el-button
+            <el-button v-points = "1500"
               style="margin-right: 6px"
               type="text"
               icon="el-icon-folder-add"
@@ -81,27 +81,27 @@
             <span class="custom-tree-node--name">{{ data.name }}</span>
             <span @click.stop="">
               <!-- 上移 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-top"
                 v-if="data.id !== (channelsList[0] && channelsList[0].id)"
                 @click.stop="handleTopicSort('up', data)">
               </el-button>
               <!-- 下移 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-bottom"
                 v-if="data.id !== (channelsList[channelsList.length - 1] && channelsList[channelsList.length - 1].id)"
                 @click.stop="handleTopicSort('down', data)">
               </el-button>
               <!-- 编辑 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-edit"
                 @click.stop="handleTopicEdit(data)">
               </el-button>
               <!-- 删除 -->
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 icon="el-icon-delete"
                 @click.stop="handleTopicRemove(node, data)">
@@ -190,28 +190,28 @@
               />
             </el-form-item>
             <el-form-item>
-              <el-button
+              <el-button v-points = "1500"
                 type="primary"
                 size="mini"
                 @click="handleReset"
               >
                 重置
               </el-button>
-              <el-button
+              <el-button v-points = "1500"
                 type="primary"
                 size="mini"
                 @click="handleQuery"
               >
                 搜索
               </el-button>
-              <el-button
+              <el-button v-points = "1500"
                 type="primary"
                 size="mini"
                 @click="handleAdd"
               >
                 新增新闻
               </el-button>
-              <el-button
+              <el-button v-points = "1500"
                 type="success"
                 size="mini"
                 @click="handleReturn"
@@ -262,7 +262,7 @@
             :show-overflow-tooltip="true"
           >
             <template slot-scope="scope">
-              <el-button type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+              <el-button v-points = "1500" type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -302,7 +302,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              <el-button
+              <el-button v-points = "1500"
                 type="text"
                 size="small"
                 @click="handleSort(scope.row)"
@@ -420,10 +420,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="sortDialog.show = false">
+        <el-button v-points = "1500" @click="sortDialog.show = false">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="enterSortDialog"
         >
@@ -439,7 +439,13 @@
       :visible.sync="detailDialog.show"
       v-if="detailDialog.show"
     >
-      <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" />
+      <!-- <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" /> -->
+       <scripts-details 
+      style="padding: 10px;margin: 0"
+      typeDetails="news" :id="detailDialog.id" 
+      :visible.sync="detailDialog.show" 
+      :disabledNews="detailDialog.disabled" 
+      @refresh="refresh" />
     </el-dialog>
     <!-- 推送 -->
     <el-dialog
@@ -555,10 +561,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="pushDialog.show = false">
+        <el-button v-points = "1500" @click="pushDialog.show = false">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="enterPushDialog"
         >
@@ -617,15 +623,15 @@
             <el-option v-for="item in styleOptions" :key="item.id" :label="item.styleName" :value="`${item.id}`">
             </el-option>
           </el-select>
-          <el-button v-if="topicDialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
+          <el-button v-points = "1500" v-if="topicDialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
         </el-form-item>
       </el-form>
       <div
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="topicDialog.show = false">取 消</el-button>
-        <el-button type="primary" @click="enterTopicChange">确 定</el-button>
+        <el-button v-points = "1500" @click="topicDialog.show = false">取 消</el-button>
+        <el-button v-points = "1500" type="primary" @click="enterTopicChange">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -651,6 +657,7 @@
   import Sortable from 'sortablejs'
   import { dateFormat } from "@/utils/costum";
   import NewDetail from '@/views/workbench/reviewNews/detail.vue'
+  import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
   import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
     export default {
@@ -658,6 +665,7 @@
       props: ['id'],
       components: {
         NewDetail,
+        scriptsDetails,
         VersionHistory
       },
       data() {

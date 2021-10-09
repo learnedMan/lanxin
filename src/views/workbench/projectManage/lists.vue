@@ -72,21 +72,21 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
           >
             搜索
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleAdd"
@@ -211,10 +211,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="publishDialog.show = false">
+          <el-button v-points = "1500" @click="publishDialog.show = false">
             取 消
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             @click="enterPublishDialog"
           >
@@ -321,7 +321,7 @@
               <el-option v-for="item in styleOptions" :key="item.id" :label="item.styleName" :value="`${item.id}`">
               </el-option>
             </el-select>
-            <el-button v-if="dialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
+            <el-button v-points = "1500" v-if="dialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
           </el-form-item>
           <el-form-item
             label="多级专题:"
@@ -340,8 +340,8 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialog.show = false">取 消</el-button>
-          <el-button type="primary" @click="enterChangeDialog">确 定</el-button>
+          <el-button v-points = "1500" @click="dialog.show = false">取 消</el-button>
+          <el-button v-points = "1500" type="primary" @click="enterChangeDialog">确 定</el-button>
         </div>
       </el-dialog>
     </div>

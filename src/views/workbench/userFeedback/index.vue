@@ -200,14 +200,14 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
@@ -330,8 +330,8 @@
           class="dialog-footer"
         >
           <div slot="footer" class="dialog-footer">
-            <el-button @click="innerDialog.show = false">取 消</el-button>
-            <el-button type="primary" @click="enterInnerDialog">确 定</el-button>
+            <el-button v-points = "1500" @click="innerDialog.show = false">取 消</el-button>
+            <el-button v-points = "1500" type="primary" @click="enterInnerDialog">确 定</el-button>
           </div>
         </div>
       </el-dialog>
@@ -354,7 +354,7 @@
         <el-col :span="12">
           <div class="xl-feedback--title">
             <span class="xl-feedback--title-label">回复记录 <span v-show="dialog.isReply">(待回复)</span></span>
-            <el-button
+            <el-button v-points = "1500"
               type="primary"
               size="mini"
               @click="handleReply"
@@ -386,7 +386,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialog.show = false">
+        <el-button v-points = "1500" @click="dialog.show = false">
           关  闭
         </el-button>
       </div>

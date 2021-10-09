@@ -94,21 +94,21 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleReset"
           >
             重置
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleQuery"
           >
             搜索
           </el-button>
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="mini"
             @click="handleAdd"
@@ -186,7 +186,7 @@
         width="100"
       >
         <template slot-scope="scope">
-          <el-button
+          <el-button v-points = "1500"
             type="primary"
             size="small"
             @click="watchConsole(scope.row)"
@@ -267,10 +267,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="publishDialog.show = false">
+        <el-button v-points = "1500" @click="publishDialog.show = false">
           取 消
         </el-button>
-        <el-button
+        <el-button v-points = "1500"
           type="primary"
           @click="enterPublishDialog"
         >
@@ -521,8 +521,8 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialog.show = false">取 消</el-button>
-        <el-button type="primary" @click="enterChangeDialog" v-loading="dialogLoading">确 定</el-button>
+        <el-button v-points = "1500" @click="dialog.show = false">取 消</el-button>
+        <el-button v-points = "1500" type="primary" @click="enterChangeDialog" v-loading="dialogLoading">确 定</el-button>
       </div>
     </el-dialog>
   </div>
