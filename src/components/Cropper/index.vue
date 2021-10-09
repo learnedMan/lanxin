@@ -143,7 +143,7 @@
         </el-upload>
       </li>
     </ul>
-    <div class="xl-cropper-tip" v-if="showTip">上传封面,建议尺寸 750*420,单个图片不超过10M!</div>
+    <div class="xl-cropper-tip" v-if="showTip">上传封面,建议比例16:9（最佳尺寸750*420）,单个图片不超过10M!</div>
     <el-dialog
       width="600px"
       :title="dialog.title"

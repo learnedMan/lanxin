@@ -703,12 +703,29 @@
         /* 获取表格数据 */
         getList () {
           getAppMenu(this.sourceId).then(res => {
+            console.log('res', res)
             const profile_settings = res.extra.profile_settings || {};
             this.patchData = res;
-            this.main = (profile_settings.main || []).map(_ => ({ ..._ }));
-            this.frequent = (profile_settings.frequent || []).map(_ => ({ ..._ }));
-            this.more = (profile_settings.more || []).map(_ => ({ ..._ }));
+            // this.main = (profile_settings.main || []).map(_ => ({ ..._ }));
+            // this.frequent = (profile_settings.frequent || []).map(_ => ({ ..._ }));
+            // this.more = (profile_settings.more || []).map(_ => ({ ..._ }));
+            this.main = (this.sortArry(profile_settings.main) || []).map(_ => ({ ..._ }));
+            this.frequent = (this.sortArry(profile_settings.frequent) || []).map(_ => ({ ..._ }));
+            this.more = (this.sortArry(profile_settings.more) || []).map(_ => ({ ..._ }));
           })
+        },
+        /*表格s数据排序*/
+        sortArry(arr) {
+          let tem = 0
+          if(!arr) return []
+          for(var i = 0; i<arr.length; i ++) {
+            for(var j =i +1; j< arr.length;j++) {
+              if(arr[i].sort > arr[j].sort) {
+                [arr[i],arr[j]] = [arr[j],arr[i]]
+              }
+            }
+          }
+          return arr
         }
       },
       async created() {
