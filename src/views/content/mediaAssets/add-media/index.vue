@@ -1944,11 +1944,8 @@ export default {
     getList() {
         let promise = null
       if (this.scriptsId == null && this.id == null) {
-        if(this.viewBaseInterval.max && this.viewBaseInterval.min) {
-          this.from.extra.view_base_num = Math.floor(Math.random()*(this.viewBaseInterval.max-this.viewBaseInterval.min+1)+this.viewBaseInterval.min)
-        }else{
-          this.form.extra.view_base_num = 0
-        }
+        let max = this.viewBaseInterval.max, min = this.viewBaseInterval.min;
+        this.from.extra.view_base_num = max ? Math.floor(Math.random()*(max-min+1)+min) : 0
         return
       }
       promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
