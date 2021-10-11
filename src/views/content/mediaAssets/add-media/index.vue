@@ -794,13 +794,10 @@ export default {
       }
     }
     const validateViewBaseNum = (rule, value, callback) => {
-      let extra = this.$store.state.user.u_info.site.extra
-      const max = Number(extra.random_view_range?.max || 0)
-      const min = Number(extra.random_view_range?.min || 0)
-      if(!value){
+      if(!value && value != 0){
         callback(new Error('请输入点击量'))
-      }else if (value > max || value < min) {
-        callback(new Error(`请输入${min}-${max}的正整数`))
+      }else if (!(/(^[0-9]\d*$)/.test(value))) {
+        callback(new Error(`请输入大于零的正整数`))
       } else {
         callback()
       }
@@ -1292,8 +1289,8 @@ export default {
               placeholder: '请输入数值'
             }
           },
-           rule: [
-            { required: false, trigger: 'blur',type:'number', validator: validateViewBaseNum }
+          rule: [
+            { required: false, validator: validateViewBaseNum, trigger: 'blur'  }
           ]
         },
         'extra.praise_base_num': {
@@ -1945,12 +1942,17 @@ export default {
     },
     /* 获取详情数据 */
     getList() {
-      const id = this.scriptsId; 
-      if (id == null) {
-        this.from.extra.view_base_num = Math.floor(Math.random()*(this.viewBaseInterval.max-this.viewBaseInterval.min+1)+this.viewBaseInterval.min)
+        let promise = null
+      if (this.scriptsId == null && this.id == null) {
+        if(this.viewBaseInterval.max && this.viewBaseInterval.min) {
+          this.from.extra.view_base_num = Math.floor(Math.random()*(this.viewBaseInterval.max-this.viewBaseInterval.min+1)+this.viewBaseInterval.min)
+        }else{
+          this.form.extra.view_base_num = 0
+        }
         return
       }
-      return (this.fetchSuggestions? this.fetchSuggestions() : getScriptDetail(id)).then(res => {
+      promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
+      return (this.fetchSuggestions? this.fetchSuggestions() : promise).then(res => {
         const extra = res.extra;
         let link_type = extra.link && extra.link.type || '';
         let target_obj = '';

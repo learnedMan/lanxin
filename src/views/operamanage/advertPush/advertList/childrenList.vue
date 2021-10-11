@@ -214,13 +214,12 @@
             prop="start_time"
           >
             <el-date-picker
-              popper-class="custom-picker"
               v-model="dialogForm.start_time"
               type="datetime"
               placeholder="选择开始日期时间"
               align="right"
-              format="yyyy-MM-dd HH"
-              value-format="yyyy-MM-dd HH:00:00"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               :picker-options="pickerOptionsStart">
             </el-date-picker>
           </el-form-item>
@@ -229,14 +228,13 @@
             prop="end_time"
           >
             <el-date-picker
-              popper-class="custom-picker"
               ref="endTime"
               v-model="dialogForm.end_time"
               type="datetime"
               placeholder="选择结束日期时间"
               align="right"
-              format="yyyy-MM-dd HH"
-              value-format="yyyy-MM-dd HH:00:00"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               :picker-options="pickerOptionsEnd">
             </el-date-picker>
             <el-checkbox v-model="dialogForm.unlimited" @change="endAction" style="margin-left: 10px">不限制</el-checkbox>
