@@ -795,8 +795,8 @@ export default {
     }
     const validateViewBaseNum = (rule, value, callback) => {
       if(!value){
-        // callback(new Error('请输入点击量'))
         this.from.extra.view_base_num = 0
+        callback()
       }else if (!(/(^[0-9]\d*$)/.test(value))) {
         callback(new Error(`请输入大于零的正整数`))
       } else {

@@ -80,6 +80,7 @@
       :phone="loginForm.username"
       :zone_id="sitec.site_select_all.zone_id || ''"
       :site_id="sitec.site_select_all.id || ''"
+      :disabledPhone="disabledPhone"
       ref="changePass"
       tip="为确保您的账号信息安全，请尽快修改您的登录密码"
     ></change-pass>
@@ -128,6 +129,7 @@ export default {
       closeeye,
       openeye,
       eyeflag:false,
+      disabledPhone: true,
       loginForm: {//登录绑定
         username: '',
         password: '',
@@ -237,14 +239,8 @@ export default {
           })
           return
       }
-      if(!this.loginForm.username){
-          this.$message({
-            message: '请输入手机号',
-            type: 'error'
-          })
-          return
-      }
       const changePass = this.$refs.changePass;
+      this.disabledPhone = false
       changePass.dialog.show = true;
     },
     sites_change(e){
