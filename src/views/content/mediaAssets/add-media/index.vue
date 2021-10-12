@@ -794,8 +794,9 @@ export default {
       }
     }
     const validateViewBaseNum = (rule, value, callback) => {
-      if(!value && value != 0){
-        callback(new Error('请输入点击量'))
+      if(!value){
+        // callback(new Error('请输入点击量'))
+        this.from.extra.view_base_num = 0
       }else if (!(/(^[0-9]\d*$)/.test(value))) {
         callback(new Error(`请输入大于零的正整数`))
       } else {
@@ -1945,7 +1946,7 @@ export default {
         let promise = null
       if (this.scriptsId == null && this.id == null) {
         let max = this.viewBaseInterval.max, min = this.viewBaseInterval.min;
-        this.from.extra.view_base_num = max ? Math.floor(Math.random()*(max-min+1)+min) : 0
+        this.from.extra.view_base_num = max && max !=Infinity ? Math.floor(Math.random()*(max-min+1)+min) : 0
         return
       }
       promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
