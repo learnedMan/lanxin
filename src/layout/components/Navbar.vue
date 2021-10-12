@@ -8,6 +8,7 @@
       <div style="margin-right: 10px" v-if="!isMobile">
         <el-button v-points = "1500" type="primary" size="mini" v-for="btn of btns" @click="$router.push(btn.url)">{{btn.label}}</el-button>
       </div>
+      <el-button v-points = "1500" size="mini" @click="changeShortcut">修改</el-button>
       <el-button v-points = "1500"
         v-if="u_info.site_list.length !== 0"
         style="color:#999;"
@@ -53,7 +54,29 @@
           <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
         </div>
       </el-dialog>
-
+    <!-- 自定义快捷按钮 -->
+       <el-dialog
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        width="600px" title="快速跳转" :visible.sync="dialogShortcut">
+        <!-- <el-tree
+            :data="treedata"
+            :default-checked-keys="treechoosedata"
+            show-checkbox
+            :check-strictly="true"
+            @check = "nodeclick"
+            @check-change = "permissionMenu"
+            default-expand-all
+            node-key="id"
+            ref="roletree"
+            highlight-current
+            :props="roledefaultProps">
+          </el-tree> -->
+        <div class="dialog-footer" slot="footer">
+          <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+          <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -74,6 +97,12 @@ export default {
   data(){
     return {
       dialogFormVisible: false,
+      dialogShortcut: false,
+      roledefaultProps: {
+        children: 'children',
+        label: 'title',
+        id: 'url'
+      },
       form:{
         id:""
       },
@@ -128,6 +157,15 @@ export default {
       const id = this.u_info.site.id;
       this.form.id = id;
       this.dialogFormVisible = true;
+    },
+    /*修改快捷方式*/
+    changeShortcut () {
+      // this.dialogShortcut = true
+      // console.log('路由表',  this.$store.state.permission.addRoutes)
+      let routes = this.$store.state.permission.addRoutes
+      routes.map(v=>{
+        console.log(v)
+      })
     },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
