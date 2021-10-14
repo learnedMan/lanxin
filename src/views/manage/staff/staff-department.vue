@@ -2,16 +2,6 @@
   <div class="column" style="padding:30px;">
     <!-- 搜索 -->
     <el-form ref="queryForm" :model="queryParams" :inline="true">
-      <el-form-item label="产品：">
-        <el-select v-model="queryParams.product_id" placeholder="请选择">
-          <el-option
-            v-for="item in productList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item
           label="部门:"
           prop="keyword"
@@ -52,42 +42,18 @@
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       border
       v-loading="loading"
-      :data="dataList"
+      :data="tableData"
       row-key="id"
       :tree-props="{children: 'children'}">
-      <el-table-column label="栏目名称" align="left" prop="name" />
-      <el-table-column label="栏目ID" align="center" prop="id" :show-overflow-tooltip="true" />
-      <el-table-column
-        label="(模板化)栏目分类"
-        align="center"
-        prop="template_style"
-        :show-overflow-tooltip="true" >
-        <template slot-scope="scope">
-          <!-- 如果是产品，那么没有样式分类，只有栏目有 -->
-          <div v-if="scope.row.type=='product'">无</div>
-          <div v-else>{{getstyle(scope.row.template_style)}}</div>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="!isMobile" label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
-      <el-table-column
-        label="状态"
-        align="center"
-        prop="status"
-        :show-overflow-tooltip="true" >
-        <template slot-scope="scope">
-          <el-select :disabled="scope.row.type=='product'" @change="statuschange(scope.row)" v-model="scope.row.status" placeholder="请选择">
-            <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="!isMobile" label="更新时间" align="center" prop="updated_at" :show-overflow-tooltip="true" />
+      <el-table-column label="部门名称" align="left" prop="name" />
+      <el-table-column label="部门ID" align="center" prop="id" :show-overflow-tooltip="true" />
+      <el-table-column v-if="!isMobile" label="创建时间" align="center" prop="date" :show-overflow-tooltip="true" />
       <el-table-column label="操作" align="left" width="360px">
         <template slot-scope="scope">
-          <Iconbutton icontype="xz" label="新增" @fatherMethod="adddata(scope.row)"></Iconbutton>
+          <!-- <Iconbutton icontype="xz" label="新增" @fatherMethod="adddata(scope.row)"></Iconbutton> -->
           <Iconbutton v-if="scope.row.type!='product'" icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
-          <Iconbutton v-if="scope.row.b_sort!='begin'" icontype="sy" label="上移" @fatherMethod="move(scope.$index, scope.row, 'up')"></Iconbutton>
-          <Iconbutton v-if="scope.row.e_sort!='end'" icontype="xy" label="下移" @fatherMethod="move(scope.$index, scope.row, 'down')"></Iconbutton>
+          <!-- <Iconbutton v-if="scope.row.b_sort!='begin'" icontype="sy" label="上移" @fatherMethod="move(scope.$index, scope.row, 'up')"></Iconbutton>
+          <Iconbutton v-if="scope.row.e_sort!='end'" icontype="xy" label="下移" @fatherMethod="move(scope.$index, scope.row, 'down')"></Iconbutton> -->
           <Iconbutton v-if="scope.row.type!='product'" icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
         </template>
       </el-table-column>
@@ -96,20 +62,18 @@
 
     <!-- 新增/修改栏目弹窗 -->
     <el-dialog
-      width="1200px"
+      width="600px"
       :close-on-click-modal="false"
       :title="dialogTitle"
-      @close="dialogclose"
       top="10vh"
       :visible.sync="dialogFormVisible">
       <el-form
         :model="form"
         :rules="rules"
         ref="dataForm"
-        style="display: flex">
+       >
         <!-- 左 -->
-        <div class="fl" style="width: 50%">
-          <el-form-item class="placeholderdiv" label-width="150px" label="上级栏目:" prop="father">
+          <el-form-item class="placeholderdiv" label-width="150px" label="上级部门:" prop="father">
             <el-cascader
             :show-all-levels = false
             :placeholder="form.placeholder"
@@ -119,227 +83,22 @@
             :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
             clearable></el-cascader>
           </el-form-item>
-          <el-form-item label-width="150px" label="栏目名称:" prop="name">
+          <el-form-item label-width="150px" label="部门:" prop="name">
             <el-input
               style="width: 350px"
-              placeholder="请输入栏目名称"
+              placeholder="请输入部门名称"
               v-model="form.name"
             ></el-input>
           </el-form-item>
-          <el-form-item label-width="150px" label="栏目简介:" prop="extra.intro">
+          <el-form-item label-width="150px" label="描述:" prop="extra.intro">
             <el-input
               style="width: 350px"
-              placeholder="请输入栏目简介"
+              placeholder="请输入部门描述"
               v-model="form.extra.intro"
               :autosize="{ minRows: 4}"
               type="textarea"
             ></el-input>
           </el-form-item>
-          <el-form-item label-width="150px" label="栏目封面:" prop="extra.cover">
-            <el-upload
-              class="avatar-uploader"
-              :action="VUE_APP_BASE_API + '/api/upload/image'"
-              :headers="importHeaders"
-              name="image"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess.bind(this,'cover')"
-              :before-upload="beforeAvatarUpload">
-              <img v-if="form.extra.cover" :src="form.extra.cover" class="avatar" />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              <div v-show="form.extra.cover" style="line-height: 30px;height: 30px">
-                <span
-                class="xl-cropper-icon"
-                @click.stop="handleRemove('cover')"
-              >
-                <i class="el-icon-delete" />
-              </span>
-              </div>
-            </el-upload>
-          </el-form-item>
-          <el-form-item label-width="150px" label="栏目Logo:" prop="extra.logo">
-            <el-upload
-              class="avatar-uploader"
-              :action="VUE_APP_BASE_API + '/api/upload/image'"
-              :headers="importHeaders"
-              name="image"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess.bind(this,'logo')"
-              :before-upload="beforeAvatarUpload">
-              <img v-if="form.extra.logo" :src="form.extra.logo" class="avatar" />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              <div v-show="form.extra.logo" style="line-height: 30px;height: 30px">
-                <span
-                class="xl-cropper-icon"
-                @click.stop="handleRemove('logo')"
-              >
-                <i class="el-icon-delete" />
-              </span>
-              </div>
-            </el-upload>
-          </el-form-item>
-
-          <!-- <el-form-item label-width="150px" label="允许发布的内容:" prop="extra.allow_news_types">
-            <el-checkbox-group
-                v-model="form.extra.allow_news_types">
-                <el-checkbox v-for="media in medias" :label="media.label" :key="media.label">{{media.value}}</el-checkbox>
-            </el-checkbox-group>
-          </el-form-item> -->
-
-          <el-form-item el-form-item  label-width="150px" label="加载子栏目:" prop="extra.load_child">
-            <el-switch
-              :active-value="'1'"
-              :inactive-value="'0'"
-              v-model="form.extra.load_child">
-            </el-switch>
-          </el-form-item>
-          <el-form-item el-form-item  label-width="150px" label="加载新闻:" prop="extra.load_news">
-            <el-switch
-              :active-value="'1'"
-              :inactive-value="'0'"
-              v-model="form.extra.load_news">
-            </el-switch>
-          </el-form-item>
-          <el-form-item label-width="150px" label="关联栏目:" prop="extra.linked_channel_id">
-            <el-cascader
-            v-model="form.extra.linked_channel_id"
-            style="width: 350px"
-            :options="dataList"
-            :props="{ checkStrictly: true ,value:'id',label:'name', emitPath:false, multiple: true}"
-            clearable></el-cascader>
-          </el-form-item>
-          <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">
-            <el-select clearable="" @change="catalogchange" v-model="form.extra.template_style" prop="extra.template_style" placeholder="请选择">
-              <el-option v-for="item in catalogoptions" :key="item.id" :label="item.catalogName" :value="''+item.catalogCode">
-              </el-option>
-            </el-select>
-            <!-- <el-popover
-              style="margin-left:10px;"
-              placement="right"
-              trigger="hover">
-              <div>
-                <img :src="mbhimg[form.extra.template_style]?mbhimg[form.extra.template_style]:mbhimg.zanwu" alt="">
-              </div>
-              <el-button v-points = "1500" slot="reference">预览</el-button>
-            </el-popover> -->
-          </el-form-item>
-
-          <el-form-item el-form-item label-width="150px" label="(模板化)样式:" prop="extra.template_json_id">
-            <el-select clearable="" v-model="form.extra.template_json_id" placeholder="请选择">
-              <el-option v-for="item in styleoptions" :key="item.id" :label="item.styleName" :value="item.id">
-              </el-option>
-            </el-select>
-            <!-- <el-popover
-
-              placement="right"
-              trigger="hover">
-              <div>
-                <img :src="mbhimg[form.extra.template_style]?mbhimg[form.extra.template_style]:mbhimg.zanwu" alt="">
-              </div> -->
-              <el-button v-points = "1500" v-if="form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
-            <!-- </el-popover> -->
-          </el-form-item>
-
-          <el-form-item label-width="150px" label="排序(权重):" prop="sort">
-            <el-input
-              style="width: 350px"
-              placeholder="请输入排序(权重)"
-              v-model="form.sort"
-            ></el-input>
-          </el-form-item>
-          <el-form-item el-form-item  label-width="150px" label="菜单分组:" prop="extra.group">
-            <el-select v-model="form.extra.group" placeholder="请选择" clearable>
-              <el-option v-for="item in groupoptions" :key="item.value" :label="item.label" :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label-width="150px" label="展示条数:" prop="extra.show_num">
-            <el-input
-              style="width: 350px"
-              placeholder="请输入展示条数"
-              v-model="form.extra.show_num"
-              ></el-input>
-          </el-form-item>
-          <el-form-item el-form-item  label-width="150px" label="是否启用:" prop="status">
-            <el-select v-model="form.status" placeholder="请选择">
-              <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </div>
-
-        <!-- 右 -->
-        <div class="fr" style="width: 50%">
-            <el-form-item el-form-item label-width="150px" label="栏目类型:" prop="type">
-              <el-select @change="changetype" v-model="form.type" placeholder="请选择">
-                <el-option v-for="item in columntypeoptions" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-
-            <!-- 默认 -->
-            <!-- 服务 -->
-            <el-form-item v-show="form.type=='service'" label-width="150px" label="服务背景图:" prop="extra.background">
-              <el-upload
-                class="avatar-uploader"
-                :action="VUE_APP_BASE_API + '/api/upload/image'"
-                :headers="importHeaders"
-                name="image"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess.bind(this,'background')"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="form.extra.background" :src="form.extra.background" class="avatar" />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
-            </el-form-item>
-
-            <el-form-item v-show="form.type=='service'"
-              label-width="150px" label="模块类型:" prop="extra.template">
-              <el-select clearable="" v-model="form.extra.template" placeholder="请选择">
-                <el-option v-for="item in moduleoption" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-
-            <el-form-item v-show="form.type=='service'"
-              label-width="150px" label="链接类型:" prop="extra.link.type">
-              <el-select clearable="" v-model="form.extra.link.type" placeholder="请选择">
-                <el-option v-for="item in linktypeoption" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <!-- 专题 -->
-            <el-form-item v-show="form.type=='topic'"
-              label-width="150px" label="专题类型:" prop="extra.topic_type">
-              <el-select v-model="form.extra.topic_type" placeholder="请选择">
-                <el-option v-for="item in topicoption" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <!-- 外链 -->
-            <div v-if="form.type=='service'&&form.extra.link.type=='app_redirect'">
-              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'"
-                label-width="150px" label="链接地址:" prop="extra.link.url">
-                <el-input
-                  style="width: 350px"
-                  placeholder="请输入栏目名称"
-                  v-model="form.extra.link.id"
-                ></el-input>
-              </el-form-item>
-              <div v-else></div>
-            </div>
-            <div v-else>
-              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'"
-                label-width="150px" label="链接地址:" prop="extra.link.url">
-                <el-input
-                  style="width: 350px"
-                  placeholder="请输入栏目名称"
-                  v-model="form.extra.link.url"
-                ></el-input>
-              </el-form-item>
-            </div>
-
-
-        </div>
       </el-form>
       <div class="dialog-footer" slot="footer">
         <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
@@ -366,35 +125,6 @@ import {
   cateloglist,
   styleinfo} from '@/api/manage'
 
-import p1001 from '@/assets/mbh_images/1001.png'
-import p1002 from '@/assets/mbh_images/1002.png'
-import p1101 from '@/assets/mbh_images/1101.png'
-import p1102 from '@/assets/mbh_images/1102.png'
-import p1103 from '@/assets/mbh_images/1103.png'
-import p1104 from '@/assets/mbh_images/1104.png'
-import p1105 from '@/assets/mbh_images/1105.png'
-import p1201 from '@/assets/mbh_images/1201.png'
-import p1202 from '@/assets/mbh_images/1202.png'
-import p1203 from '@/assets/mbh_images/1203.png'
-import p1204 from '@/assets/mbh_images/1204.png'
-import p1301 from '@/assets/mbh_images/1301.png'
-import p1302 from '@/assets/mbh_images/1302.png'
-import p1303 from '@/assets/mbh_images/1303.png'
-import p1304 from '@/assets/mbh_images/1304.png'
-import p1305 from '@/assets/mbh_images/1305.png'
-import p1306 from '@/assets/mbh_images/1306.png'
-import p1307 from '@/assets/mbh_images/1307.png'
-import p1308 from '@/assets/mbh_images/1308.png'
-import p1401 from '@/assets/mbh_images/1401.png'
-import p1402 from '@/assets/mbh_images/1402.png'
-import p1403 from '@/assets/mbh_images/1403.png'
-import p1501 from '@/assets/mbh_images/1501.png'
-import p1601 from '@/assets/mbh_images/1601.png'
-import p1602 from '@/assets/mbh_images/1602.png'
-import p1603 from '@/assets/mbh_images/1603.png'
-import tab栏 from '@/assets/mbh_images/tab栏.png'
-import zanwu from '@/assets/mbh_images/zanwu.png'
-
 
   export default {
     name: 'column',
@@ -404,36 +134,6 @@ import zanwu from '@/assets/mbh_images/zanwu.png'
     data() {
       var mytoken = sessionStorage.getItem("token");
       return {
-        mbhimg:{
-          1001:p1001,
-          1002:p1002,
-          1101:p1101,
-          1102:p1102,
-          1103:p1103,
-          1104:p1104,
-          1105:p1105,
-          1201:p1201,
-          1202:p1202,
-          1203:p1203,
-          1204:p1204,
-          1301:p1301,
-          1302:p1302,
-          1303:p1303,
-          1304:p1304,
-          1305:p1305,
-          1306:p1306,
-          1307:p1307,
-          1308:p1308,
-          1401:p1401,
-          1402:p1402,
-          1403:p1403,
-          1501:p1501,
-          1601:p1601,
-          1602:p1602,
-          1603:p1603,
-          tab栏:tab栏,
-          zanwu:zanwu
-        },
         //子组件
         forceRefresh:false,
         userdata:[],
@@ -448,8 +148,33 @@ import zanwu from '@/assets/mbh_images/zanwu.png'
           endd_ate: '',
           with_special_channels: 'topic',
         },
-        catalogid:'',//栏目id
-
+        catalogid:'',//栏目id git clone / git branch/ 
+        tableData: [{
+          id: 1,
+          date: '2016-05-02',
+          name: '部门名称1',
+        }, {
+          id: 2,
+          date: '2016-05-04',
+          name: '部门名称2',
+        }, {
+          id: 3,
+          date: '2016-05-01',
+          name: '部门名称3',
+          children: [{
+              id: 31,
+              date: '2016-05-01',
+              name: '部门名称31',
+            }, {
+              id: 32,
+              date: '2016-05-01',
+              name: '部门名称32',
+          }]
+        }, {
+          id: 4,
+          date: '2016-05-03',
+          name: '部门名称4',
+        }],
         productList:{},
         sourceId:'',
         statusoptions: [{
@@ -483,138 +208,8 @@ import zanwu from '@/assets/mbh_images/zanwu.png'
             label: '多模块聚合'
           }
         ],
-        linktypeoption:[
-          {
-            value: 'outer_link',
-            label: '外链'
-          },
-          {
-            value: 'auth_link',
-            label: '授权外链'
-          },
-          {
-            value: 'app_redirect',
-            label: 'app跳转'
-          },
-          {
-            value: 'third_party_app_redirect',
-            label: '三方app跳转'
-          },
-          {
-            value: 'hyg_auth',
-            label: '好易购授权'
-          },
-          {
-            value: 'hyg_force_auth',
-            label: '好易购强制授权'
-          },
-        ],
-        groupoptions: [{
-          value: 'home',
-          label: '首页'
-        },{
-          value: 'video',
-          label: '视频'
-        },{
-          value: 'v_channel',
-          label: '视听'
-        },{
-          value: 'service',
-          label: '服务'
-        },{
-          value: 'interact',
-          label: '互动'
-        },{
-          value: 'live',
-          label: '直播'
-        },{
-          value: 'mall',
-          label: '商城'
-        },{
-          value: 'practice',
-          label: '文明实践'
-        },{
-          value: 'ask_politics',
-          label: '问政'
-        },{
-          value: 'community',
-          label: '社区'
-        },{
-          value: 'education',
-          label: '教育'
-        },{
-          value: 'activity',
-          label: '活动'
-        }],
         catalogoptions:[],
         styleoptions:[],
-        columntypeoptions:[
-          {
-            value: 'default',
-            label: '默认'
-          },{
-            value: 'topic',
-            label: '专题'
-          },{
-            value: 'matrix',
-            label: '矩阵'
-          },{
-            value: 'matrix_intro',
-            label: '矩阵简介'
-          },{
-            value: 'video_waterfall',
-            label: '视频瀑布流'
-          },{
-            value: 'video_landscape',
-            label: '横版视频'
-          },{
-            value: 'subscription',
-            label: '订阅类型'
-          },{
-            value: 'service',
-            label: '服务'
-          },
-          {
-            value: 'outer_link',
-            label: '外链'
-          },{
-            value: 'auth_link',
-            label: '授权外链'
-          },{
-            value: 'tv',
-            label: '电视'
-          },{
-            label: '电视+点播',
-            value: 'tv_and_vod'
-          },{
-            value: 'radio',
-            label: '广播'
-          },{
-            value: 'two_col',
-            label: '二列列表'
-          },{
-            value: 'multi_layer',
-            label: '多层级'
-          },{
-            value: 'multi_layer2',
-            label: '多层级二'
-          },{
-            value: 'map_matrix',
-            label: '地图矩阵'
-          },{
-            value: 'float',
-            label: '悬浮球'
-          },{
-            value: 'vod_list',
-            label: '视频点播列表'
-          },{
-            value: 'community',
-            label: '社区'
-          },{
-            value: 'algo',
-            label: '新蓝算法'
-          }
-        ],
         medias:[{
             value: '新闻',
             label: 'news'
@@ -715,25 +310,6 @@ import zanwu from '@/assets/mbh_images/zanwu.png'
         this.form.extra[keyval] = '';
         this.$forceUpdate()
       },
-      yulanfn(){
-        window.open(this.viewurl+this.form.extra.template_json_id)
-      },
-      // getinfo(val){
-      //   return new Promise((resolve, reject)=>{
-      //     styleinfo(val).then(response=>{
-      //        resolve(response.data.styleName)
-      //     })
-      //   })
-      // },
-      // async gettemplate_styletxt(val){
-      //   if(val){
-      //     var a = await this.getinfo(val);
-      //     console.log(a)
-      //     return a;
-      //   }else{
-      //     return '无'
-      //   }
-      // },
 
       catalogchange(){
         if(!this.form.extra.template_style){
@@ -935,10 +511,6 @@ import zanwu from '@/assets/mbh_images/zanwu.png'
             this.getList();
         })
 
-      },
-      // 弹窗消失的回调函数
-      dialogclose(){
-        this.$refs.c_page1.listshowarr = [];
       },
       // 增加栏目
       adddata(data) {
