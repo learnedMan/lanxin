@@ -548,6 +548,13 @@ export const asyncRoutes = [
             meta: { title: '员工列表' }
           },
           {
+            path: 'staff-department',
+            component: () => import('@/views/manage/staff/staff-department'),
+            name: 'Staff-department',
+            permission: 'system.staff.manage',
+            meta: { title: '部门管理' }
+          },
+          {
             path: 'staff-jurisdiction',
             component: () => import('@/views/manage/staff/staff-jurisdiction'),
             name: 'Staff-jurisdiction',
