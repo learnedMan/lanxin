@@ -169,11 +169,10 @@ export default {
       this.dialogShortcut = true
       let routes = deepClone(this.$store.state.permission.addRoutes)
       let user = this.$store.state.user.u_info
-      let arr = this.treeDataFxied(routes,'')
       this.treechoosedata = user.extra.shortcuts.map(v=>{
         return v.url
       })
-      this.treedata = arr
+      this.treedata = this.convert(routes,[],'')
     },
     enterShortcutDialog () {
       let arr = this.$refs.shortcutTree.getCheckedNodes()
@@ -204,16 +203,23 @@ export default {
             })
       }
     },
-    treeDataFxied (arr,url) {
-      if (!arr.length) return []
-      arr.map(v=>{
-        v.title = v.meta.title
-        v.path = url ? url + '/' + v.path : v.path
-        if (v.children && v.children.length >0) {
-          this.treeDataFxied(v.children,v.path)
+    convert(data, arr,url) {
+        for (let i = 0; i < data.length; i++) {
+            let e = data[i];
+            let children = [];
+            if(!e.hidden) {
+              arr.push({
+                  ...e,
+                  title: e.meta.title,
+                  path: url ? url + '/' + e.path : e.path,
+                  children: children
+              });
+            }
+            if(e.children && e.children.length >0) {
+                this.convert(e.children, children,e.path);
+            }
         }
-      })
-      return arr
+        return arr;
     },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
