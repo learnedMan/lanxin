@@ -339,7 +339,7 @@
 				importUrl () {
 					const { sourceId } = this.queryParams
 					let mobile = this.getStr(this.tableData)
-					let str = `http://10.30.10.158/adm/fusion/internal/uc/excelUserData?sourceId=${sourceId}&mobile=${mobile}`
+					let str = this.VUE_APP_REQUEST2_API +`/internal/uc/excelUserData?sourceId=${sourceId}&mobile=${mobile}`
 					return str
 				}
       },
@@ -380,24 +380,27 @@
 				},
          /* 导出 */
         handleImport () {
-					this.$alert('请搜索你所需要导出的数据', '', {
-								confirmButtonText: '确定',
-								callback: action => {
-									// this.$message({
-									// 	type: 'info',
-									// 	message: `action: ${ action }`
-									// });
-								}
-							});
+					// this.$alert('请搜索你所需要导出的数据', '', {
+					// 			confirmButtonText: '确定',
+					// 			callback: action => {
+					// 				// this.$message({
+					// 				// 	type: 'info',
+					// 				// 	message: `action: ${ action }`
+					// 				// });
+					// 			}
+					// 		});
+          this.$message('请搜索你所需要导出的数据');
         },
         /*提取手机号或者邀请号*/
         getPhone () {
           let  val = this.queryParams.textareaValue,arr = [];
-          let phoneCodeVerification = /^[1][3,4,5,7,8][0-9]{9}$/;
+          // let phoneCodeVerification = /^[1][3,4,5,7,8][0-9]{9}$/;
+          let phoneCodeVerification = /^\d+$/;
           let phone = '',code = ''
           arr = val.split(/,|，|\s+/)
+          console.log('arr',arr)
           arr.map(v=>{
-              if(phoneCodeVerification.test(v)) {
+              if(phoneCodeVerification.test(Number(v))) {
                 phone += v + ','
               }else{
                 code += v + ','
