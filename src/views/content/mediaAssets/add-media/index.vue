@@ -60,6 +60,9 @@
       padding-left: 10px;
     }
   }
+  .el-cascader-menu__wrap {
+    height: 504px!important;
+}
 </style>
 <template>
   <el-container class="xl-add-media">
@@ -718,7 +721,7 @@
           <el-cascader
             filterable
             v-model="dialog.form.channel_id"
-            style="width: 350px"
+            style="width: 350px;"
             :options="channelsList"
             :props="cascaderOption"
             clearable
