@@ -54,6 +54,7 @@
   <el-upload
     class="xl-avatar-uploader"
     name="image"
+    :disabled="disabled"
     accept="image/jpeg,image/png,image/gif"
     :action="actionUrl"
     :headers="uploadHeader"
@@ -81,6 +82,10 @@ export default {
     delBtn: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

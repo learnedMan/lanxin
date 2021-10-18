@@ -7,6 +7,19 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item
+          label="新闻标题:"
+          prop="keyword"
+        >
+          <el-input
+            v-model="queryParams.keyword"
+            placeholder="请输入关键字"
+            clearable
+            size="small"
+            style="width: 200px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
       <el-form-item label="编辑：">
         <el-input
           v-model="queryParams.author_name"
@@ -88,7 +101,8 @@ import {
           page: 1,
           pageSize: 10,
           type:'',
-          author_name:''
+          author_name:'',
+          keyword: '', // 标题
         },
         noimg: require('@/assets/c_images/noimg.png'),//默认图片
         loading:true,
@@ -107,6 +121,33 @@ import {
         },{
           value: 'outer_link',
           label: '外链'
+        },{
+          label: '直播间',
+          value: 'broadcast'
+        },
+        {
+          label: '专题',
+          value: 'topic'
+        },
+        {
+          label: '服务',
+          value: 'service'
+        },
+        {
+          label: '电视直播',
+          value: 'tv_live'
+        },
+        {
+          label: '电视点播',
+          value: 'tv_replay'
+        },
+        {
+          label: '广播直播',
+          value: 'radio_live'
+        },
+        {
+          label: '广播点播',
+          value: 'radio_replay'
         }],
         multipleSelection:[]//选中数组
       }
@@ -135,6 +176,22 @@ import {
                 return '图集'
             }else if(val=='video'){
                 return '视频'
+            }else if(val=='outer_link'){
+                return '外链'
+            }else if(val=='broadcast'){
+                return '直播间'
+            }else if(val=='topic'){
+                return '专题'
+            }else if(val=='service'){
+                return '服务'
+            }else if(val=='tv_live'){
+                return '电视直播'
+            }else if(val=='tv_replay'){
+                return '电视点播'
+            }else if(val=='radio_live'){
+                return '广播直播'
+            }else if(val=='radio_replay'){
+                return '广播点播'
             }else{
                 return '未知类型'
             }
@@ -144,6 +201,7 @@ import {
       initcondition(){
         this.queryParams.author_name="";
         this.queryParams.type="";
+        this.queryParams.keyword = "";
       },
       /** 搜索按钮操作 */
       handleQuery() {

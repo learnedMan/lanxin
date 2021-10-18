@@ -40,7 +40,7 @@
         <el-input
           v-model="phone"
           autocomplete="off"
-          disabled
+          :disabled="disabledPhone"
           style="width: 260px"
         ></el-input>
       </el-form-item>
@@ -120,7 +120,11 @@
         tip: {
           type: String,
           default: ''
-        }
+        },
+        disabledPhone: {
+          type: Boolean,
+          default: true
+        },
       },
       data() {
         const pwdRegex = new RegExp('(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,16}');

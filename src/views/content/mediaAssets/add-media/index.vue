@@ -60,6 +60,9 @@
       padding-left: 10px;
     }
   }
+  .el-cascader-menu__wrap {
+    height: 504px!important;
+}
 </style>
 <template>
   <el-container class="xl-add-media">
@@ -619,7 +622,7 @@
                 v-show="initFrom().includes('extra.view_base_num')"
                 v-bind="formOptions['extra.view_base_num'].item.props"
               >
-                <!--<el-input
+                <!-- <el-input
                   :value="parseObj(formOptions['extra.view_base_num'].item)"
                   :rows="4"
                   v-bind="formOptions['extra.view_base_num'].item.componentProps"
@@ -627,7 +630,7 @@
                   size="small"
                   style="width: 200px"
                   @input="handleInput($event, formOptions['extra.view_base_num'].item)"
-                />-->
+                /> -->
                 <!-- :min="viewBaseInterval.min"
                   :max="viewBaseInterval.max" -->
                 <el-input-number
@@ -718,7 +721,7 @@
           <el-cascader
             filterable
             v-model="dialog.form.channel_id"
-            style="width: 350px"
+            style="width: 350px;"
             :options="channelsList"
             :props="cascaderOption"
             clearable
@@ -789,6 +792,16 @@ export default {
         callback(new Error('请上传封面图片'))
       } else if (!value.slice(0, count).every(n => n.path)) {
         callback(new Error(`请上传${count}张封面图片`))
+      } else {
+        callback()
+      }
+    }
+    const validateViewBaseNum = (rule, value, callback) => {
+      if(!value){
+        this.from.extra.view_base_num = 0
+        callback()
+      }else if (!(/(^[0-9]\d*$)/.test(value))) {
+        callback(new Error(`请输入大于零的正整数`))
       } else {
         callback()
       }
@@ -1271,14 +1284,18 @@ export default {
           item: {
             key: 'extra.view_base_num',
             props: {
-              label: '点击量:'
+              label: '点击量:',
+              prop: 'extra.view_base_num'
             },
             type: 'number',
             component: 'input', // 组件名
             componentProps: {
               placeholder: '请输入数值'
             }
-          }
+          },
+          rule: [
+            { required: false, validator: validateViewBaseNum, trigger: 'blur'  }
+          ]
         },
         'extra.praise_base_num': {
           item: {
@@ -1404,7 +1421,11 @@ export default {
               {
                 label: '服务',
                 value: 'service'
-              }
+              },
+              // {
+              //   label: '电视+点播',
+              //   value: 'tv_and_vod'
+              // }
             ]
           },
           rule: [
@@ -1633,7 +1654,7 @@ export default {
     /* 点击量区间 */
     viewBaseInterval ({ $store: { state: { user: { u_info } } } }) {
       const extra = u_info.site.extra || {};
-      //const multiple = Number(extra.multiplying_factor || 1);
+      //const multiple = Number(extra.multiplying_factor || 1); 
       const max = Number(extra.random_view_range?.max || 0) || Infinity;
       const min = Number(extra.random_view_range?.min || 0);
       return {
@@ -1720,7 +1741,7 @@ export default {
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
           break
         case 'outer_link':
-          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num'];
+          arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max','extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num','extra.allow_share'];
           const type = this.from.extra.link.type;
           if (type === 'target_obj'){
             arr.push('target_obj');
@@ -1925,11 +1946,14 @@ export default {
     },
     /* 获取详情数据 */
     getList() {
-      let promise = null
-      if (this.scriptsId == null && this.id == null) return
+        let promise = null
+      if (this.scriptsId == null && this.id == null) {
+        let max = this.viewBaseInterval.max, min = this.viewBaseInterval.min;
+        this.from.extra.view_base_num = max && max !=Infinity ? Math.floor(Math.random()*(max-min+1)+min) : 0
+        return
+      }
       promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
       return (this.fetchSuggestions? this.fetchSuggestions() : promise).then(res => {
-        console.log('res 详情',res)
         const extra = res.extra;
         let link_type = extra.link && extra.link.type || '';
         let target_obj = '';

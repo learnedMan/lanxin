@@ -1,7 +1,8 @@
 <template>
   <div class="login-container">
 
-    <div class="loginbox">
+    <div class="loginbox box-common"></div>
+    <div class="from-box box-common">
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="off" label-position="left">
         <div class="title-container">
           <div class="title">管理后台登录</div>
@@ -74,12 +75,13 @@
         >登录</el-button>
       </el-form>
     </div>
-
+      
     <div class="login-bottom"></div>
     <change-pass
       :phone="loginForm.username"
       :zone_id="sitec.site_select_all.zone_id || ''"
       :site_id="sitec.site_select_all.id || ''"
+      :disabledPhone="disabledPhone"
       ref="changePass"
       tip="为确保您的账号信息安全，请尽快修改您的登录密码"
     ></change-pass>
@@ -128,6 +130,7 @@ export default {
       closeeye,
       openeye,
       eyeflag:false,
+      disabledPhone: true,
       loginForm: {//登录绑定
         username: '',
         password: '',
@@ -237,14 +240,8 @@ export default {
           })
           return
       }
-      if(!this.loginForm.username){
-          this.$message({
-            message: '请输入手机号',
-            type: 'error'
-          })
-          return
-      }
       const changePass = this.$refs.changePass;
+      this.disabledPhone = false
       changePass.dialog.show = true;
     },
     sites_change(e){
@@ -348,7 +345,8 @@ $w:#fff;
   min-height: 100%;
   width: 100%;
   overflow: hidden;
-  background: url($images+'/login_images/loginbg.jpg') no-repeat center;
+  // background: url($images+'/login_images/loginbg.jpg') no-repeat center;
+  background: url($images+'/login_images/loginbg.jpg') no-repeat right;
   background-size: cover;
   .login-bottom{
     position: absolute;
@@ -362,22 +360,43 @@ $w:#fff;
     background-size: cover;
   }
   .loginbox{
-    width: 320px;
-    height: 520px;
-    background: url($images+'/login_images/loginBlur.png') no-repeat center;
+    overflow: hidden;
+  }
+  .loginbox:before{
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    content: '';
+    background: url($images+'/login_images/loginbg.jpg') no-repeat right;
+    background-size: cover;
+    margin: -30px;
+    z-index: 3;
+    -webkit-filter: blur(12px);
+    filter: blur(11px);
+  }
+  .box-common{
+    width: 380px;
+    height: 530px;
     position: absolute;
     right: 15%;
     top: 50%;
     transform: translateY(-50%);
-    border-radius: 10px;
+  }
+  .from-box{
+    background: url($images+'/login_images/loginbg.png') no-repeat;
+    background-size: cover; 
+    z-index: 10;
   }
   .login-form {
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 60px 35px 0;
+    padding: 38px 35px 0;
     margin: 0 auto;
     overflow: hidden;
+    z-index: 20;
   }
   .username,.yzcode{
     border-bottom: 2px solid #fff ;
@@ -408,9 +427,12 @@ $w:#fff;
     }
   }
   .loginbtn{
-    margin-top: 40px;
-    background: transparent;
-    border: 1px solid #fff;
+    margin-top: 30px;
+    // background: transparent;
+    // border: 1px solid #fff;
+    background: #155BD4;
+    border-radius: 6px;
+    border: none;
   }
 }
 </style>

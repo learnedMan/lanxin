@@ -213,7 +213,7 @@
             v-model="form.extra.linked_channel_id"
             style="width: 350px"
             :options="dataList"
-            :props="{ checkStrictly: true ,value:'id',label:'name', emitPath:false}"
+            :props="{ checkStrictly: true ,value:'id',label:'name', emitPath:false, multiple: true}"
             clearable></el-cascader>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">
@@ -592,6 +592,9 @@ import ChildPage1 from './pages/c_page1'
             value: 'tv',
             label: '电视'
           },{
+            label: '电视+点播',
+            value: 'tv_and_vod'
+          },{
             value: 'radio',
             label: '广播'
           },{
@@ -800,7 +803,7 @@ import ChildPage1 from './pages/c_page1'
             allow_news_types:[],
             load_child:'1',
             load_news:'1',
-            linked_channel_id:'',
+            linked_channel_id:[],
             template_style:'',
             template_json_id:'',
             template_json:{},
@@ -979,7 +982,8 @@ import ChildPage1 from './pages/c_page1'
           }
           // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
-          this.form.extra.linked_channel_id = this.form.extra.linked_channel_id?parseInt(this.form.extra.linked_channel_id):'';
+          // this.form.extra.linked_channel_id = this.form.extra.linked_channel_id?parseInt(this.form.extra.linked_channel_id):'';
+          this.form.extra.linked_channel_id = this.form.extra.linked_channel_id.length ? this.form.extra.linked_channel_id.split(',') : []
           this.form.extra.cover = this.form.extra.cover? this.form.extra.cover[0].path:'';
           // this.form.extra.template_style = Number(this.form.extra.template_style) ;
           this.dialogFormVisible = true;
@@ -1029,10 +1033,17 @@ import ChildPage1 from './pages/c_page1'
           var data = JSON.parse(JSON.stringify(this.form))
           data.father = Number(data.father)
           // if(!data.father){
-          //   data.father = data.father[data.father.length-1];
+            //   data.father = data.father[data.father.length-1];
           // }else{
-          //   data.father = data.father.join('')
+            //   data.father = data.father.join('')
           // }
+          if(data.extra.linked_channel_id.length) {
+            let channels = data.extra.linked_channel_id || [],str=''
+            channels.map(v=>{
+              str+= v + ','
+            })
+            data.extra.linked_channel_id = str.slice(0,-1)
+          }
           var multi_review = data.extra.multi_review;
           var new_multi_review = [];
           for(var i=0;i<multi_review.length;i++){

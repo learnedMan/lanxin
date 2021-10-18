@@ -181,11 +181,11 @@
               </li>
             </ul>
             <pagination
-              v-show="vmsParams.total > 0"
-              :total="vmsParams.total"
-              :page.sync="vmsParams.page"
-              :limit.sync="vmsParams.pageSize"
-              @pagination="getVideoList('vmsParams')"
+              v-show="xlParams.total > 0"
+              :total="xlParams.total"
+              :page.sync="xlParams.page"
+              :limit.sync="xlParams.pageSize"
+              @pagination="getVideoList('xlParams')"
             />
           </div>
         </el-tab-pane>
@@ -325,9 +325,11 @@
             if(code) {
               this.xlChannel = res;
               this.xlParams.defaultActive = this.getDefaultActive(res[0]);
+              this.xlParams.vms_channel_id = this.getDefaultActive(res[0])
             } else {
               this.vmsChannel = res;
               this.vmsParams.defaultActive = this.getDefaultActive(res[0]);
+              this.vmsParams.vms_channel_id = this.getDefaultActive(res[0])
             }
             this.getVideoList(code? 'xlParams' : 'vmsParams');
           })

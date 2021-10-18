@@ -103,12 +103,19 @@
 
 <script>
   import { getUserDetail, getInvited } from '@/api/manage'
-
     export default {
       props: {
         id: {
           type: [ Number, String ],
           required: true
+        },
+        beginTime: {
+          type: String,
+          default: '',
+        },
+        endTime: {
+          type: String,
+          default: ''
         }
       },
       data() {
@@ -198,6 +205,7 @@
           const params = { ...this.queryParams };
           delete params.registerTime;
           this.loading = true;
+          console.log('params',params)
           getInvited(this.removePropertyOfNullFor0(params)).then(res => {
             if(res.code == 200) {
               this.tableData = res.data || [];
@@ -209,6 +217,8 @@
         }
       },
       async created() {
+        this.queryParams.beginTime = this.beginTime
+        this.queryParams.endTime = this.endTime
         await this.getUserDetail();
         this.getList();
       }
