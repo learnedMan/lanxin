@@ -389,3 +389,12 @@ export function batchPublishScriptCollect(data) {
     data
   })
 }
+
+/*更新用户信息-自定义快捷按钮*/
+export function PatchShortcuts(id, data) {
+  return request({
+    url: `/api/user/${id}`,
+    method: 'patch',
+    data
+  })
+}
