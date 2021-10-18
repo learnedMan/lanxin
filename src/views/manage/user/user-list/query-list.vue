@@ -4,6 +4,8 @@
       <component
         :is="component"
         :id="id"
+        :beginTime="beginTime"
+        :endTime="endTime"
         @handleReturn="handleReturn"
         @invitedRecord="invitedRecord"
         @integralValue="integralValue"
@@ -29,6 +31,8 @@
     data () {
       return {
         id: '',
+        beginTime: '',
+        endTime: '',
         component: 'lists',
         include: ['lists']
       }
@@ -39,8 +43,10 @@
         this.component = 'lists';
       },
       /* 查看邀请记录 */
-      invitedRecord (id) {
+      invitedRecord (id,beginTime,endTime) {
         this.id = id;
+        this.beginTime = beginTime;
+        this.endTime = endTime;
         this.component = 'invitedRecord';
       },
       /* 查看积分 */

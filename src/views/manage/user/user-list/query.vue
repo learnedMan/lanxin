@@ -58,17 +58,9 @@
            <el-button v-points = "1500"
             type="primary"
             size="mini"
-						v-if="!importFlag"
             @click="handleImport"
           >
             导出
-          </el-button>
-					<el-button v-points = "1500"
-            type="primary"
-            size="mini"
-            v-else
-          >
-						<a :href="importUrl">导出</a>
           </el-button>
           <el-button v-points = "1500"
             type="primary"
@@ -259,9 +251,9 @@
 </template>
 
 <script>
-  import { getproduct, getUserLists, getUserDetail, editDetail } from '@/api/manage'
+  import { getproduct, getUserLists, getUserDetail, editDetail,getInvitationCountDatas } from '@/api/manage'
   import { disableSendMsg, releaseShutup /* 拉黑用户 */} from '@/api/workbench'
-	import {  fileImport } from '@/api/statistics'
+	import {  fileImport } from '@/utils/statistics'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
 
     export default {
@@ -306,8 +298,8 @@
             mobile: '',
             textareaValue: '',
             invitationCode: '',
-            registerBeginTime: '',
-            registerEndTime: '',
+            beginTime: '',
+            endTime: '',
             registerTime: ''
           },
           total: 0,
@@ -331,18 +323,6 @@
           }
         }
       },
-			computed: {
-        importFlag () {
-					const { textareaValue,registerTime } = this.queryParams
-         return textareaValue || registerTime ? true : false
-        },
-				importUrl () {
-					const { sourceId } = this.queryParams
-					let mobile = this.getStr(this.tableData)
-					let str = this.VUE_APP_REQUEST2_API +`/internal/uc/excelUserData?sourceId=${sourceId}&mobile=${mobile}`
-					return str
-				}
-      },
       methods: {
         /* 获取产品列表 */
         getProductList () {
@@ -359,8 +339,8 @@
         handleReset () {
           this.queryParams.textareaValue = ''
           Object.assign(this.queryParams, {
-            registerBeginTime: '',
-            registerEndTime: '',
+            beginTime: '',
+            endTime: '',
             page: 1
           })
           this.resetForm('queryForm');
@@ -373,23 +353,21 @@
 				/*字符串拼接*/
 				getStr (arr) {
 					let str = ''
-					arr && arr.map(v=>{
-						str += v.mobile + ','
+					arr.length >0 && arr.map(v=>{
+              str += v.mobile + ','
 					})
 					return str.slice(0,-1)
 				},
          /* 导出 */
         handleImport () {
-					// this.$alert('请搜索你所需要导出的数据', '', {
-					// 			confirmButtonText: '确定',
-					// 			callback: action => {
-					// 				// this.$message({
-					// 				// 	type: 'info',
-					// 				// 	message: `action: ${ action }`
-					// 				// });
-					// 			}
-					// 		});
-          this.$message('请搜索你所需要导出的数据');
+          const { textareaValue,sourceId } = this.queryParams
+          if(textareaValue) {
+          let mobile = this.getStr(this.tableData)
+					let str = this.VUE_APP_REQUEST2_API +`/internal/uc/excelUserData?sourceId=${sourceId}&mobile=${mobile}`
+          this.download(str,'')
+          }else{
+            this.$message('请搜索你所需要导出的数据');
+          }
         },
         /*提取手机号或者邀请号*/
         getPhone () {
@@ -398,7 +376,6 @@
           let phoneCodeVerification = /^\d+$/;
           let phone = '',code = ''
           arr = val.split(/,|，|\s+/)
-          console.log('arr',arr)
           arr.map(v=>{
               if(phoneCodeVerification.test(Number(v))) {
                 phone += v + ','
@@ -409,16 +386,29 @@
           this.queryParams.mobile = phone.slice(0,-1) || ''
           this.queryParams.invitationCode = code.slice(0,-1) || ''
         },
+        download(link, name) {
+            if (!name) {//如果没有提供名字，从给的Link中截取最后一坨
+                name =  link.slice(link.lastIndexOf('/') + 1)
+            }
+            let eleLink = document.createElement('a')
+            eleLink.download = name
+            eleLink.style.display = 'none'
+            eleLink.href = link
+            document.body.appendChild(eleLink)
+            eleLink.click()
+            document.body.removeChild(eleLink)
+        },
         /* 修改注册时间 */
         handleDateChange (val) {
           const arr = val || ['', ''];
-          this.queryParams.registerBeginTime = arr[0];
-          this.queryParams.registerEndTime = arr[1];
+          this.queryParams.beginTime = arr[0];
+          this.queryParams.endTime = arr[1];
         },
         /* 查看邀请记录 */
         invitedRecord (row) {
           const { id } = row;
-          this.$emit('invitedRecord', id);
+          const { beginTime,endTime} = this.queryParams
+          this.$emit('invitedRecord', id,beginTime,endTime);
         },
         /* 查看积分值 */
         integralValue (row) {
@@ -484,12 +474,33 @@
           const params = { ...this.queryParams };
           delete params.registerTime;
           delete params.textareaValue;
-					console.log('params',params)
+          delete params.beginTime;
+          delete params.endTime;
           getUserLists(this.removePropertyOfNullFor0(params)).then(res => {
             if(res.code == 200) {
               const data = res.data;
               this.total = data.totalCount;
               this.tableData = data.list || [];
+              if(this.queryParams.beginTime && this.queryParams.endTime) {
+                let data = {...this.queryParams}
+                data.sourceId = String(data.sourceId)
+                data.limit = String(data.limit)
+                data.page = String(data.page)
+                 getInvitationCountDatas(this.removePropertyOfNullFor0(data)).then(res => {
+                   if(res.code == 200) {
+                     let data = res.data || []
+                     let table_arr = Object.assign([],this.tableData)
+                     this.tableData = table_arr.map(v=>{
+                       data.map(k=>{
+                           if(k.invitationCode === v.invitationCode) {
+                             v.invitationCount = k.countNum
+                           }
+                       })
+                       return {...v}
+                     })
+                   }
+                 })
+              }
             }
           }).finally(() => {
             this.loading = false;
