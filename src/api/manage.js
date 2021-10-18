@@ -652,6 +652,16 @@ export function getInvited(data) {
   })
 }
 
+/*邀请量查询中邀请记录 */
+export function getInvitationCountDatas(data) {
+  return request3({
+    // url: '/fusion/intranet/uc/queryInvitationCountDatas',
+    url: '/intranet/uc/queryInvitationCountDatas',
+    method: 'post',
+    data
+  })
+}
+
 /* 获取登录日志 */
 export function getLoginLists(data) {
   return request2({
@@ -736,6 +746,7 @@ export function blacklistRestore(data) {
     data
   })
 }
+
 
 /*--------------------用户管理-常规积分规则---------------------------*/
 
