@@ -791,6 +791,53 @@ export function getActionList() {
   })
 }
 
+
+/*--------------------用户管理-部门管理---------------------------*/
+
+/* 获取部门列表 */ 
+export function getDepartmentList(params) {
+  return request({
+    url: '/api/departments',
+    method: 'get',
+    params
+  })
+}
+
+/*新增部门*/
+export function addDepartment(data) {
+  return request({
+    url: '/api/departments',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取部门详情 */ 
+export function getDepartmentinfo(id) {
+  return request({
+    url: '/api/departments/'+id,
+    method: 'get'
+  })
+}
+
+/* 修改部门*/ 
+export function changeDepartment(id, data) {
+  return request({
+    url: `/api/departments/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 删除部门 */ 
+
+export function deleteDepartment(id) {
+  return request({
+    url: `/api/departments/${id}`,
+    method: 'delete'
+  })
+}
+
 /*--------------------架构管理-APP用户菜单中心---------------------------*/
 
 /* 获取产品菜单详情 */
