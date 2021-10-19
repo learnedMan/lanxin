@@ -612,6 +612,13 @@ export const asyncRoutes = [
             name: 'Convention',
             permission: 'system.user.reward_points',
             meta: { title: '常规积分规则' }
+          },
+          {
+            path: 'sign-integral',
+            component: () => import('@/views/manage/user/sign-integral'),
+            name: 'sign-integral',
+            permission: 'system.user.signIntegral',
+            meta: { title: '签到积分规则' }
           }
         ]
       },

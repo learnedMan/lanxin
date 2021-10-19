@@ -1383,6 +1383,11 @@ export default {
                 value: 'm_level',
                 relatedLabel: '栏目id'
               },
+               {
+                label: '地图',
+                value: 'map',
+                relatedLabel: '栏目id'
+              },
               {
                 label: '无跳转',
                 value: 'none',
