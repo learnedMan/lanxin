@@ -290,6 +290,8 @@
         },
         /* 获取视频列表数据 */
         menuChange (val, status) {
+          this.vmsVideo = [];
+          this.xlVideo = [];
           this[status].vms_channel_id = val;
           this.getVideoList(status);
         },
