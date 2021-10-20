@@ -803,6 +803,26 @@ export function getActionList() {
 }
 
 
+/*--------------------用户管理-签到积分规则---------------------------*/
+
+/* 新增积分配置 */
+export function addSignIntegral(data) {
+  return request3({
+    url: '/v1/internal/points/pointLoginCreate',
+    method: 'post',
+    data
+  })
+}
+
+/*获取积分配置详情*/
+export function getSignIntegral(data) {
+  return request3({
+    url: '/v1/internal/points/pointLoginList',
+    method: 'post',
+    data
+  })
+}
+
 /*--------------------用户管理-部门管理---------------------------*/
 
 /* 获取部门列表 */ 
