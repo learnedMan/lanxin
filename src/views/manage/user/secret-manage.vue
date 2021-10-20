@@ -305,6 +305,39 @@
                   v-model="dialogForm.flashIosAppKey"
                 />
               </el-form-item>
+              <el-form-item
+                label="社区详情页面地址："
+                prop="socialDetailUrl"
+              >
+                <el-input
+                  placeholder="请输入社区详情页面地址"
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.socialDetailUrl"
+                />
+              </el-form-item>
+              <el-form-item
+                label="社区分享页面地址："
+                prop="socialShareUrl"
+              >
+                <el-input
+                  placeholder="请输入社区分享页面地址"
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.socialShareUrl"
+                />
+              </el-form-item>
+              <el-form-item
+                label="社区评论页面地址："
+                prop="socialCommentUrl"
+              >
+                <el-input
+                  placeholder="请输入社区评论页面地址"
+                  clearable
+                  style="width: 200px"
+                  v-model="dialogForm.socialCommentUrl"
+                />
+              </el-form-item>
             </el-col>
           </el-row>
         </el-form>
@@ -364,6 +397,9 @@
             flashAndroidAppKey: '', // 闪验Android appkey
             flashIosAppId: '', // 闪验ios appid
             flashIosAppKey: '', // 闪验ios appkey
+            socialDetailUrl: '',//社区详情页面地址
+            socialShareUrl: '',//社区分享页面地址
+            socialCommentUrl: '',//社区评论页面地址
           },
           dialogRules: {
             appSrcret: [
@@ -455,6 +491,7 @@
           this.$refs.dialogForm.validate(val => {
             if(val) {
               if(id != null) {
+                console.log('dialogForm', this.dialogForm)
                 changeSecret({ ...this.dialogForm, id}).then(({ code, msg }) => {
                   if(code == 200) {
                     this.$message.success(msg)

@@ -141,7 +141,7 @@ export default {
       return this.avatar? `${this.avatar}?imageView2/1/w/80/h/80` : require('@/assets/c_images/useravatar.jpg')
     },
     btns () {
-      return this.$store.state.user.u_info.extra.shortcuts
+      return this.$store.state.user.u_info.extra?.shortcuts || []
     },
     changeSite(){
       let flag = false;
@@ -169,7 +169,7 @@ export default {
       this.dialogShortcut = true
       let routes = deepClone(this.$store.state.permission.addRoutes)
       let user = this.$store.state.user.u_info
-      this.treechoosedata = user.extra.shortcuts.map(v=>{
+      this.treechoosedata = (user?.extra?.shortcuts || []).map(v=>{
         return v.url
       })
       this.treedata = this.convert(routes,[],'')
