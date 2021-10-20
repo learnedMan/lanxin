@@ -71,7 +71,7 @@
       <!-- <el-table-column label="替换文本" align="center" prop="replacetxt" /> -->
       <el-table-column width="160px" label="操作" align="center">
         <template slot-scope="scope">
-          <Iconbutton icontype="xg" label="修改" @fatherMethod="handleEdit(scope.row)"></Iconbutton>
+          <!-- <Iconbutton icontype="xg" label="修改" @fatherMethod="handleEdit(scope.row)"></Iconbutton> -->
           <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
         </template>
       </el-table-column>
@@ -389,13 +389,11 @@ import {
         this.initForm();
         this.dialogTitle = "编辑敏感词";
         this.dialogType = "edit";
-        console.log('row',row)
         let obj = {
           ...row,
           type: String(row.filterType)
         }
         delete obj.filterType
-        console.log('obj',obj)
         this.$nextTick(() => {
           this.form = JSON.parse(JSON.stringify(obj))
         })
@@ -413,7 +411,6 @@ import {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          console.log(row.id)
           var arr = []
           arr.push(row.id)
           delSensitword(arr).then(response => {
@@ -439,20 +436,6 @@ import {
               ...this.form,
               appTypes: this.queryParams.sourceId + ','
             }
-          if (this.dialogType=='edit') {
-            //修改
-            // console.log(this.form)
-            // var data = this.form;
-            console.log('data-----',data)
-            // editgories(data.id,data).then(response => {
-            //       this.$message({
-            //         message: '修改成功',
-            //         type: 'success'
-            //       });
-            //       this.dialogFormVisible = false;
-            //       this.getList();
-            // })
-          }else{
             // 新增
             addSensitword(this.removePropertyOfNullFor0(data)).then(response => {
                   this.$message({
@@ -462,7 +445,6 @@ import {
                   this.dialogFormVisible = false;
                   this.getList();
             })
-          }
         })
       },
     }
