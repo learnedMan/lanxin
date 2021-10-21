@@ -967,6 +967,33 @@ export function getWhitelist(params) {
   })
 }
 
+/* 敏感词管理列表 */
+export function getSensitwordList(params) {
+  return request3({
+    url: '/sensitive/setting/list',
+    method: 'get',
+    params
+  })
+}
+
+/* 新增敏感词 */
+export function addSensitword(data) {
+  return request3({
+    url: '/sensitive/setting/add',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除敏感词 */
+export function delSensitword(data) {
+  return request3({
+    url: `/sensitive/setting/del`,
+    method: 'DELETE',
+    data
+  })
+}
+
 export function addWhitelist(data) {
   return request3({
     url: '/sensitive/whitetxt/add',
