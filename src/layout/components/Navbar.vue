@@ -114,20 +114,20 @@ export default {
           { required: true, message: "请选择站点", trigger: "blur" }
         ]
       },
-      // btns: [
-      //   {
-      //     label: '新闻审核',
-      //     url: '/workbench/reviewNews'
-      //   },
-      //   {
-      //     label: '我的稿件',
-      //     url: '/content/mediaAssets/my'
-      //   },
-      //   {
-      //     label: '直播间',
-      //     url: '/content/studio/studioList'
-      //   }
-      // ]
+      defaultBtns: [
+        {
+          label: '新闻审核',
+          url: '/workbench/reviewNews',
+        },
+        {
+          label: '我的稿件',
+          url: '/content/mediaAssets/my'
+        },
+        {
+          label: '直播间',
+          url: '/content/studio/studioList'
+        }
+      ]
     }
   },
   computed: {
@@ -141,7 +141,7 @@ export default {
       return this.avatar? `${this.avatar}?imageView2/1/w/80/h/80` : require('@/assets/c_images/useravatar.jpg')
     },
     btns () {
-      return this.$store.state.user.u_info.extra?.shortcuts || []
+      return this.$store.state.user.u_info.extra?.shortcuts || this.defaultBtns
     },
     changeSite(){
       let flag = false;
@@ -169,10 +169,11 @@ export default {
       this.dialogShortcut = true
       let routes = deepClone(this.$store.state.permission.addRoutes)
       let user = this.$store.state.user.u_info
-      this.treechoosedata = (user?.extra?.shortcuts || []).map(v=>{
+      this.treechoosedata = (user?.extra?.shortcuts || this.defaultBtns).map(v=>{
         return v.url
       })
-      this.treedata = this.convert(routes,[],'')
+      // this.treedata = this.convert(routes,[],'')
+      this.treedata = this.filterData(routes,'')
     },
     enterShortcutDialog () {
       let arr = this.$refs.shortcutTree.getCheckedNodes()
@@ -202,6 +203,29 @@ export default {
               this.btns = this.$store.state.user.u_info.extra.shortcuts
             })
       }
+    },
+    filterData(data,url) {
+      const filterarr =(list)=>{
+        return list.filter(item=>{
+          return !item.hidden
+        }).map(item=>{
+          item = Object.assign({},item)
+          if(item.children && item.children.length) {
+            item.children = filterarr(item.children)
+          }
+          return item
+        })
+      }
+      let arr = data.map((v)=>{
+          v.title = v.meta.title,
+          v.path = url ? url + '/' + v.path : v.path
+          v.hidden = v.hidden ? v.hidden : false
+          if(v.children && v.children.length > 0){
+               this.filterData(v.children,v.path)
+            }
+         return  {...v}
+      })
+        return filterarr(arr)
     },
     convert(data, arr,url) {
         for (let i = 0; i < data.length; i++) {

@@ -41,6 +41,24 @@
           <div v-else>{{getstyle(scope.row.template_style)}}</div>
         </template>
       </el-table-column>
+       <el-table-column
+        label="菜单分组"
+        align="center"
+        prop="group"
+        :show-overflow-tooltip="true" >
+        <template slot-scope="scope">
+         <span>{{getGroupoptions(scope.row.group)}}</span>
+        </template>
+      </el-table-column>
+       <el-table-column
+        label="关联栏目"
+        align="center"
+        prop="linked_channel_id"
+        :show-overflow-tooltip="true" >
+        <template slot-scope="scope">
+         <span>{{getChannelName(scope.row.linked_channel_id)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column v-if="!isMobile" label="排序" align="center" prop="sort" :show-overflow-tooltip="true" />
       <el-table-column
         label="状态"
@@ -763,6 +781,18 @@ import ChildPage1 from './pages/c_page1'
             return this.catalogoptions[i].catalogName
           }
         }
+      },
+      getGroupoptions (val) {
+         let obj = this.groupoptions.find(v=>v.value === val)
+         return obj?.label || ''
+      },
+      getChannelName (arr) {
+        if(!arr.length) return ''
+        let str = ''
+        arr.map(v=>{
+          str+= v.name + ','
+        })
+        return str.slice(0,-1)
       },
       getuserfn(){//获取系统用户列表
         var data={};
