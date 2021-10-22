@@ -1846,6 +1846,13 @@ export default {
     },
     /* 保存草稿 */
     handleDraft() {
+
+      var bdhhtml = document.getElementById('bdh').innerHTML;
+      if(bdhhtml==1){
+        this.$message.warning('正在图片本地化，请稍后')
+        return
+      }
+
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存草稿成功!')
@@ -1858,6 +1865,11 @@ export default {
         * 预览
         * */
     handlePreview() {
+      var bdhhtml = document.getElementById('bdh').innerHTML;
+      if(bdhhtml==1){
+        this.$message.warning('正在图片本地化，请稍后')
+        return
+      }
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存成功', ({ data: { id } = {} }) => {
@@ -1872,6 +1884,11 @@ export default {
         * 发布
         * */
     handlePublish() {
+      var bdhhtml = document.getElementById('bdh').innerHTML;
+      if(bdhhtml==1){
+        this.$message.warning('正在图片本地化，请稍后')
+        return
+      }
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           if (this.typeDetails === 'script') {
