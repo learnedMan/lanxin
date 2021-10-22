@@ -23195,6 +23195,7 @@ UE.plugins['customstyle'] = function() {
  UE.plugins['catchremoteimage'] = function() {
     var me = this,
         ajax = UE.ajax;
+    var bdhhtml = document.getElementById('bdh');
     if(me.options.catchRemoteImageEnable === false) return;
     me.setOpt({
         catchRemoteImageEnable: false
@@ -23203,6 +23204,7 @@ UE.plugins['customstyle'] = function() {
         me.fireEvent("catchRemoteImage");
     });
     me.addListener("catchRemoteImage", function() {
+        bdhhtml.innerHTML=1;
         var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
             catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
             catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
@@ -23283,6 +23285,8 @@ UE.plugins['customstyle'] = function() {
                         }
                     }
                     me.document.body.innerHTML = bodyHtml;
+
+                    bdhhtml.innerHTML=2;
                     me.fireEvent('catchremotesuccess')
                 },
                 error: function() {
