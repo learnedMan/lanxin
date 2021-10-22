@@ -181,6 +181,7 @@
           Object.assign(this.queryParams, {
             beginTime: '',
             endTime: '',
+            registerTime: '',
             page: 1
           })
           this.resetForm('queryForm');
