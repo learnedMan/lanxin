@@ -167,7 +167,7 @@
             <!-- 拉黑 -->
             <Iconbutton
               icontype="jy"
-              label="拉黑"
+              label="禁言"
               @fatherMethod="handleDelete(scope.row)"
             ></Iconbutton>
           </template>
@@ -341,6 +341,7 @@
           Object.assign(this.queryParams, {
             beginTime: '',
             endTime: '',
+            registerTime: '',
             page: 1
           })
           this.resetForm('queryForm');
@@ -348,7 +349,12 @@
         /* 查询 */
         handleQuery () {
           this.queryParams.page = 1;
-          this.getList();
+          const { textareaValue} = this.queryParams
+          if(textareaValue) {
+            this.getList();
+          }else{
+            this.$message('请搜索你所需要导出的数据');
+          }
         },
 				/*字符串拼接*/
 				getStr (arr) {
@@ -361,9 +367,10 @@
          /* 导出 */
         handleImport () {
           const { textareaValue,sourceId } = this.queryParams
-          if(textareaValue) {
           let mobile = this.getStr(this.tableData)
+          if(textareaValue && mobile) {
 					let str = this.VUE_APP_REQUEST2_API +`/internal/uc/excelUserData?sourceId=${sourceId}&mobile=${mobile}`
+          console.log('str',str)
           this.download(str,'')
           }else{
             this.$message('请搜索你所需要导出的数据');
@@ -461,7 +468,7 @@
             userId: userId,
             expiresIn: 7 * 24 * 60 * 60
           }).then(({ code, msg }) => {
-            this.$message.success(code == 200? '拉黑成功' : msg);
+            this.$message.success(code == 200? '禁言成功' : msg);
             if(code == 200) {
               this.getList();
             }
@@ -509,7 +516,7 @@
       },
       async created() {
         await this.getProductList();
-        this.getList();
+        // this.getList();
       }
     }
 </script>

@@ -190,7 +190,7 @@
             <!-- 拉黑 -->
             <Iconbutton
               icontype="jy"
-              label="拉黑"
+              label="禁言"
               @fatherMethod="handleDelete(scope.row)"
             ></Iconbutton>
           </template>
@@ -437,7 +437,7 @@
             userId: userId,
             expiresIn: 7 * 24 * 60 * 60
           }).then(({ code, msg }) => {
-            this.$message.success(code == 200? '拉黑成功' : msg);
+            this.$message.success(code == 200? '禁言成功' : msg);
             if(code == 200) {
               this.getList();
             }

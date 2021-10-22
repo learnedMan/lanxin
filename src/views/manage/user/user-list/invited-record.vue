@@ -202,6 +202,7 @@
         },
         /* 获取列表数据 */
         getList () {
+          this.queryParams.mobile = String(this.queryParams.mobile)
           const params = { ...this.queryParams };
           delete params.registerTime;
           this.loading = true;

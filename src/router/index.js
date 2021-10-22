@@ -597,7 +597,7 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/user/blacklist'),
             name: 'Blacklist',
             permission: 'system.user.blacklist',
-            meta: { title: '黑名单' }
+            meta: { title: '禁言名单' }
           },
           {
             path: 'convention',
