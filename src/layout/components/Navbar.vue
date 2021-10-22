@@ -68,6 +68,7 @@
               default-expand-all
               node-key="path"
               ref="shortcutTree"
+              @check="checkTree"
               highlight-current
               :props="roledefaultProps">
             </el-tree>
@@ -174,6 +175,13 @@ export default {
       })
       // this.treedata = this.convert(routes,[],'')
       this.treedata = this.filterData(routes,'')
+    },
+    checkTree (data,stuats) {
+      let arr = stuats.checkedKeys
+      if(arr.length > 4) {
+         this.$message('最多只能勾选4个');
+         this.$refs.shortcutTree.setChecked(data, false, true);
+      }
     },
     enterShortcutDialog () {
       let arr = this.$refs.shortcutTree.getCheckedNodes()

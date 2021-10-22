@@ -111,6 +111,15 @@
         <el-form-item  label-width="120px" label="手机号" prop="phone">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入手机号" v-model="form.phone"></el-input>
         </el-form-item>
+        <el-form-item class="placeholderdiv" label-width="120px" label="部门:" prop="department_id">
+            <el-cascader
+            :show-all-levels = false
+            v-model="form.department_id"
+            style="width: 300px"
+            :options="departmentList"
+            :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
+            clearable></el-cascader>
+          </el-form-item>
         <el-form-item  label-width="120px" label="邮箱" prop="email">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入邮箱" v-model="form.email"></el-input>
         </el-form-item>
@@ -206,6 +215,7 @@ import {
   getuserPermission,
   assignuserPermission,
   getuserroles,
+  getDepartmentList,
   assignuserroles
   } from '@/api/manage'
 import { validUsername , validEmail } from '@/utils/validate'
@@ -246,6 +256,7 @@ import { validUsername , validEmail } from '@/utils/validate'
         },
         loading:true,
         dataList:[],
+        departmentList: [],
         // 总条数
         total: 0,
         www_loginoptions:[{
@@ -282,6 +293,9 @@ import { validUsername , validEmail } from '@/utils/validate'
           ],
           phone: [
             { required: true, message: "请输入手机号", trigger: "blur" }
+          ],
+          department_id: [
+            { required: true, message: "请选择部门", trigger: "blur" }
           ]
         },
         dialogType: "add",
@@ -296,6 +310,7 @@ import { validUsername , validEmail } from '@/utils/validate'
     },
     created() {
       this.getList();
+      this.getDepartList()
     },
     methods:{
       // 抽屉
@@ -325,6 +340,12 @@ import { validUsername , validEmail } from '@/utils/validate'
 
       cancelrole(){
         this.drawer = false;
+      },
+      getDepartList(){
+        console.log(this.queryParams)
+        getDepartmentList(this.removePropertyOfNullFor0(this.queryParams)).then(res => {
+          this.departmentList = res;
+        })
       },
       surerole(){
         var keys = this.$refs.roletree.getCheckedKeys() // 获取已勾选节点的key值
