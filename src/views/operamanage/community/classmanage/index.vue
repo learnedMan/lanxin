@@ -351,7 +351,7 @@ import {
 <style lang="scss">
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
-  border-radius: 6px;
+  border-radius: 50%;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -371,5 +371,6 @@ import {
   width: 100px;
   height: 100px;
   display: block;
+  border-radius: 50%;
 }
 </style>

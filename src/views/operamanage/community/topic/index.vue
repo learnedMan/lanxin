@@ -32,7 +32,7 @@
       <el-table-column label="话题id" align="center" prop="id" />
       <el-table-column label="话题背景图" align="center" prop="name" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <img :src="scope.row.logo" alt="" style="width: 50px;height: 50px;border-radius: 50%;">
+          <img :src="scope.row.logo" alt="" style="width: 50px;height: 50px;">
         </template>
       </el-table-column>
       <el-table-column label="话题名称" align="center" prop="name" :show-overflow-tooltip="true" />
