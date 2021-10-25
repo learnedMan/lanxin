@@ -398,6 +398,13 @@ export const asyncRoutes = [
         name: 'RejectReasons',
         permission: 'work_space.refuse_reason',
         meta: { title: '审核拒绝原因' }
+      },
+      {
+        path: 'log',
+        component: () => import('@/views/workbench/log'),
+        name: 'Log',
+        permission: 'work_space.log',
+        meta: { title: '操作日志' }
       }
     ]
   },
