@@ -23204,7 +23204,6 @@ UE.plugins['customstyle'] = function() {
         me.fireEvent("catchRemoteImage");
     });
     me.addListener("catchRemoteImage", function() {
-        bdhhtml.innerHTML=1;
         var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
             catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
             catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
@@ -23251,6 +23250,7 @@ UE.plugins['customstyle'] = function() {
             }
         }
         if(remoteImages.length) {
+            bdhhtml.innerHTML=1;
             me.fireEvent('catchremoteimgstart');
             catchremoteimage(remoteImages, {
                 success: function(r) {
