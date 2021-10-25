@@ -1679,6 +1679,10 @@ export default {
     },
   },
   async created() {
+    // 图片本地化初始化
+    var bdhhtml = document.getElementById('bdh');
+    bdhhtml.innerHTML=0;
+
     if(this.isEdit && !this.disabled) {
       let timer = setInterval(() => {
         this.getEditorPerson();
