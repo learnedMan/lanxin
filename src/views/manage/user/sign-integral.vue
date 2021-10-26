@@ -1,6 +1,21 @@
 <template>
   <div class="sign-integral" style="padding-left:80px;padding-top:30px;">
       <el-form :model="form" :rules="rules" ref="dataForm">
+         <el-form-item label-width="120px"  label="所属产品:" prop="sourceId"
+        >
+          <el-select
+           :disabled="editflag"
+            v-model="form.sourceId"
+            placeholder="请选择所属产品"
+          >
+            <el-option
+              v-for="item in productLists"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item  label-width="120px" label="签到模式:" prop="signPattern">
             <el-radio-group
               :disabled="editflag"
@@ -62,6 +77,7 @@ import { mapGetters } from 'vuex'
 import {
   addSignIntegral,
   getSignIntegral,
+  getproduct,
   } from '@/api/manage'
   import { deepClone } from '@/utils'
   export default {
@@ -71,6 +87,7 @@ import {
             editflag: true,
             form: {},
             recordform:{},
+            productLists: [],
             patterns: [
               {
                 label: '7天连续循环签到(连续签到7天后,第8天重新从第1天开始循环)',
@@ -99,11 +116,12 @@ import {
         'u_info'
         ])
     },
-    created() {
+  async created() {
       this.form = {
         circulatory: 1,
               tips: '',
               status: 0,
+              sourceId: '',
               awardSet: {
                  lists: [
                   {
@@ -194,15 +212,29 @@ import {
               }
       }
       this.recordform = deepClone(this.form)
+      await this.getProductList();
       this.getinfo()
     },
     methods:{
+        /* 获取产品列表 */
+        getProductList () {
+          return getproduct({}).then(res => {
+            const data = res.data || []
+            this.productLists = data.map(n => ({
+              label: n.name,
+              value: n.id
+            }));
+            this.form.sourceId = data?.[0]?.id;
+          });
+        },
         getinfo(){
-            getSignIntegral().then(res=>{
+          let params = { sourceId: this.form.sourceId}
+            getSignIntegral(params).then(res=>{
               let data = res.data
                 this.form.circulatory = data.circulatory
                 this.form.status = data.status
                 this.form.tips = data.tips
+                this.form.sourceId = data.data[0].sourceId
                 let lists = data.data || []
                 this.form.awardSet.lists = this.form.awardSet.lists.map(v=>{
                   lists.map(k=>{
