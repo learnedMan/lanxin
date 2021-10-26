@@ -39,8 +39,12 @@ const actions = {
       login(userInfo).then(response => {
         console.log(response)
         const token = response.token_type + ' ' + response.access_token;
+        const tokenQueryTime = new Date().getTime()
+        const tokenTime = response.expires_in
         commit('SET_TOKEN', token)
         setToken(token)
+        sessionStorage.setItem('tokenTime', tokenTime)
+        sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
         resolve(response)
       }).catch(error => {
         reject(error)
@@ -89,7 +93,6 @@ const actions = {
       resolve()
     })
   },
-
   // dynamically modify permissions
   async changeRoles({ commit, dispatch }, role) {
     const token = role + '-token'
