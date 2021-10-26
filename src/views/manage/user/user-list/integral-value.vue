@@ -64,14 +64,9 @@
         :show-overflow-tooltip="true"
       />
       <el-table-column
-        label="手机号"
-        align="center"
-        prop="mobile"
-      />
-      <el-table-column
         label="变动积分值"
         align="center"
-        prop="points"
+        prop="integration"
       />
       <el-table-column
         label="变动时间"
@@ -90,7 +85,7 @@
 </template>
 
 <script>
-  import { getUserDetail, getInvited } from '@/api/manage'
+  import { getUserDetail, getInvited,getIntegral } from '@/api/manage'
 
   export default {
     props: {
@@ -185,7 +180,7 @@
         const params = { ...this.queryParams };
         delete params.time;
         this.loading = true;
-        getInvited(this.removePropertyOfNullFor0(params)).then(res => {
+        getIntegral(this.removePropertyOfNullFor0(params)).then(res => {
           if(res.code == 200) {
             const data = res.data || {};
             this.tableData = data.list || [];
