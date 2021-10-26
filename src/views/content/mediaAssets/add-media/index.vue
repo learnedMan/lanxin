@@ -1422,10 +1422,10 @@ export default {
                 label: '服务',
                 value: 'service'
               },
-              // {
-              //   label: '电视+点播',
-              //   value: 'tv_and_vod'
-              // }
+              {
+                label: '电视+点播',
+                value: 'tv_and_vod'
+              }
             ]
           },
           rule: [
