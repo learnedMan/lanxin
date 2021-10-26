@@ -148,14 +148,14 @@ export const asyncRoutes = [
     children: [
       {
         path: 'seeSection',
-        component: () => import('@/views/workbench/seeSection'),
+        component: () => import('@/views/content/seeSection'),
         name: 'SeeSection',
         permission: 'content.news.list',
         meta: { title: '栏目数据' }
       },
       {
         path: 'projectManage',
-        component: () => import('@/views/workbench/projectManage/index'),
+        component: () => import('@/views/content/projectManage/index'),
         name: 'ProjectManage',
         permission: 'content.topic',
         //allow: true, // 不管是否有子路由  只要有权限就显示
@@ -263,7 +263,7 @@ export const asyncRoutes = [
       },
       {
         path: 'studio',
-        component: () => import('@/views/operamanage/studio/index'),
+        component: () => import('@/views/content/operamanage/studio/index'),
         name: 'Studio',
         permission: 'content.broadcast.manage',
         meta: { title: '直播间管理' },
@@ -271,21 +271,21 @@ export const asyncRoutes = [
         children: [
           {
             path: 'studioList',
-            component: () => import('@/views/operamanage/studio/studioList/index'),
+            component: () => import('@/views/content/operamanage/studio/studioList/index'),
             name: 'StudioList',
             permission: 'content.broadcast.list',
             meta: { title: '直播间列表' }
           },
           {
             path: 'waterManage',
-            component: () => import('@/views/operamanage/studio/waterManage'),
+            component: () => import('@/views/content/operamanage/studio/waterManage'),
             hidden:true,
             name: 'WaterManage',
             meta: { title: '平台流水管理' }
           },
           {
             path: 'accountManage',
-            component: () => import('@/views/operamanage/studio/accountManage'),
+            component: () => import('@/views/content/operamanage/studio/accountManage'),
             hidden:true,
             name: 'AccountManage',
             meta: { title: '平台账号管理' }
@@ -294,14 +294,14 @@ export const asyncRoutes = [
       },
       {
         path: 'column',
-        component: () => import('@/views/manage/architec/column'),
+        component: () => import('@/views/content/manage/architec/column'),
         name: 'Column',
         permission: 'content.channel.manage',
         meta: { title: '栏目管理' }
       },
       {
         path: 'radioTVIndex',
-        component: () => import('@/views/radioTV/radioTVIndex'), // Parent router-view
+        component: () => import('@/views/content/radioTV/radioTVIndex'), // Parent router-view
         name: 'RadioTVIndex',
         permission: 'content.tr.manage',
         meta: { title: '广电管理' }
