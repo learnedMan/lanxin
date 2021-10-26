@@ -4,9 +4,9 @@
          <el-form-item label-width="120px"  label="所属产品:" prop="sourceId"
         >
           <el-select
-           :disabled="editflag"
             v-model="form.sourceId"
             placeholder="请选择所属产品"
+            @change="handleQuery"
           >
             <el-option
               v-for="item in productLists"
@@ -226,6 +226,11 @@ import {
             }));
             this.form.sourceId = data?.[0]?.id;
           });
+        },
+          /* 搜索 */
+        handleQuery (val) {
+          this.form.sourceId = val
+          this.getinfo()
         },
         getinfo(){
           let params = { sourceId: this.form.sourceId}
