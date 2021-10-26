@@ -222,6 +222,15 @@ export function getPostDetail(params) {
 }
 
 
+/*-------------------------操作日志--------------------------------*/
+export function getLog(params) {
+  return request({
+    url: '/api/operationLogs',
+    method: 'get',
+    params
+  })
+}
+
 
 
 
