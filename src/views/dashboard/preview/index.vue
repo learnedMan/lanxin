@@ -86,9 +86,15 @@
         type ({ $route }) {
           return $route.query.type
         },
-        url ({ id, type }) {
+        previewDomin({ $store: { state: { user:{u_info:{site:{extra}}}} } }){
+          return extra.preview_domain
+        },
+        url ({ id, type , previewDomin}) {
           const token = sessionStorage.getItem('token');
-          return `http://synews.cztv.com/Preview?id=${id}&type=${type}&token=${token}`
+          if(!previewDomin){
+            this.$message.warning('站点未配置预览域名，请联系管理员去站点管理页面配置');
+          }
+          return `${previewDomin}?id=${id}&type=${type}&token=${token}`
         }
       },
       methods: {
