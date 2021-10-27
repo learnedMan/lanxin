@@ -96,6 +96,8 @@ service.interceptors.request.use(config => {
 //http response 拦截器
 service.interceptors.response.use(
     response => {
+      const tokenQueryTime = new Date().getTime()
+      sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
         if (response.data.code == 200 || response.headers.success === "true") {
             return response.data
         } else {

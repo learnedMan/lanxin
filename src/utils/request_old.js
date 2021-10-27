@@ -97,6 +97,8 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(
     response => {
         // console.log(response)
+        const tokenQueryTime = new Date().getTime()
+        sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
         if (response.data.code == 200 || response.headers.success === "true") {
             return response.data
         } else {

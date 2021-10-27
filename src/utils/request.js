@@ -35,7 +35,7 @@ service.interceptors.request.use(config => {
   config.headers.TempSite = sessionStorage.getItem('TempSite') || ''
   //判断是否登录过
   if(sessionStorage.getItem('token')) {
-    //判断token是否过期
+    //判断token是否要刷新
     if (tokenIsOverdue() && (!config.url.includes('/api/authorizations') || !config.url.includes('api/authorizations/wwwLogin'))) {
       if (!isRefreshing) {
         isRefreshing = true
@@ -55,9 +55,7 @@ service.interceptors.request.use(config => {
               let response = res.data
               const token = response.token_type + ' ' + response.access_token;
               const tokenQueryTime = new Date().getTime()
-              const tokenTime = response.expires_in
               sessionStorage.setItem('token', token)
-              sessionStorage.setItem('tokenTime', tokenTime)
               sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
                 onAccessTokenFetched(token)
             }
@@ -98,6 +96,8 @@ service.interceptors.request.use(config => {
 // 响应拦截器，拦截请求后对数据进行处理
 service.interceptors.response.use(response => {
   // 对响应数据做些什么
+  const tokenQueryTime = new Date().getTime()
+  sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
   if (response.status >= 200 && response.status < 300) {
     return response.data
   } else if (response.status === 401) {

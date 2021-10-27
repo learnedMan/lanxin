@@ -222,9 +222,9 @@ import {
             const data = res.data || []
             this.productLists = data.map(n => ({
               label: n.name,
-              value: n.id
+              value: n.source_id
             }));
-            this.form.sourceId = data?.[0]?.id;
+            this.form.sourceId = data?.[0]?.source_id;
           });
         },
           /* 搜索 */
