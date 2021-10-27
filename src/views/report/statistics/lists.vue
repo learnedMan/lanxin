@@ -5,8 +5,10 @@
 </style>
 <template>
     <div class="xl-statistics-lists">
-      <el-tabs tab-position="left" style="height: 100%;">
-        <el-tab-pane label="按部门查看">
+      <el-tabs tab-position="left"
+       v-model="activeName"
+        style="height: 100%;">
+        <el-tab-pane label="按部门查看" name="department">
           <el-form
             ref="department"
             :model="department.queryParams"
@@ -69,7 +71,8 @@
               align="center"
             >
               <template slot-scope="scope">
-                <span style="color: #409EFF;cursor: pointer" @click="watchDetail(scope.row)">{{ scope.row.department_name }}</span>
+                <!-- <span style="color: #409EFF;cursor: pointer" @click="watchDetail(scope.row)">{{ scope.row.department_name }}</span> -->
+                <span style="color: #409EFF;cursor: pointer" @click="goPerson(scope.row)">{{ scope.row.department_name }}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -84,7 +87,7 @@
             />
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="按人员查看">
+        <el-tab-pane label="按人员查看" name="person">
           <el-form
             ref="person"
             :model="person.queryParams"
@@ -145,16 +148,16 @@
             <el-table-column
               label="人员"
               align="center"
-              prop="auhtor_name"
-            />
-            <el-table-column
-              label="部门名称"
-              align="center"
             >
               <template slot-scope="scope">
-                <span style="color: #409EFF;cursor: pointer">{{ scope.row.department_name }}</span>
+                <span style="color: #409EFF;cursor: pointer" @click="watchDetail(scope.row)">{{ scope.row.auhtor_name}}</span>
               </template>
             </el-table-column>
+             <el-table-column
+              label="部门"
+              align="center"
+              prop="department_name"
+            />
             <el-table-column
               label="发稿量"
               align="center"
@@ -177,6 +180,7 @@
     export default {
       data() {
         return {
+          activeName: 'department',
           department: {
             queryParams: {
               beginTime: '',
@@ -271,7 +275,11 @@
         /* 查看详情 */
         watchDetail (row) {
           this.$emit('watch-detail', row.department_id);
-        }
+        },
+        goPerson (row) {
+          console.log('row',row)
+          this.activeName = 'person'
+        },
       },
       created() {
         this.getDepartmentList();
