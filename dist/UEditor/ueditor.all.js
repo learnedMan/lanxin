@@ -23195,6 +23195,7 @@ UE.plugins['customstyle'] = function() {
  UE.plugins['catchremoteimage'] = function() {
     var me = this,
         ajax = UE.ajax;
+    var bdhhtml = document.getElementById('bdh');
     if(me.options.catchRemoteImageEnable === false) return;
     me.setOpt({
         catchRemoteImageEnable: false
@@ -23249,6 +23250,7 @@ UE.plugins['customstyle'] = function() {
             }
         }
         if(remoteImages.length) {
+            bdhhtml.innerHTML=1;
             me.fireEvent('catchremoteimgstart');
             catchremoteimage(remoteImages, {
                 success: function(r) {
@@ -23283,6 +23285,8 @@ UE.plugins['customstyle'] = function() {
                         }
                     }
                     me.document.body.innerHTML = bodyHtml;
+
+                    bdhhtml.innerHTML=2;
                     me.fireEvent('catchremotesuccess')
                 },
                 error: function() {

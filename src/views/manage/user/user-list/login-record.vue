@@ -90,7 +90,7 @@
 </template>
 
 <script>
-  import { getUserDetail, getInvited } from '@/api/manage'
+  import { getUserDetail, getInvited,getLoginLists } from '@/api/manage'
 
   export default {
     props: {
@@ -185,7 +185,7 @@
         const params = { ...this.queryParams };
         delete params.registerTime;
         this.loading = true;
-        getInvited(this.removePropertyOfNullFor0(params)).then(res => {
+        getLoginLists(this.removePropertyOfNullFor0(params)).then(res => {
           if(res.code == 200) {
             const data = res.data || {};
             this.tableData = data.list || [];

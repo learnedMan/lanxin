@@ -1,8 +1,8 @@
 <template>
   <div class="login-container">
 
-    <div class="loginbox box-common"></div>
-    <div class="from-box box-common">
+    <div  :class="['loginbox box-common',isMobile ? 'isMobile':'']"></div>
+    <div  :class="['from-box box-common',isMobile ? 'isMobile':'']">
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="off" label-position="left">
         <div class="title-container">
           <div class="title">管理后台登录</div>
@@ -383,6 +383,11 @@ $w:#fff;
     right: 15%;
     top: 50%;
     transform: translateY(-50%);
+  }
+  .isMobile{
+    // right: 0%!important;
+    left: 50%!important;
+    transform: translate(-50%,-50%) !important;
   }
   .from-box{
     background: url($images+'/login_images/loginbg.png') no-repeat;

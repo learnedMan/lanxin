@@ -802,6 +802,73 @@ export function getActionList() {
   })
 }
 
+
+/*--------------------用户管理-签到积分规则---------------------------*/
+
+/* 新增积分配置 */
+export function addSignIntegral(data) {
+  return request3({
+    url: '/v1/internal/points/pointLoginCreate',
+    method: 'post',
+    data
+  })
+}
+
+/*获取积分配置详情*/
+export function getSignIntegral(data) {
+  return request3({
+    url: '/v1/internal/points/pointLoginList',
+    method: 'post',
+    data
+  })
+}
+
+/*--------------------用户管理-部门管理---------------------------*/
+
+/* 获取部门列表 */ 
+export function getDepartmentList(params) {
+  return request({
+    url: '/api/departments',
+    method: 'get',
+    params
+  })
+}
+
+/*新增部门*/
+export function addDepartment(data) {
+  return request({
+    url: '/api/departments',
+    method: 'post',
+    data
+  })
+}
+
+/* 获取部门详情 */ 
+export function getDepartmentinfo(id) {
+  return request({
+    url: '/api/departments/'+id,
+    method: 'get'
+  })
+}
+
+/* 修改部门*/ 
+export function changeDepartment(id, data) {
+  return request({
+    url: `/api/departments/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+/* 删除部门 */ 
+
+export function deleteDepartment(id) {
+  return request({
+    url: `/api/departments/${id}`,
+    method: 'delete'
+  })
+}
+
 /*--------------------架构管理-APP用户菜单中心---------------------------*/
 
 /* 获取产品菜单详情 */
@@ -897,6 +964,33 @@ export function getWhitelist(params) {
     url: '/sensitive/whitetxt/list',
     method: 'get',
     params
+  })
+}
+
+/* 敏感词管理列表 */
+export function getSensitwordList(params) {
+  return request3({
+    url: '/sensitive/setting/list',
+    method: 'get',
+    params
+  })
+}
+
+/* 新增敏感词 */
+export function addSensitword(data) {
+  return request3({
+    url: '/sensitive/setting/add',
+    method: 'post',
+    data
+  })
+}
+
+/* 删除敏感词 */
+export function delSensitword(data) {
+  return request3({
+    url: `/sensitive/setting/del`,
+    method: 'DELETE',
+    data
   })
 }
 

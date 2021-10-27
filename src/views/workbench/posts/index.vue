@@ -343,13 +343,14 @@ export default {
   },
   filters:{
     classifyfilter(data){
-      if(data==1){
-        return '分类一'
-      }else if(data==2){
-        return '分类一 - 分类二'
-      }else{
-        return '未知分类'
-      }
+      return data || ''
+      // if(data==1){
+      //   return '分类一'
+      // }else if(data==2){
+      //   return '分类一 - 分类二'
+      // }else{
+      //   return '未知分类'
+      // }
     },
     topicInfofilter(data){
      data = data||[]

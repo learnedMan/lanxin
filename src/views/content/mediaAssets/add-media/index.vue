@@ -1387,6 +1387,11 @@ export default {
                 value: 'm_level',
                 relatedLabel: '栏目id'
               },
+               {
+                label: '地图',
+                value: 'map',
+                relatedLabel: '栏目id'
+              },
               {
                 label: '无跳转',
                 value: 'none',
@@ -1674,6 +1679,10 @@ export default {
     },
   },
   async created() {
+    // 图片本地化初始化
+    var bdhhtml = document.getElementById('bdh');
+    bdhhtml.innerHTML=0;
+
     if(this.isEdit && !this.disabled) {
       let timer = setInterval(() => {
         this.getEditorPerson();
