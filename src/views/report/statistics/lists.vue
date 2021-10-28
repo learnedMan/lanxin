@@ -22,7 +22,7 @@
                 size="small"
                 unlink-panels
                 range-separator="~"
-                value-format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 @change="handleDateChange($event, 'department')"
@@ -101,12 +101,21 @@
                 size="small"
                 unlink-panels
                 range-separator="~"
-                value-format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 @change="handleDateChange($event, 'person')"
               />
             </el-form-item>
+            <el-form-item  label="部门:" prop="departmentId">
+            <el-cascader
+            :show-all-levels = false
+            v-model="person.queryParams.departmentId"
+            style="width: 350px"
+            :options="dataList"
+            :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
+            clearable></el-cascader>
+          </el-form-item>
             <el-form-item>
               <el-button v-points = "1500"
                 type="primary"
@@ -176,11 +185,14 @@
 
 <script>
   import { listDepartmentKpi, listAuthorDetail, fileImport } from '@/api/statistics'
-
+  import {
+  getDepartmentList,
+  } from '@/api/manage'
     export default {
       data() {
         return {
           activeName: 'department',
+          dataList: [],
           department: {
             queryParams: {
               beginTime: '',
@@ -195,7 +207,8 @@
             queryParams: {
               beginTime: '',
               endTime: '',
-              Date: ''
+              Date: '',
+              departmentId: ''
             },
             loading: false,
             tableData: [],
@@ -207,7 +220,7 @@
         site ({ $store: { state: { user: { u_info } } } }) {
           const data = u_info?.site?.extra?.bigdata_settings || {};
           return {
-            productId: data.product_id || '',
+            productId: data.product_id || '999999999999999',
             customerId: data.customer_id || ''
           }
         }
@@ -238,6 +251,11 @@
         handleSelectionChange (arr, key) {
           this[key].selection = arr.map(n => n.id);
         },*/
+        getDepart(){
+        getDepartmentList().then(res => {
+          this.dataList = res;
+        })
+      },
         /* 获取部门数据 */
         getDepartmentList () {
           const department = this.department;
@@ -274,14 +292,17 @@
         },
         /* 查看详情 */
         watchDetail (row) {
-          this.$emit('watch-detail', row.department_id);
+          this.$emit('watch-detail', row.department_id,row.auth_id);
         },
         goPerson (row) {
           console.log('row',row)
           this.activeName = 'person'
+          this.person.queryParams.departmentId = row.department_id
+          this.getPersonLists()
         },
       },
       created() {
+        this.getDepart();
         this.getDepartmentList();
         this.getPersonLists();
       }

@@ -11,6 +11,7 @@
         <component
           :is="component"
           :id="id"
+          :authorId="authorId"
           @watch-detail="watchDetail"
           @handleReturn="handleReturn"
         ></component>
@@ -33,7 +34,8 @@
       return {
         exclude: ['Detail'],
         component: 'Lists',
-        id: ''
+        id: '',
+        authorId: ''
       }
     },
     methods: {
@@ -42,8 +44,9 @@
         this.component = 'Lists';
       },
       /* 查看详情 */
-      watchDetail (id) {
+      watchDetail (id,authorId) {
         this.id = id;
+        this.authorId = authorId
         this.component = 'Detail';
       }
     }
