@@ -33,8 +33,6 @@ service.interceptors.request.use(config => {
                 sessionStorage.setItem('token', token)
                 sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
                 config.headers.Authorization = token
-                config.headers.TempZone = sessionStorage.getItem('TempZone') || ''
-                config.headers.TempSite = sessionStorage.getItem('TempSite') || ''
                 resolve(config);
               } else {
                 sessionStorage.removeItem('token')
