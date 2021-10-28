@@ -368,9 +368,12 @@
       data() {
         const coverValidator = (rule, value, callback) => {
           const count = this.imgCount
-          if (!Array.isArray(value) || value.length === 0) {
+          const typeValue = this.dialog.form.extra.news_style.template_style
+          console.log('type',this.dialog.form)
+          console.log('typeValue',typeValue)
+          if ((!Array.isArray(value) || value.length === 0) && typeValue != '240') {
             callback(new Error('请上传封面图片'))
-          } else if (!value.slice(0, count).every(n => n.path)) {
+          } else if ((!value.slice(0, count).every(n => n.path)) && typeValue != '240') {
             callback(new Error(`请上传${count}张封面图片`))
           } else {
             callback()
@@ -791,6 +794,7 @@
         },
       },
       async created() {
+        console.log('9999999')
         await this.getProductList();
         this.getList();
         this.getChannels();

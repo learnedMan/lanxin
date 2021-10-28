@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import router from '@/router'
 import { tokenIsOverdue } from '@/utils/auth'
-const writeList = ['/login'] // token过期不需要重定向白名单
+// const writeList = ['/login'] // token过期不需要重定向白名单
 
 // create an axios instance
 const service = axios.create({
@@ -90,8 +90,9 @@ service.interceptors.response.use(response => {
   })
   if (error.response.status === 401) {
     sessionStorage.removeItem('token')
-    const path = window.location.pathname
-    if (!writeList.includes(path)) router.push('/login')
+    // const path = window.location.pathname
+    // if (!writeList.includes(path))
+    router.push('/login')
   }
   return Promise.reject(error)
 })

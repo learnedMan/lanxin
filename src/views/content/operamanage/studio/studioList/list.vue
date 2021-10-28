@@ -543,9 +543,10 @@
     data() {
       const coverValidator = (rule, value, callback) => {
         const count = this.imgCount;
-        if (!Array.isArray(value) || value.length === 0) {
+        const typeValue = this.dialog.form.extra.template_style
+        if ((!Array.isArray(value) || value.length === 0) && typeValue != '240') {
           callback(new Error('请上传图片'))
-        } else if (!value.slice(0, count).every(n => n.path)) {
+        } else if ((!value.slice(0, count).every(n => n.path)) && typeValue != '240') {
           callback(new Error(`请上传${count}张图片`))
         } else {
           callback()
