@@ -220,7 +220,7 @@
         site ({ $store: { state: { user: { u_info } } } }) {
           const data = u_info?.site?.extra?.bigdata_settings || {};
           return {
-            productId: data.product_id || '999999999999999',
+            productId: data.product_id || '',
             customerId: data.customer_id || ''
           }
         }
@@ -303,8 +303,10 @@
       },
       created() {
         this.getDepart();
-        this.getDepartmentList();
-        this.getPersonLists();
+        if(this.site.productId && this.site.customerId) {
+          this.getDepartmentList();
+          this.getPersonLists();
+        }
       }
     }
 </script>

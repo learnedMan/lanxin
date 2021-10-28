@@ -801,6 +801,14 @@ export function getActionList() {
     method: 'get'
   })
 }
+/* 获取部门列表 */ 
+export function getDepartmentList(params) {
+  return request({
+    url: '/api/departments',
+    method: 'get',
+    params
+  })
+}
 /*--------------------架构管理-APP用户菜单中心---------------------------*/
 /* 获取产品菜单详情 */
 export function getAppMenu(id) {
