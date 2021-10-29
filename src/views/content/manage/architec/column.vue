@@ -623,6 +623,9 @@ import ChildPage1 from './pages/c_page1'
         },{
           value: 'activity',
           label: '活动'
+        },{
+          value: 'm_level',
+          label: '多层级'
         }],
         catalogoptions:[],
         styleoptions:[],
