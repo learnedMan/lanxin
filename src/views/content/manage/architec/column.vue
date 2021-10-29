@@ -355,8 +355,52 @@
               </el-form-item>
               <div v-else></div>
             </div>
+            <div v-if="form.type=='service'&&form.extra.link.type=='alipay'">
+              <el-form-item
+                label-width="150px" label="安卓跳转方法名称:" prop="extra.link.settings.android_func_name">
+                <el-input
+                  style="width: 350px"
+                  placeholder="请输入安卓跳转方法名称"
+                  v-model="form.extra.link.settings.android_func_name"
+                ></el-input>
+              </el-form-item>
+              <el-form-item
+                label-width="150px" label="IOS跳转方法名称:" prop="extra.link.settings.ios_func_name">
+                <el-input
+                  style="width: 350px"
+                  placeholder="请输入IOS跳转方法名称"
+                  v-model="form.extra.link.settings.ios_func_name"
+                ></el-input>
+              </el-form-item>
+              <el-form-item
+                label-width="150px" label="json形式跳转参数:" prop="extra.link.settings.redirect_params">
+                <el-input
+                  style="width: 350px"
+                  placeholder="请输入json形式跳转参数"
+                  v-model="form.extra.link.settings.redirect_params"
+                ></el-input>
+              </el-form-item>
+            </div>
+             <div v-if="form.type=='service'&&form.extra.link.type=='wechat_mp'">
+              <el-form-item
+                label-width="150px" label="微信id:" prop="extra.link.settings.id">
+                <el-input
+                  style="width: 350px"
+                  placeholder="请输入微信id"
+                  v-model="form.extra.link.settings.id"
+                ></el-input>
+              </el-form-item>
+              <el-form-item
+                label-width="150px" label="微信mp:" prop="extra.link.settings.mp">
+                <el-input
+                  style="width: 350px"
+                  placeholder="请输入微信mp"
+                  v-model="form.extra.link.settings.mp"
+                ></el-input>
+              </el-form-item>
+            </div>
             <div v-else>
-              <el-form-item v-if="form.type=='outer_link'||form.type=='auth_link'||form.type=='service'"
+              <el-form-item v-if="(form.type=='outer_link'||form.type=='auth_link'||form.type=='service') && form.extra.link.type !='alipay' && form.extra.link.type !='wechat_mp' "
                 label-width="150px" label="链接地址:" prop="extra.link.url">
                 <el-input
                   style="width: 350px"
@@ -533,6 +577,14 @@ import ChildPage1 from './pages/c_page1'
           {
             value: 'hyg_force_auth',
             label: '好易购强制授权'
+          },
+          {
+            value: 'alipay',
+            label: '支付宝功能'
+          },
+          {
+            value: 'wechat_mp',
+            label: '微信小程序'
           },
         ],
         groupoptions: [{
@@ -851,7 +903,14 @@ import ChildPage1 from './pages/c_page1'
             link:{
               type:'',
               url:'',
-              id:''
+              id:'',
+              settings: {
+                android_func_name: '',
+                ios_func_name: '',
+                redirect_params: '',
+                id: '',
+                mp: '',
+              },
             },
             template:''
           }
