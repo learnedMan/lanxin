@@ -18,7 +18,7 @@
             align="right"
             unlink-panels
             range-separator="~"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             @change="handleDateChange"
@@ -72,7 +72,7 @@
         <el-table-column
           label="发稿人"
           align="center"
-          prop="authName"
+          prop="auhtorName"
         />
         <el-table-column
           label="原作者"
@@ -107,7 +107,7 @@
         <el-table-column
           label="链接"
           align="center"
-          prop="link"
+          prop="extra.url"
         />
       </el-table>
       <pagination
@@ -125,12 +125,14 @@
 
     export default {
       props: {
-        id: [Number, String]
+        id: [Number, String],
+        authorId: [Number, String]
       },
       data() {
         return {
           queryParams: {
             departmentId: this.id,
+            authorId: this.authorId,
             beginTime: '',
             endTime: '',
             dateValue: '',
@@ -196,7 +198,10 @@
           delete params.dateValue;
           listKpiDetail(this.removePropertyOfNullFor0(params)).then(res => {
             this.loading = false;
-            this.tableData = res.data;
+            this.tableData=(res.data || []).map(v => {
+              v.extra = JSON.parse(v.extra)
+              return {...v}
+            })
           })
         }
       },

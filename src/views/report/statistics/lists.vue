@@ -5,8 +5,10 @@
 </style>
 <template>
     <div class="xl-statistics-lists">
-      <el-tabs tab-position="left" style="height: 100%;">
-        <el-tab-pane label="按部门查看">
+      <el-tabs tab-position="left"
+       v-model="activeName"
+        style="height: 100%;">
+        <el-tab-pane label="按部门查看" name="department">
           <el-form
             ref="department"
             :model="department.queryParams"
@@ -20,7 +22,7 @@
                 size="small"
                 unlink-panels
                 range-separator="~"
-                value-format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 @change="handleDateChange($event, 'department')"
@@ -69,7 +71,8 @@
               align="center"
             >
               <template slot-scope="scope">
-                <span style="color: #409EFF;cursor: pointer" @click="watchDetail(scope.row)">{{ scope.row.department_name }}</span>
+                <!-- <span style="color: #409EFF;cursor: pointer" @click="watchDetail(scope.row)">{{ scope.row.department_name }}</span> -->
+                <span style="color: #409EFF;cursor: pointer" @click="goPerson(scope.row)">{{ scope.row.department_name }}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -84,7 +87,7 @@
             />
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="按人员查看">
+        <el-tab-pane label="按人员查看" name="person">
           <el-form
             ref="person"
             :model="person.queryParams"
@@ -98,12 +101,21 @@
                 size="small"
                 unlink-panels
                 range-separator="~"
-                value-format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 @change="handleDateChange($event, 'person')"
               />
             </el-form-item>
+            <el-form-item  label="部门:" prop="departmentId">
+            <el-cascader
+            :show-all-levels = false
+            v-model="person.queryParams.departmentId"
+            style="width: 350px"
+            :options="dataList"
+            :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
+            clearable></el-cascader>
+          </el-form-item>
             <el-form-item>
               <el-button v-points = "1500"
                 type="primary"
@@ -145,16 +157,16 @@
             <el-table-column
               label="人员"
               align="center"
-              prop="auhtor_name"
-            />
-            <el-table-column
-              label="部门名称"
-              align="center"
             >
               <template slot-scope="scope">
-                <span style="color: #409EFF;cursor: pointer">{{ scope.row.department_name }}</span>
+                <span style="color: #409EFF;cursor: pointer" @click="watchDetail(scope.row)">{{ scope.row.auhtor_name}}</span>
               </template>
             </el-table-column>
+             <el-table-column
+              label="部门"
+              align="center"
+              prop="department_name"
+            />
             <el-table-column
               label="发稿量"
               align="center"
@@ -173,10 +185,14 @@
 
 <script>
   import { listDepartmentKpi, listAuthorDetail, fileImport } from '@/api/statistics'
-
+  import {
+  getDepartmentList,
+  } from '@/api/manage'
     export default {
       data() {
         return {
+          activeName: 'department',
+          dataList: [],
           department: {
             queryParams: {
               beginTime: '',
@@ -191,7 +207,8 @@
             queryParams: {
               beginTime: '',
               endTime: '',
-              Date: ''
+              Date: '',
+              departmentId: ''
             },
             loading: false,
             tableData: [],
@@ -234,6 +251,11 @@
         handleSelectionChange (arr, key) {
           this[key].selection = arr.map(n => n.id);
         },*/
+        getDepart(){
+        getDepartmentList().then(res => {
+          this.dataList = res;
+        })
+      },
         /* 获取部门数据 */
         getDepartmentList () {
           const department = this.department;
@@ -270,12 +292,21 @@
         },
         /* 查看详情 */
         watchDetail (row) {
-          this.$emit('watch-detail', row.department_id);
-        }
+          this.$emit('watch-detail', row.department_id,row.auth_id);
+        },
+        goPerson (row) {
+          console.log('row',row)
+          this.activeName = 'person'
+          this.person.queryParams.departmentId = row.department_id
+          this.getPersonLists()
+        },
       },
       created() {
-        this.getDepartmentList();
-        this.getPersonLists();
+        this.getDepart();
+        if(this.site.productId && this.site.customerId) {
+          this.getDepartmentList();
+          this.getPersonLists();
+        }
       }
     }
 </script>

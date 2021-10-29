@@ -870,7 +870,6 @@ export function deleteDepartment(id) {
 }
 
 /*--------------------架构管理-APP用户菜单中心---------------------------*/
-
 /* 获取产品菜单详情 */
 export function getAppMenu(id) {
   return request({

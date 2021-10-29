@@ -147,6 +147,11 @@
         align="center"
         prop="channel.name"
       />
+       <el-table-column
+        label="作者"
+        align="center"
+        prop="author_name"
+      />
       <el-table-column
         label="状态"
         align="center"
