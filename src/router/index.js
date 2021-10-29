@@ -334,6 +334,13 @@ export const asyncRoutes = [
             name: 'Classmanage',
             permission: 'content.resource_repo.category.manage',
             meta: { title: '(媒体库)分类管理' }
+          },
+          {
+            path: 'videoClassify',
+            component: () => import('@/views/content/mediaRepository/videoClassify'),
+            name: 'VideoClassify',
+            permission: 'content.resource_repo.category.video',
+            meta: { title: '蓝云视频分类' }
           }
         ]
       }
