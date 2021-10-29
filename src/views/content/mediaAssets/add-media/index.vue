@@ -237,6 +237,20 @@
                     @input="handleInput($event, formOptions['extra.cover'].item)"
                   />
                 </el-form-item>
+                <!-- 详情样式 -->
+              <el-form-item
+                v-show="initFrom().includes('extra.video_type')"
+                v-bind="formOptions['extra.video_type'].item.props"
+              >
+                <el-radio-group
+                  size="small"
+                  :value="parseObj(formOptions['extra.video_type'].item)"
+                  @input="handleInput($event, formOptions['extra.video_type'].item)"
+                  @change="handleTabChange"
+                >
+                  <el-radio v-for="list of formOptions['extra.video_type'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
               </el-col>
             </el-row>
             <el-row>
@@ -1258,6 +1272,29 @@ export default {
             { required: true, message: '请选择是否允许分享', trigger: 'change' }
           ]
         },
+        'extra.video_type': {
+          item: {
+            key: 'extra.video_type',
+            props: {
+              label: '详情样式:',
+              prop: 'extra.video_type'
+            },
+            component: 'radio', // 组件名
+            lists: [
+              {
+                label: '横版',
+                value: '1'
+              },
+              {
+                label: '竖版',
+                value: '2'
+              }
+            ]
+          },
+          // rule: [
+          //   { required: true, message: '请选择是否允许分享', trigger: 'change' }
+          // ]
+        },
         'extra.trans_to_audio': {
           item: {
             key: 'extra.trans_to_audio',
@@ -1567,6 +1604,7 @@ export default {
           intro: '', // 简介
           tags: '', // 标签
           keywords: '', // 关键词
+          video_type: '1', //详情样式
           publish_timer: {
             publish_at: '',
             status: '0'
@@ -1745,7 +1783,7 @@ export default {
           arr = [...baseTopItem, 'extra.content', 'extra.custom_rec', 'extra.use_watermarks', ...baseBottomItem]
           break
         case 'video':
-          arr = [...baseTopItem, 'extra.video_extra.video_list', 'extra.custom_rec', ...baseBottomItem]
+          arr = [...baseTopItem, 'extra.video_extra.video_list', 'extra.custom_rec','extra.video_type', ...baseBottomItem]
           break
         case 'album':
           arr = [...baseTopItem, 'extra.album_extra.image_list', ...baseBottomItem]
@@ -2001,6 +2039,7 @@ export default {
             intro: extra.intro, // 简介
             tags: extra.tags, // 标签
             keywords: extra.keywords, // 关键词
+            video_type: (extra.video_type || '1').toString(), //详情样式
              publish_timer: {
               status: (extra?.publish_timer?.status ?? '0').toString(),
               publish_at: extra?.publish_timer?.publish_at ?? ''

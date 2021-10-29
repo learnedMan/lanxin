@@ -226,8 +226,32 @@
                   v-model="dialogForm.duibaSrcret"
                 />
               </el-form-item>
+              <el-form-item label="个推秘钥：" prop="bluecore_mastersecret">
+                <el-input
+                  style="width: 200px"
+                  autocomplete="off"
+                  placeholder="请输入个推秘钥"
+                  v-model="dialogForm.bluecore_mastersecret"
+                ></el-input>
+              </el-form-item>
+               <el-form-item  label="蓝核APPkey：" prop="bluecore_appkey">
+                <el-input
+                  style="width: 200px"
+                  autocomplete="off"
+                  placeholder="请输入蓝核APPkey"
+                  v-model="dialogForm.bluecore_appkey"
+                ></el-input>
+              </el-form-item>
             </el-col>
             <el-col :span="10">
+          <el-form-item  label="蓝核APPID：" prop="bluecore_appid">
+            <el-input
+              style="width: 200px"
+              autocomplete="off"
+              placeholder="请输入蓝核APPID"
+              v-model="dialogForm.bluecore_appid"
+            ></el-input>
+          </el-form-item>
               <el-form-item
                 label="支付宝App ID："
                 prop="alipayAppId"
@@ -390,6 +414,9 @@
             duibaRedirect: '', // 兑吧重定向地址
             duibaAppKey: '', // 兑吧接口Appkey
             duibaSrcret: '', // 兑吧秘钥
+            bluecore_mastersecret: '', //个推秘钥
+            bluecore_appkey: '', //蓝核APPkey
+            bluecore_appid: '', //蓝核APPID
             alipayAppId: '', // 支付宝appid
             alipayPrivateKey: '', // 支付宝私钥
             alipayPublicKey: '', // 支付宝公钥
