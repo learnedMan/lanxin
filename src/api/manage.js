@@ -449,8 +449,33 @@ export function getmyresources(query) {
   })
 }
 
+/* 蓝云视频分类 */
 
-// 广电管理
+export function getVideoClassify(query) {
+  return request({
+    url: '/api/cloud_vms_channels',
+    method: 'get',
+    params:query
+  })
+}
+
+export function addVideoClassify(data) {
+  return request({
+    url: '/api/cloud_vms_channels',
+    method: 'post',
+    data:data
+  })
+}
+
+export function editVideoClassify(id,data) {
+  return request({
+    url: '/api/cloud_vms_channels/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+
+// 广电管理 
 // 电视频道
 export function gettv_channel(query) {
   return request({

@@ -23,12 +23,12 @@
       border v-loading="loading" :data="dataList">
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="分类名称" align="center" prop="name" :show-overflow-tooltip="true" />
-      <el-table-column label="分类描述" align="center" prop="description" :show-overflow-tooltip="true" />
+      <el-table-column label="代码名称" align="center" prop="code" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" align="center" prop="created_at" :show-overflow-tooltip="true" />
       <el-table-column width="180px" label="操作" align="center">
         <template slot-scope="scope">
           <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
-          <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton>
+          <!-- <Iconbutton icontype="sc" label="删除" @fatherMethod="handleDelete(scope.row)"></Iconbutton> -->
           <!-- <el-button v-points = "1500"
             size="mini"
             type="text"
@@ -58,17 +58,20 @@
     :close-on-click-modal = false
     :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="dataForm">
-        <el-form-item  label-width="80px" label="分类名称" prop="name">
+         <el-form-item class="placeholderdiv" label-width="90px" label="上级栏目:" prop="father">
+            <el-cascader
+            :show-all-levels = false
+            v-model="form.father"
+            style="width: 350px"
+            :options="columnList"
+            :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
+            clearable></el-cascader>
+          </el-form-item>
+        <el-form-item  label-width="90px" label="分类名称" prop="name">
           <el-input style="width: 350px" autocomplete="off" placeholder="请输入分类名称" v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item  label-width="80px" label="分类描述" prop="description">
-          <el-input 
-            type="textarea" 
-            style="width: 350px" 
-            autocomplete="off" 
-            placeholder="请输入分类描述" 
-            :autosize="{ minRows: 4}"
-            v-model="form.description"></el-input>
+        <el-form-item  label-width="90px" label="代码" prop="code">
+          <el-input style="width: 350px" autocomplete="off" placeholder="请输入代码" v-model="form.code"></el-input>
         </el-form-item>
       </el-form>
       
@@ -83,10 +86,10 @@
 
 <script>
 import { 
-  getgories,
-  addgories,
-  editgories,
-  delgories
+  getChannels,
+  getVideoClassify,
+  addVideoClassify,
+  editVideoClassify,
   } from '@/api/manage'
   export default {
     name: 'classmanage',
@@ -100,13 +103,20 @@ import {
         },
         loading:true,
         dataList:[],
+        columnList: [],
         // 总条数
         total: 0,
         dialogFormVisible: false,
         form: {},
         rules: {
+           father: [
+            { required: true, message: "请选择上级栏目", trigger: "blur" }
+          ],
           name: [
             { required: true, message: "请输入分类名称", trigger: "blur" }
+          ],
+          code: [
+            { required: true, message: "请输入代码", trigger: "blur" }
           ],
         },
         dialogType: "add",
@@ -115,6 +125,7 @@ import {
     },
     created() {
       this.getList();
+      this.getColumnList()
       this.initForm();
     },
     methods:{
@@ -128,11 +139,15 @@ import {
         this.getList();
       },
       getList(){
-        getgories(this.queryParams).then(response => {
-          // console.log(response)
+        getVideoClassify(this.queryParams).then(res => {
           this.loading = false;
-          this.dataList = response.data;
-          this.total = response.total;
+          this.dataList = res.data.data;
+          this.total = res.data.total;
+        })
+      },
+       getColumnList(){
+        getChannels(this.queryParams).then(response => {
+          this.columnList = response;
         })
       },
       adddata(){
@@ -144,8 +159,9 @@ import {
       // 初始化表单
       initForm() {
           this.form={
+            father: '',
             name: "",
-            description: "",
+            code: '',
           }
           if (this.$refs.dataForm) {
             this.$refs.dataForm.resetFields();
@@ -158,6 +174,7 @@ import {
         this.dialogType = "edit";
         this.$nextTick(() => { 
           this.form = JSON.parse(JSON.stringify(row))
+          this.form.father = Number(row.father)
         })
         this.dialogFormVisible = true;
       },
@@ -165,27 +182,6 @@ import {
       closeDialog() {
         this.initForm();
         this.dialogFormVisible = false;
-      },
-      //删除分类
-      handleDelete(row){
-        this.$confirm('此操作将永久删除id为'+row.id+'的分类, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delgories(row.id,row).then(response => {
-                this.$message({
-                  message: '删除成功',
-                  type: 'success'
-                });
-                this.getList();
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
       },
       // 确定弹窗
       enterDialog() {
@@ -195,7 +191,7 @@ import {
             //修改
             // console.log(this.form)
             var data = this.form;
-            editgories(data.id,data).then(response => {
+            editVideoClassify(data.id,data).then(response => {
                   this.$message({
                     message: '修改成功',
                     type: 'success'
@@ -205,7 +201,7 @@ import {
             })
           }else{
             // 新增
-            addgories(this.form).then(response => {
+            addVideoClassify(this.form).then(response => {
                   this.$message({
                     message: '新建成功',
                     type: 'success'

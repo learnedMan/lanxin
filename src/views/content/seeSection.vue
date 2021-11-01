@@ -764,6 +764,14 @@ export default {
       this.getList()
     })
   },
+  watch: {
+    total() {
+       if(this.total==(this.queryParams.page-1)*this.queryParams.pageSize && this.total != 0){ 
+            this.queryParams.page -=1
+            this.getList()
+        }
+    },
+  },
   computed:{
     /* 当前站点租户 */
     customerId() {
