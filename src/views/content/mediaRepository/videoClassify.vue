@@ -3,7 +3,7 @@
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="分类名称：">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.keyword"
           placeholder="请输入关键字"
           clearable
           size="small"
@@ -19,8 +19,12 @@
     </el-form>
 
     <el-table 
-      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-      border v-loading="loading" :data="dataList">
+       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      border
+      v-loading="loading"
+      :data="dataList"
+      row-key="id"
+      :tree-props="{children: 'children'}">
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="分类名称" align="center" prop="name" :show-overflow-tooltip="true" />
       <el-table-column label="代码名称" align="center" prop="code" :show-overflow-tooltip="true" />
@@ -63,16 +67,16 @@
             :show-all-levels = false
             v-model="form.father"
             style="width: 350px"
-            :options="columnList"
+            :options="dataList"
             :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
             clearable></el-cascader>
           </el-form-item>
         <el-form-item  label-width="90px" label="分类名称" prop="name">
           <el-input style="width: 350px" autocomplete="off" placeholder="请输入分类名称" v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item  label-width="90px" label="代码" prop="code">
+        <!-- <el-form-item  label-width="90px" label="代码" prop="code">
           <el-input style="width: 350px" autocomplete="off" placeholder="请输入代码" v-model="form.code"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       
       <div class="dialog-footer" slot="footer">
@@ -86,7 +90,6 @@
 
 <script>
 import { 
-  getChannels,
   getVideoClassify,
   addVideoClassify,
   editVideoClassify,
@@ -99,7 +102,7 @@ import {
         queryParams: {
           page: 1,
           pageSize: 10,
-          name:"",
+          keyword:"",
         },
         loading:true,
         dataList:[],
@@ -109,14 +112,8 @@ import {
         dialogFormVisible: false,
         form: {},
         rules: {
-           father: [
-            { required: true, message: "请选择上级栏目", trigger: "blur" }
-          ],
           name: [
             { required: true, message: "请输入分类名称", trigger: "blur" }
-          ],
-          code: [
-            { required: true, message: "请输入代码", trigger: "blur" }
           ],
         },
         dialogType: "add",
@@ -125,12 +122,11 @@ import {
     },
     created() {
       this.getList();
-      this.getColumnList()
       this.initForm();
     },
     methods:{
       initcondition(){
-        this.queryParams.name="";
+        this.queryParams.keyword="";
       },
       /** 搜索按钮操作 */
       handleQuery() {
@@ -141,13 +137,8 @@ import {
       getList(){
         getVideoClassify(this.queryParams).then(res => {
           this.loading = false;
-          this.dataList = res.data.data;
-          this.total = res.data.total;
-        })
-      },
-       getColumnList(){
-        getChannels(this.queryParams).then(response => {
-          this.columnList = response;
+          this.dataList = res.data || [];
+          // this.total = res.data.total;
         })
       },
       adddata(){
@@ -161,7 +152,7 @@ import {
           this.form={
             father: '',
             name: "",
-            code: '',
+            // code: '',
           }
           if (this.$refs.dataForm) {
             this.$refs.dataForm.resetFields();
@@ -187,6 +178,7 @@ import {
       enterDialog() {
         this.$refs["dataForm"].validate((valid) => {
           if (!valid) return;
+          this.form.father = this.form.father || '0'
           if (this.dialogType=='edit') {
             //修改
             // console.log(this.form)

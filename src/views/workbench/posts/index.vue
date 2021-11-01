@@ -343,7 +343,7 @@ export default {
   },
   filters:{
     classifyfilter(data){
-      return data || ''
+      return data || '默认分类'
       // if(data==1){
       //   return '分类一'
       // }else if(data==2){
