@@ -502,6 +502,13 @@
               sort: 15,
               type: 'app_redirect',
               link: '15'
+            },
+            {
+              name: '我的帖子',
+              logo: '',
+              sort: 16,
+              type: 'app_redirect',
+              link: '16'
             }
           ], // 默认菜单集合
           allMenuSelect: [], // 当前选中项
