@@ -74,13 +74,6 @@
         <el-button v-points = "1500"
           type="primary"
           size="small"
-          @click="saveEdit"
-        >
-          点击
-        </el-button>
-        <el-button v-points = "1500"
-          type="primary"
-          size="small"
           @click="handleDraft"
           v-if="!onlyPublish"
         >
@@ -1741,6 +1734,12 @@ export default {
     await this.getLabels()
     await this.getList()
     this.handleTabChange()
+    let editorTime = setInterval(() => {
+      this.editorSelfSave()
+    },30000)
+    this.$once('hook:beforeDestroy', () => {
+        clearInterval(editorTime);
+      })
   },
   methods: {
     /* 解析路径返回值 */
@@ -1749,38 +1748,74 @@ export default {
       const val = arr.reduce((obj, key) => obj[key], this.from)
       return item.component === 'select' && item.componentProps.multiple ? val && val.toString().split(',') : val
     },
-    saveEdit() {
-      console.log('编辑',this.from.extra.content)
-      this.from.extra.content = '<p>额鹅鹅鹅<img src="http://img.cztv.com/cms_upload/cms_1623234754_iu21PdtfFd.jpg"/></p>'
+    /* 删除本地存储 */
+    delLocalStorage() {
+      let id = this.scriptsId || this.id
+      if (id) {
+        let list = JSON.parse(localStorage.getItem('editNews'))
+        list.map((v,index) =>{
+          if(v.id == id) {
+            list.splice(index,1)
+          }
+        })
+        localStorage.setItem('editNews',JSON.stringify(list))
+      }else{
+        localStorage.removeItem('addNews')
+      }
     },
     editorSelfSave() {
-      // 存储
-      //localStorage.setItem("name", "value");
-      // 取回
-      //localStorage.getItem("name");
-      //清除 localStorage("removeItem")
-      if(this.scriptsId == null && this.id == null) {
-        let obj = {
-          title: this.from.extra.title,
-          content: this.from.extra.content
-        }
-        localStorage.setItem('addNews',JSON.stringify(obj))
-      }else{
-        let arr = []
-        let editObj = {
-          id: this.scriptsId || this.id,
-          title: this.from.extra.title,
-          content: this.from.extra.content,
-        }
-        // localStorage.setItem('editNews')
-        //先判断是否第一次存编辑的稿件
-        if (localStorage.getItem('editNews')) {
-
-        }else{
-          arr.push(editObj)
-          localStorage.setItem('editNews',JSON.stringify(arr))
+      if (this.from.extra.type === 'news' && (this.from.extra.title || this.from.extra.content)) {
+        if (this.scriptsId == null && this.id == null) {
+          let obj = {
+            title: this.from.extra.title,
+            content: this.from.extra.content
+          }
+          localStorage.setItem('addNews',JSON.stringify(obj))
+        } else{
+          let arr = [],id = this.scriptsId || this.id
+          let editObj = {
+            id: this.scriptsId || this.id,
+            title: this.from.extra.title,
+            content: this.from.extra.content,
+          }
+          // localStorage.setItem('editNews')
+          //先判断是否第一次存编辑的稿件
+          if (localStorage.getItem('editNews')) {
+            let list = JSON.parse(localStorage.getItem('editNews'))
+            let IsExist = list.some(v => v.id == id)
+            if (IsExist) {
+              list.map(v =>{
+                if(v.id == id) {
+                  v.title = this.from.extra.title
+                  v.content = this.from.extra.content
+                }
+              })
+            } else {
+              list.push(editObj)
+            }
+              localStorage.setItem('editNews',JSON.stringify(list))
+          }else{
+            arr.push(editObj)
+            localStorage.setItem('editNews',JSON.stringify(arr))
+          }
         }
       }
+    },
+    /* 使用本地缓存提示 */
+    userNewsLocalStorgeTips (obj) {
+       this.$confirm('是否使用上次本地缓存?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           this.from.extra.title = obj.title
+           this.from.extra.content = obj.content
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
     },
     /* 值变化 */
     handleInput(val, item) {
@@ -1943,6 +1978,7 @@ export default {
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存草稿成功!')
+          this.delLocalStorage()
         }else {
           this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
         }
@@ -1960,6 +1996,7 @@ export default {
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存成功', ({ data: { id } = {} }) => {
+            this.delLocalStorage()
             if(id) this.$router.push({ name: 'Preview', query: { id, type: 'scripts' }})
           })
         }else {
@@ -1982,11 +2019,13 @@ export default {
             this.checkStatus = true
             const { channelId } = this.$route.query
             if(channelId) return this.handleSave('保存并发布成功', () => {
+              this.delLocalStorage()
               this.handleReturn();
             })
             this.dialog.show = true
           }else if (this.typeDetails === 'news') {
             this.handleSave('保存草稿成功!', () => {
+              this.delLocalStorage()
               this.$emit('refresh')
               this.handleClose()
               })
@@ -2054,6 +2093,9 @@ export default {
       if (this.scriptsId == null && this.id == null) {
         let max = this.viewBaseInterval.max, min = this.viewBaseInterval.min;
         this.from.extra.view_base_num = max && max !=Infinity ? Math.floor(Math.random()*(max-min+1)+min) : 0
+        if (localStorage.getItem('addNews')) {
+           this.userNewsLocalStorgeTips(JSON.parse(localStorage.getItem('addNews')))
+        }
         return
       }
       promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
@@ -2115,9 +2157,19 @@ export default {
             }
           }
         }// 表单
-        console.log('this.from',this.from)
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
         if(!this.disabled && this.typeDetails === 'script') this.dialog.form.channel_id = res.news.map(n => n.channel_id)
+        if (this.from.extra.type === 'news') {
+          if (localStorage.getItem('editNews')) {
+            let list = JSON.parse(localStorage.getItem('editNews'))
+            let id = this.scriptsId || this.id
+            let obj = list.find(v => v.id == id)
+            if (obj) {
+              this.userNewsLocalStorgeTips(obj)
+            }
+          }
+        }
+
       })
     },
     /* 获取编辑人员 */
