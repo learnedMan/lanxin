@@ -74,6 +74,13 @@
         <el-button v-points = "1500"
           type="primary"
           size="small"
+          @click="saveEdit"
+        >
+          点击
+        </el-button>
+        <el-button v-points = "1500"
+          type="primary"
+          size="small"
           @click="handleDraft"
           v-if="!onlyPublish"
         >
@@ -1742,6 +1749,39 @@ export default {
       const val = arr.reduce((obj, key) => obj[key], this.from)
       return item.component === 'select' && item.componentProps.multiple ? val && val.toString().split(',') : val
     },
+    saveEdit() {
+      console.log('编辑',this.from.extra.content)
+      this.from.extra.content = '<p>额鹅鹅鹅<img src="http://img.cztv.com/cms_upload/cms_1623234754_iu21PdtfFd.jpg"/></p>'
+    },
+    editorSelfSave() {
+      // 存储
+      //localStorage.setItem("name", "value");
+      // 取回
+      //localStorage.getItem("name");
+      //清除 localStorage("removeItem")
+      if(this.scriptsId == null && this.id == null) {
+        let obj = {
+          title: this.from.extra.title,
+          content: this.from.extra.content
+        }
+        localStorage.setItem('addNews',JSON.stringify(obj))
+      }else{
+        let arr = []
+        let editObj = {
+          id: this.scriptsId || this.id,
+          title: this.from.extra.title,
+          content: this.from.extra.content,
+        }
+        // localStorage.setItem('editNews')
+        //先判断是否第一次存编辑的稿件
+        if (localStorage.getItem('editNews')) {
+
+        }else{
+          arr.push(editObj)
+          localStorage.setItem('editNews',JSON.stringify(arr))
+        }
+      }
+    },
     /* 值变化 */
     handleInput(val, item) {
       const arr = item.key.split('.')
@@ -1894,7 +1934,6 @@ export default {
     },
     /* 保存草稿 */
     handleDraft() {
-
       var bdhhtml = document.getElementById('bdh').innerHTML;
       if(bdhhtml==1){
         this.$message.warning('正在图片本地化，请稍后')

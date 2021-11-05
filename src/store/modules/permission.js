@@ -44,7 +44,7 @@ const actions = {
       arr = filterAsyncRoutes(asyncRoutes, roles, permissions)
       const filterarr =(list)=>{
         return list.filter(item=>{
-          return item.name != 'All-media' || item.name != 'RecycleBox'
+          return item.name != 'All-media' && item.name != 'RecycleBox' //pub.cztvcloud.com
         }).map(item=>{
           item = Object.assign({},item)
           if(item.children && item.children.length) {
@@ -53,7 +53,7 @@ const actions = {
           return item
         })
       }
-      accessedRoutes = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ? filterarr(arr) : arr
+     accessedRoutes = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ? filterarr(arr) : arr
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
