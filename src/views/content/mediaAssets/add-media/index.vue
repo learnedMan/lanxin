@@ -1764,7 +1764,7 @@ export default {
       }
     },
     editorSelfSave() {
-      if (this.from.extra.type === 'news') {
+      if (this.from.extra.type === 'news' && (this.from.extra.title || this.from.extra.content)) {
         if (this.scriptsId == null && this.id == null) {
           let obj = {
             title: this.from.extra.title,
