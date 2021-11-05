@@ -25,10 +25,8 @@
               </el-table-column>
               <el-table-column label="内容">
                 <template slot-scope="scope">
-                  <!-- <div v-html="scope.row.content"></div> -->
                   <div>{{scope.row.extra.text}}</div>
                   <div style="display: flex;margin-bottom: 10px;" v-if="scope.row.extra.img_list.length >0">
-                    <!-- <img  v-for="(item,index) of scope.row.extra.img_list" :key="index" :src="item.path" alt="" style="width: 50px;height:50px;margin-right:10px"> -->
                      <el-image 
                      v-for="(item,index) of scope.row.extra.img_list" :key="index"
                       style="width: 100px; height: 100px;margin-right:10px"
@@ -144,18 +142,6 @@ export default {
     // 滚动条
     this.downscroll();
   },
-  filters:{
-    classifyfilter(data){
-      return data || '默认分类'
-      // if(data==1){
-      //   return '分类一'
-      // }else if(data==2){
-      //   return '分类一 - 分类二'
-      // }else{
-      //   return '未知分类'
-      // }
-    }
-  },
   methods: {
     //图片
     handleAvatarSuccess(name, res) {
@@ -190,16 +176,29 @@ export default {
         this.statementquery.stream_id
       ).then((res) => {
         this.dataList = res.data.reverse();
-        this.dataList = res.data.reverse().map(v =>{
-          let img_lists = (v.extra.img_list || []).map(k =>{
-            return k.path
-          })
-          return {
-            img_lists,
-            ...v
-          }
-        })
-        console.log(this.dataList);
+      let arr = (res.data || []).map(v=>{
+           if(v.extra == null) {
+             delete v.extra
+             let obj = {
+               text: '',
+               img_list: [],
+               video_list: [{path:''}]
+             }
+             v.extra = obj
+             v.img_lists = []
+           }
+           return { ...v}
+         })
+         this.dataList = arr.map(v=>{
+           let img_lists = (v.extra.img_list || []).map(k =>{
+              return k.path
+            })
+            return {
+              img_lists,
+              ...v
+            }
+         })
+        console.log('----',this.dataList);
       });
     },
     // 获取直播详情
@@ -249,11 +248,12 @@ export default {
               });
               this.resetForm("ruleForm");
               this.$refs.cropper.rest()
+              this.path_list = []
               this.extra_video = ''
               this.$refs.UploadVideo.rest()
               this.ruleForm.extra.text = ''
+              this.ruleForm.extra.video_list[0].path = ''
               this.getdatalist();
-  
               this.downscroll();
             });
           } else {
