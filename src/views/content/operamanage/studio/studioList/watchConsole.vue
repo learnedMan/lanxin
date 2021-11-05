@@ -301,6 +301,7 @@
               cover: data.extra.cover[0]?.path
             }
             this.currentView = this.lists[0].name
+            console.log('this.detail', this.detail)
           })
         },
         /* 提前开播 */

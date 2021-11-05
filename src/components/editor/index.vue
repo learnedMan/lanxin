@@ -217,8 +217,8 @@
       }
     },
     data() {
-      // let toolbars_xz = window.location.host.indexOf('localhost')>-1?
-      let toolbars_xz = window.location.host.indexOf('pub.cztvcloud.com')>-1?
+      // let toolbars_xz = window.location.host.indexOf('localhost')>-1?batrix-www-local
+      let toolbars_xz = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ?
       [[
             'source', '|',
             'undo', 'redo', '|',

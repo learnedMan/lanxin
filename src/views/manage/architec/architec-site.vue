@@ -117,6 +117,9 @@
           <el-form-item  label-width="120px" label="水印："  prop="extra.watermark">
             <upload-single v-model="form.extra.watermark" />
           </el-form-item>
+          <el-form-item  label-width="120px" label="云媒资站点标签配置" prop="blue_cloud_tag">
+            <el-input style="width: 300px" autocomplete="off" placeholder="请输入云媒资站点标签配置" v-model="form.extra.blue_cloud_tag"></el-input>
+          </el-form-item>
         </div>
         <div class="form-r" style="width:50%;padding-left:50px;">
           <el-form-item  label-width="120px" label="个性化域名" prop="extra.custom_domain">
@@ -345,6 +348,7 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
                 vms_site_id:'',
                 custom_domain: '',
                 preview_domain: '',
+                blue_cloud_tag: '',
                 bigdata_settings: {
                   signature: '',
                   customer_id: '',

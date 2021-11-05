@@ -637,10 +637,10 @@
             label: '关联直播间（该直播间中，多个机位共用同一图文直播）',
             value: 'broadcast'
           },
-          {
-            label: '关联机位（该直播间中，不同机位对应各自图文直播）',
-            value: 'stream'
-          }
+          // {
+          //   label: '关联机位（该直播间中，不同机位对应各自图文直播）',
+          //   value: 'stream'
+          // }
         ], // 图文直播
         pickerOptions: {
           shortcuts: [{
