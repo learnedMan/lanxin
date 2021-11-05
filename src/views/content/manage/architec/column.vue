@@ -304,7 +304,7 @@
             </el-form-item>
 
             <!-- 默认 -->
-            <child-page1 v-if="forceRefresh" v-show="form.type=='default'||form.type=='algo'||form.type=='video_waterfall'||form.type=='video_landscape'||form.type=='subscription'||form.type=='topic'||form.type=='matrix'" ref="c_page1" :userdata="userdata"  :form="form" v-model="form" />
+            <child-page1 v-if="forceRefresh" v-show="form.type=='default'||form.type=='algo'||form.type=='video_waterfall'||form.type=='video_landscape'||form.type=='subscription'||form.type=='topic'||form.type=='matrix'||form.type=='matrix2' " ref="c_page1" :userdata="userdata"  :form="form" v-model="form" />
             <!-- 服务 -->
             <el-form-item v-show="form.type=='service'" label-width="150px" label="服务背景图:" prop="extra.background">
               <el-upload
@@ -639,6 +639,9 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'matrix',
             label: '矩阵'
+          },{
+            value: 'matrix2',
+            label: '矩阵二'
           },{
             value: 'matrix_intro',
             label: '矩阵简介'
