@@ -40,8 +40,20 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, { roles, permissions }) {
     return new Promise(resolve => {
-      let accessedRoutes;
-      accessedRoutes = filterAsyncRoutes(asyncRoutes, roles, permissions)
+      let accessedRoutes,arr = []
+      arr = filterAsyncRoutes(asyncRoutes, roles, permissions)
+      const filterarr =(list)=>{
+        return list.filter(item=>{
+          return item.name != 'All-media' || item.name != 'RecycleBox'
+        }).map(item=>{
+          item = Object.assign({},item)
+          if(item.children && item.children.length) {
+            item.children = filterarr(item.children)
+          }
+          return item
+        })
+      }
+      accessedRoutes = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ? filterarr(arr) : arr
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

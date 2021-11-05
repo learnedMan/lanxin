@@ -2076,6 +2076,7 @@ export default {
             }
           }
         }// 表单
+        console.log('this.from',this.from)
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
         if(!this.disabled && this.typeDetails === 'script') this.dialog.form.channel_id = res.news.map(n => n.channel_id)
       })

@@ -231,7 +231,7 @@
             v-model="form.extra.linked_channel_id"
             style="width: 350px"
             :options="dataList"
-            :props="{ checkStrictly: true ,value:'id',label:'name', emitPath:false, multiple: true}"
+            :props="{ checkStrictly: true ,value:'id',label:'name', emitPath:false, multiple: false}"
             clearable></el-cascader>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">

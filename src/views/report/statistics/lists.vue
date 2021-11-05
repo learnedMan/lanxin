@@ -306,6 +306,8 @@
         if(this.site.productId && this.site.customerId) {
           this.getDepartmentList();
           this.getPersonLists();
+        }else{
+          this.$message("请联系管理员配置productId和customerId参数")
         }
       }
     }

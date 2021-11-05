@@ -25,7 +25,21 @@
               </el-table-column>
               <el-table-column label="内容">
                 <template slot-scope="scope">
-                  <div v-html="scope.row.content"></div>
+                  <!-- <div v-html="scope.row.content"></div> -->
+                  <div>{{scope.row.extra.text}}</div>
+                  <div style="display: flex;margin-bottom: 10px;" v-if="scope.row.extra.img_list.length >0">
+                    <!-- <img  v-for="(item,index) of scope.row.extra.img_list" :key="index" :src="item.path" alt="" style="width: 50px;height:50px;margin-right:10px"> -->
+                     <el-image 
+                     v-for="(item,index) of scope.row.extra.img_list" :key="index"
+                      style="width: 100px; height: 100px;margin-right:10px"
+                      :src="item.path" 
+                      :preview-src-list="scope.row.img_lists">
+                    </el-image>
+                  </div>
+                  <video height="100" controls preload="metadata" v-if="scope.row.extra.video_list[0].path">
+                  <source :src="scope.row.extra.video_list[0].path">
+                  您的浏览器不支持 HTML5 video 标签。
+                </video>
                 </template>
               </el-table-column>
             </el-table>
@@ -39,8 +53,27 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="图片/视频" prop="content">
+        <!-- <el-form-item label="图片/视频" prop="content">
           <editor v-model="ruleForm.content" />
+        </el-form-item> -->
+        <el-form-item label="文字：" prop="text">
+          <el-input
+            v-model="ruleForm.extra.text"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入文字内容"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="图片：" prop="text">
+           <cropper
+            :count="count"
+            v-model="path_list"
+            ref="cropper"
+            />
+        </el-form-item>
+        <el-form-item label="视频：" prop="text">
+         <upload-video v-model="extra_video" ref="UploadVideo"></upload-video>
         </el-form-item>
         <el-form-item>
           <el-button v-points = "1500" type="primary" @click="submitForm('ruleForm')"
@@ -61,11 +94,16 @@ import {
   addbroadcastStatement,
 } from "@/api/manage";
 import Editor from "@/components/editor";
+import Cropper from './cropper';
+import uploadVideo from './uploadVideo.vue'
 export default {
   data() {
     return {
       activeName: "",
       statement: "",
+      path_list: [],
+      extra_video: '',
+      count: 9,
       ruleForm: {
         broadcast_id: "",
         host_name: "",
@@ -73,7 +111,13 @@ export default {
         stream_id: "",
         time: "",
         file: "",
-        image: "",
+        extra: {
+          text: '',
+          img_list: [],
+          video_list: [{
+            path: ''
+          }],
+        },
       },
       rules: {
         content: [{ required: true, message: "请填写文字", trigger: "blur" }],
@@ -87,7 +131,7 @@ export default {
     };
   },
   components: {
-    Editor,
+    Editor,Cropper,uploadVideo
   },
   props: {
     id: Number,
@@ -99,6 +143,18 @@ export default {
   updated() {
     // 滚动条
     this.downscroll();
+  },
+  filters:{
+    classifyfilter(data){
+      return data || '默认分类'
+      // if(data==1){
+      //   return '分类一'
+      // }else if(data==2){
+      //   return '分类一 - 分类二'
+      // }else{
+      //   return '未知分类'
+      // }
+    }
   },
   methods: {
     //图片
@@ -134,6 +190,15 @@ export default {
         this.statementquery.stream_id
       ).then((res) => {
         this.dataList = res.data.reverse();
+        this.dataList = res.data.reverse().map(v =>{
+          let img_lists = (v.extra.img_list || []).map(k =>{
+            return k.path
+          })
+          return {
+            img_lists,
+            ...v
+          }
+        })
         console.log(this.dataList);
       });
     },
@@ -162,29 +227,43 @@ export default {
     },
     //发送文字
     submitForm(formName) {
-      console.log(this.ruleForm)
-      // return
-      this.ruleForm.broadcast_id = this.statementquery.id;
-      this.ruleForm.stream_id = this.statementquery.stream_id;
-      this.ruleForm.host_name = "测试";
-      this.ruleForm.time = parseTime(new Date());
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          addbroadcastStatement(this.ruleForm).then((response) => {
-            this.$message({
-              message: "发送成功",
-              type: "success",
+      let arr = this.path_list.filter(v=>v.path).map(n =>{
+        let obj = { path: n.path}
+        return obj
+      })
+      if (this.extra_video) this.ruleForm.extra.video_list[0].path = this.extra_video
+      this.ruleForm.extra.img_list = arr.length > 0 ? arr : []
+      if (this.ruleForm.extra.text || this.extra_video || arr.length > 0) {
+        console.log('extra',this.ruleForm.extra)
+        // return
+        this.ruleForm.broadcast_id = this.statementquery.id;
+        this.ruleForm.stream_id = this.statementquery.stream_id;
+        this.ruleForm.host_name = "测试";
+        this.ruleForm.time = parseTime(new Date());
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            addbroadcastStatement(this.ruleForm).then((response) => {
+              this.$message({
+                message: "发送成功",
+                type: "success",
+              });
+              this.resetForm("ruleForm");
+              this.$refs.cropper.rest()
+              this.extra_video = ''
+              this.$refs.UploadVideo.rest()
+              this.ruleForm.extra.text = ''
+              this.getdatalist();
+  
+              this.downscroll();
             });
-            this.resetForm("ruleForm");
-            this.getdatalist();
-
-            this.downscroll();
-          });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+          } else {
+            console.log("error submit!!");
+            return false;
+          }
+        });
+      }else{
+        this.$message('文字、图片、视频三者不同都为空');
+      }
     },
     //重置表单
     resetForm(formName) {
