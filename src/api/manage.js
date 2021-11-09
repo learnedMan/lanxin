@@ -277,6 +277,38 @@ export function delproducts(id) {
   })
 }
 
+/* 同步参数*/
+
+export function getSyncSettings(query) {
+  return request({
+    url: '/api/sync_settings',
+    method: 'get',
+    params:query
+  })
+}
+
+export function getSettingsInfo() {
+  return request({
+    url: '/api/sync_settings/info',
+    method: 'get',
+  })
+}
+
+export function addSettings(data) {
+  return request({
+    url: '/api/sync_settings',
+    method: 'post',
+    data:data
+  })
+}
+
+export function delSettings(id) {
+  return request({
+    url: '/api/sync_settings/'+id,
+    method: 'delete',
+  })
+}
+
 // 产品管理--app版本管理
 export function getproduct_versions(query) {
   return request({

@@ -10,6 +10,21 @@ export default {
         return {
             src:this.VUE_APP_XLY_API+'/vote/index'
         }
-    }
+    },
+    methods: {
+        xlyReload () {
+            let fullPath = "/operaManage/vote"
+            this.$router.replace({
+            path: '/redirect' + fullPath
+            })
+         },
+    },
+    mounted() {
+        // 将方法绑定到window下面，提供给外部调用
+        let me = this;
+        window['xlyReload'] = () => {
+            me.xlyReload()
+        }
+	},
 }
 </script>

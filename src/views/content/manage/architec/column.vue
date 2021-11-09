@@ -327,7 +327,24 @@
                 </el-option>
               </el-select>
             </el-form-item>
-
+            <el-form-item v-show="form.type=='service'"
+              label-width="150px"
+              label="是否允许添加到桌面:"
+              prop="extra.send_desktop"
+            >
+           <el-radio-group v-model="form.extra.send_desktop">
+             <el-radio label="1">是</el-radio>
+             <el-radio label="0">否</el-radio>
+            </el-radio-group>
+            </el-form-item>
+           <el-form-item  v-show="form.type=='service'"
+                label-width="150px" label="桌面跳转地址:" prop="extra.desktop_url">
+                <el-input
+                  style="width: 350px"
+                  placeholder="请输入桌面跳转地址"
+                  v-model="form.extra.desktop_url"
+                ></el-input>
+           </el-form-item>
             <el-form-item v-show="form.type=='service'"
               label-width="150px" label="链接类型:" prop="extra.link.type">
               <el-select clearable="" v-model="form.extra.link.type" placeholder="请选择">
@@ -891,7 +908,7 @@ import ChildPage1 from './pages/c_page1'
             allow_news_types:[],
             load_child:'1',
             load_news:'1',
-            linked_channel_id:[],
+            linked_channel_id: '',
             template_style:'',
             template_json_id:'',
             template_json:{},
@@ -901,6 +918,8 @@ import ChildPage1 from './pages/c_page1'
             multi_review:[],
             display_more:'',
             display_title:'',
+            send_desktop: '0', //是否允许添加到桌面
+            desktop_url: '', //桌面跳转地址
             // 专题
             topic_type:'1',
             // 服务
@@ -1077,8 +1096,8 @@ import ChildPage1 from './pages/c_page1'
           }
           // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
-          // this.form.extra.linked_channel_id = this.form.extra.linked_channel_id?parseInt(this.form.extra.linked_channel_id):'';
-          this.form.extra.linked_channel_id = this.form.extra.linked_channel_id.length ? this.form.extra.linked_channel_id.split(',') : []
+          this.form.extra.linked_channel_id = this.form.extra.linked_channel_id?parseInt(this.form.extra.linked_channel_id):'';
+          // this.form.extra.linked_channel_id = this.form.extra.linked_channel_id.length ? this.form.extra.linked_channel_id.split(',') : []
           this.form.extra.cover = this.form.extra.cover? this.form.extra.cover[0].path:'';
           // this.form.extra.template_style = Number(this.form.extra.template_style) ;
           this.dialogFormVisible = true;
@@ -1132,13 +1151,13 @@ import ChildPage1 from './pages/c_page1'
           // }else{
             //   data.father = data.father.join('')
           // }
-          if(data.extra.linked_channel_id.length) {
-            let channels = data.extra.linked_channel_id || [],str=''
-            channels.map(v=>{
-              str+= v + ','
-            })
-            data.extra.linked_channel_id = str.slice(0,-1)
-          }
+          // if(data.extra.linked_channel_id.length) {
+          //   let channels = data.extra.linked_channel_id || [],str=''
+          //   channels.map(v=>{
+          //     str+= v + ','
+          //   })
+          //   data.extra.linked_channel_id = str.slice(0,-1)
+          // }
           var multi_review = data.extra.multi_review;
           var new_multi_review = [];
           for(var i=0;i<multi_review.length;i++){
