@@ -1,7 +1,6 @@
 <template>
 <!-- 报名 -->
     <div style="height:auto;padding:30px;">
-        <el-button @click="xlyReload">点击</el-button>
         <iframe style="width:100%;height:800px;" frameborder="0" scrolling="no" :src="src" ref="iframe"></iframe>
     </div>
 </template>
