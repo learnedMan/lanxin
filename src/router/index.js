@@ -544,13 +544,13 @@ export const asyncRoutes = [
             roles: ['Administrator', 'Admin'],
             meta: { title: '模板管理' }
           },
-          // {
-          //   path: 'synchronized-parame',
-          //   component: () => import('@/views/manage/architec/synchronized-parame'),
-          //   name: 'Synchronized-parame',
-          //   roles: ['Administrator', 'Admin'],
-          //   meta: { title: '同步参数' }
-          // }
+          {
+            path: 'synchronized-parame',
+            component: () => import('@/views/manage/architec/synchronized-parame'),
+            name: 'Synchronized-parame',
+            roles: ['Administrator', 'Admin'],
+            meta: { title: '同步参数' }
+          }
         ]
       },
       {

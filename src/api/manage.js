@@ -302,6 +302,14 @@ export function addSettings(data) {
   })
 }
 
+export function editSettings(id,data) {
+  return request({
+    url: '/api/sync_settings/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+
 export function delSettings(id) {
   return request({
     url: '/api/sync_settings/'+id,
