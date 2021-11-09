@@ -172,8 +172,10 @@ import { isArray } from '@/utils/validate';
       /* 上传的头部信息 */
       uploadHeader() {
         const Authorization = sessionStorage.getItem('token')
+        const TempZone = sessionStorage.getItem('TempZone') || ''
+        const TempSite = sessionStorage.getItem('TempSite') || ''
         return {
-          Authorization
+          Authorization,TempZone,TempSite
         }
       },
       actionData ({ data = {} }) {

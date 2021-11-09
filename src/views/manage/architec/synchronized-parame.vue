@@ -16,7 +16,7 @@
           prop="name"
         >
           <el-input
-            v-model="queryParams.name"
+            v-model="queryParams.keyword"
             placeholder="请输入关键字"
             clearable
             size="small"
@@ -32,7 +32,7 @@
             size="small"
             unlink-panels
             range-separator="~"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             @change="handleDateChange"
@@ -121,6 +121,7 @@
       width="600px"
       :title="dialog.title"
       :visible.sync="dialog.show"
+      :before-close="closeDialogrest"
     >
       <el-form
         ref="dialogForm"
@@ -138,7 +139,6 @@
             placeholder="请选择配置类型"
             @change="changeSettings"
             style="width: 250px"
-            clearable
           >
             <el-option
               v-for="item in typeOptions"
@@ -170,13 +170,13 @@
 
 <script>
 import { getLabels, deleteLabels, editLabels, addLabels } from '@/api/content'
-import { getSyncSettings,getSettingsInfo,addSettings,delSettings } from '@/api/manage'
+import { getSyncSettings,getSettingsInfo,addSettings,delSettings,editSettings } from '@/api/manage'
 export default {
   name: 'labelManage',
   data() {
     return {
       queryParams: {
-        name: '',
+        keyword: '',
         type: '',
         createDate: '',
         startdate: '',
@@ -186,16 +186,7 @@ export default {
       },
       total: 0, // 总数
       loading: false,
-      typeOptions: [
-        {
-          label: '高亮',
-          value: 'hightlight'
-        },
-        {
-          label: '普通',
-          value: 'dafault'
-        }
-      ], // 样式集合
+      typeOptions: [], 
       dateValue: '', // 时间区间
       tableData: [], // 列表数据
       settings: [],
@@ -208,8 +199,8 @@ export default {
           introduction: ''
         },
         rules: {
-          name: { required: true, message: '请输入标签名称', trigger: 'blur' },
-          type: { required: true, message: '请选择样式', trigger: 'change' }
+          // name: { required: true, message: '请输入标签名称', trigger: 'blur' },
+          // type: { required: true, message: '请选择样式', trigger: 'change' }
         }
       }
     }
@@ -227,6 +218,7 @@ export default {
       Object.assign(this.queryParams, {
         startdate: '',
         enddate: '',
+        keyword: '',
         page: 1
       })
       this.resetForm('queryForm')
@@ -266,30 +258,19 @@ export default {
           * 获取列表数据
           * */
     getList() {
-      // this.loading = true
-      // getLabels(this.removePropertyOfNull(this.queryParams)).then(res => {
-      //   const { data, total } = res
-      //   const typeObj = this.typeOptions.reduce((obj, n) => ({
-      //     ...obj,
-      //     [n.value]: n.label
-      //   }), {})
-      //   this.tableData = data.map(n => ({
-      //     ...n,
-      //     typeLabel: typeObj[n.type]
-      //   }))
-      //   this.total = total
-      // }).finally(() => {
-      //   this.loading = false
-      // })
-      getSyncSettings(this.removePropertyOfNull(this.queryParams)).then( res =>{
+        this.loading = true
+        const params = { ...this.queryParams };
+        delete params.createDate;
+      getSyncSettings(this.removePropertyOfNull(params)).then( res =>{
         this.tableData = res.data || []
-        console.log('res----',res)
+        this.total = res.total
+      }).finally(() => {
+        this.loading = false
       })
     },
     // 获取配置类型
     getSettingsType() {
       getSettingsInfo().then(res => {
-        console.log('type---',res)
         this.typeOptions = res.map(v => {
           v.label = v.name
           v.value = v.key
@@ -301,14 +282,13 @@ export default {
           return { ...v }
         })
         this.dialog.form.type = this.typeOptions[0].value
-        this.settings = this.typeOptions[0].data
-        console.log('this.typeOptions',this.typeOptions)
-        console.log('settings',this.settings)
+        this.settings = this.typeOptions[0]?.data
       })
     },
     changeSettings (value) {
       let obj = this.typeOptions.find( v => v.key == value)
       this.settings = obj.data
+      this.settings.map(v => { v.value = ''})
     },
     getTypeName (value) {
       let obj = this.typeOptions.find(v => v.key == value)
@@ -346,12 +326,11 @@ export default {
         show: true,
         title: '编辑',
         form: {
-          name: row.name,
           type: row.type,
-          introduction: row.introduction,
-          id: row.id
         }
       })
+      this.settings = row.data
+      this.dialog.form.id = row.id
       this.$nextTick(() => {
           this.$refs.dialogForm?.clearValidate()
       })
@@ -360,15 +339,24 @@ export default {
     closeDialog() {
       this.dialog.show = false
       this.settings = this.typeOptions[0].data
+      this.settings.map(v => { v.value = ''})
+    },
+    closeDialogrest () {
+      this.dialog.show = false
+      this.settings = this.typeOptions[0].data
+      this.settings.map(v => { v.value = ''})
     },
     /* 弹框确认 */
     enterDialog() {
       const id = this.dialog.form.id
+      let flag = this.settings.every( v => v.value !== '')
+      if (!flag) {
+        this.$message('请填写配置参数')
+        return
+      }
       this.$refs.dialogForm.validate(val => {
         let promise
         if (val) {
-           console.log('form', this.dialog.form)
-           console.log('setings', this.settings)
            let arr = this.settings.map(v => {
              delete v.type
              return {...v}
@@ -377,13 +365,10 @@ export default {
              type: this.dialog.form.type,
              data: arr
            }
-           console.log('arr',arr)
-           console.log('obj',obj)
           // 编辑
           // return
           if (id) {
-            delete this.dialog.form.id
-            promise = editLabels(id, this.removePropertyOfNull(this.dialog.form))
+            promise = editSettings(id, obj)
           } else {
             // 新增
             promise = addSettings(obj)

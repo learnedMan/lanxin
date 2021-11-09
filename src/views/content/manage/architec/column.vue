@@ -947,6 +947,10 @@ import ChildPage1 from './pages/c_page1'
           this.$nextTick(()=>{
             this.$refs.c_page1.showtxt()
           })
+        }else if(this.form.type !== 'service') {
+          if(this.form.extra.link.type =='alipay' || this.form.extra.link.type =='wechat_mp' ){
+            this.form.extra.link.type = ''
+          }
         }
       },
       handleAvatarSuccess(name,res) {
