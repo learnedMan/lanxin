@@ -431,10 +431,10 @@
               label: '链接',
               value: 'outer_link'
             },
-            {
-              label: '新闻ID',
-              value: 'news'
-            }
+            // {
+            //   label: '新闻ID',
+            //   value: 'news'
+            // }
           ],
           dialogForm: {
             product_id: '',
