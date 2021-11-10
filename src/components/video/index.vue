@@ -115,7 +115,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="蓝云视频库" name="1" class="xl-video-tab">
-          <xl-menu :menus="xlChannel" :active-menu="xlParams.defaultActive" v-if="showXlChannel" @select="menuChange($event, 'xlParams')"></xl-menu>
+          <xl-menuL :menus="xlChannel" :active-menu="xlParams.defaultActive" v-if="showXlChannel" @select="menuChange($event, 'xlParams')"></xl-menuL>
           <div class="xl-video-tab--content">
             <el-form
               :model="xlParams"
@@ -196,10 +196,10 @@
 <script>
   import { getVideoChannel, getVideos } from '@/api/content.js'
   import xlMenu from './menu'
-
+  import xlMenuL from './menuL'
     export default {
       components: {
-        xlMenu
+        xlMenu,xlMenuL
       },
       data() {
         return {
@@ -282,6 +282,12 @@
           if(!data.children) return data.id + '';
           return this.getDefaultActive(data.children[0]);
         },
+        /* 设置默认激活项 蓝云视频*/
+        getDefaultActiveL (data) {
+          if(!data) return '';
+          if(!data.children) return data.code + '';
+          return this.getDefaultActiveL(data.children[0]);
+        },
         /* 时间变化 */
         handleDateChange (val, identifier) {
           const arr = val || ['', ''];
@@ -326,8 +332,8 @@
           }).then(res => {
             if(code) {
               this.xlChannel = res;
-              this.xlParams.defaultActive = this.getDefaultActive(res[0]);
-              this.xlParams.vms_channel_id = this.getDefaultActive(res[0])
+              this.xlParams.defaultActive = this.getDefaultActiveL(res[0]);
+              this.xlParams.vms_channel_id = this.getDefaultActiveL(res[0])
             } else {
               this.vmsChannel = res;
               this.vmsParams.defaultActive = this.getDefaultActive(res[0]);

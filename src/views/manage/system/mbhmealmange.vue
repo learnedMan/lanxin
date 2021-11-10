@@ -240,7 +240,7 @@ import {
       },
       getproductList(){
         getproduct({}).then((response) => {
-            this.productList = response.data;
+            this.productList = response.data.filter(v => v.type == 'app');
             this.product_id = this.productList[0].id;
             this.queryParams.sourceId = this.productList[0].source_id;
             this.getversionsList()
