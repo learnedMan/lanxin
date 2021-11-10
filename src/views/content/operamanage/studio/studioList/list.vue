@@ -432,7 +432,7 @@
           />
         </el-form-item>
         <el-form-item label="机器人数据" prop="extra.robot_settings.enable">
-          <el-switch v-model="dialog.form.extra.robot_settings.enable" :active-value="1"></el-switch>
+          <el-switch v-model="dialog.form.extra.robot_settings.enable" :active-value="1" :inactive-value="0"></el-switch>
         </el-form-item>
         <el-form-item label="基础观看人数:">
           <el-row>
