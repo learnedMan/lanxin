@@ -1468,6 +1468,10 @@ export default {
               {
                 label: '电视+点播',
                 value: 'tv_and_vod'
+              },
+               {
+                label: '扫一扫',
+                value: 'scan'
               }
             ]
           },
