@@ -548,7 +548,7 @@ export const asyncRoutes = [
             path: 'synchronized-parame',
             component: () => import('@/views/manage/architec/synchronized-parame'),
             name: 'Synchronized-parame',
-            roles: ['Administrator', 'Admin'],
+            permission: 'system.synchronized.manage',
             meta: { title: '同步参数' }
           }
         ]
