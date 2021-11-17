@@ -714,6 +714,9 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'algo',
             label: '新蓝算法'
+          },{
+            value: 'duiba',
+            label: '兑吧'
           }
         ],
         medias:[{
