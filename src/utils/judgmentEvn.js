@@ -1,7 +1,7 @@
 const isTest = window.location.host.includes('local');
 export const isProduct = process.env.NODE_ENV === 'production';
 export const VUE_APP_BASE_API = isProduct? '' : 'http://batrix-a-local.cztv.com';
-export const VUE_APP_VIEW_API = (isTest || !isProduct)? 'http://p-internal.cztv.com/view/#/mt?id=' : 'https://p-internal.cztv.com/view/#/mt?id=';
+export const VUE_APP_VIEW_API = (isTest || !isProduct)? 'https://p-internal.cztv.com/view/#/mt?id=' : 'https://p-internal.cztv.com/view/#/mt?id=';
 export const VUE_APP_REQUEST1_API = (isTest || !isProduct)? 'https://p-internal.cztv.com' : 'https://p-internal.cztv.com';
 export const VUE_APP_REQUEST2_API = (isTest || !isProduct)? 'https://p-internal.cztv.com/adm/fusion' : 'https://p-internal.cztv.com/adm/fusion';
 export const VUE_APP_REQUEST3_API = (isTest || !isProduct)? 'https://p-internal.cztv.com/api' : 'https://p-internal.cztv.com/api';
