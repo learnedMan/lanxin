@@ -39,12 +39,14 @@ router.beforeEach(async(to, from, next) => {
           //const { roles } = await store.dispatch('user/getInfo')
 
           // 获取用户信息
-          const { roles, permissions } = await store.dispatch('user/getuserinfo')// 拿一下数据
+          const { roles, permissions,site } = await store.dispatch('user/getuserinfo')// 拿一下数据
+          console.log('site',site)
           // generate accessible routes map based on roles
           // 根据角色和权限生成可访问路由图
           const accessRoutes = await store.dispatch('permission/generateRoutes', {
             roles, // 角色
-            permissions // 权限
+            permissions, // 权限
+            site //站点信息
           })
           // dynamically add accessible routes
           // 动态添加可访问路由

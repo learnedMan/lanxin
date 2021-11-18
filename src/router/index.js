@@ -757,6 +757,26 @@ export const asyncRoutes = [
         meta: { title: '发稿统计' },
       },
     ]
+  },
+  {
+    path: '/payment',
+    component: Layout,
+    redirect: '/payment/article',
+    permission: 'payment.manage',
+    name: 'Payment',
+    meta: {
+      title: '稿费系统',
+      icon: 'excel'
+    },
+    children: [
+      {
+        path: 'article',
+        component: () => import('@/views/payment/article'),
+        permission: 'payment.article',
+        name: 'Article',
+        meta: { title: '稿费系统' },
+      },
+    ]
   }
   // {
   //   path: '/radioTV/index',

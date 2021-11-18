@@ -96,6 +96,8 @@ import changePass from '@/views/dashboard/user/changePass.vue'
 
 import closeeye from '@/assets/c_images/closeeye.png'
 import openeye from '@/assets/c_images/openeye.png'
+import axios from 'axios'
+import {  VUE_APP_REQUEST4_API } from '@/utils/judgmentEvn.js'
 
 export default {
   name: 'Login',
@@ -296,7 +298,7 @@ export default {
               script.type="text/JavaScript";
               script.src= this.VUE_APP_XLY_API+'/admin/login?token='+ data.access_token;
               document.getElementsByTagName('head')[0].appendChild(script);
-
+              this.singlesign(data.access_token)
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             })
             .catch((err) => {
@@ -323,6 +325,23 @@ export default {
           return false
         }
       })
+    },
+    singlesign(token) {
+      axios({
+            url: '/open/api/sso/xlyLogin',
+            method: 'post',
+            timeout: 5000,
+            baseURL:VUE_APP_REQUEST4_API,
+            headers: {
+              'authToken': token
+            }
+          }).then(res => {
+            if (res.status === 200) {
+             console.log('res',res)
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
