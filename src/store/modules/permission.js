@@ -38,22 +38,27 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, { roles, permissions }) {
+  generateRoutes({ commit }, { roles, permissions,site }) {
     return new Promise(resolve => {
-      let accessedRoutes,arr = []
+      let accessedRoutes,arr = [],siteName = site.name,arr_ = []
       arr = filterAsyncRoutes(asyncRoutes, roles, permissions)
-      const filterarr =(list)=>{
+      console.log('site-----8888',siteName)
+      const filterarr =(list,name1,name2)=>{
         return list.filter(item=>{
-          return item.name != 'All-media' && item.name != 'RecycleBox' //pub.cztvcloud.com
+          if(name1 && name2) {
+            return item.name != name1 && item.name != name2 //pub.cztvcloud.com
+          }
+          return item.name != name1
         }).map(item=>{
           item = Object.assign({},item)
           if(item.children && item.children.length) {
-            item.children = filterarr(item.children)
+            item.children = filterarr(item.children,name1,name2)
           }
           return item
         })
       }
-     accessedRoutes = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ? filterarr(arr) : arr
+     arr_ = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ? filterarr(arr,'All-media','RecycleBox') : arr
+     accessedRoutes = siteName.indexOf('衢江') > -1 ? arr_ : filterarr(arr_,'Payment')
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

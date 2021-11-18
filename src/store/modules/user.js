@@ -58,14 +58,15 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        let { roles : { data: roles }, avatar, permissions: { data: permissions } } = data;
+        let { roles : { data: roles }, avatar, permissions: { data: permissions }, site } = data;
+        // let siteObj = data.site
         if (!roles || roles.length <= 0) {
           roles = ['defaultRoles']
         }
         commit('SET_ROLES', roles)
         commit('SET_AVATAR', avatar)
         commit('SET_INFO', data)
-        resolve({ roles, permissions })
+        resolve({ roles, permissions,site })
       }).catch(error => {
         reject(error)
       })
