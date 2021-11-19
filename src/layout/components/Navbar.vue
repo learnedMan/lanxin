@@ -155,13 +155,12 @@ export default {
     }
   },
   created(){
-    // console.log(this.u_info)
-    this.options = this.u_info.site_list
+    this.options = this.u_info.site_list || []
   },
   methods: {
     /* 切换站点 */
     handleChangeSite () {
-      const id = this.u_info.site.id;
+      const id = this.u_info.site?.id || '';
       this.form.id = id;
       this.dialogFormVisible = true;
     },

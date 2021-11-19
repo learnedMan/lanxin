@@ -775,11 +775,13 @@ import ChildPage1 from './pages/c_page1'
       // this.getList();
       this.getproductList();
       this.getuserfn();
-
-      cateloglist().then(response => {
-          // console.log(response)
-          this.catalogoptions = response.data.list
-      })
+      let flag = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1
+      if(!flag) {
+        cateloglist().then(response => {
+            // console.log(response)
+            this.catalogoptions = response.data.list
+        })
+      }
     },
     watch:{
       productId(val){//普通的watch监听

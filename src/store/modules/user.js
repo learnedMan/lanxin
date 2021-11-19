@@ -66,7 +66,14 @@ const actions = {
         commit('SET_ROLES', roles)
         commit('SET_AVATAR', avatar)
         commit('SET_INFO', data)
-        resolve({ roles, permissions,site })
+        if(site) {
+          resolve({ roles, permissions,site })
+        }else{
+          let site = {
+            name: ''
+          }
+          resolve({ roles, permissions,site })
+        }
       }).catch(error => {
         reject(error)
       })
