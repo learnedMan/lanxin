@@ -80,6 +80,14 @@ export function getScriptDetail(id) {
   })
 }
 
+/* 获取多媒体稿件详情 */
+export function getMeditDetail(id) {
+  return request({
+    url: `/api/hyperText/${id}`,
+    method: 'get'
+  })
+}
+
 /* 修改新闻内容 */
 export function changeNews(id, data) {
   return request({
@@ -367,6 +375,22 @@ export function collectOfflineNews(id) {
 export function copyScriptCollect(id, data) {
   return request({
     url: `/api/TPNews/duplicate/${id}`,
+    method: 'post',
+    data
+  })
+}
+/* 多媒体稿件列表*/
+export function getMeidaArticlList(query) {
+  return request({
+    url: '/api/hyperText/',
+    method: 'get',
+    params: query
+  })
+}
+/*采集复制文稿*/
+export function copyMeidaArtic(id, data) {
+  return request({
+    url: `/api/hyperText/copyToScript/${id}`,
     method: 'post',
     data
   })
