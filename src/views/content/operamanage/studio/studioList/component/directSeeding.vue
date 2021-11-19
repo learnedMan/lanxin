@@ -40,6 +40,22 @@
                 </video>
                 </template>
               </el-table-column>
+              <el-table-column label="操作" align="center" width="260">
+                <template slot-scope="scope">
+                  <!-- 编辑 -->
+                  <Iconbutton
+                    icontype="xg"
+                    label="修改"
+                    @fatherMethod="handleEdit(scope.row)"
+                  ></Iconbutton>
+                  <!-- 删除 -->
+                  <Iconbutton
+                    icontype="sc"
+                    label="删除"
+                    @fatherMethod="handleDelete(scope.row)"
+                  ></Iconbutton>
+                </template>
+              </el-table-column>
             </el-table>
           </div>
         </el-tab-pane>
@@ -65,7 +81,16 @@
         </el-form-item>
         <el-form-item label="图片：" prop="text">
            <cropper
+           v-if="broadcastId"
             :count="count"
+            :lists="imgLists"
+            v-model="path_list"
+            ref="cropper"
+            />
+            <cropper-add
+            v-else
+            :count="count"
+            :lists="imgLists"
             v-model="path_list"
             ref="cropper"
             />
@@ -90,16 +115,22 @@ import {
   getbroadcasts,
   getbroadcastStatement,
   addbroadcastStatement,
+  editbroadcastStatement,
+  delbroadcastStatement
 } from "@/api/manage";
 import Editor from "@/components/editor";
 import Cropper from './cropper';
 import uploadVideo from './uploadVideo.vue'
+import { deepClone } from '@/utils'
+import CropperAdd from './cropper-add.vue';
 export default {
   data() {
     return {
       activeName: "",
       statement: "",
       path_list: [],
+      imgLists: [],
+      broadcastId: '',
       extra_video: '',
       count: 9,
       ruleForm: {
@@ -129,7 +160,7 @@ export default {
     };
   },
   components: {
-    Editor,Cropper,uploadVideo
+    Editor,Cropper,uploadVideo,CropperAdd
   },
   props: {
     id: Number,
@@ -198,9 +229,44 @@ export default {
               ...v
             }
          })
-        console.log('----',this.dataList);
+        // console.log('----',this.dataList);
       });
     },
+    //直播间发言编辑
+    handleEdit(row) {
+      this.broadcastId = row.id
+      this.ruleForm.extra.text = row.extra.text || ''
+      this.extra_video = row.extra.video_list[0].path || ''
+      this.path_list = row.extra.img_list || []
+      this.imgLists =  deepClone(row.extra.img_list) || []
+      this.imgLists.map(v =>{
+        v.status = 'success'
+        return v
+      })
+      this.imgLists.push({path:''})
+    },
+    //直播间发言删除
+     handleDelete (row) {
+        const { id } = row;
+        this.$confirm(`此操作将永久删除这条ID为${id}的直播间发言, 是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delbroadcastStatement(id).then(() => {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.getdatalist();
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      },
     // 获取直播详情
     getbroadcasts() {
       return new Promise((resolve, reject) => {
@@ -224,12 +290,28 @@ export default {
       this.statementquery.stream_id = this.streamlist[index].id;
       this.getdatalist();
     },
+    //直播间发言重置
+    broadcastRest() {
+      this.resetForm("ruleForm");
+      // this.$refs.cropper.imgLists = [{path: ''}]
+      // console.log('--------,',this.$refs.cropper.imgLists)
+       this.$refs.cropper.rest()
+      this.path_list = []
+      this.extra_video = ''
+      this.$refs.UploadVideo.rest()
+      this.ruleForm.extra.text = ''
+      this.ruleForm.extra.video_list[0].path = ''
+      this.getdatalist();
+      this.downscroll();
+       this.$forceUpdate()
+    },
     //发送文字
     submitForm(formName) {
       let arr = this.path_list.filter(v=>v.path).map(n =>{
         let obj = { path: n.path}
         return obj
       })
+      // return
       if (this.extra_video) this.ruleForm.extra.video_list[0].path = this.extra_video
       this.ruleForm.extra.img_list = arr.length > 0 ? arr : []
       if (this.ruleForm.extra.text || this.extra_video || arr.length > 0) {
@@ -241,21 +323,25 @@ export default {
         this.ruleForm.time = parseTime(new Date());
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            addbroadcastStatement(this.ruleForm).then((response) => {
-              this.$message({
-                message: "发送成功",
-                type: "success",
+            if(this.broadcastId) {
+              editbroadcastStatement(this.broadcastId,this.ruleForm).then((response) => {
+                this.$message({
+                  message: "修改成功",
+                  type: "success",
+                });
+               this.broadcastRest()
+               this.broadcastId = ''
+                this.imgLists = []
               });
-              this.resetForm("ruleForm");
-              this.$refs.cropper.rest()
-              this.path_list = []
-              this.extra_video = ''
-              this.$refs.UploadVideo.rest()
-              this.ruleForm.extra.text = ''
-              this.ruleForm.extra.video_list[0].path = ''
-              this.getdatalist();
-              this.downscroll();
-            });
+            }else{
+              addbroadcastStatement(this.ruleForm).then((response) => {
+                this.$message({
+                  message: "发送成功",
+                  type: "success",
+                });
+               this.broadcastRest()
+              });
+            }
           } else {
             console.log("error submit!!");
             return false;

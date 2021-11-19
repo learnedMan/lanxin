@@ -658,6 +658,23 @@ export function addbroadcastStatement(data) {
   })
 }
 
+//修改直播间发言
+export function editbroadcastStatement(id,data) {
+  return request({
+    url: `/api/broadcastStatement/${id}`,
+    method: 'patch',
+    data
+  })
+}
+
+//删除直播间发言
+export function delbroadcastStatement(id) {
+  return request({
+    url: '/api/broadcastStatement/'+id,
+    method: 'delete'
+  })
+}
+
 // 模板化样式接口
 export function cateloglist() {
   return request2({

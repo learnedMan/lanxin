@@ -294,12 +294,14 @@ export default {
           this.$store.dispatch('user/login', formData)
             .then((data) => {
               // console.log(data)
-              let script=document.createElement("script");
-              script.type="text/JavaScript";
-              script.src= this.VUE_APP_XLY_API+'/admin/login?token='+ data.access_token;
-              document.getElementsByTagName('head')[0].appendChild(script);
+               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              // let script=document.createElement("script");
+              // script.type="text/JavaScript";
+              // script.src= this.VUE_APP_XLY_API+'/admin/login?token='+ data.access_token;
+              // document.getElementsByTagName('head')[0].appendChild(script);
+              this.voteSign(data.access_token)
               this.singlesign(data.access_token)
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             })
             .catch((err) => {
               console.log(err)
@@ -335,6 +337,20 @@ export default {
             headers: {
               'authToken': token
             }
+          }).then(res => {
+            if (res.status === 200) {
+             console.log('res',res)
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
+    },
+    voteSign(token) {
+      axios({
+            url: '/admin/login?token='+ token,
+            method: 'get',
+            timeout: 5000,
+            baseURL:this.VUE_APP_XLY_API,
           }).then(res => {
             if (res.status === 200) {
              console.log('res',res)

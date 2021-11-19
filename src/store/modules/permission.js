@@ -40,7 +40,7 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, { roles, permissions,site }) {
     return new Promise(resolve => {
-      let accessedRoutes,arr = [],siteName = site.name,arr_ = []
+      let accessedRoutes,arr = [],siteName = site?.name,arr_ = []
       arr = filterAsyncRoutes(asyncRoutes, roles, permissions)
       const filterarr =(list,name1,name2)=>{
         return list.filter(item=>{

@@ -87,7 +87,7 @@
 <template>
   <div class="xl-cropper">
     <ul class="xl-cropper-ul">
-      <li v-for="(list, index) of imgList" :key="index" class="xl-cropper-li">
+      <li v-for="(list, index) of fileLists" :key="index" class="xl-cropper-li">
         <el-upload
           v-show="count >= index + 1"
           ref="uploader"
@@ -108,6 +108,7 @@
             <el-image
               class="el-upload-list__item-thumbnail"
               :src="list.path"
+              fit="contain"
             />
             <span v-show="list.status === 'success'" class="el-upload-list__item-actions">
               <span
@@ -190,6 +191,7 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import { uploadImg } from '@/api/content.js'
+
 export default {
   components: {
     VueCropper
@@ -209,10 +211,6 @@ export default {
     count: {
       type: [Number, String],
       default: 1
-    },
-    lists: {
-      type: Array,
-      default: []
     },
     showTip: {
       type: Boolean,
@@ -339,15 +337,6 @@ export default {
     //     }
     //   })
     // },
-    // imgList() {
-    //   return  this.lists.length ? this.lists : this.fileLists
-    // },
-    imgList: {
-      get() {
-        return  this.lists.length ? this.lists : this.fileLists
-      },
-      set() {},
-    },
     /* 上传接口 */
     actionUrl() {
       return this.imgurl
@@ -368,8 +357,7 @@ export default {
       this.$refs.uploader[index].$refs['upload-inner'].$refs.input.click()
     },
     rest () {
-        this.imgList = [{path: ''}]
-        this.$forceUpdate()
+        this.fileLists = [{path: ''}]
     },
     /*
         * 上传图片
@@ -412,25 +400,25 @@ export default {
       return (res, file, fileList) => {
         if (res.status_code >= 200 && res.status_code < 300) {
           this.$message.success('图片上传成功!')
-          Object.assign(this.imgList[index], {
+          Object.assign(this.fileLists[index], {
               intro: '',
               status: 'success',
               path: res.path
           })
-            if(this.imgList.length <10) {
-                this.imgList.push({path: ''})
+            if(this.fileLists.length <10) {
+                this.fileLists.push({path: ''})
             }else{
                 this.$message("最多只能上传9张图片")
             }
         } else {
           this.$message.error('图片上传失败!')
-          Object.assign(this.imgList[index], {
+          Object.assign(this.fileLists[index], {
             intro: '',
             path: ''
           })
           fileList.length = 0
         }
-        this.$emit('input', this.imgList)
+        this.$emit('input', this.fileLists)
       }
     },
     /* 上传失败 */
@@ -439,9 +427,9 @@ export default {
     },
     /* 删除图片 */
     handleRemove(index) {
-      this.imgList[index].path = ''
-      this.imgList.splice(index,1)
-      this.$emit('input', this.imgList)
+      this.fileLists[index].path = ''
+      this.fileLists.splice(index,1)
+      this.$emit('input', this.fileLists)
     },
     /*
         * 查看大图
@@ -510,7 +498,7 @@ export default {
           file
         }).then(res => {
           if (res.status_code >= 200 && res.status_code < 300) {
-            this.imgList[this.dialog.index].path = res.path;
+            this.fileLists[this.dialog.index].path = res.path;
             this.$emit('changeCropper', res.path);
             this.dialog.show = false
           }
