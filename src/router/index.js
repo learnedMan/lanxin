@@ -307,6 +307,13 @@ export const asyncRoutes = [
         meta: { title: '广电管理' }
       },
       {
+        path: 'mediaArticle',
+        component: () => import('@/views/content/collect-article'), 
+        name: 'MediaArticle',
+        permission: 'content.article',
+        meta: { title: '多媒体稿件' }
+      },
+      {
         path: 'mediaRepository',
         component: () => import('@/views/content/index'), // Parent router-view
         name: 'MediaRepository',

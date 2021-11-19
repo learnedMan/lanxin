@@ -42,7 +42,6 @@ const actions = {
     return new Promise(resolve => {
       let accessedRoutes,arr = [],siteName = site.name,arr_ = []
       arr = filterAsyncRoutes(asyncRoutes, roles, permissions)
-      console.log('site-----8888',siteName)
       const filterarr =(list,name1,name2)=>{
         return list.filter(item=>{
           if(name1 && name2) {
@@ -57,10 +56,16 @@ const actions = {
           return item
         })
       }
-     arr_ = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ? filterarr(arr,'All-media','RecycleBox') : arr
-     accessedRoutes = siteName.indexOf('衢江') > -1 ? arr_ : filterarr(arr_,'Payment')
-      commit('SET_ROUTES', accessedRoutes)
-      resolve(accessedRoutes)
+      accessedRoutes = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ? filterarr(arr,'All-media','RecycleBox') : arr
+      if(siteName.indexOf('衢江') > -1) {
+        commit('SET_ROUTES', accessedRoutes)
+        resolve(accessedRoutes)
+      }else{
+        let arr = []
+        arr = filterarr(accessedRoutes,'Payment')
+        commit('SET_ROUTES', arr)
+        resolve(arr)
+      }
     })
   }
 }

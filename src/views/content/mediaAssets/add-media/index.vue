@@ -763,7 +763,7 @@
 
 <script>
 import Cropper from '@/components/Cropper'
-import { getLabels, getScriptDetail, changeScripts, changeNews, getEditorPerson, getNewDetail, getNews } from '@/api/content'
+import { getLabels, getScriptDetail, changeScripts, changeNews, getEditorPerson, getNewDetail, getNews,getMeditDetail } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from '@/components/media/tag'
 import ImgTable from '@/components/media/imgTable'
@@ -1687,6 +1687,9 @@ export default {
       if ( this.typeDetails === 'news') return this.disabledNews
       return $route.query.disabled === '1' || this.id != null;
     },
+    mediaArticle ({ $route}) {
+      return $route.query.media === '1'
+    },
     /* 是否只有发布按钮 */
     onlyPublish ({ $route }) {
       return $route.query.channelId
@@ -2095,6 +2098,7 @@ export default {
     /* 获取详情数据 */
     getList() {
         let promise = null
+        console.log('999999mediaArticle',this.mediaArticle)
       if (this.scriptsId == null && this.id == null) {
         let max = this.viewBaseInterval.max, min = this.viewBaseInterval.min;
         this.from.extra.view_base_num = max && max !=Infinity ? Math.floor(Math.random()*(max-min+1)+min) : 0
@@ -2103,7 +2107,11 @@ export default {
         }
         return
       }
-      promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
+      if(this.mediaArticle) {
+        promise = this.typeDetails === 'script' ? getMeditDetail(this.scriptsId) : getMeditDetail(this.id)
+      }else{
+        promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
+      }
       return (this.fetchSuggestions? this.fetchSuggestions() : promise).then(res => {
         const extra = res.extra;
         let link_type = extra.link && extra.link.type || '';
