@@ -171,7 +171,7 @@
     />
     <!-- 批量或单个发布栏目 -->
     <el-dialog
-      width="700px"
+      width="80%"
       :title="dialog.title"
       :visible.sync="dialog.show"
     >
@@ -376,10 +376,11 @@ export default {
       copyMeidaArtic( {
         title: `[副本]${title}`,
         hypertext_id
-      }).then(({ hypertext_id, message }) => {
-        if(hypertext_id) {
+      }).then(({ status_code, message }) => {
+        if(status_code == 200) {
+          console.log('hypertext_id',hypertext_id)
           this.getList();
-          this.$router.push({ name: 'Add-media', query: { hypertext_id, redirect: 'All-media' }})
+          this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media' }})
           this.$message.success('复制成功')
         }else {
           this.$message.warning(message)
@@ -410,12 +411,10 @@ export default {
     /* 查看详情 */
     handleWatch (row) {
       const { id } = row;
-      console.log('row',row)
       getMeditDetail(id).then(res =>{
-        console.log('-----res-----',res)
         this.dialog.show = true
         this.dialog.form.title = res.title
-        this.concent = res.concent
+        this.concent = res.content
       })
       // this.$router.push({ name: 'Add-media', query: { id, disabled: '1',media: '1' } })
     },

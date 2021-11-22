@@ -398,6 +398,7 @@ export default {
   created() {
     this.getList()
     this.getChannels()
+    this.defaultDate()
   },
   methods: {
     /*
@@ -408,6 +409,28 @@ export default {
       this.queryParams.startdate = arr[0]
       this.queryParams.enddate = arr[1]
     },
+    //默认时间
+    defaultDate() {
+       var dt = new Date();
+       dt.setMonth( dt.getMonth()-2 );
+       let t1 = dt.toLocaleString()
+       let arr = t1.trim().split(" ")
+       let time = arr[0].replace(/\//g,"-")
+       let str = time + ' 00:00:00'
+       let time2 = this.formatDate()
+       this.queryParams.startdate = str
+       this.queryParams.enddate = time2
+       this.dateValue = [str,time2]
+		},
+    formatDate() {
+			var date = new Date();
+			var YY = date.getFullYear() + '-'; 
+			var MM = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'; 
+			var DD = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()); 
+			var str = YY + MM + DD + ' 00:00:00'
+      return str
+
+		},
     /*
       * 重置搜索
       * */

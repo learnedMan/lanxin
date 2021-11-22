@@ -226,7 +226,7 @@
             'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
             'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
             'fontfamily', 'fontsize', '|',
-            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+            'justifyleft', 'indent', 'justifycenter', 'justifyright', 'justifyjustify', '|',
             'link', 'unlink', '|',
             'simpleupload', 'insertimage','imglist', 'attachment',
             'insertvideo',
@@ -241,7 +241,7 @@
             'forecolor', 'backcolor' , 'selectall', 'cleardoc', '|',
             'rowspacingtop', 'rowspacingbottom',  'lineheight', '|',
             'fontfamily', 'fontsize', '|',
-            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+            'justifyleft', 'indent', 'justifycenter', 'justifyright', 'justifyjustify', '|',
             'link', 'unlink', '|',
             'simpleupload', 'insertimage','imglist', 'attachment',
             // 'insertvideo',
@@ -262,7 +262,7 @@
           'bold', 'italic', 'underline', '|',
           'forecolor', 'backcolor' , '|',
           'fontfamily', 'fontsize', '|',
-          'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+          'justifyleft','indent', 'justifycenter', 'justifyright', 'justifyjustify', '|',
           'simpleupload'
         ]]} : {
           toolbars: toolbars_xz

@@ -1770,8 +1770,21 @@ export default {
         localStorage.removeItem('addNews')
       }
     },
+    /*抓取编辑器文章中的第一张图片*/
+    getFirstImg (html) {
+      var a = html
+      var arrimg = []
+      a.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+        arrimg.push(capture)
+      })
+      if (arrimg != null && arrimg.length > 0) {
+        return arrimg[0]
+      } 
+      return ''
+    },
+    /*编辑器每30s自动保存*/ 
     editorSelfSave() {
-      if (this.from.extra.type === 'news' && (this.from.extra.title || this.from.extra.content)) {
+      if (this.from.extra.type === 'news' && (this.from.extra.title || this.from.extra.content) && !this.disabled) {
         if (this.scriptsId == null && this.id == null) {
           let obj = {
             title: this.from.extra.title,
@@ -2098,11 +2111,10 @@ export default {
     /* 获取详情数据 */
     getList() {
         let promise = null
-        console.log('999999mediaArticle',this.mediaArticle)
       if (this.scriptsId == null && this.id == null) {
         let max = this.viewBaseInterval.max, min = this.viewBaseInterval.min;
         this.from.extra.view_base_num = max && max !=Infinity ? Math.floor(Math.random()*(max-min+1)+min) : 0
-        if (localStorage.getItem('addNews')) {
+        if (localStorage.getItem('addNews') && !this.disabled) {
            this.userNewsLocalStorgeTips(JSON.parse(localStorage.getItem('addNews')))
         }
         return
@@ -2116,6 +2128,7 @@ export default {
           target_obj = link_type;
           link_type = 'target_obj';
         }
+        console.log('extra',extra)
         this.from = {
           author_name: res.author_name, // 作者
           editor_name: res.editor_name, // 编辑
@@ -2168,7 +2181,7 @@ export default {
         }// 表单
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
         if(!this.disabled && this.typeDetails === 'script') this.dialog.form.channel_id = res.news.map(n => n.channel_id)
-        if (this.from.extra.type === 'news') {
+        if (this.from.extra.type === 'news'&& !this.disabled) {
           if (localStorage.getItem('editNews')) {
             let list = JSON.parse(localStorage.getItem('editNews'))
             let id = this.scriptsId || this.id
