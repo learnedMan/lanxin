@@ -191,7 +191,8 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import { uploadImg } from '@/api/content.js'
-
+import axios from 'axios'
+import { tokenIsOverdue } from '@/utils/auth'
 export default {
   components: {
     VueCropper
@@ -351,6 +352,46 @@ export default {
     handleUpload(index) {
       this.$refs.uploader[index].$refs['upload-inner'].$refs.input.click()
     },
+    tokenIsOverdue () { // 
+        const queryTime = parseInt(window.sessionStorage.getItem('tokenQueryTime')) // token获取的时间，毫秒级
+        const nowTime = new Date().getTime()
+        const arealyTime = Math.ceil((nowTime - queryTime)/1000) // 已经过去的时间
+        return true
+        return  arealyTime > 600 ? true : false
+      },
+    /*重新获取token*/
+    refreshToken() {
+       return new Promise(resolve => {
+          axios({
+            url: '/api/authorizations/refresh',
+            method: 'post',
+            baseURL: process.env.VUE_APP_BASE_API,
+            timeout: 5000,
+            headers: {
+              'Authorization': sessionStorage.getItem('token')
+            }
+          }).then(res => {
+            // console.log(res)
+            console.log(res.data)
+            if (res.status === 200) {
+              let response = res.data
+              const token = response.token_type + ' ' + response.access_token;
+              const tokenQueryTime = new Date().getTime()
+              sessionStorage.setItem('token', token)
+              sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
+              config.headers.Authorization = token
+              resolve(token);
+            } else {
+              sessionStorage.removeItem('token')
+              router.push({ path: '/login' })// 失败就跳转登陆
+            }
+          }).catch(() => {
+            sessionStorage.removeItem('token')
+            router.push({ path: '/login' })// 失败就跳转登陆
+          })
+        });
+    },
+
     /*
         * 上传图片
         * */
