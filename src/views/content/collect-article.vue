@@ -376,9 +376,8 @@ export default {
       copyMeidaArtic( {
         title: `[副本]${title}`,
         hypertext_id
-      }).then(({ status_code, message }) => {
-        if(status_code == 200) {
-          console.log('hypertext_id',hypertext_id)
+      }).then(({ id, message }) => {
+        if(id) {
           this.getList();
           this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media' }})
           this.$message.success('复制成功')
