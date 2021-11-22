@@ -128,28 +128,6 @@
           <el-button v-points = "1500" type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
-       <el-table-column
-        label="所属订阅号"
-        align="center"
-        prop="source"
-      />
-      <el-table-column
-      v-if="!isMobile"
-        label="发布栏目"
-        align="center"
-        width="100"
-        prop="id"
-      >
-        <template slot-scope="scope">
-          <el-button v-points = "1500"
-            type="primary"
-            size="mini"
-            @click="handleListWatch(scope.row)"
-          >
-            查看
-          </el-button>
-        </template>
-      </el-table-column>
       <el-table-column
         label="操作"
         align="center"
@@ -193,10 +171,9 @@
     />
     <!-- 批量或单个发布栏目 -->
     <el-dialog
-      width="600px"
+      width="700px"
       :title="dialog.title"
       :visible.sync="dialog.show"
-      v-if="dialog.show"
     >
       <el-form
         ref="dialogForm"
@@ -204,56 +181,31 @@
         :rules="dialogRules"
       >
         <el-form-item
-          label-width="120px"
-          label="栏目"
-          prop="channel_id"
+          label-width="60px"
+          label="标题"
+          prop="title"
         >
-          <el-cascader
-            filterable
-            v-model="dialog.form.channel_id"
-            style="width: 350px"
-            :options="channelsList"
-            :props="cascaderOption"
-            clearable
-          />
+          <el-input  v-model="dialog.form.title" disabled></el-input>
+        </el-form-item>
+        <el-form-item
+          label-width="60px"
+        >
+         <editor v-model="concent" disabled/>
         </el-form-item>
       </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button v-points = "1500" @click="closeDialog">
-          取 消
-        </el-button>
-        <el-button v-points = "1500"
-          type="primary"
-          @click="enterDialog"
-        >
-          确 定
-        </el-button>
-      </div>
-    </el-dialog>
-    <!-- 查看历史版本 -->
-    <el-dialog
-      width="700px"
-      title="操作记录"
-      :visible.sync="history.show"
-      v-if="history.show"
-    >
-      <version-history :id="history.id" type="script"></version-history>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getMeidaArticlList, deleteScript, PatchScriptCollect, batchPublishScriptCollect, copyMeidaArtic, collectOfflineNews } from '@/api/content'
+import { getMeidaArticlList, deleteScript, PatchScriptCollect, batchPublishScriptCollect, copyMeidaArtic, collectOfflineNews,getMeditDetail } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
-
+import Editor from '@/components/editor'
 export default {
   name: 'All-media',
   components: {
-    VersionHistory
+    VersionHistory,Editor
   },
   data() {
     return {
@@ -265,6 +217,7 @@ export default {
         pageSize: 10,
         page: 1
       },
+      concent: '',
       loading: false,
       total: 0, // 总数
       dateValue: '',
@@ -317,11 +270,10 @@ export default {
       useravatar: require('@/assets/c_images/useravatar.jpg'), // 默认头像
       dialog: {
         show: false,
-        multiple: false, // 批量单选  单个多选
-        title: '发布栏目',
+        title: '详情',
         form: {
-          channel_id: '',
-          ids: ''
+          title: '',
+          concent: ''
         }
       },
       dialogRules: {
@@ -420,12 +372,14 @@ export default {
     /* 复制稿件 */
     handleListCopy (row) {
       const { id, title } = row;
-      copyMeidaArtic(id, {
-        title: `[副本]${title}`
-      }).then(({ id, message }) => {
-        if(id) {
+      let hypertext_id = id
+      copyMeidaArtic( {
+        title: `[副本]${title}`,
+        hypertext_id
+      }).then(({ hypertext_id, message }) => {
+        if(hypertext_id) {
           this.getList();
-          this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media' }})
+          this.$router.push({ name: 'Add-media', query: { hypertext_id, redirect: 'All-media' }})
           this.$message.success('复制成功')
         }else {
           this.$message.warning(message)
@@ -453,32 +407,17 @@ export default {
         id
       }
     },
-    /* 一键下线 */
-    handleOffline (row) {
-      const { id } = row;
-      this.$confirm(`此操作将下线该文稿下所有新闻, 是否继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        collectOfflineNews(id).then(({ message, status_code }) => {
-          this.$message({
-            message: message,
-            type: status_code === 200? 'success' : 'warning'
-          })
-          this.getList()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
-    },
     /* 查看详情 */
     handleWatch (row) {
       const { id } = row;
-      this.$router.push({ name: 'Add-media', query: { id, disabled: '1',media: '1' } })
+      console.log('row',row)
+      getMeditDetail(id).then(res =>{
+        console.log('-----res-----',res)
+        this.dialog.show = true
+        this.dialog.form.title = res.title
+        this.concent = res.concent
+      })
+      // this.$router.push({ name: 'Add-media', query: { id, disabled: '1',media: '1' } })
     },
     /*
       * 列表删除
@@ -505,75 +444,12 @@ export default {
       })
     },
     /*
-      * 弹框显示
-      * */
-    handleDialogShow(ident, row) {
-        console.log('row', row)
-      let id; let channel_id = []
-      const isPublish = ident === 'publish' // 是否为列表发布
-      if (isPublish) {
-        channel_id = row.channel.map(n => n.id).sort((a, b) => b - a)
-        id = row.id
-      } else {
-        id = this.selection
-      }
-      this.cascaderOption = {
-        checkStrictly: true, // 是否强制父子不关联
-        emitPath: false, // 返回值是否为数组
-        value: 'id', // 选项值
-        label: 'name', // 显示值
-        multiple: isPublish // 多选
-      }
-      Object.assign(this.dialog, {
-        show: true,
-        title: isPublish ? '发布栏目' : '批量发布栏目',
-        form: {
-          channel_id,
-          ids: id
-        }
-      })
-    },
-    /*
       * 关闭弹框
       * */
     closeDialog() {
       this.dialog.show = false
     },
-    /*
-      * 弹框确认
-      * */
-    enterDialog() {
-      const ids = this.dialog.form.ids
-      const isArray = Array.isArray(ids)
-      const channels = this.dialog.form.channel_id
-      this.$refs.dialogForm.validate(val => {
-        if (val) {
-          // 多个稿件关联到单个栏目
-          if (isArray) {
-            batchPublishScriptCollect({
-              ids: ids.join(),
-              channel_id: channels
-            }).then(() => {
-              this.$message.success('批量发布成功');
-              this.dialog.show = false;
-              this.getList()
-            })
-          } else {
-            // 单个稿件关联到多个栏目
-            PatchScriptCollect(ids, {
-              channels: channels.join()
-            }).then(() => {
-              this.$message({
-                message: '发布成功',
-                type: 'success'
-              })
-              this.dialog.show = false
-              this.getList()
-            })
-          }
-        }
-      })
-    },
+    
     /*
       * 获取栏目列表
       * */

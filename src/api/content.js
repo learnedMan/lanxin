@@ -388,9 +388,9 @@ export function getMeidaArticlList(query) {
   })
 }
 /*采集复制文稿*/
-export function copyMeidaArtic(id, data) {
+export function copyMeidaArtic(data) {
   return request({
-    url: `/api/hyperText/copyToScript/${id}`,
+    url: `/api/hyperText/copyToScript`,
     method: 'post',
     data
   })

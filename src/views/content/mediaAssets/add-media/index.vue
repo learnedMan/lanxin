@@ -763,7 +763,7 @@
 
 <script>
 import Cropper from '@/components/Cropper'
-import { getLabels, getScriptDetail, changeScripts, changeNews, getEditorPerson, getNewDetail, getNews,getMeditDetail } from '@/api/content'
+import { getLabels, getScriptDetail, changeScripts, changeNews, getEditorPerson, getNewDetail, getNews, } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import Tag from '@/components/media/tag'
 import ImgTable from '@/components/media/imgTable'
@@ -2107,14 +2107,10 @@ export default {
         }
         return
       }
-      if(this.mediaArticle) {
-        promise = this.typeDetails === 'script' ? getMeditDetail(this.scriptsId) : getMeditDetail(this.id)
-      }else{
         promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
-      }
       return (this.fetchSuggestions? this.fetchSuggestions() : promise).then(res => {
         const extra = res.extra;
-        let link_type = extra.link && extra.link.type || '';
+        let link_type = extra?.link && extra?.link?.type || '';
         let target_obj = '';
         if(this.formOptions.target_obj.item.lists.find(n => n.value === link_type)) {
           target_obj = link_type;
@@ -2125,13 +2121,13 @@ export default {
           editor_name: res.editor_name, // 编辑
           target_obj,
           extra: {
-            type: extra.type, // 类型
-            title: extra.title, // 标题
-            subtitle: extra.subtitle, // 副标题
-            template_style: extra.template_style || '240', // 封面样式 (正式数据需要修改)
-            cover: extra.cover, // 封面样式的图片集合
-            intro: extra.intro, // 简介
-            tags: extra.tags, // 标签
+            type: extra?.type, // 类型
+            title: extra?.title, // 标题
+            subtitle: extra?.subtitle, // 副标题
+            template_style: extra?.template_style || '240', // 封面样式 (正式数据需要修改)
+            cover: extra?.cover, // 封面样式的图片集合
+            intro: extra?.intro, // 简介
+            tags: extra?.tags, // 标签
             keywords: extra.keywords, // 关键词
             video_type: (extra.video_type || '1').toString(), //详情样式
              publish_timer: {
@@ -2161,8 +2157,8 @@ export default {
             }, // 图片
             link: {
               type: link_type, // 链接类型
-              id: extra.link && extra.link.id || '', // 链接对象
-              url: extra.link && extra.link.url || '' // 链接地址
+              id: extra?.link && extra?.link.id || '', // 链接对象
+              url: extra?.link && extra?.link.url || '' // 链接地址
             }, // 外链
             salary_range: {
               min: extra.salary_range?.min || undefined,

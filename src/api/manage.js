@@ -736,8 +736,13 @@ export function getInvited(data) {
 
 /*邀请量查询中邀请记录 */
 export function getInvitationCountDatas(data) {
-  return request3({
-    // url: '/fusion/intranet/uc/queryInvitationCountDatas',
+  // return request3({
+  //   // url: '/fusion/intranet/uc/queryInvitationCountDatas',
+  //   url: '/intranet/uc/queryInvitationCountDatas',
+  //   method: 'post',
+  //   data
+  // })
+  return request2({
     url: '/intranet/uc/queryInvitationCountDatas',
     method: 'post',
     data
@@ -889,8 +894,13 @@ export function getActionList() {
 
 /* 新增积分配置 */
 export function addSignIntegral(data) {
-  return request3({
-    url: '/v1/internal/points/pointLoginCreate',
+  // return request3({
+  //   url: '/v1/internal/points/pointLoginCreate',
+  //   method: 'post',
+  //   data
+  // })
+  return request2({
+    url: '/internal/points/pointLoginCreate',
     method: 'post',
     data
   })
@@ -898,8 +908,8 @@ export function addSignIntegral(data) {
 
 /*获取积分配置详情*/
 export function getSignIntegral(data) {
-  return request3({
-    url: '/v1/internal/points/pointLoginList',
+  return request2({
+    url: '/internal/points/pointLoginList',
     method: 'post',
     data
   })
