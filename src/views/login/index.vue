@@ -299,8 +299,8 @@ export default {
               // script.type="text/JavaScript";
               // script.src= this.VUE_APP_XLY_API+'/admin/login?token='+ data.access_token;
               // document.getElementsByTagName('head')[0].appendChild(script);
-              this.voteSign(data.access_token)
-              // this.singlesign(data.access_token)
+              // this.voteSign(data.access_token)
+              this.singlesign(data.access_token)
               // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             })
             .catch((err) => {
