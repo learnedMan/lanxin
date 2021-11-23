@@ -167,6 +167,21 @@
         </template>
       </el-table-column>
       <el-table-column
+        label="发布状态"
+        align="center"
+        width="140"
+        prop="title"
+        :show-overflow-tooltip="true"
+      >
+        <template slot-scope="scope">
+         <span v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
+          :style="{
+            color: item.status == 1 ? '#1890ff' : '#606266'
+          }"
+          :key="index">{{item.name}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
       v-if="!isMobile"
         label="更新时间"
         align="center"
@@ -411,6 +426,19 @@ export default {
       const arr = val || ['', '']
       this.queryParams.startdate = arr[0]
       this.queryParams.enddate = arr[1]
+    },
+    formatText(channel,news) {
+      let arr = (news || []).map((v,index) =>{
+        let status = v.status
+        let obj = (channel || []).find(k =>{
+          if(v.channel_id == k.id) {
+            return k.name
+          }
+        })
+        let name = index == news.length-1 ? obj.name : obj.name + '、'
+        return { status,name}
+      })
+      return arr
     },
     /*
         * 重置搜索

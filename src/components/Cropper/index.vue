@@ -356,7 +356,6 @@ export default {
         const queryTime = parseInt(window.sessionStorage.getItem('tokenQueryTime')) // token获取的时间，毫秒级
         const nowTime = new Date().getTime()
         const arealyTime = Math.ceil((nowTime - queryTime)/1000) // 已经过去的时间
-        return true
         return  arealyTime > 600 ? true : false
       },
     /*重新获取token*/
@@ -379,7 +378,6 @@ export default {
               const tokenQueryTime = new Date().getTime()
               sessionStorage.setItem('token', token)
               sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
-              config.headers.Authorization = token
               resolve(token);
             } else {
               sessionStorage.removeItem('token')
@@ -414,6 +412,9 @@ export default {
         * 图片上传之前
         * */
     beforeUpload(file) {
+      if(this.tokenIsOverdue()) {
+        this.refreshToken()
+      }
       const isLt10M = file.size / 1024 / 1024 <= 10
       const imgType = ['jpeg', 'gif', 'png']
       const type = imgType.find(n => file.type.includes(n))
