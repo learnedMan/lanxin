@@ -181,14 +181,16 @@
         align="center"
         width="140"
         prop="title"
-        :show-overflow-tooltip="true"
+        
       >
         <template slot-scope="scope">
-         <span v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
-          :style="{
-            color: item.status == 1 ? '#1890ff' : '#606266'
-          }"
-          :key="index">{{item.name}}</span>
+          <div>
+          <span v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
+            :style="{
+              color: item.status == 1 ? '#1890ff' : '#606266'
+            }"
+            :key="index">{{item.name}}</span>
+          </div>
         </template>
       </el-table-column>
       <el-table-column
