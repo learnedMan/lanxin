@@ -188,11 +188,14 @@ export default {
     getsiteFn(){//获取站点
       getSiteList().then(response => {
         this.sitec.site_data = response;
-        // const siteId = window.localStorage.getItem('siteId');
-        // if(siteId) {
-        //   this.sitec.site_select = Number(siteId) ;
-        //   this.sitec.site_select_all = response.find(n => n.id == siteId);
-        // } else {
+        const siteId = window.localStorage.getItem('siteId');
+        const username = window.localStorage.getItem('username')
+        if(siteId && username) {
+          this.sitec.site_select = Number(siteId) ;
+          this.loginForm.username = username
+          this.sitec.site_select_all = response.find(n => n.id == siteId);
+        } 
+        // else {
         //   this.sitec.site_select = response[0]?.id || '';
         //   this.sitec.site_select_all = response[0];
         // }
@@ -302,6 +305,7 @@ export default {
               // this.voteSign(data.access_token)
               this.singlesign(data.access_token)
               // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              window.localStorage.setItem('username', this.loginForm.username)
             })
             .catch((err) => {
               console.log(err)

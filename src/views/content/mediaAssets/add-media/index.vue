@@ -217,6 +217,7 @@
                     >
                       <el-popover
                         placement="top"
+                        close-delay="500"
                         trigger="hover"
                       >
                         <span slot="reference">{{ list.label }}</span>
@@ -870,6 +871,12 @@ export default {
             component: 'radio', // 组件名
             lists: [
               {
+                label: '左图+标题1',
+                value: '220',
+                count: 1,
+                img: '1402-220.png'
+              },
+              {
                 label: '纯文本',
                 value: '240',
                 count: 1,
@@ -886,12 +893,6 @@ export default {
                 value: '231',
                 count: 3,
                 img: '1402-231.png'
-              },
-              {
-                label: '左图+标题1',
-                value: '220',
-                count: 1,
-                img: '1402-220.png'
               },
               {
                 label: '左图+标题2',
@@ -1603,7 +1604,7 @@ export default {
           type: 'news', // 类型
           title: '', // 标题
           subtitle: '', // 副标题
-          template_style: '240', // 封面样式
+          template_style: '220', // 封面样式
           cover: [], // 封面样式的图片集合
           intro: '', // 简介
           tags: '', // 标签
@@ -2137,7 +2138,7 @@ export default {
             type: extra?.type, // 类型
             title: extra?.title, // 标题
             subtitle: extra?.subtitle, // 副标题
-            template_style: extra?.template_style || '240', // 封面样式 (正式数据需要修改)
+            template_style: extra?.template_style || '220', // 封面样式 (正式数据需要修改)
             cover: extra?.cover, // 封面样式的图片集合
             intro: extra?.intro, // 简介
             tags: extra?.tags, // 标签
