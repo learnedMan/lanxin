@@ -417,7 +417,7 @@
               </el-form-item>
             </div>
             <div v-else>
-              <el-form-item v-if="(form.type=='outer_link'||form.type=='auth_link'||form.type=='service') && form.extra.link.type !='alipay' && form.extra.link.type !='wechat_mp' "
+              <el-form-item v-if="(form.type=='outer_link'||form.type == 'newspaper'||form.type=='auth_link'||form.type=='service') && form.extra.link.type !='alipay' && form.extra.link.type !='wechat_mp' "
                 label-width="150px" label="链接地址:" prop="extra.link.url">
                 <el-input
                   style="width: 350px"
@@ -690,6 +690,9 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'radio',
             label: '广播'
+          },{
+            label: '看报纸',
+            value: 'newspaper'
           },{
             value: 'two_col',
             label: '二列列表'
