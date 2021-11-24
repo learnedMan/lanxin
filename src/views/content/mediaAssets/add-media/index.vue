@@ -217,7 +217,7 @@
                     >
                       <el-popover
                         placement="top"
-                        close-delay="500"
+                        :close-delay="500"
                         trigger="hover"
                       >
                         <span slot="reference">{{ list.label }}</span>
@@ -1674,6 +1674,21 @@ export default {
       publishLoading: false, // 发布确认loading
     }
   },
+  watch: {
+    'from.extra.content': {
+      handler: function(newValue,oldValue) {
+        // 230 231需要三张图
+            if(!this.from.extra.cover.length) {
+              // if(this.from.extra.template_style == '230')
+            }
+            this.getFirstImg(newValue)
+            console.log('getFirstImg',this.getFirstImg(newValue))
+            console.log('extra.template_style',this.from.extra.template_style)
+            console.log('cover',this.from.extra.cover)
+            console.log('newValue',newValue)
+         },
+    }
+  },
   computed: {
     /* 上传接口 */
     actionUrl() {
@@ -1779,7 +1794,7 @@ export default {
         arrimg.push(capture)
       })
       if (arrimg != null && arrimg.length > 0) {
-        return arrimg[0]
+        return arrimg
       } 
       return ''
     },
