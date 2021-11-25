@@ -16,10 +16,9 @@ router.beforeEach(async(to, from, next) => {
 
   // set page title
   document.title = getPageTitle(to.meta.title)
-
+  console.log('token',getToken())
   // determine whether the user has logged in
   const hasToken = getToken()
-
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -66,14 +65,34 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
+      console.log('to',to)
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
-      NProgress.done()
+      console.log('token',to.query.token)
+      if(to.query.token) {
+        sessionStorage.setItem('token', to.query.token)
+        try {
+          const { roles, permissions,site } = await store.dispatch('user/getuserinfo')// 拿一下数据
+          const accessRoutes = await store.dispatch('permission/generateRoutes', {
+            roles, // 角色
+            permissions, // 权限
+            site //站点信息
+          })
+          router.addRoutes(accessRoutes)
+          next({ ...to, replace: true })
+        } catch (error) {
+          await store.dispatch('user/resetToken')
+          Message.error(error || 'Has Error')
+          next(`/login?redirect=${to.path}`)
+          NProgress.done()
+        }
+      }else{
+        next(`/login?redirect=${to.path}`)
+        NProgress.done()
+      }
     }
   }
 })
