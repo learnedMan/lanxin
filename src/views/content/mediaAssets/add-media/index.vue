@@ -1596,6 +1596,10 @@ export default {
       /* currentTabsFromItem: [], // 当前激活tab的表单显示数据*/
       currentTabsFromRules: {}, // 当前激活tab的表单验证规则
       checkStatus: false, //审核状态
+      editorChangeValue: false,
+      editorOldValue: '',
+      titleChageValue: false,
+      titleOldValue: '',
       from: {
         author_name: '', // 作者
         editor_name: '', // 编辑
@@ -1678,15 +1682,61 @@ export default {
     'from.extra.content': {
       handler: function(newValue,oldValue) {
         // 230 231需要三张图
+            if(newValue != this.editorOldValue) {
+              this.editorChangeValue = true //编辑器内容变化了开启自动保存
+              }
             if(!this.from.extra.cover.length) {
-              // if(this.from.extra.template_style == '230')
+              let arr = this.getFirstImg(newValue) || []
+              if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
+                let list = arr.slice(0,3),arr_ = []
+                list.map(v =>{
+                  let obj = {}
+                  obj.path = v
+                  obj.status = 'success'
+                  arr_.push(obj)
+                })
+                this.from.extra.cover = arr_
+              }else{
+                let list = [{path:''},{path:''}]
+                let obj = {
+                  path: arr[0],
+                  status: 'success'
+                }
+                list.unshift(obj)
+                this.from.extra.cover = list
+              }
             }
-            this.getFirstImg(newValue)
-            console.log('getFirstImg',this.getFirstImg(newValue))
-            console.log('extra.template_style',this.from.extra.template_style)
-            console.log('cover',this.from.extra.cover)
-            console.log('newValue',newValue)
          },
+    },
+    'from.extra.album_extra': {
+      handler: function(newValue,oldValue) {
+        console.log('图集',newValue)
+        let arr = newValue.image_list || []
+        if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
+          let list = arr.slice(0,3)
+          this.from.extra.cover = list.map(v =>{
+            v.status = 'success'
+            delete v.sort
+            return v
+          })
+        }else{
+          let list = [{path:''},{path:''}]
+                let obj = {
+                  path: arr[0].path,
+                  status: 'success'
+                }
+                list.unshift(obj)
+                this.from.extra.cover = list
+        }
+      },
+      deep: true
+    },
+    'from.extra.title': {
+      handler: function(newValue,oldValue) {
+        if(newValue != this.titleOldValue) {
+          this.titleChageValue = true
+          }
+      }
     }
   },
   computed: {
@@ -1807,7 +1857,7 @@ export default {
             content: this.from.extra.content
           }
           localStorage.setItem('addNews',JSON.stringify(obj))
-        } else{
+        } else if(this.editorChangeValue || this.titleChageValue){
           let arr = [],id = this.scriptsId || this.id
           let editObj = {
             id: this.scriptsId || this.id,
@@ -1997,6 +2047,8 @@ export default {
         }
       }
       if (this.checkStatus) obj.status = 1
+      console.log('obj',obj)
+      // return
       let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
       return promise.then((res) => {
         this.$message.success(tip)
@@ -2145,6 +2197,8 @@ export default {
           link_type = 'target_obj';
         }
         console.log('extra',extra)
+        this.editorOldValue = extra.content
+        this.titleOldValue = extra.title
         this.from = {
           author_name: res.author_name, // 作者
           editor_name: res.editor_name, // 编辑

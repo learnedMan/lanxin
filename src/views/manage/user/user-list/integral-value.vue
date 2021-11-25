@@ -40,6 +40,13 @@
           搜索
         </el-button>
         <el-button v-points = "1500"
+            type="primary"
+            size="mini"
+            @click="exportExcel"
+          >
+            导出
+          </el-button>
+        <el-button v-points = "1500"
           type="success"
           size="mini"
           @click="handleReturn"
@@ -50,6 +57,7 @@
     </el-form>
     <el-table
       ref="multipleTable"
+       id="exportTab"
       v-loading="loading"
       :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
       :data="tableData"
@@ -69,6 +77,11 @@
         prop="integration"
       />
       <el-table-column
+        label="变动类型"
+        align="center"
+        prop="ruleName"
+      />
+      <el-table-column
         label="变动时间"
         align="center"
         prop="createdTime"
@@ -86,7 +99,8 @@
 
 <script>
   import { getUserDetail, getInvited,getIntegral } from '@/api/manage'
-
+  import FileSaver from 'file-saver'
+  import XLSX from 'xlsx'
   export default {
     props: {
       id: {
@@ -151,6 +165,22 @@
           }
         })
       },
+       /*表格导出*/ 
+     exportExcel () {
+      var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
+      var wb = XLSX.utils.table_to_book(document.querySelector('#exportTab'), xlsxParam)
+
+      /* get binary string as output */
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      try {
+        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '表格.xlsx')
+      } catch (e) {
+        if (typeof console !== 'undefined') {
+          console.log(e, wbout)
+        }
+      }
+      return wbout
+     },
       /* 重置 */
       handleReset () {
         Object.assign(this.queryParams, {
