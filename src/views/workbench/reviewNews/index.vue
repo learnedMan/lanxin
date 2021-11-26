@@ -153,6 +153,12 @@
         prop="author_name"
       />
       <el-table-column
+        label="来源"
+        align="center"
+        :show-overflow-tooltip="true"
+        prop="source"
+      />
+      <el-table-column
         label="状态"
         align="center"
       >

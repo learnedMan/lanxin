@@ -92,10 +92,10 @@
           </div>
       </el-dialog>
       <el-form :model="form" :rules="rules" ref="dataForm">
-        <el-form-item  label-width="120px" label="用户姓名" prop="name">
+        <el-form-item  label-width="180px" label="用户姓名" prop="name">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入姓名" v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item  label-width="120px" label="头像："  prop="avatar">
+        <el-form-item  label-width="180px" label="头像"  prop="avatar">
           <el-upload
             class="avatar-uploader"
             :action="VUE_APP_BASE_API+'/api/upload/image'"
@@ -108,10 +108,10 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item  label-width="120px" label="手机号" prop="phone">
+        <el-form-item  label-width="180px" label="手机号" prop="phone">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入手机号" v-model="form.phone"></el-input>
         </el-form-item>
-        <el-form-item class="placeholderdiv" label-width="120px" label="部门:" prop="department_id">
+        <el-form-item class="placeholderdiv" label-width="180px" label="部门" prop="department_id">
             <el-cascader
             :show-all-levels = false
             v-model="form.department_id"
@@ -120,14 +120,16 @@
             :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
             clearable></el-cascader>
           </el-form-item>
-        <el-form-item  label-width="120px" label="邮箱" prop="email">
+        <el-form-item  label-width="180px" label="邮箱" prop="email">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入邮箱" v-model="form.email"></el-input>
         </el-form-item>
-        <el-form-item el-form-item  label-width="120px" label="设置栏目权限">
+        <el-form-item el-form-item  label-width="180px" label="设置栏目权限">
            <el-button v-points = "1500" size="mini" @click="showchannel" type="success">权限</el-button>
         </el-form-item>
-
-        <el-form-item el-form-item  label-width="120px" label="允许外网登录" prop="extra.allow_www_login">
+         <el-form-item  label-width="180px" label="(乡镇上稿人员)发稿来源" prop="street_name">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入发稿来源" v-model="form.extra.street_name"></el-input>
+        </el-form-item>
+        <el-form-item el-form-item  label-width="180px" label="允许外网登录" prop="extra.allow_www_login">
           <el-select v-model="form.extra.allow_www_login" placeholder="请选择">
             <el-option v-for="item in www_loginoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
@@ -284,6 +286,7 @@ import { validUsername , validEmail } from '@/utils/validate'
           email:"",
           status:"",
           extra:{
+            street_name: '',
             allow_www_login:'0',
           }
         },
@@ -631,6 +634,7 @@ import { validUsername , validEmail } from '@/utils/validate'
           status:"",
           extra:{
             allow_www_login:'0',
+            street_name: '',
           }
         }
         this.recordtree = [];
