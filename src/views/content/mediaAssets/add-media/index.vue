@@ -1791,6 +1791,15 @@ export default {
     },
   },
   async created() {
+    let siteName = this.$store.state.user.u_info.site.name
+    if(siteName.indexOf('青田')> -1) {
+      let obj = {
+        label: '早播报',
+        value: 'morning_news',
+        relatedLabel: '栏目id'
+      }
+      this.formOptions['extra.link.type'].item.lists.splice(11,0,obj)
+    }
     // 图片本地化初始化
     var bdhhtml = document.getElementById('bdh');
     bdhhtml.innerHTML=0;

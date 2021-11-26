@@ -16,7 +16,7 @@ router.beforeEach(async(to, from, next) => {
 
   // set page title
   document.title = getPageTitle(to.meta.title)
-  console.log('token',getToken())
+
   // determine whether the user has logged in
   const hasToken = getToken()
   if (hasToken) {
@@ -65,13 +65,11 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-      console.log('to',to)
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      console.log('token',to.query.token)
       if(to.query.token) {
         sessionStorage.setItem('token', to.query.token)
         try {
