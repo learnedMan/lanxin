@@ -31,7 +31,11 @@
           <img :src="scope.row.avatar||useravatar" alt="" style="width: 50px;height: 50px;border-radius: 50%;">
         </template>
       </el-table-column>
-      <el-table-column label="姓名" align="center" prop="name" :show-overflow-tooltip="true" />
+      <el-table-column label="姓名" align="center" prop="name" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span>{{getName(scope.row)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="手机号" align="center" prop="phone" :show-overflow-tooltip="true" />
       <el-table-column label="邮箱" align="center" prop="email" :show-overflow-tooltip="true" />
       <el-table-column
@@ -349,6 +353,12 @@ import { validUsername , validEmail } from '@/utils/validate'
         getDepartmentList(this.removePropertyOfNullFor0(this.queryParams)).then(res => {
           this.departmentList = res;
         })
+      },
+      getName(row) {
+        if(row.extra?.street_name){
+          return `${row.name}(${row.extra.street_name})`
+        }
+        return `${row.name}`
       },
       surerole(){
         var keys = this.$refs.roletree.getCheckedKeys() // 获取已勾选节点的key值

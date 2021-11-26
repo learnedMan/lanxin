@@ -14,7 +14,8 @@ export default {
     computed: {
         url() {
             let token = sessionStorage.getItem('token')
-            return this.VUE_APP_XLY_API+'/lottery_group/index?token=' + token
+            let arr = token.split(' ')
+            return this.VUE_APP_XLY_API+'/lottery_group/index?token=' + arr[1]
         }
     },
      methods: {

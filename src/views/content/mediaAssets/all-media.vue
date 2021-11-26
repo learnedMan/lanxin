@@ -140,7 +140,7 @@
       <el-table-column
         label="稿件标题"
         align="center"
-        width="140"
+        width="240"
         prop="title"
         :show-overflow-tooltip="true"
       >
@@ -181,7 +181,7 @@
         align="center"
         width="140"
         prop="title"
-        
+        :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">
           <div>

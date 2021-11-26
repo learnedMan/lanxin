@@ -1,15 +1,39 @@
 <style type="text/scss" lang="scss">
+  .el-checkbox__inner{
+    width: 20px!important;
+    height: 20px!important;
+  }
+  .checkbox__inner::after {
+    margin-left: 2px;
+    margin-top: 2px;
+    transform: rotate(45deg) scaleY(1.3);
+    /* padding-left: 3px; */
+}
+  //   .el-input--suffix{
+  //   height: 100px!important;
+  // }
+  // .el-input--suffix >input{
+  //   height: 100px!important;
+  // }
   .xl-add-media {
     background-color: #f9f9f9;
     margin: -30px;
     padding: 10px;
+    position: relative;
     &--header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       background-color: #fff;
-      margin-top: 10px;
+      // margin-top: 10px;
       padding: 10px;
+      position: fixed;
+      width: calc(100% - 225px);
+      height: auto;
+      top: 87px;
+      z-index: 1000000;
+      // position: fixed;
+      // top: 60px;
     }
     &--tab {
       background-color: #fff;
@@ -61,7 +85,7 @@
     }
   }
   .el-cascader-menu__wrap {
-    height: 504px!important;
+    height: 554px!important;
 }
 </style>
 <template>
@@ -96,7 +120,7 @@
         </el-button>
       </div>
     </el-header>
-    <el-main style="padding: 10px 0">
+    <el-main style="padding: 10px 0;overflow: auto;padding-top: 58px">
       <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange('tab')">
         <el-tab-pane
           v-for="item of tabs"
@@ -209,7 +233,7 @@
                     @input="handleInput($event, formOptions['extra.template_style'].item)"
                     @change="handleTabChange"
                   >
-                    <el-radio
+                     <el-radio
                       v-for="list of formOptions['extra.template_style'].item.lists"
                       :key="list.value"
                       :label="list.value"
@@ -217,8 +241,7 @@
                     >
                       <el-popover
                         placement="top"
-                        :close-delay="500"
-                        trigger="hover"
+                        trigger="focus"
                       >
                         <span slot="reference">{{ list.label }}</span>
                         <img :src="require(`@/assets/media/${list.img}`)" alt="" width="300px" />
@@ -360,7 +383,7 @@
                     v-bind="formOptions['extra.link.url'].item.componentProps"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 350px"
                     @input="handleInput($event, formOptions['extra.link.url'].item)"
                   />
                 </el-form-item>
@@ -389,12 +412,12 @@
                     v-bind="formOptions['extra.link.id'].item.componentProps"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 350px"
                     @input="handleInput($event, formOptions['extra.link.id'].item)"
                   />
                 </el-form-item>
                 <el-row>
-                  <el-col :span="8">
+                  <el-col :span="10">
                     <!-- 活动地址 -->
                     <el-form-item
                       v-show="initFrom().includes('extra.activity_address')"
@@ -405,12 +428,12 @@
                         v-bind="formOptions['extra.activity_address'].item.componentProps"
                         clearable
                         size="small"
-                        style="width: 200px"
+                        style="width: 350px"
                         @input="handleInput($event, formOptions['extra.activity_address'].item)"
                       />
                     </el-form-item>
                   </el-col>
-                  <el-col :span="8">
+                  <el-col :span="7">
                     <!-- 活动开始时间 -->
                     <el-form-item
                       v-show="initFrom().includes('extra.activity_start_time')"
@@ -426,7 +449,7 @@
                       />
                     </el-form-item>
                   </el-col>
-                  <el-col :span="8">
+                  <el-col :span="7">
                     <!-- 活动结束时间 -->
                     <el-form-item
                       v-show="initFrom().includes('extra.activity_end_time')"
@@ -1429,6 +1452,11 @@ export default {
                {
                 label: '地图',
                 value: 'map',
+                relatedLabel: '栏目id'
+              },
+              {
+                label: '领导人',
+                value: 'leader',
                 relatedLabel: '栏目id'
               },
               {

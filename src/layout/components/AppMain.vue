@@ -25,6 +25,7 @@ export default {
 <style lang="scss" scoped>
 .app-main {
   /* 50= navbar  50  */
+  padding-top: 80px;
   min-height: calc(100vh - 50px);
   width: 100%;
   position: relative;
