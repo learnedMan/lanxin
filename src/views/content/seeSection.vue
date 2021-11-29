@@ -186,6 +186,7 @@
             ref="multipleTable"
             v-loading="loading"
              id="exportTab"
+             row-key="id"
             :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
             :data="tableData"
             border
@@ -1099,10 +1100,13 @@ export default {
               })
             })
             this.tablekey = !this.tablekey;
+            let that = this
+            setTimeout(() => {
+               !that.isMobile && that.initSort();
+            }, 0);
           })
         }
-        
-        !this.isMobile && this.initSort();
+        // !this.isMobile && this.initSort();
       }).finally(() => {
         this.loading = false
       })
@@ -1116,6 +1120,8 @@ export default {
           const { newIndex, oldIndex } = evt;
           const { id } = this.tableData[oldIndex];
           const { sort } = this.tableData[newIndex];
+          console.log('newIndex',newIndex)
+          console.log('oldIndex',oldIndex)
           this.tableData = [];
           changeNewsSort({
             [id]: sort

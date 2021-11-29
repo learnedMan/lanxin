@@ -25,15 +25,12 @@
       align-items: center;
       justify-content: space-between;
       background-color: #fff;
-      // margin-top: 10px;
       padding: 10px;
-      position: fixed;
-      width: calc(100% - 225px);
-      height: auto;
-      top: 87px;
-      z-index: 1000000;
       // position: fixed;
-      // top: 60px;
+      // width: calc(100% - 225px);
+      // height: auto;
+      // top: 87px;
+      // z-index: 1000000;
     }
     &--tab {
       background-color: #fff;
@@ -120,7 +117,7 @@
         </el-button>
       </div>
     </el-header>
-    <el-main style="padding: 10px 0;overflow: auto;padding-top: 58px">
+    <el-main style="padding: 10px 0;overflow: auto;">
       <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange('tab')">
         <el-tab-pane
           v-for="item of tabs"

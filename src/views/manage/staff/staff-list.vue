@@ -658,6 +658,7 @@ import { validUsername , validEmail } from '@/utils/validate'
         // for (let key in row) {
         //   this.form[key] = row[key];
         // }
+        this.channeltreechoose = []
         this.form = JSON.parse(JSON.stringify(row))
         console.log(this.form)
         if(!this.form.extra){
@@ -721,16 +722,24 @@ import { validUsername , validEmail } from '@/utils/validate'
       innercloseDialog(){
         this.channeltreechoose = this.recordtree;
         this.$refs.tree.setCheckedKeys(this.channeltreechoose)
+        this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys([])
+        });
         this.innerVisible = false;
       },
       innerenterDialog() {
         this.channeltreechoose = this.$refs.tree.getCheckedKeys() ;
+        this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys([])
+        });
         this.recordtree = this.channeltreechoose;
         this.innerVisible = false;
       },
       closeDialog() {
         this.initForm();
+        // this.channeltreechoose = []
         this.dialogFormVisible = false;
+        console.log('88888',this.channeltreechoose)
       },
       toFormData(val) {
         let formData = new FormData();
