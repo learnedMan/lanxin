@@ -163,22 +163,19 @@
             @click="handleListWatch(scope.row)"
           >
             查看
+            <el-popover
+            placement="top"
+            trigger="hover"
+          >
+            <span slot="reference" style="display: inline-block;">{{scope.row.news | totalNum}}</span>
+            <div v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
+            :style="{
+              color: item.status == 1 ? '#1890ff' : '#606266',
+              lineHeight: '25px'
+            }"
+            :key="index">{{item.name}}</div>
+          </el-popover>
           </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="发布状态"
-        align="center"
-        width="140"
-        prop="title"
-        :show-overflow-tooltip="true"
-      >
-        <template slot-scope="scope">
-         <span v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
-          :style="{
-            color: item.status == 1 ? '#1890ff' : '#606266'
-          }"
-          :key="index">{{item.name}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -418,6 +415,13 @@ export default {
     this.getList()
     this.getChannels()
   },
+  filters: {
+    totalNum(news) {
+      let l = news.filter(v => v.status == 1) || []
+      let str = `(${l.length}/${news.length})`
+      return news.length ? str : ''
+    },
+  },
   methods: {
     /*
         * 搜索时间变化
@@ -428,6 +432,13 @@ export default {
       this.queryParams.enddate = arr[1]
     },
     formatText(channel,news) {
+    //定时发布 5 已下线2  已上线1 待审核0
+      let statusObj = {
+        '0': '待审核',
+        '1': '已上线',
+        '2': '已下线',
+        '5': '待定时发布'
+      }
       let arr = (news || []).map((v,index) =>{
         let status = v.status
         let obj = (channel || []).find(k =>{
@@ -435,7 +446,8 @@ export default {
             return k.name
           }
         })
-        let name = index == news.length-1 ? obj.name : obj.name + '、'
+        let statusText = statusObj[status]
+        let name = `${obj.name}(${statusText})`
         return { status,name}
       })
       return arr

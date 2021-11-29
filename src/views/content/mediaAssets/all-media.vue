@@ -165,6 +165,7 @@
         label="发布栏目"
         align="center"
         prop="id"
+        width="150"
       >
         <template slot-scope="scope">
           <el-button v-points = "1500"
@@ -173,24 +174,19 @@
             @click="handleListWatch(scope.row)"
           >
             查看
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="发布状态"
-        align="center"
-        width="140"
-        prop="title"
-        :show-overflow-tooltip="true"
-      >
-        <template slot-scope="scope">
-          <div>
-          <span v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
+            <el-popover
+            placement="top"
+            trigger="hover"
+          >
+            <span slot="reference" style="display: inline-block;">{{scope.row.news | totalNum}}</span>
+            <div v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
             :style="{
-              color: item.status == 1 ? '#1890ff' : '#606266'
+              color: item.status == 1 ? '#1890ff' : '#606266',
+              lineHeight: '25px'
             }"
-            :key="index">{{item.name}}</span>
-          </div>
+            :key="index">{{item.name}}</div>
+          </el-popover>
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -426,6 +422,13 @@ export default {
     this.getChannels()
     this.defaultDate()
   },
+  filters: {
+    totalNum(news) {
+      let l = news.filter(v => v.status == 1) || []
+      let str = `(${l.length}/${news.length})`
+      return news.length ? str : ''
+    },
+  },
   methods: {
     /*
       * 搜索时间变化
@@ -457,6 +460,13 @@ export default {
       return str
 		},
     formatText(channel,news) {
+    //定时发布 5 已下线2  已上线1 待审核0
+      let statusObj = {
+        '0': '待审核',
+        '1': '已上线',
+        '2': '已下线',
+        '5': '待定时发布'
+      }
       let arr = (news || []).map((v,index) =>{
         let status = v.status
         let obj = (channel || []).find(k =>{
@@ -464,7 +474,8 @@ export default {
             return k.name
           }
         })
-        let name = index == news.length-1 ? obj.name : obj.name + '、'
+        let statusText = statusObj[status]
+        let name = `${obj.name}(${statusText})`
         return { status,name}
       })
       return arr

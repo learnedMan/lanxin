@@ -1084,6 +1084,14 @@ export function delSensitword(data) {
     data
   })
 }
+/*检测敏感词*/
+export function checkSensitword(data) {
+  return request3({
+    url: '/sensitive/tx/filter',
+    method: 'post',
+    data
+  })
+}
 
 export function addWhitelist(data) {
   return request3({
