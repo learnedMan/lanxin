@@ -1,14 +1,14 @@
 <style type="text/scss" lang="scss">
-  .el-checkbox__inner{
-    width: 20px!important;
-    height: 20px!important;
-  }
-  .checkbox__inner::after {
-    margin-left: 2px;
-    margin-top: 2px;
-    transform: rotate(45deg) scaleY(1.3);
-    /* padding-left: 3px; */
-}
+//   .el-checkbox__inner{
+//     width: 20px!important;
+//     height: 20px!important;
+//   }
+//   .checkbox__inner::after {
+//     margin-left: 2px;
+//     margin-top: 2px;
+//     transform: rotate(45deg) scaleY(1.3);
+//     /* padding-left: 3px; */
+// }
   //   .el-input--suffix{
   //   height: 100px!important;
   // }

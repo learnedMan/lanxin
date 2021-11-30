@@ -56,7 +56,7 @@ const actions = {
           return item
         })
       }
-      accessedRoutes = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www-local') > -1 ? filterarr(arr,'All-media','RecycleBox') : arr
+      accessedRoutes = window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1 ? filterarr(arr,'All-media','RecycleBox') : arr
       if(siteName.indexOf('衢江') > -1) {
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)
