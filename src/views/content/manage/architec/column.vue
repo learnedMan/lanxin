@@ -226,12 +226,12 @@
               v-model="form.extra.load_news">
             </el-switch>
           </el-form-item>
-          <!-- <el-form-item label-width="150px" label="关联类型:" prop="extra.channel_link_type">
-              <el-radio-group v-model="form.extra.channel_link_type">
+          <el-form-item label-width="150px" label="关联类型:" prop="extra.channel_link_type">
+              <el-radio-group v-model="form.extra.channel_link_type" @change="channelTypeChange">
                   <el-radio :label="'union'">聚合关联（一对多）</el-radio>
                   <el-radio :label="'map'">推荐关联（多对一）</el-radio>
               </el-radio-group>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item label-width="150px" label="关联栏目:" prop="extra.linked_channel_id">
             <el-cascader
             v-model="form.extra.linked_channel_id"
@@ -743,7 +743,7 @@ import ChildPage1 from './pages/c_page1'
         dataList:[],
         dialogFormVisible: false,
         form:{},
-        columnSetting: { checkStrictly: true ,value:'id',label:'name', emitPath:false, multiple: false},
+        columnSetting: { checkStrictly: true ,value:'id',label:'name', emitPath:false, multiple: true},
         rules: {
           father: [{ required: true, message: "请选择上级栏目", trigger: "blur" }],
           name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
@@ -957,6 +957,15 @@ import ChildPage1 from './pages/c_page1'
           }
         };
       },
+      channelTypeChange(value) {
+        console.log('value',value)
+        this.form.extra.linked_channel_id = ''
+        if(value == 'union') {
+          this.columnSetting.multiple = true
+        }else{
+          this.columnSetting.multiple = false
+        }
+      },
       changetype(){//修改栏目类型
         // console.log(this.form.type)
         if(this.form.type=='default'){
@@ -1090,9 +1099,6 @@ import ChildPage1 from './pages/c_page1'
         this.dialogTitle = "新增栏目";
         this.dialogType = "add";
         this.dialogFormVisible = true;
-        if(this.from.extra.channel_link_type == 'union') {
-          
-        }
       },
       // 编辑栏目
       editdata(row) {
@@ -1105,7 +1111,7 @@ import ChildPage1 from './pages/c_page1'
           this.form = JSON.parse(JSON.stringify(response)) ;
           // this.form = Object.assign(this.form,response);
           this.form.extra = Object.assign(extradata,this.form.extra)
-          // console.log(this.form)
+          let linked_channel_id = response.extra.linked_channel_id
           // 把拿到的多级审核的数据进行修改
           var new_multi_review = [];
           var multi_review = this.form.extra.multi_review||[];
@@ -1119,7 +1125,12 @@ import ChildPage1 from './pages/c_page1'
           }
           // console.log(new_multi_review)
           this.form.extra.multi_review = new_multi_review;
-          this.form.extra.linked_channel_id = this.form.extra.linked_channel_id?parseInt(this.form.extra.linked_channel_id):'';
+          if(linked_channel_id.indexOf(',') > -1) {
+            this.form.extra.linked_channel_id = linked_channel_id.split(',')
+          }else{
+            this.form.extra.linked_channel_id = linked_channel_id ? parseInt(linked_channel_id):''
+          }
+         // this.form.extra.linked_channel_id = this.form.extra.linked_channel_id?parseInt(this.form.extra.linked_channel_id):'';
           // this.form.extra.linked_channel_id = this.form.extra.linked_channel_id.length ? this.form.extra.linked_channel_id.split(',') : []
           this.form.extra.cover = this.form.extra.cover? this.form.extra.cover[0].path:'';
           // this.form.extra.template_style = Number(this.form.extra.template_style) ;
@@ -1174,13 +1185,13 @@ import ChildPage1 from './pages/c_page1'
           // }else{
             //   data.father = data.father.join('')
           // }
-          // if(data.extra.linked_channel_id.length) {
-          //   let channels = data.extra.linked_channel_id || [],str=''
-          //   channels.map(v=>{
-          //     str+= v + ','
-          //   })
-          //   data.extra.linked_channel_id = str.slice(0,-1)
-          // }
+          if(Array.isArray(data.extra.linked_channel_id)) {
+            let channels = data.extra.linked_channel_id || [],str=''
+            channels.map(v=>{
+              str+= v + ','
+            })
+            data.extra.linked_channel_id = str.slice(0,-1)
+          }
           var multi_review = data.extra.multi_review;
           var new_multi_review = [];
           for(var i=0;i<multi_review.length;i++){
@@ -1203,7 +1214,7 @@ import ChildPage1 from './pages/c_page1'
               }
             }
           }
-          console.log(data)
+          console.log('提交的数据',data)
           // return
           if (this.dialogType=='edit') {
             //修改
