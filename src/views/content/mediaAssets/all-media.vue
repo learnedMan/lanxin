@@ -110,25 +110,26 @@
     >
       <el-table-column
         type="selection"
-        width="55"
+        min-width="3%"
       />
       <el-table-column
       v-if="!isMobile"
         label="稿件ID"
         align="center"
         prop="id"
+        min-width="5%"
       />
       <el-table-column
       v-if="!isMobile"
         label="稿件封面"
         align="center"
         prop="id"
-        width="120"
+        min-width="8%"
       >
         <template slot-scope="scope">
           <el-image
             lazy
-            style="width: 80px; height: 45px"
+            style="width: 70px; height: 45px"
             :src="scope.row.cover || useravatar"
             :preview-src-list="[scope.row.cover || useravatar]"
             fit="contain"
@@ -140,7 +141,7 @@
       <el-table-column
         label="稿件标题"
         align="center"
-        width="240"
+        min-width="30%"
         prop="title"
         :show-overflow-tooltip="true"
       >
@@ -151,12 +152,14 @@
       <el-table-column
         label="稿件类型"
         align="center"
+        min-width="7%"
         prop="type"
       />
       <el-table-column
       v-if="!isMobile"
         label="编辑"
         align="center"
+        min-width="6%"
         prop="author_name"
         :show-overflow-tooltip="true"
       />
@@ -165,6 +168,7 @@
         label="发布栏目"
         align="center"
         prop="id"
+        min-width="9%"
       >
         <template slot-scope="scope">
           <el-button v-points = "1500"
@@ -173,24 +177,19 @@
             @click="handleListWatch(scope.row)"
           >
             查看
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="发布状态"
-        align="center"
-        width="140"
-        prop="title"
-        :show-overflow-tooltip="true"
-      >
-        <template slot-scope="scope">
-          <div>
-          <span v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
+            <el-popover
+            placement="top"
+            trigger="hover"
+          >
+            <span slot="reference" style="display: inline-block;">{{scope.row.news | totalNum}}</span>
+            <div v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
             :style="{
-              color: item.status == 1 ? '#1890ff' : '#606266'
+              color: item.status == 1 ? '#1890ff' : '#606266',
+              lineHeight: '25px'
             }"
-            :key="index">{{item.name}}</span>
-          </div>
+            :key="index">{{item.name}}</div>
+          </el-popover>
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -198,11 +197,12 @@
         label="更新时间"
         align="center"
         prop="updated_at"
+        min-width="8%"
       />
       <el-table-column
         label="操作"
         align="center"
-        width="300"
+        min-width="25%"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
@@ -426,6 +426,13 @@ export default {
     this.getChannels()
     this.defaultDate()
   },
+  filters: {
+    totalNum(news) {
+      let l = news.filter(v => v.status == 1) || []
+      let str = `(${l.length}/${news.length})`
+      return news.length ? str : ''
+    },
+  },
   methods: {
     /*
       * 搜索时间变化
@@ -457,6 +464,13 @@ export default {
       return str
 		},
     formatText(channel,news) {
+    //定时发布 5 已下线2  已上线1 待审核0
+      let statusObj = {
+        '0': '待审核',
+        '1': '已上线',
+        '2': '已下线',
+        '5': '待定时发布'
+      }
       let arr = (news || []).map((v,index) =>{
         let status = v.status
         let obj = (channel || []).find(k =>{
@@ -464,7 +478,8 @@ export default {
             return k.name
           }
         })
-        let name = index == news.length-1 ? obj.name : obj.name + '、'
+        let statusText = statusObj[status]
+        let name = `${obj.name}(${statusText})`
         return { status,name}
       })
       return arr

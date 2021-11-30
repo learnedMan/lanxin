@@ -380,7 +380,7 @@
                     v-bind="formOptions['extra.link.url'].item.componentProps"
                     clearable
                     size="small"
-                    style="width: 350px"
+                    style="width: 600px"
                     @input="handleInput($event, formOptions['extra.link.url'].item)"
                   />
                 </el-form-item>
@@ -414,7 +414,7 @@
                   />
                 </el-form-item>
                 <el-row>
-                  <el-col :span="10">
+                  <el-col :span="12">
                     <!-- 活动地址 -->
                     <el-form-item
                       v-show="initFrom().includes('extra.activity_address')"
@@ -425,12 +425,12 @@
                         v-bind="formOptions['extra.activity_address'].item.componentProps"
                         clearable
                         size="small"
-                        style="width: 350px"
+                        style="width: 530px"
                         @input="handleInput($event, formOptions['extra.activity_address'].item)"
                       />
                     </el-form-item>
                   </el-col>
-                  <el-col :span="7">
+                  <el-col :span="6">
                     <!-- 活动开始时间 -->
                     <el-form-item
                       v-show="initFrom().includes('extra.activity_start_time')"
@@ -446,7 +446,7 @@
                       />
                     </el-form-item>
                   </el-col>
-                  <el-col :span="7">
+                  <el-col :span="6">
                     <!-- 活动结束时间 -->
                     <el-form-item
                       v-show="initFrom().includes('extra.activity_end_time')"
@@ -785,7 +785,7 @@
 <script>
 import Cropper from '@/components/Cropper'
 import { getLabels, getScriptDetail, changeScripts, changeNews, getEditorPerson, getNewDetail, getNews, } from '@/api/content'
-import { getChannels } from '@/api/manage'
+import { getChannels,getproduct,checkSensitword } from '@/api/manage'
 import Tag from '@/components/media/tag'
 import ImgTable from '@/components/media/imgTable'
 import scriptSelect from '@/components/media/scriptSelect.vue'
@@ -1625,6 +1625,8 @@ export default {
       editorOldValue: '',
       titleChageValue: false,
       titleOldValue: '',
+      sourceId: '',// sourceId 敏感词检测
+      newsId: '', //保存草稿再发布需要的id
       from: {
         author_name: '', // 作者
         editor_name: '', // 编辑
@@ -1707,6 +1709,11 @@ export default {
     'from.extra.content': {
       handler: function(newValue,oldValue) {
         // 230 231需要三张图
+        var bdhhtml = document.getElementById('bdh').innerHTML;
+        if(bdhhtml==1){
+          this.$message.warning('正在图片本地化，请稍后')
+          return
+        }
             if(newValue != this.editorOldValue) {
               this.editorChangeValue = true //编辑器内容变化了开启自动保存
               }
@@ -1736,22 +1743,24 @@ export default {
     'from.extra.album_extra': {
       handler: function(newValue,oldValue) {
         console.log('图集',newValue)
-        let arr = newValue.image_list || []
-        if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
-          let list = arr.slice(0,3)
-          this.from.extra.cover = list.map(v =>{
-            v.status = 'success'
-            delete v.sort
-            return v
-          })
-        }else{
-          let list = [{path:''},{path:''}]
-                let obj = {
-                  path: arr[0].path,
-                  status: 'success'
-                }
-                list.unshift(obj)
-                this.from.extra.cover = list
+        if(this.from.extra.type == 'album') {
+          let arr = newValue.image_list || []
+          if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
+            let list = arr.slice(0,3)
+            this.from.extra.cover = list.map(v =>{
+              v.status = 'success'
+              delete v.sort
+              return v
+            })
+          }else{
+            let list = [{path:''},{path:''}]
+                  let obj = {
+                    path: arr[0].path,
+                    status: 'success'
+                  }
+                  list.unshift(obj)
+                  this.from.extra.cover = list
+          }
         }
       },
       deep: true
@@ -1841,6 +1850,7 @@ export default {
     await this.getLabels()
     await this.getList()
     this.handleTabChange()
+    this.getproductList()
     let editorTime = setInterval(() => {
       this.editorSelfSave()
     },30000)
@@ -1870,6 +1880,13 @@ export default {
         localStorage.removeItem('addNews')
       }
     },
+    /*获取sourceId*/
+    getproductList(){
+        getproduct({}).then((response) => {
+            let obj = response.data.find(v => v.type == 'app');
+            this.sourceId = obj.source_id;
+        });
+      },
     /*抓取编辑器文章中的第一张图片*/
     getFirstImg (html) {
       var a = html
@@ -2047,7 +2064,8 @@ export default {
       const channel_id = channelId? [ channelId ] : this.dialog.form.channel_id
       const currentTabsFromItem = this.initFrom()
       const type = this.from.extra.type
-      const id = this.typeDetails === 'script' ? this.scriptsId : this.id
+      let id = this.typeDetails === 'script' ? this.scriptsId : this.id
+      if(this.newsId) id = this.newsId
       const count = this.formOptions['extra.cover'].item.componentProps.count
       let arr, keyVal
       const obj = {
@@ -2082,13 +2100,74 @@ export default {
       }
       if (this.checkStatus) obj.status = 1
       console.log('obj',obj)
-      // return
-      let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
-      return promise.then((res) => {
-        this.$message.success(tip)
-        this.dialog.show = false;
-        cb && cb(res);
+      // this.checkSensit()
+       let checkData = {
+        text: this.from.extra.content,
+        sourceId: this.sourceId,
+        terminalType: 6
+      }
+      checkSensitword(checkData).then(res =>{
+          let data = res.data
+          let type = this.formatFilterType(data.filterType)
+          if(data.filterType){
+            let text = data.keywords[0]
+            this.$confirm(`您所提交的内容中包含${type}类敏感词汇”${text}“，是否确认继续提交？`, '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+               let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+                return promise.then((res) => {
+                  this.$message.success(tip)
+                  this.dialog.show = false;
+                  cb && cb(res);
+                })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
+            });
+          }else{
+            let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+            return promise.then((res) => {
+              this.$message.success(tip)
+              this.dialog.show = false;
+              cb && cb(res);
+            })
+          }
       })
+    },
+    formatFilterType(val) {
+          let obj = {
+            '0': '正常 ',
+            '1': '政治',
+            '2': '色情',
+            '3': '涉毒违法',
+            '4': '谩骂',
+            '5': '暴恐',
+            '6': '综合',
+            '7': '网络引流',
+            '8': '综合',
+            '9': '性感',
+            '10': '灌水',
+            '11': '垃圾信息',
+            '12': '无意义',
+            '13': '自定义'
+          }
+           return obj[val] || ''
+    },
+    checkSensit() {
+      let data = {
+        text: this.from.extra.content,
+        sourceId: this.sourceId,
+        terminalType: 6
+      }
+      let info = null
+        checkSensitword(data).then(res =>{
+          info = res.data
+      })
+      return info
     },
     /* 保存草稿 */
     handleDraft() {
@@ -2100,8 +2179,11 @@ export default {
 
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
-          this.handleSave('保存草稿成功!')
-          this.delLocalStorage()
+          this.handleSave('保存草稿成功!',(res)=>{
+            this.newsId = res.data.id
+            this.delLocalStorage()
+            console.log('res保存草稿',res)
+          })
         }else {
           this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
         }

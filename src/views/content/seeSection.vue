@@ -199,23 +199,25 @@
               label="新闻ID"
               align="center"
               prop="id"
+              min-width="5%"
             />
             <el-table-column
             v-if="!isMobile"
               label="点击量"
               align="center"
               prop="hits"
+              min-width="5%"
             />
             <el-table-column
             v-if="!isMobile"
               label="新闻封面"
               align="center"
               prop="id"
-              width="120"
+              min-width="8%"
             >
               <template slot-scope="scope">
                 <el-image
-                  style="width: 80px; height: 45px"
+                  style="width: 60px; height: 45px"
                   lazy
                   :src="scope.row.cover || useravatar"
                   fit="contain"
@@ -228,7 +230,7 @@
 
               label="新闻标题"
               align="center"
-              width="140"
+              min-width="28%"
               prop="title"
               :show-overflow-tooltip="true"
             >
@@ -240,10 +242,12 @@
               label="新闻类型"
               align="center"
               prop="typeLabel"
+              min-width="7%"
             />
             <el-table-column
               label="状态"
               align="center"
+              min-width="9%"
             >
               <template slot-scope="scope">
                 <el-select
@@ -264,6 +268,7 @@
             v-if="!isMobile"
               label="编辑"
               align="center"
+              min-width="6%"
               prop="author_name"
               :show-overflow-tooltip="true"
             />
@@ -271,6 +276,7 @@
             v-if="!isMobile"
               label="排序"
               align="center"
+              min-width="6%"
             >
               <template slot-scope="scope">
                 <el-button v-points = "1500"
@@ -286,13 +292,14 @@
             v-if="!isMobile"
               label="发布时间"
               align="center"
+              min-width="7%"
               prop="created_at"
               :show-overflow-tooltip="true"
             />
             <el-table-column
               label="操作"
               align="center"
-              width="250"
+              min-width="28%"
             >
               <template slot-scope="scope">
                 <div class="verify-table-action">
@@ -1102,7 +1109,7 @@ export default {
             this.tablekey = !this.tablekey;
             let that = this
             setTimeout(() => {
-               !that.isMobile && that.initSort();
+              //  !that.isMobile && that.initSort();
             }, 0);
           })
         }
