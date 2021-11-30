@@ -1111,7 +1111,7 @@ import ChildPage1 from './pages/c_page1'
           this.form = JSON.parse(JSON.stringify(response)) ;
           // this.form = Object.assign(this.form,response);
           this.form.extra = Object.assign(extradata,this.form.extra)
-          let linked_channel_id = response.extra.linked_channel_id
+          let linked_channel_id = response.extra.linked_channel_id || ''
           // 把拿到的多级审核的数据进行修改
           var new_multi_review = [];
           var multi_review = this.form.extra.multi_review||[];
