@@ -101,25 +101,26 @@
     >
       <el-table-column
         type="selection"
-        width="55"
+        min-width="3%"
       />
       <el-table-column
       v-if="!isMobile"
         label="稿件ID"
         align="center"
         prop="id"
+        min-width="5%"
       />
       <el-table-column
       v-if="!isMobile"
         label="稿件封面"
         align="center"
         prop="id"
-        width="120"
+        min-width="8%"
       >
         <template slot-scope="scope">
           <el-image
             lazy
-            style="width: 80px; height: 45px"
+            style="width: 70px; height: 45px"
             :src="scope.row.cover || useravatar"
             fit="contain"
           >
@@ -130,7 +131,7 @@
       <el-table-column
         label="稿件标题"
         align="center"
-        width="140"
+        min-width="30%"
         prop="title"
         :show-overflow-tooltip="true"
       >
@@ -142,11 +143,13 @@
         label="稿件类型"
         align="center"
         prop="type"
+        min-width="7%"
       />
       <el-table-column
       v-if="!isMobile"
         label="编辑"
         align="center"
+        min-width="6%"
         prop="author_name"
         :show-overflow-tooltip="true"
       />
@@ -155,6 +158,7 @@
         label="发布栏目"
         align="center"
         prop="id"
+        min-width="9%"
       >
         <template slot-scope="scope">
           <el-button v-points = "1500"
@@ -183,11 +187,12 @@
         label="更新时间"
         align="center"
         prop="updated_at"
+        min-width="8%"
       />
       <el-table-column
         label="操作"
         align="center"
-        width="300"
+        min-width="25%"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">

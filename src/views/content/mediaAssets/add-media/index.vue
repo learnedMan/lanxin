@@ -1626,6 +1626,7 @@ export default {
       titleChageValue: false,
       titleOldValue: '',
       sourceId: '',// sourceId 敏感词检测
+      newsId: '', //保存草稿再发布需要的id
       from: {
         author_name: '', // 作者
         editor_name: '', // 编辑
@@ -1708,6 +1709,11 @@ export default {
     'from.extra.content': {
       handler: function(newValue,oldValue) {
         // 230 231需要三张图
+        var bdhhtml = document.getElementById('bdh').innerHTML;
+        if(bdhhtml==1){
+          this.$message.warning('正在图片本地化，请稍后')
+          return
+        }
             if(newValue != this.editorOldValue) {
               this.editorChangeValue = true //编辑器内容变化了开启自动保存
               }
@@ -1737,22 +1743,24 @@ export default {
     'from.extra.album_extra': {
       handler: function(newValue,oldValue) {
         console.log('图集',newValue)
-        let arr = newValue.image_list || []
-        if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
-          let list = arr.slice(0,3)
-          this.from.extra.cover = list.map(v =>{
-            v.status = 'success'
-            delete v.sort
-            return v
-          })
-        }else{
-          let list = [{path:''},{path:''}]
-                let obj = {
-                  path: arr[0].path,
-                  status: 'success'
-                }
-                list.unshift(obj)
-                this.from.extra.cover = list
+        if(this.from.extra.type == 'album') {
+          let arr = newValue.image_list || []
+          if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
+            let list = arr.slice(0,3)
+            this.from.extra.cover = list.map(v =>{
+              v.status = 'success'
+              delete v.sort
+              return v
+            })
+          }else{
+            let list = [{path:''},{path:''}]
+                  let obj = {
+                    path: arr[0].path,
+                    status: 'success'
+                  }
+                  list.unshift(obj)
+                  this.from.extra.cover = list
+          }
         }
       },
       deep: true
@@ -2056,7 +2064,8 @@ export default {
       const channel_id = channelId? [ channelId ] : this.dialog.form.channel_id
       const currentTabsFromItem = this.initFrom()
       const type = this.from.extra.type
-      const id = this.typeDetails === 'script' ? this.scriptsId : this.id
+      let id = this.typeDetails === 'script' ? this.scriptsId : this.id
+      if(this.newsId) id = this.newsId
       const count = this.formOptions['extra.cover'].item.componentProps.count
       let arr, keyVal
       const obj = {
@@ -2099,10 +2108,9 @@ export default {
       }
       checkSensitword(checkData).then(res =>{
           let data = res.data
-          console.log('敏感词data',data)
           let type = this.formatFilterType(data.filterType)
-          let text = data.keywords[0]
           if(data.filterType){
+            let text = data.keywords[0]
             this.$confirm(`您所提交的内容中包含${type}类敏感词汇”${text}“，是否确认继续提交？`, '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -2120,14 +2128,15 @@ export default {
                 message: '已取消删除'
               });
             });
+          }else{
+            let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+            return promise.then((res) => {
+              this.$message.success(tip)
+              this.dialog.show = false;
+              cb && cb(res);
+            })
           }
       })
-      // let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
-      // return promise.then((res) => {
-      //   this.$message.success(tip)
-      //   this.dialog.show = false;
-      //   cb && cb(res);
-      // })
     },
     formatFilterType(val) {
           let obj = {
@@ -2170,8 +2179,11 @@ export default {
 
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
-          this.handleSave('保存草稿成功!')
-          this.delLocalStorage()
+          this.handleSave('保存草稿成功!',(res)=>{
+            this.newsId = res.data.id
+            this.delLocalStorage()
+            console.log('res保存草稿',res)
+          })
         }else {
           this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
         }
