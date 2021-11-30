@@ -226,12 +226,18 @@
               v-model="form.extra.load_news">
             </el-switch>
           </el-form-item>
+          <!-- <el-form-item label-width="150px" label="关联类型:" prop="extra.channel_link_type">
+              <el-radio-group v-model="form.extra.channel_link_type">
+                  <el-radio :label="'union'">聚合关联（一对多）</el-radio>
+                  <el-radio :label="'map'">推荐关联（多对一）</el-radio>
+              </el-radio-group>
+          </el-form-item> -->
           <el-form-item label-width="150px" label="关联栏目:" prop="extra.linked_channel_id">
             <el-cascader
             v-model="form.extra.linked_channel_id"
             style="width: 350px"
             :options="dataList"
-            :props="{ checkStrictly: true ,value:'id',label:'name', emitPath:false, multiple: false}"
+            :props="columnSetting"
             clearable></el-cascader>
           </el-form-item>
           <el-form-item el-form-item  label-width="150px" label="(模板化)栏目:">
@@ -737,6 +743,7 @@ import ChildPage1 from './pages/c_page1'
         dataList:[],
         dialogFormVisible: false,
         form:{},
+        columnSetting: { checkStrictly: true ,value:'id',label:'name', emitPath:false, multiple: false},
         rules: {
           father: [{ required: true, message: "请选择上级栏目", trigger: "blur" }],
           name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
@@ -917,6 +924,7 @@ import ChildPage1 from './pages/c_page1'
             load_child:'1',
             load_news:'1',
             linked_channel_id: '',
+            channel_link_type: 'union',
             template_style:'',
             template_json_id:'',
             template_json:{},
@@ -1082,6 +1090,9 @@ import ChildPage1 from './pages/c_page1'
         this.dialogTitle = "新增栏目";
         this.dialogType = "add";
         this.dialogFormVisible = true;
+        if(this.from.extra.channel_link_type == 'union') {
+          
+        }
       },
       // 编辑栏目
       editdata(row) {

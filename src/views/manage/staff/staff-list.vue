@@ -140,7 +140,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="dialogType=='edit'" el-form-item  label-width="120px" label="是否启用" prop="status">
+        <el-form-item v-if="dialogType=='edit'" el-form-item  label-width="180px" label="是否启用" prop="status">
           <el-select v-model="form.status" placeholder="请选择">
             <el-option v-for="item in statusoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
