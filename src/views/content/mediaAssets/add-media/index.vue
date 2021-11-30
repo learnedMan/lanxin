@@ -2101,42 +2101,51 @@ export default {
       if (this.checkStatus) obj.status = 1
       console.log('obj',obj)
       // this.checkSensit()
-       let checkData = {
-        text: this.from.extra.content,
-        sourceId: this.sourceId,
-        terminalType: 6
-      }
-      checkSensitword(checkData).then(res =>{
-          let data = res.data
-          let type = this.formatFilterType(data.filterType)
-          if(data.filterType){
-            let text = data.keywords[0]
-            this.$confirm(`您所提交的内容中包含${type}类敏感词汇”${text}“，是否确认继续提交？`, '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-               let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
-                return promise.then((res) => {
-                  this.$message.success(tip)
-                  this.dialog.show = false;
-                  cb && cb(res);
-                })
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消删除'
+      if(this.from.extra.type == 'news') {
+          let checkData = {
+          text: this.from.extra.content,
+          sourceId: this.sourceId,
+          terminalType: 6
+        }
+        checkSensitword(checkData).then(res =>{
+            let data = res.data
+            let type = this.formatFilterType(data.filterType)
+            if(data.filterType){
+              let text = data.keywords[0]
+              this.$confirm(`您所提交的内容中包含${type}类敏感词汇”${text}“，是否确认继续提交？`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+                  return promise.then((res) => {
+                    this.$message.success(tip)
+                    this.dialog.show = false;
+                    cb && cb(res);
+                  })
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消删除'
+                });
               });
-            });
-          }else{
-            let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
-            return promise.then((res) => {
-              this.$message.success(tip)
-              this.dialog.show = false;
-              cb && cb(res);
-            })
-          }
-      })
+            }else{
+              let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+              return promise.then((res) => {
+                this.$message.success(tip)
+                this.dialog.show = false;
+                cb && cb(res);
+              })
+            }
+        })
+      }else{
+        let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+              return promise.then((res) => {
+                this.$message.success(tip)
+                this.dialog.show = false;
+                cb && cb(res);
+              })
+      }
     },
     formatFilterType(val) {
           let obj = {

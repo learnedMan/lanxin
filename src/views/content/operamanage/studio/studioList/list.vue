@@ -335,7 +335,7 @@
             >
               <el-popover
                 placement="top"
-                trigger="hover"
+                trigger="focus"
               >
                 <span slot="reference">{{ list.label }}</span>
                 <img :src="require(`@/assets/media/${list.img}`)" alt="" width="300px" />
