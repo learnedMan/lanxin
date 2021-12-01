@@ -198,6 +198,7 @@
           delete params.dateValue;
           listKpiDetail(this.removePropertyOfNullFor0(params)).then(res => {
             this.loading = false;
+            this.total = res.total
             this.tableData=(res.data || []).map(v => {
               v.extra = JSON.parse(v.extra)
               return {...v}

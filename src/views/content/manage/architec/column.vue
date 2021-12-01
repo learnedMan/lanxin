@@ -228,11 +228,14 @@
           </el-form-item>
           <el-form-item label-width="150px" label="关联类型:" prop="extra.channel_link_type">
               <el-radio-group v-model="form.extra.channel_link_type" @change="channelTypeChange">
+                  <el-radio :label="''">不关联</el-radio>
                   <el-radio :label="'union'">聚合关联（一对多）</el-radio>
                   <el-radio :label="'map'">推荐关联（多对一）</el-radio>
               </el-radio-group>
           </el-form-item>
-          <el-form-item label-width="150px" label="关联栏目:" prop="extra.linked_channel_id">
+          <el-form-item 
+          v-if="form.extra.channel_link_type == 'union' || form.extra.channel_link_type == 'map'"
+          label-width="150px" label="关联栏目:" prop="extra.linked_channel_id">
             <el-cascader
             v-model="form.extra.linked_channel_id"
             style="width: 350px"
@@ -924,7 +927,7 @@ import ChildPage1 from './pages/c_page1'
             load_child:'1',
             load_news:'1',
             linked_channel_id: '',
-            channel_link_type: 'union',
+            channel_link_type: '',
             template_style:'',
             template_json_id:'',
             template_json:{},
@@ -958,7 +961,6 @@ import ChildPage1 from './pages/c_page1'
         };
       },
       channelTypeChange(value) {
-        console.log('value',value)
         this.form.extra.linked_channel_id = ''
         if(value == 'union') {
           this.columnSetting.multiple = true
@@ -1111,11 +1113,11 @@ import ChildPage1 from './pages/c_page1'
           this.form = JSON.parse(JSON.stringify(response)) ;
           // this.form = Object.assign(this.form,response);
           this.form.extra = Object.assign(extradata,this.form.extra)
+           console.log('form',this.form)
           let linked_channel_id = response.extra.linked_channel_id || ''
           // 把拿到的多级审核的数据进行修改
           var new_multi_review = [];
           var multi_review = this.form.extra.multi_review||[];
-          console.log(this.form)
           for(var i=0;i<multi_review.length;i++){
             new_multi_review[i] = [];
             new_multi_review[i] = multi_review[i].reviewer_ids.split(',');
