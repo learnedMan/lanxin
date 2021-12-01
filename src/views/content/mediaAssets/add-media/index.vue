@@ -30,7 +30,7 @@
       position: fixed;
       width: calc(100% - 225px);
       height: auto;
-      top: 90px;
+      top: 84px;
       z-index: 1000;
     }
     &--tab {

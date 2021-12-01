@@ -5,7 +5,7 @@
     <div :class="{hasTagsView:needTagsView}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}" style=" position: fixed;
             top: 0;
-            z-index: 10;
+            z-index: 1000;
             width: calc(100% - 210px);">
         <navbar />
         <tags-view v-if="needTagsView" />

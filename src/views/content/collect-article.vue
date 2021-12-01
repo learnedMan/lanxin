@@ -67,14 +67,14 @@
           >
             搜索
           </el-button>
-          <el-button v-points = "1500"
+          <!-- <el-button v-points = "1500"
             type="success"
             size="mini"
             :disabled="selection.length === 0"
             @click="handlePublish"
           >
             批量发布
-          </el-button>
+          </el-button> -->
         </el-form-item>
       </el-form>
     </div>
