@@ -6923,7 +6923,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                     //设置四周的留边
                     '.view{padding:0;word-wrap:break-word;cursor:text;height:90%;}\n' +
                     // 设置图片尺寸
-                    'img{max-width:100%;}'+
+                    'img{max-width:60%;}'+
                     //设置默认字体和字号
                     //font-family不能呢随便改，在safari下fillchar会有解析问题
                     'body{margin:8px;font-family:sans-serif;font-size:16px;}' +
@@ -17003,13 +17003,35 @@ UE.plugins['fiximgclick'] = (function () {
                 }
             },
             updateTargetElement: function () {
+                // var me = this;
+                // domUtils.setStyles(me.target, {
+                //     'width': me.resizer.style.width,
+                //     'height': me.resizer.style.height
+                // });
+                // me.target.width = parseInt(me.resizer.style.width);
+                // me.target.height = parseInt(me.resizer.style.height);
+                // me.attachTo(me.target);
                 var me = this;
+                // 拿到图片的原始大小
+                var o_width = me.target.naturalWidth;
+                var o_height = me.target.naturalHeight;
+                // 计算出原始图片比例
+                var o_scale = (o_width/o_height).toFixed(4);
+                // 再拿到图片现在的大小，可能是变形的
+                var width = parseInt(me.resizer.style.width)
+                var height = parseInt(me.resizer.style.height)
+                // 判断改变的是宽度还是高度
+                if (rect[me.dragId][2] != 0) {
+                    height = width/o_scale
+                }else if (rect[me.dragId][3] != 0) {
+                    width = height*o_scale
+                }
                 domUtils.setStyles(me.target, {
-                    'width': me.resizer.style.width,
-                    'height': me.resizer.style.height
+                    'width': width + 'px',
+                    'height': height + 'px'
                 });
-                me.target.width = parseInt(me.resizer.style.width);
-                me.target.height = parseInt(me.resizer.style.height);
+                me.target.width = width;
+                me.target.height = height;
                 me.attachTo(me.target);
             },
             updateContainerStyle: function (dir, offset) {

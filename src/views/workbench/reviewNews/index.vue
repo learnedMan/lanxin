@@ -117,18 +117,19 @@
     >
       <el-table-column
         type="selection"
-        width="55"
+        min-width="3%"
       />
       <el-table-column
         v-if="!isMobile"
         label="新闻ID"
         align="center"
         prop="id"
+        min-width="5%"
       />
       <el-table-column
         label="新闻标题"
         align="center"
-        width="140"
+        min-width="30%"
         prop="title"
         :show-overflow-tooltip="true"
       >
@@ -141,26 +142,31 @@
         label="发布栏目ID"
         align="center"
         prop="channel_id"
+        min-width="5%"
       />
       <el-table-column
         label="发布栏目"
         align="center"
         prop="channel.name"
+        min-width="8%"
       />
        <el-table-column
         label="作者"
         align="center"
         prop="author_name"
+        min-width="8%"
       />
       <el-table-column
         label="来源"
         align="center"
         :show-overflow-tooltip="true"
+        min-width="8%"
         prop="source"
       />
       <el-table-column
         label="状态"
         align="center"
+        min-width="8%"
       >
         <template slot-scope="scope">
           {{ scope.row.statusLabel }}
@@ -180,13 +186,14 @@
       v-if="!isMobile"
         label="提交时间"
         align="center"
+        min-width="8%"
         prop="created_at"
         :show-overflow-tooltip="true"
       />
       <el-table-column
         label="操作"
         align="center"
-        width="300"
+        min-width="24%"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">

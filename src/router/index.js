@@ -528,6 +528,7 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/architec/architec-site'),
             name: 'Architec-site',
             roles: ['Maintainer', 'Administrator', 'Admin'],
+            permission: 'system.site.manage',
             meta: { title: '站点管理' }
           },
           {
@@ -535,6 +536,7 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/architec/channel-info'),
             name: 'Channel-info',
             roles: ['Maintainer', 'Administrator', 'Admin'],
+            permission: 'system.channelInfo.manage',
             meta: { title: '租户信息' }
           },
           {
@@ -549,6 +551,7 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/architec/template-manage'),
             name: 'Template-manage',
             roles: ['Administrator', 'Admin'],
+            permission: 'system.template.manage',
             meta: { title: '模板管理' }
           },
           {
@@ -587,6 +590,7 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/staff/staff-jurisdiction'),
             name: 'Staff-jurisdiction',
             roles: ['Administrator'],
+            permission: 'system.jurisdiction.manage',
             meta: { title: '权限管理' }
           },
           {
@@ -594,6 +598,7 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/staff/staff-role'),
             name: 'Staff-role',
             roles: ['Maintainer', 'Administrator', 'Admin'],
+            permission: 'system.staffRole.manage',
             meta: { title: '角色管理' }
           }
         ]

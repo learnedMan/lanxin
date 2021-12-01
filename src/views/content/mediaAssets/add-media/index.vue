@@ -26,11 +26,12 @@
       justify-content: space-between;
       background-color: #fff;
       padding: 10px;
-      // position: fixed;
-      // width: calc(100% - 225px);
-      // height: auto;
-      // top: 87px;
-      // z-index: 1000000;
+      // border: 1px solid;
+      position: fixed;
+      width: calc(100% - 225px);
+      height: auto;
+      top: 84px;
+      z-index: 1000;
     }
     &--tab {
       background-color: #fff;
@@ -117,7 +118,8 @@
         </el-button>
       </div>
     </el-header>
-    <el-main style="padding: 10px 0;overflow: auto;">
+    <!-- <el-main style="padding: 10px 0;overflow: auto;"> -->
+      <el-main style="padding: 60px 0 10px 0;overflow: auto;">
       <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange('tab')">
         <el-tab-pane
           v-for="item of tabs"
@@ -1627,6 +1629,7 @@ export default {
       titleOldValue: '',
       sourceId: '',// sourceId 敏感词检测
       newsId: '', //保存草稿再发布需要的id
+      editorSaveFlag: true,// 自动保存开关
       from: {
         author_name: '', // 作者
         editor_name: '', // 编辑
@@ -1826,6 +1829,7 @@ export default {
   },
   async created() {
     let siteName = this.$store.state.user.u_info.site.name
+    console.log('站点信息',this.$store.state.user.u_info)
     if(siteName.indexOf('青田')> -1) {
       let obj = {
         label: '早播报',
@@ -1852,7 +1856,7 @@ export default {
     this.handleTabChange()
     this.getproductList()
     let editorTime = setInterval(() => {
-      this.editorSelfSave()
+      if(this.editorSaveFlag) this.editorSelfSave()
     },30000)
     this.$once('hook:beforeDestroy', () => {
         clearInterval(editorTime);
@@ -1877,7 +1881,16 @@ export default {
         })
         localStorage.setItem('editNews',JSON.stringify(list))
       }else{
-        localStorage.removeItem('addNews')
+        let siteId = this.$store.state.user.u_info.site_id //站点id
+        let list = JSON.parse(localStorage.getItem('addNews'))
+         list.map((v,index) =>{
+          if(v.siteId == siteId) {
+            list.splice(index,1)
+          }
+        })
+        console.log('list',list)
+        localStorage.setItem('addNews',JSON.stringify(list))
+        // localStorage.removeItem('addNews')
       }
     },
     /*获取sourceId*/
@@ -1903,11 +1916,32 @@ export default {
     editorSelfSave() {
       if (this.from.extra.type === 'news' && (this.from.extra.title || this.from.extra.content) && !this.disabled) {
         if (this.scriptsId == null && this.id == null) {
+          let siteId = this.$store.state.user.u_info.site_id //站点id
           let obj = {
+            siteId: siteId,
             title: this.from.extra.title,
             content: this.from.extra.content
           }
-          localStorage.setItem('addNews',JSON.stringify(obj))
+          //先判断是否存储过稿件
+          if(localStorage.getItem('addNews')) {
+            let list = JSON.parse(localStorage.getItem('addNews'))
+            let IsExist = list.some(v => v.siteId == siteId)
+            if(IsExist) {
+              list.map(v =>{
+                if(v.siteId == siteId) {
+                  v.title = this.from.extra.title
+                  v.content = this.from.extra.content
+                }
+              })
+            }else{
+              list.push(obj)
+            }
+            localStorage.setItem('addNews',JSON.stringify(list))
+          }else{
+            let arr = []
+            arr.push(obj)
+            localStorage.setItem('addNews',JSON.stringify(arr))
+          }
         } else if(this.editorChangeValue || this.titleChageValue){
           let arr = [],id = this.scriptsId || this.id
           let editObj = {
@@ -2191,7 +2225,7 @@ export default {
           this.handleSave('保存草稿成功!',(res)=>{
             this.newsId = res.data.id
             this.delLocalStorage()
-            console.log('res保存草稿',res)
+            this.editorSaveFlag = false
           })
         }else {
           this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
@@ -2308,7 +2342,12 @@ export default {
         let max = this.viewBaseInterval.max, min = this.viewBaseInterval.min;
         this.from.extra.view_base_num = max && max !=Infinity ? Math.floor(Math.random()*(max-min+1)+min) : 0
         if (localStorage.getItem('addNews') && !this.disabled) {
-           this.userNewsLocalStorgeTips(JSON.parse(localStorage.getItem('addNews')))
+           let list = JSON.parse(localStorage.getItem('addNews'))
+           let siteId = this.$store.state.user.u_info.site_id
+            let obj = list.find(v => v.siteId == siteId)
+            if (obj) {
+              this.userNewsLocalStorgeTips(obj)
+            }
         }
         return
       }

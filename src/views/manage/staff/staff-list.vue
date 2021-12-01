@@ -78,6 +78,7 @@
         :close-on-click-modal = false
         :close-on-press-escape = false
         append-to-body>
+        <div style="height: 400px;overflow: auto;">
         <el-tree
             :data="channeltree"
             :default-checked-keys="channeltreechoose"
@@ -90,6 +91,7 @@
             highlight-current
             :props="defaultProps">
           </el-tree>
+        </div>
           <div class="dialog-footer" slot="footer">
             <el-button v-points = "1500" @click="innercloseDialog">取 消</el-button>
             <el-button v-points = "1500" @click="innerenterDialog" type="primary">确 定</el-button>
