@@ -408,7 +408,7 @@ export function PatchScriptCollect(id, data) {
 /* 批量发布到单个栏目 */
 export function batchPublishScriptCollect(data) {
   return request({
-    url: `/api/scripts/pushTPNewsToChannel`,
+    url: `/api/TPNews/pushTPNewsToChannel`,
     method: 'post',
     data
   })
