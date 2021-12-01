@@ -235,17 +235,18 @@
             label="新闻ID"
             align="center"
             prop="id"
+            min-width="5%"
           />
           <el-table-column
             v-if="!isMobile"
             label="新闻封面"
             align="center"
             prop="id"
-            width="120"
+            min-width="10%"
           >
             <template slot-scope="scope">
               <el-image
-                style="width: 80px; height: 45px"
+                style="width: 60px; height: 45px"
                 lazy
                 :src="scope.row.cover || useravatar"
                 fit="contain"
@@ -257,7 +258,7 @@
           <el-table-column
             label="新闻标题"
             align="center"
-            width="140"
+            min-width="30%"
             prop="title"
             :show-overflow-tooltip="true"
           >
@@ -269,10 +270,12 @@
             label="新闻类型"
             align="center"
             prop="typeLabel"
+            min-width="6%"
           />
           <el-table-column
             label="状态"
             align="center"
+            min-width="9%"
           >
             <template slot-scope="scope">
               <el-select
@@ -293,6 +296,7 @@
             v-if="!isMobile"
             label="编辑"
             align="center"
+            min-width="6%"
             prop="author_name"
             :show-overflow-tooltip="true"
           />
@@ -300,6 +304,7 @@
             v-if="!isMobile"
             label="排序"
             align="center"
+            min-width="8%"
           >
             <template slot-scope="scope">
               <el-button v-points = "1500"
@@ -316,11 +321,12 @@
             label="发布时间"
             align="center"
             prop="created_at"
+            min-width="8%"
           />
           <el-table-column
             label="操作"
             align="center"
-            width="250"
+            min-width="20%"
           >
             <template slot-scope="scope">
               <div class="verify-table-action">

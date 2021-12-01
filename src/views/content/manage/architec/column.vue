@@ -1251,6 +1251,9 @@ import ChildPage1 from './pages/c_page1'
   position: relative;
   overflow: hidden;
 }
+.el-cascader-menu__wrap {
+    height: 554px!important;
+}
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }

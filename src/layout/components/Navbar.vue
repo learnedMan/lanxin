@@ -40,6 +40,7 @@
       <el-dialog
         :close-on-click-modal="false"
         :close-on-press-escape="false"
+        :append-to-body="true"
         width="600px" title="切换站点" :visible.sync="dialogFormVisible">
         <el-form :model="form" :rules="rules" ref="dataForm">
           <el-form-item label-width="100px" label="选择站点" prop="id">
@@ -57,6 +58,7 @@
     <!-- 自定义快捷按钮 -->
        <el-dialog
         :close-on-click-modal="false"
+        :append-to-body="true"
         :close-on-press-escape="false"
         width="600px" title="快速跳转" :visible.sync="dialogShortcut">
          <div style="height: 400px;overflow: auto;" class="shortcut">

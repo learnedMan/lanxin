@@ -132,26 +132,31 @@
         label="ID"
         align="center"
         prop="id"
+        min-width="5%"
       />
       <el-table-column
         label="直播间名称"
         align="center"
         prop="title"
+        min-width="25%"
         :show-overflow-tooltip="true"
       />
       <el-table-column
         label="直播间类型"
         align="center"
         prop="broadcast_typeLabel"
+        min-width="5%"
       />
       <el-table-column
         label="直播状态"
         align="center"
         prop="liveLabel"
+        min-width="8%"
       />
       <el-table-column
         label="审核状态"
         align="center"
+        min-width="8%"
       >
         <template slot-scope="scope">
           <el-select
@@ -173,17 +178,19 @@
         label="开播时间"
         align="center"
         prop="start_time"
+        min-width="10%"
       />
       <el-table-column
       v-if="!isMobile"
         label="结束时间"
         align="center"
         prop="end_time"
+        min-width="10%"
       />
       <el-table-column
         label="运营"
         align="center"
-        width="100"
+        min-width="8%"
       >
         <template slot-scope="scope">
           <el-button v-points = "1500"
@@ -200,11 +207,12 @@
         label="创建时间"
         align="center"
         prop="created_at"
+        min-width="8%"
       />
       <el-table-column
         label="操作"
         align="center"
-        width="220"
+        min-width="20%"
       >
         <template slot-scope="scope">
           <div class="verify-table-action">
@@ -366,7 +374,13 @@
           prop="extra.banner"
           v-if="dialog.form.extra.broadcast_type === '3'"
         >
-          <upload-single v-model="dialog.form.extra.banner"></upload-single>
+          <div style="display: flex">
+            <upload-single v-model="dialog.form.extra.banner"></upload-single>
+          <span style="margin-left: 15px;
+    color: #ccc;
+    box-sizing: border-box;
+    padding-top: 70px;">建议尺寸750*120px</span>
+          </div>
         </el-form-item>
         <el-form-item
           label-width="120px"

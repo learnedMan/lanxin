@@ -264,7 +264,7 @@
             />
           </el-form-item>
           <!-- 封面样式 -->
-          <el-form-item
+          <!-- <el-form-item
             label="封面样式:"
             prop="extra.news_style.template_style"
           >
@@ -288,16 +288,16 @@
                 </el-popover>
               </el-radio>
             </el-radio-group>
-          </el-form-item>
+          </el-form-item> -->
           <!-- 封面图片 -->
-          <el-form-item
+          <!-- <el-form-item
             prop="extra.news_style.cover"
           >
             <cropper
               v-model="dialog.form.extra.news_style.cover"
               :count="imgCount"
             />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item
             label="背景图:"
             prop="extra.background"
@@ -329,12 +329,12 @@
           >
             <el-switch v-model="dialog.form.extra.topic_type" active-value="2" inactive-value="1"></el-switch>
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             label="允许分享:"
             prop="extra.allow_share"
           >
             <el-switch v-model="dialog.form.extra.allow_share" active-value="1" inactive-value="0"></el-switch>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <div
           slot="footer"
@@ -794,7 +794,6 @@
         },
       },
       async created() {
-        console.log('9999999')
         await this.getProductList();
         this.getList();
         this.getChannels();
