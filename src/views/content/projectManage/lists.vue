@@ -304,7 +304,7 @@
           >
             <upload-single v-model="dialog.form.extra.background"></upload-single>
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             label="(模板化)栏目:"
             prop="extra.template_style"
           >
@@ -322,7 +322,7 @@
               </el-option>
             </el-select>
             <el-button v-points = "1500" v-if="dialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item
             label="多级专题:"
             prop="extra.topic_type"

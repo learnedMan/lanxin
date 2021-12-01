@@ -528,7 +528,7 @@ export const asyncRoutes = [
             component: () => import('@/views/manage/architec/architec-site'),
             name: 'Architec-site',
             roles: ['Maintainer', 'Administrator', 'Admin'],
-            permission: 'system.site.manage',
+            // permission: 'system.site.manage',
             meta: { title: '站点管理' }
           },
           {
