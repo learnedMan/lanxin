@@ -65,6 +65,11 @@
         prop="version_code"
         :show-overflow-tooltip="true"/>
       <el-table-column
+        label="新特性"
+        align="center"
+        prop="new_features"
+        :show-overflow-tooltip="true"/>
+      <el-table-column
         label="下载地址"
         align="center"
         prop="url"

@@ -344,7 +344,7 @@ export default {
           }).then(res => {
             if (res.data.code === 200) {
             }else{
-              this.$message(res.data.message);
+              // this.$message(res.data.message);
             }
           }).catch((err) => {
             console.log(err)
