@@ -1500,6 +1500,10 @@ export default {
                {
                 label: '扫一扫',
                 value: 'scan'
+              },
+              {
+                label: '天气',
+                value: 'weather'
               }
             ]
           },
