@@ -18,9 +18,11 @@
       :on-change="onChange"
       :limit="2"
       :file-list="fileList"
+      :on-progress="handleProgress"
       :on-success="handleUploadSuccess">
       <el-button v-points = "1500" size="small" type="primary">新增</el-button>
     </el-upload>
+    <el-progress :percentage="percentage" v-show="percentage"></el-progress>
   </div>
 </template>
 
@@ -32,6 +34,7 @@ export default {
   data() {
     return {
       fileList: [],
+      percentage: 0,
       getvalue:this.value
     };
   },
@@ -59,6 +62,7 @@ export default {
     beforeRemove(){
       this.$emit("input", '');
       this.getvalue = ''
+      this.percentage = 0;
     },
     handleBeforeUpload(file) {
     },
@@ -67,14 +71,20 @@ export default {
         this.fileList = [fileList[fileList.length - 1]]; //这一步，是 展示最后一次选择文件
       }
     },
+    /* 上传中 */
+    handleProgress () {
+      this.percentage = 90;
+    },
     /* 上传成功 */
     handleUploadSuccess(res, file, fileList) {
       if (res.status_code >= 200 && res.status_code < 300) {
+        this.percentage = 100;
         this.$message.success("上传成功!");
         this.$emit("input",  res.path);
           this.getvalue = res.path
       } else {
         this.$message.error(res.message);
+        this.percentage = 0;
         fileList.length = 0;
       }
     }

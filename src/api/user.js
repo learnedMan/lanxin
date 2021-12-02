@@ -33,3 +33,10 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function refreshToken() {
+  return request({
+    url: '/api/authorizations/refresh',
+    method: 'post'
+  })
+}
