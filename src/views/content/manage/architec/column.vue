@@ -542,7 +542,7 @@ import ChildPage1 from './pages/c_page1'
         // 查询参数
         queryParams: {
           product_id: "",
-          with_special_channels: 'topic',
+          with_special_channels: '',
         },
         catalogid:'',//栏目id
 
@@ -729,6 +729,9 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'duiba',
             label: '兑吧'
+          },{
+            value: 'weather',
+            label: '天气'
           }
         ],
         medias:[{
