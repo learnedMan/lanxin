@@ -327,6 +327,7 @@
                     :watermark="watermark"
                     :position="parseObj(formOptions['extra.use_watermarks'].item)"
                     :disabled="disabled"
+                    :zIndex="zIndex"
                     :value="parseObj(formOptions['extra.content'].item)"
                     @input="handleInput($event, formOptions['extra.content'].item)"
                     @changeVideoList="changeVideoList"
@@ -813,6 +814,11 @@ export default {
     disabledNews: {
       type: Boolean,
       default: false
+    },
+   /*编辑器的层级*/ 
+    zIndex: {
+      type: Number,
+      default: 900
     },
   /* 类型 */
     typeDetails: {
@@ -1456,6 +1462,11 @@ export default {
               {
                 label: '领导人',
                 value: 'leader',
+                relatedLabel: '栏目id'
+              },
+              {
+                label: '矩阵列表',
+                value: 'matrix_list',
                 relatedLabel: '栏目id'
               },
               {

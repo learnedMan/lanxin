@@ -310,6 +310,7 @@
       <scripts-details 
       style="padding: 10px;margin: 0"
       typeDetails="news" :id="detailDialog.id" 
+      :zIndex="3000"
       :visible.sync="detailDialog.show" 
       @refresh="refresh" />
     </el-dialog>

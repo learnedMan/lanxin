@@ -313,7 +313,7 @@
             </el-form-item>
 
             <!-- 默认 -->
-            <child-page1 v-if="forceRefresh" v-show="form.type=='default'||form.type=='algo'||form.type=='video_waterfall'||form.type=='video_landscape'||form.type=='subscription'||form.type=='topic'||form.type=='matrix'||form.type=='matrix2' " ref="c_page1" :userdata="userdata"  :form="form" v-model="form" />
+            <child-page1 v-if="forceRefresh" v-show="form.type=='default'||form.type=='pinghuhao'||form.type=='work'||form.type=='algo'||form.type=='video_waterfall'||form.type=='video_landscape'||form.type=='subscription'||form.type=='topic'||form.type=='matrix'||form.type=='matrix2' " ref="c_page1" :userdata="userdata"  :form="form" v-model="form" />
             <!-- 服务 -->
             <el-form-item v-show="form.type=='service'" label-width="150px" label="服务背景图:" prop="extra.background">
               <el-upload
@@ -426,7 +426,7 @@
               </el-form-item>
             </div>
             <div v-else>
-              <el-form-item v-if="(form.type=='outer_link'||form.type == 'newspaper'||form.type=='auth_link'||form.type=='service') && form.extra.link.type !='alipay' && form.extra.link.type !='wechat_mp' "
+              <el-form-item v-if="(form.type=='outer_link'||form.type == 'newspaper'||form.type=='auth_link'||form.type=='service') && form.extra.link.type !='weather'  && form.extra.link.type !='alipay' && form.extra.link.type !='wechat_mp' "
                 label-width="150px" label="链接地址:" prop="extra.link.url">
                 <el-input
                   style="width: 350px"
@@ -612,6 +612,10 @@ import ChildPage1 from './pages/c_page1'
             value: 'wechat_mp',
             label: '微信小程序'
           },
+          {
+            value: 'weather',
+            label: '天气'
+          }
         ],
         groupoptions: [{
           value: 'home',
@@ -732,10 +736,27 @@ import ChildPage1 from './pages/c_page1'
           },{
             value: 'duiba',
             label: '兑吧'
-          },{
-            value: 'weather',
-            label: '天气'
-          }
+          },
+          {
+            value: 'work',
+            label: '找工作'
+          },
+          {
+            value: 'multi_layer3',
+            label: '多层级三'
+          },
+          {
+            value: 'sub_level',
+            label: '次级栏目'
+          },
+          {
+            value: 'pinghuhao',
+            label: '平湖号'
+          },
+          {
+            value: 'Slow_live',
+            label: '慢直播'
+          },
         ],
         medias:[{
             value: '新闻',

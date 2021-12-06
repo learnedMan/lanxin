@@ -374,7 +374,8 @@
       <scripts-details 
       style="padding: 10px;margin: 0"
       typeDetails="news" :id="detailDialog.id" 
-      :visible.sync="detailDialog.show" 
+      :visible.sync="detailDialog.show"
+      :zIndex="3000"
       :disabledNews="detailDialog.disabled" 
       @refresh="refresh" />
     </el-dialog>
@@ -1102,8 +1103,9 @@ export default {
             let idarr = res.data;
             this.tableData.forEach((item,index,arr)=>{
               idarr.forEach((_item,_index,_arr)=>{
+                let view_base_num = this.tableData[index].view_base_num || '0'
                 if(item.id==_item.item_id){
-                  this.tableData[index].hits = parseInt(_item.hits)*parseInt(this.multiplying_factor)+parseInt(this.tableData[index].view_base_num) || 0;
+                  this.tableData[index].hits = parseInt(_item.hits)*parseInt(this.multiplying_factor)+parseInt(view_base_num) || 0;
                 }
               })
             })

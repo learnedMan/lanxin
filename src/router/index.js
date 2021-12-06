@@ -335,6 +335,13 @@ export const asyncRoutes = [
             permission: 'content.resource_repo.resource.list',
             meta: { title: '我的图片' }
           },
+          // {
+          //   path: 'videoManage',
+          //   component: () => import('@/views/content/mediaRepository/videoManage'),
+          //   name: 'videoManage',
+          //   permission: 'content.resource_repo.video.manage',
+          //   meta: { title: '视频管理' }
+          // },
           {
             path: 'classmanage',
             component: () => import('@/views/content/mediaRepository/classmanage'),
