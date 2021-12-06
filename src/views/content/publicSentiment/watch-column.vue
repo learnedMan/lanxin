@@ -223,6 +223,7 @@
       typeDetails="news" 
       :id="dialog.id" 
       :visible.sync="dialog.show" 
+      :zIndex="dialog.disabled?900:3000"
       :disabledNews="dialog.disabled" 
       @refresh="refresh" />
     </el-dialog>

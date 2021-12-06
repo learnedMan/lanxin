@@ -172,12 +172,21 @@
                 >
                   新增新闻
                 </el-button>
+                <el-button v-points = "1500"
+                  type="primary"
+                  size="mini"
+                  @click="exportExcel"
+                >
+                  导出
+                </el-button>
               </el-form-item>
             </el-form>
           </div>
           <el-table
             ref="multipleTable"
             v-loading="loading"
+             id="exportTab"
+             row-key="id"
             :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
             :data="tableData"
             border
@@ -190,23 +199,25 @@
               label="新闻ID"
               align="center"
               prop="id"
+              min-width="5%"
             />
             <el-table-column
             v-if="!isMobile"
               label="点击量"
               align="center"
               prop="hits"
+              min-width="5%"
             />
             <el-table-column
             v-if="!isMobile"
               label="新闻封面"
               align="center"
               prop="id"
-              width="120"
+              min-width="8%"
             >
               <template slot-scope="scope">
                 <el-image
-                  style="width: 80px; height: 45px"
+                  style="width: 60px; height: 45px"
                   lazy
                   :src="scope.row.cover || useravatar"
                   fit="contain"
@@ -219,7 +230,7 @@
 
               label="新闻标题"
               align="center"
-              width="140"
+              min-width="28%"
               prop="title"
               :show-overflow-tooltip="true"
             >
@@ -231,10 +242,12 @@
               label="新闻类型"
               align="center"
               prop="typeLabel"
+              min-width="7%"
             />
             <el-table-column
               label="状态"
               align="center"
+              min-width="9%"
             >
               <template slot-scope="scope">
                 <el-select
@@ -255,6 +268,7 @@
             v-if="!isMobile"
               label="编辑"
               align="center"
+              min-width="6%"
               prop="author_name"
               :show-overflow-tooltip="true"
             />
@@ -262,6 +276,7 @@
             v-if="!isMobile"
               label="排序"
               align="center"
+              min-width="6%"
             >
               <template slot-scope="scope">
                 <el-button v-points = "1500"
@@ -277,13 +292,14 @@
             v-if="!isMobile"
               label="发布时间"
               align="center"
+              min-width="7%"
               prop="created_at"
               :show-overflow-tooltip="true"
             />
             <el-table-column
               label="操作"
               align="center"
-              width="250"
+              min-width="28%"
             >
               <template slot-scope="scope">
                 <div class="verify-table-action">
@@ -351,14 +367,15 @@
       title="查看"
       top="20px"
       :visible.sync="detailDialog.show"
+      :append-to-body="true"
       v-if="detailDialog.show"
     >
       <!-- <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" /> -->
       <scripts-details 
       style="padding: 10px;margin: 0"
       typeDetails="news" :id="detailDialog.id" 
-      :visible.sync="detailDialog.show" 
-      :zIndex="detailDialog.disabled?900:3000"
+      :visible.sync="detailDialog.show"
+      :zIndex="3000"
       :disabledNews="detailDialog.disabled" 
       @refresh="refresh" />
     </el-dialog>
@@ -554,17 +571,16 @@ import { getChannels } from '@/api/manage'
 import { getMultiHits } from '@/api/statistics'
 import { addPushDetail} from '@/api/operamanage'
 import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail } from '@/api/content'
-import NewDetail from './reviewNews/detail'
 import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 import { dateFormat } from "@/utils/costum";
 import uploadSingle from '@/components/Upload/uploadSingle.vue'
 import Sortable from 'sortablejs'
-
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
 export default {
   name: 'SeeSection',
   components: {
-    NewDetail,
     scriptsDetails,
     VersionHistory,
     uploadSingle
@@ -765,6 +781,14 @@ export default {
       this.getList()
     })
   },
+  watch: {
+    total() {
+       if(this.total==(this.queryParams.page-1)*this.queryParams.pageSize && this.total != 0){ 
+            this.queryParams.page -=1
+            this.getList()
+        }
+    },
+  },
   computed:{
     /* 当前站点租户 */
     customerId() {
@@ -789,6 +813,22 @@ export default {
         this.$refs.dialogForm?.clearValidate('push_time')
       })
     },
+     /*表格导出*/ 
+     exportExcel () {
+      var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
+      var wb = XLSX.utils.table_to_book(document.querySelector('#exportTab'), xlsxParam)
+
+      /* get binary string as output */
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      try {
+        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '表格.xlsx')
+      } catch (e) {
+        if (typeof console !== 'undefined') {
+          console.log(e, wbout)
+        }
+      }
+      return wbout
+     },
     /* 更新间距 */
     pickerFocus () {
       this.pickerOptions.selectableRange = this.updateSelectableRange();
@@ -1067,10 +1107,13 @@ export default {
               })
             })
             this.tablekey = !this.tablekey;
+            let that = this
+            setTimeout(() => {
+              //  !that.isMobile && that.initSort();
+            }, 0);
           })
         }
-        
-        !this.isMobile && this.initSort();
+        // !this.isMobile && this.initSort();
       }).finally(() => {
         this.loading = false
       })
@@ -1084,6 +1127,8 @@ export default {
           const { newIndex, oldIndex } = evt;
           const { id } = this.tableData[oldIndex];
           const { sort } = this.tableData[newIndex];
+          console.log('newIndex',newIndex)
+          console.log('oldIndex',oldIndex)
           this.tableData = [];
           changeNewsSort({
             [id]: sort

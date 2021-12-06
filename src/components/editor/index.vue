@@ -177,7 +177,7 @@
       top="4vh"
       :title="videoDialog.title"
       :visible.sync="videoDialog.show"
-      append-to-body
+      :append-to-body="true"
     >
       <xl-video @choose-url="videoDialogControl" @choose="videoDialogChoose"></xl-video>
     </el-dialog>
@@ -204,6 +204,11 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      /*编辑器的层级*/ 
+      zIndex: {
+        type: Number,
+        default: 900
       },
       /* 水印 */
       watermark: {
@@ -254,7 +259,7 @@
           UEDITOR_HOME_URL: '/UEditor/', // 编辑器库的位置
           initialFrameWidth: '100%', // 编辑器宽度
           initialFrameHeight: 200, // 编辑器高度
-          zIndex : 3000,
+          zIndex : this.zIndex,
           serverUrl: `/laravel-u-editor-server/server`, // 上传图片以及视频的接口
           autoHeightEnabled: true, // 防止内容撑高编辑器
           enableAutoSave: false,
