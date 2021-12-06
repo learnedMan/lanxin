@@ -1,7 +1,7 @@
 <template>
 <!-- 抽奖 -->
     <div style="height:auto;padding:30px;">
-        <iframe style="width:100%;height:800px;" frameborder="0" scrolling="no" :src="url" ref="iframe"></iframe>
+        <iframe style="width:100%;height:800px;" id="iframeConcent" frameborder="0" scrolling="no" :src="url" ref="iframe"></iframe>
     </div>
 </template>
 <script>
