@@ -367,6 +367,7 @@
       title="查看"
       top="20px"
       :visible.sync="detailDialog.show"
+      :append-to-body="true"
       v-if="detailDialog.show"
     >
       <!-- <new-detail :id="detailDialog.id" :visible.sync="detailDialog.show" :disabled="detailDialog.disabled" @refresh="refresh" /> -->

@@ -88,7 +88,7 @@
 </style>
 <template>
   <el-container class="xl-add-media">
-    <el-header class="xl-add-media--header" height="auto" :style="{ justifyContent: isEdit && editorPerson? 'space-between' : 'flex-end' }">
+    <el-header class="xl-add-media--header" height="auto"  v-if="!disabled && this.typeDetails === 'script'" :style="{ justifyContent: isEdit && editorPerson? 'space-between' : 'flex-end' }">
       <div style="font-size: 14px;color: #606266;flex: 1" v-if="isEdit && editorPerson && !disabled">
         <span style="color: #409eff;margin-right: 10px">{{ editorPerson }}</span> 当前正在编辑该文稿
       </div>
@@ -2339,9 +2339,10 @@ export default {
       getChannels({
         with_special_channels: 'topic'
       }).then(res => {
+        let arr = ['product','topic','broadcast','radio_replay','radio_channel','radio_live','tv_channel','tv_replay','tv_live']
         this.channelsList = res.map(n => ({
           ...n,
-          disabled: true
+         disabled: arr.includes(n.type),
         }))
       })
     },

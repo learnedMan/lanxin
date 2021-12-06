@@ -371,7 +371,7 @@
             if(val) {
               changeStudio(this.id, {
                 extra: {
-                  end_time: this.dialogStart.form.now
+                  end_time: this.dialogEnd.form.now
                 }
               }).then(() => {
                 this.$message.success('修改成功!');

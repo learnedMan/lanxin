@@ -84,7 +84,7 @@
             <ul class="xl-video-tab--content-ul">
               <li v-for="(list, index) of vmsVideo" :key="index" class="xl-video-tab--content-li">
                 <h4>{{ list.title }}</h4>
-                <video height="200" controls preload="metadata" :poster="list.cover">
+                <video height="200" controls preload="metadata" :poster="list.cover" style="object-fit: cover;">
                   <source :src="list.customObj.url" :type="`video/${list.customObj.type}`">
                   您的浏览器不支持 HTML5 video 标签。
                 </video>
@@ -159,7 +159,7 @@
             <ul class="xl-video-tab--content-ul">
               <li v-for="(list, index) of xlVideo" :key="index" class="xl-video-tab--content-li">
                 <h4>{{ list.title }}</h4>
-                <video height="200" controls preload="metadata" :poster="list.cover">
+                <video height="200" controls preload="metadata" :poster="list.cover" style="object-fit: cover;">
                   <source :src="list.customObj.url" :type="`video/${list.customObj.type}`">
                   您的浏览器不支持 HTML5 video 标签。
                 </video>

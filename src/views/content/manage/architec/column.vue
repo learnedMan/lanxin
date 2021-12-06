@@ -697,6 +697,9 @@ import ChildPage1 from './pages/c_page1'
             label: '电视+点播',
             value: 'tv_and_vod'
           },{
+            label: '点播',
+            value: 'vod'
+          },{
             value: 'radio',
             label: '广播'
           },{

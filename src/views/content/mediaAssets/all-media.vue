@@ -445,7 +445,7 @@ export default {
     //默认时间
     defaultDate() {
        var dt = new Date();
-       dt.setMonth( dt.getMonth()-2 );
+       dt.setMonth( dt.getMonth()-12 );
        let t1 = dt.toLocaleString()
        let arr = t1.trim().split(" ")
        let time = arr[0].replace(/\//g,"-")
@@ -737,9 +737,10 @@ export default {
       getChannels({
           with_special_channels: 'topic'
       }).then(res => {
+        let arr = ['product','topic','broadcast','radio_replay','radio_channel','radio_live','tv_channel','tv_replay','tv_live']
         this.channelsList = res.map(n => ({
           ...n,
-          disabled: true
+          disabled: arr.includes(n.type),
         }))
         this.changeChannelName(this.channelsList)
       })
