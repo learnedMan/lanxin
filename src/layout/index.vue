@@ -3,15 +3,17 @@
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" />
     <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}" style=" position: fixed;
-            top: 0;
-            z-index: 1000;
-            width: calc(100% - 210px);">
+      <div :class="{'fixed-header':fixedHeader}" :style="{
+            position: 'fixed',
+            top: 0,
+            zIndex: 1000,
+            width:sidebar.opened ? 'calc( 100% - 210px)': 'calc( 100% - 54px)'
+         }">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
       <!-- <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
+        <navbar />width:sidebar.opened ? calc( 100% - '210px'):calc( 100% - '54px')
         <tags-view v-if="needTagsView" />
       </div> -->
       <app-main />

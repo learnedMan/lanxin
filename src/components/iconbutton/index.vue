@@ -37,6 +37,7 @@ import tc from '@/assets/iconbox/套餐.png'
 import xx from '@/assets/iconbox/下线.png'
 import shjd from '@/assets/iconbox/审核进度.png'
 import czjl from '@/assets/iconbox/操作记录.png'
+import bf from '@/assets/iconbox/播放.png'
 export default {
   props: {
     label: {
@@ -79,7 +80,8 @@ export default {
       ztwglb:ztwglb,
       appbbgl:appbbgl,
       ys:ys,
-      tc:tc
+      tc:tc,
+      bf:bf
     }
   },
   computed: {

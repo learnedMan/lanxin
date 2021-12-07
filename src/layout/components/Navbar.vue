@@ -158,6 +158,7 @@ export default {
   },
   created(){
     this.options = this.u_info.site_list || []
+    console.log('this.sidebar',this.sidebar)
   },
   methods: {
     /* 切换站点 */

@@ -2053,6 +2053,7 @@ export default {
           // arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max','extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num','extra.allow_share'];
           arr = [...baseTopItem, 'extra.link.type', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num','extra.allow_share'];
           const type = this.from.extra.link.type;
+          this.from.extra.template_style = '240'
           if (type === 'target_obj'){
             arr.push('target_obj');
           } else if(['outer_link', 'auth_link', 'newspaper'].includes(type)) { 
