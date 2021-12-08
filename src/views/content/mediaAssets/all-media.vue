@@ -422,6 +422,8 @@ export default {
     }
   },
   created() {
+    let id = this.$route.query?.id || ''
+    this.queryParams.keyword = id
     this.getList()
     this.getChannels()
     this.defaultDate()
@@ -507,10 +509,12 @@ export default {
       this.dateValue = ''
       Object.assign(this.queryParams, {
         startdate: '',
+        type: '',
+        keyword: '',
         enddate: '',
         page: 1
       })
-      this.resetForm('queryForm')
+      // this.resetForm('queryForm')
     },
     /*
       * 搜索

@@ -6,7 +6,7 @@
 </style>
 <template>
     <div class="xl-component-menu">
-      <el-scrollbar wrap-class="scrollbar-wrapper">
+      <el-scrollbar wrap-class="scrollbar-wrapper" style="width: 200px">
         <el-menu
           :default-active="activeMenu"
           @select="handleSelect"

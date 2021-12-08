@@ -869,10 +869,14 @@
         this.createDate = '';
         Object.assign(this.queryParams, {
           startdate: '',
+          live: '',
+          broadcast_type: '',
+          status: '',
+          keyword: '',
           enddate: '',
           page: 1
         })
-        this.resetForm('queryForm')
+        // this.resetForm('queryForm')
       },
       /* 搜索 */
       handleQuery () {
@@ -1079,6 +1083,7 @@
     },
     created() {
       this.queryParams.keyword = this.$route.query?.title || '';
+      this.queryParams.keyword = this.$route.query?.id || '';
       this.getChannels();
     },
     activated() {

@@ -17698,7 +17698,7 @@ UE.plugins['video'] = function (){
                 if(ext == 'ogv') ext = 'ogg';
                 str = '<video' + (id ? ' id="' + id + '"' : '') + ' class="' + classname + ' video-js" ' + (align ? ' style="float:' + align + '"': '') +
                     ' controls preload="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}">' +
-                    '<source src="' + url + '" type="video/' + ext + '" /></video>';
+                    '<source src="' + url + '" type="video/' + ext + '" /></video><br/>';
                 break;
         }
         return str;
@@ -20051,6 +20051,13 @@ UE.plugins['table'] = function () {
 
                 var caption = domUtils.findParentByTagName(me.selection.getStart(), 'caption', true),
                     range = me.selection.getRange();
+                    var child = range.startContainer;
+                if (child != null) {
+                    var previouNode=child.previousElementSibling;
+                    if (child.length==1&&previouNode != null&&previouNode.tagName == "VIDEO") {
+                            domUtils.remove(previouNode);
+                        }
+                }
                 if (range.collapsed && caption && isEmptyBlock(caption)) {
                     me.fireEvent('saveScene');
                     var table = caption.parentNode;

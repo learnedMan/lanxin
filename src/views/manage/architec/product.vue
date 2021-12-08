@@ -321,7 +321,7 @@
               style="width: 350px"
               autocomplete="off"
               placeholder="请输入链接"
-              v-model="form.extra.policy.privacy_policy"
+              v-model="form.extra.policy.user_policy"
             ></el-input>
           </el-form-item>
           <el-form-item label-width="150px" label="隐私政策链接" prop="extra.policy.user_policy">
@@ -330,7 +330,7 @@
               style="width: 350px"
               autocomplete="off"
               placeholder="请输入链接"
-              v-model="form.extra.policy.user_policy"
+              v-model="form.extra.policy.privacy_policy"
             ></el-input>
           </el-form-item>
           <el-form-item label-width="150px" label="是否开启社区" prop="extra.enable_community">

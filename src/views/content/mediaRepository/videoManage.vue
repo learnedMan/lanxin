@@ -40,13 +40,13 @@
     <div class="xl-video">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="vms视频库" name="0" class="xl-video-tab">
-          <xl-menu :menus="vmsChannel" :active-menu="vmsParams.defaultActive" v-if="showVmsChannel" @select="menuChange($event, 'vmsParams')"></xl-menu>
+          <xl-menu  :menus="vmsChannel" :active-menu="vmsParams.defaultActive" v-if="showVmsChannel" @select="menuChange($event, 'vmsParams')"></xl-menu>
           <div class="xl-video-tab--content">
             <el-form
               :model="vmsParams"
               :inline="true"
             >
-              <el-form-item prop="keyword">
+              <el-form-item label="视频名称:" prop="keyword">
                 <el-input
                   v-model="vmsParams.keyword"
                   placeholder="请输入关键字"
@@ -56,7 +56,7 @@
                   @keyup.enter.native="getVideoList('vmsParams')"
                 />
               </el-form-item>
-              <el-form-item>
+              <el-form-item label="同步时间:">
                 <el-date-picker
                   v-model="vmsParams.dateValue"
                   type="daterange"
@@ -81,30 +81,62 @@
                 </el-button>
               </el-form-item>
             </el-form>
-            <ul class="xl-video-tab--content-ul">
-              <li v-for="(list, index) of vmsVideo" :key="index" class="xl-video-tab--content-li">
-                <h4>{{ list.title }}</h4>
-                <video height="200" controls preload="metadata" :poster="list.cover" style="object-fit: cover;">
-                  <source :src="list.customObj.url" :type="`video/${list.customObj.type}`">
-                  您的浏览器不支持 HTML5 video 标签。
-                </video>
-                <div class="bottom">
-                  <el-button v-points = "1500" type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
-                  <el-dropdown size="mini" @command="changeVideo($event, list)">
-                    <el-button v-points = "1500" type="primary" size="mini">
-                      {{ list.customObj.label }}<i class="el-icon-arrow-down el-icon--right"></i>
-                    </el-button>
-                    <el-dropdown-menu slot="dropdown" style="width: 60px;text-align: center">
-                      <el-dropdown-item
-                        v-for="(item, k) of list.customObj.arr"
-                        :key="k"
-                        :command="item"
-                      >{{ item.label }}</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </div>
-              </li>
-            </ul>
+            <div class="xl-video-tab--content-ul" style="width: 98%">
+                  <el-table
+                    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                    border
+                    v-loading="loading"
+                    :data="vmsVideo"
+                  >
+                <el-table-column label="ID" width="60px" align="center" prop="id" />
+                <el-table-column
+                  label="视频封面"
+                  width="150px"
+                  align="center"
+                  prop="cover"
+                  :show-overflow-tooltip="true"
+                >
+                  <template slot-scope="scope">
+                    <img
+                      :src="scope.row.cover"
+                      alt=""
+                      style="width: 50px; height: 50px;"
+                    />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="视频名称"
+                  align="center"
+                  prop="title"
+                  :show-overflow-tooltip="true"
+                />
+                <el-table-column
+                  label="时长"
+                  align="center"
+                  prop="duration"
+                >
+                 <template slot-scope="scope">
+                   <span>{{getTime(scope.row.duration)}}</span>
+                 </template>
+                </el-table-column>
+                <!-- <el-table-column
+                  label="创建时间"
+                  align="center"
+                  prop="created_at"
+                  :show-overflow-tooltip="true"
+                /> -->
+                <el-table-column width="280px" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <Iconbutton icontype="bf" label="播放" @fatherMethod="play(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="fz" label="复制" @fatherMethod="openLink(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+
             <pagination
               v-show="vmsParams.total > 0"
               :total="vmsParams.total"
@@ -121,7 +153,7 @@
               :model="xlParams"
               :inline="true"
             >
-              <el-form-item prop="keyword">
+              <el-form-item label="视频名称:" prop="keyword">
                 <el-input
                   v-model="xlParams.keyword"
                   placeholder="请输入关键字"
@@ -131,7 +163,7 @@
                   @keyup.enter.native="getVideoList('xlParams')"
                 />
               </el-form-item>
-              <el-form-item>
+              <el-form-item label="同步时间:">
                 <el-date-picker
                   v-model="xlParams.dateValue"
                   type="daterange"
@@ -156,30 +188,61 @@
                 </el-button>
               </el-form-item>
             </el-form>
-            <ul class="xl-video-tab--content-ul">
-              <li v-for="(list, index) of xlVideo" :key="index" class="xl-video-tab--content-li">
-                <h4>{{ list.title }}</h4>
-                <video height="200" controls preload="metadata" :poster="list.cover" style="object-fit: cover;">
-                  <source :src="list.customObj.url" :type="`video/${list.customObj.type}`">
-                  您的浏览器不支持 HTML5 video 标签。
-                </video>
-                <div class="bottom">
-                  <el-button v-points = "1500" type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
-                  <el-dropdown size="mini" @command="changeVideo($event, list)">
-                    <el-button v-points = "1500" type="primary" size="mini">
-                      {{ list.customObj.label }}<i class="el-icon-arrow-down el-icon--right"></i>
-                    </el-button>
-                    <el-dropdown-menu slot="dropdown" style="width: 60px;text-align: center">
-                      <el-dropdown-item
-                        v-for="(item, k) of list.customObj.arr"
-                        :key="k"
-                        :command="item"
-                      >{{ item.label }}</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </div>
-              </li>
-            </ul>
+            <div class="xl-video-tab--content-ul" style="width: 98%">
+              <el-table
+                    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                    border
+                    v-loading="loading"
+                    :data="xlVideo"
+                  >
+                <el-table-column label="ID" width="60px" align="center" prop="id" />
+                <el-table-column
+                  label="视频封面"
+                  width="150px"
+                  align="center"
+                  prop="cover"
+                  :show-overflow-tooltip="true"
+                >
+                  <template slot-scope="scope">
+                    <img
+                      :src="scope.row.cover"
+                      alt=""
+                      style="width: 50px; height: 50px;"
+                    />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="视频名称"
+                  align="center"
+                  prop="title"
+                  :show-overflow-tooltip="true"
+                />
+                <el-table-column
+                  label="时长"
+                  align="center"
+                  prop="duration"
+                >
+                 <template slot-scope="scope">
+                   <span>{{getTime(scope.row.duration)}}</span>
+                 </template>
+                </el-table-column>
+                <!-- <el-table-column
+                  label="创建时间"
+                  align="center"
+                  prop="created_at"
+                  :show-overflow-tooltip="true"
+                /> -->
+                <el-table-column width="280px" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <Iconbutton icontype="bf" label="播放" @fatherMethod="play(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="fz" label="复制" @fatherMethod="openLink(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
             <pagination
               v-show="xlParams.total > 0"
               :total="xlParams.total"
@@ -190,6 +253,75 @@
           </div>
         </el-tab-pane>
       </el-tabs>
+      <el-dialog
+      width="640px"
+      title="视频"
+      :visible.sync="VideoDialog.show"
+    >
+      <video height="400" width="600" controls>
+        <source :src="VideoDialog.url">
+        您的浏览器不支持 video 标签。
+      </video>
+    </el-dialog>
+    <el-dialog
+      width="640px"
+      title="修改"
+      :visible.sync="editDialog.show"
+    >
+       <el-form :model="editDialog.form" :rules="rules" ref="dataForm">
+         <el-form-item  label-width="120px" label="视频名称:" prop="name">
+          <el-input style="width: 300px" autocomplete="off" placeholder="请输入视频名称" v-model="editDialog.form.name"></el-input>
+        </el-form-item>
+        <el-form-item  label-width="120px" label="视频封面图:" prop="cover">
+           <cropper
+            :count="1"
+            :showTip="false"
+            v-model="editDialog.cover"
+            />
+        </el-form-item>
+       </el-form>
+        <div class="dialog-footer" slot="footer">
+          <el-button v-points = "1500" @click="closeDialog">取 消</el-button>
+          <el-button v-points = "1500" @click="enterDialog" type="primary">确 定</el-button>
+         </div>
+    </el-dialog>
+    <el-dialog
+      width="80%"
+      title="链接地址"
+      :visible.sync="linkDialog.show"
+    >
+     <el-table
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+        border
+        :data="linkDialog.tableData"
+      >
+          <el-table-column
+            label="类型"
+            align="center"
+            prop="format"
+            width="80px"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="码率"
+            align="center"
+            prop="rate"
+            width="80px"
+            :show-overflow-tooltip="true"
+          />
+           <el-table-column
+            label="地址"
+            align="center"
+            prop="path"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column width="120px" label="操作" align="center">
+            <template slot-scope="scope">
+              <Iconbutton icontype="fz" label="复制" @fatherMethod="copy(scope.row)"></Iconbutton>
+            </template>
+          </el-table-column>
+        </el-table>
+    </el-dialog>
     </div>
 </template>
 
@@ -197,9 +329,10 @@
   import { getVideoChannel, getVideos } from '@/api/content.js'
   import xlMenu from './menu'
   import xlMenuL from './menuL'
+  import Cropper from '@/components/Cropper'
     export default {
       components: {
-        xlMenu,xlMenuL
+        xlMenu,xlMenuL,Cropper
       },
       data() {
         return {
@@ -207,7 +340,26 @@
           vmsChannel: [], // vms栏目
           vmsVideo: [], // vms视频列表
           xlChannel: [], // 新蓝云栏目
+          loading: true,
           xlVideo: [], // 新蓝视频列表
+          VideoDialog: {
+            show: false,
+            url: ''
+          },
+          editDialog: {
+            show: false,
+            cover: [],
+            form: {
+              name: '',
+            },
+          },
+           rules: {
+              name: [ { required: true, message: "请输入视频名称", trigger: "blur" } ]
+            },
+          linkDialog: {
+            show: false,
+            tableData: []
+          },
           pickerOptions: {
             shortcuts: [{
               text: '最近一周',
@@ -276,6 +428,44 @@
         }
       },
       methods: {
+         /* 播放视频 */
+        play (row) {
+          console.log('视频详情',row)
+          let url = row.item_list[0].path
+          this.VideoDialog = {
+            show: true,
+            url: url
+          }
+        },
+        /*打开复制弹框*/
+        openLink(row) {
+          this.linkDialog = {
+            show: true,
+            tableData: row.item_list
+          }
+        },
+        /*复制*/
+        copy(row) {
+          console.log('地址',row)
+        },
+        /*编辑*/
+        editdata(row) {
+          console.log('编辑',row)
+          let arr = [{ path: row.cover, status: 'success' }]
+          this.editDialog = {
+             show: true,
+             cover: arr,
+             form: {
+               name: row.title || ''
+             }
+          }
+        },
+        closeDialog() {
+          this.editDialog.show = false
+        },
+        enterDialog() {
+          this.editDialog.show = false
+        },
         /* 设置默认激活项 */
         getDefaultActive (data) {
           if(!data) return '';
@@ -300,6 +490,18 @@
           this.xlVideo = [];
           this[status].vms_channel_id = val;
           this.getVideoList(status);
+        },
+        /*时间转换*/
+        getTime(value) {
+          let result = parseInt(value)
+          let h = Math.floor(result / 3600) < 10 ? '0' + Math.floor(result / 3600) : Math.floor(result / 3600);
+          let m = Math.floor((result / 60 % 60)) < 10 ? '0' + Math.floor((result / 60 % 60)) : Math.floor((result / 60 % 60));
+          let s = Math.floor((result % 60)) < 10 ? '0' + Math.floor((result % 60)) : Math.floor((result % 60));
+          let res = '';
+          if(h !== '00') res += `${h}:`;
+          if(m !== '00') res += `${m}:`;
+          res += `${s}`;
+          return res;
         },
         /* 视频库切换 */
         handleClick (tag) {
@@ -345,11 +547,15 @@
         /* 获取视频列表 */
         getVideoList (identifier) {
           let params;
+          this.loading = true
           params = { ...this[identifier] };
           delete params.dateValue, delete params.total, delete params.defaultActive;
           params.site_id = this.site_id;
           const rateMap = ['超清', '高清', '普清', '模糊'];
           getVideos(params).then(res => {
+            console.log('res表格数据', res.data)
+            // const arr = res.data || []
+            this.loading = false
             const arr = res.data.map(n => {
               const arr = n.item_list.sort((a, b) => b.rate - a.rate).map((item, index) => ({ ...item, label: rateMap[index] }));
               return {

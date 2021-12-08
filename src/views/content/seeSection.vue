@@ -323,6 +323,12 @@
                     label="修改"
                     @fatherMethod="handleEdit(scope.row)"
                   ></Iconbutton>
+                  <!-- 编辑 -->
+                  <Iconbutton
+                    icontype="xg"
+                    label="修改母稿"
+                    @fatherMethod="handleEditFater(scope.row)"
+                  ></Iconbutton>
                   <!-- 删除 -->
                   <Iconbutton
                     icontype="sc"
@@ -1015,6 +1021,16 @@ export default {
         id,
         show: true,
         disabled: false
+      }
+    },
+    /*修改母稿*/ 
+    handleEditFater(row) {
+      console.log('row',row)
+      let id = row.script_id,type = row.type
+      if(type == 'news' || type == 'video' || type == 'album' || type == 'outer_link') {
+        this.$router.push({ name: 'All-media', query: { id }})
+      }else if(type == 'broadcast') {
+         this.$router.push({ name: 'StudioList', query: { id }})
       }
     },
     /* 审核状态修改 */
