@@ -770,7 +770,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button v-points = "1500" @click="dialog.show = false">
+        <el-button v-points = "1500" @click="cancelDialog">
           取 消
         </el-button>
         <el-button v-points = "1500"
@@ -1644,6 +1644,7 @@ export default {
       titleOldValue: '',
       sourceId: '',// sourceId 敏感词检测
       newsId: '', //保存草稿再发布需要的id
+      channel_idOld: [], //
       editorSaveFlag: true,// 自动保存开关
       from: {
         author_name: '', // 作者
@@ -2086,6 +2087,15 @@ export default {
         }
       })
     },
+    /*发布栏目取消*/ 
+    cancelDialog() {
+      this.dialog.show = false
+      if (this.scriptsId == null && this.id == null) {
+        this.dialog.form.channel_id = []
+      }else{
+        this.dialog.form.channel_id = this.channel_idOld
+      }
+    },
     /*
      * 返回上一级
     */
@@ -2437,7 +2447,10 @@ export default {
           }
         }// 表单
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
-        if(!this.disabled && this.typeDetails === 'script') this.dialog.form.channel_id = res.news.map(n => n.channel_id)
+        if(!this.disabled && this.typeDetails === 'script') {
+          this.dialog.form.channel_id = res.news.map(n => n.channel_id)
+          this.channel_idOld = res.news.map(n => n.channel_id)
+        }
         if (this.from.extra.type === 'news'&& !this.disabled) {
           if (localStorage.getItem('editNews')) {
             let list = JSON.parse(localStorage.getItem('editNews'))
