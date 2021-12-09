@@ -103,6 +103,9 @@
           <el-form-item  label-width="120px" label="个性化域名" prop="extra.custom_domain">
             <el-input :disabled="editflag" style="width: 300px" autocomplete="off" placeholder="请输入个性化域名" v-model="form.extra.custom_domain"></el-input>
           </el-form-item>
+           <el-form-item  label-width="120px" label="预览域名" prop="extra.preview_domain">
+            <el-input :disabled="editflag" style="width: 300px" autocomplete="off" placeholder="请输入预览域名" v-model="form.extra.preview_domain"></el-input>
+          </el-form-item>
           <el-form-item  label-width="120px" label="蓝云租户" prop="extra.uni_site">
             <el-input :disabled="editflag" style="width: 300px" autocomplete="off" placeholder="请输入蓝云租户" v-model="form.extra.uni_site"></el-input>
           </el-form-item>
@@ -140,6 +143,12 @@
           <el-form-item el-form-item  label-width="120px" label="允许外部人员直接发布稿件" prop="extra.allow_www_publish">
             <el-select :disabled="editflag" v-model="form.extra.allow_www_publish" placeholder="请选择">
               <el-option v-for="item in outloginoptions" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item el-form-item  label-width="120px" label="敏感词开关" prop="extra.enable_sensitive_word_filter">
+            <el-select :disabled="editflag" v-model="form.extra.enable_sensitive_word_filter" placeholder="请选择">
+              <el-option v-for="item in sensitiveWordoptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -192,6 +201,13 @@ import {
             },{
               value: 0,
               label: '否'
+            }],
+            sensitiveWordoptions: [{
+              value: '1',
+              label: '启用'
+            },{
+              value: '0',
+              label: '禁用'
             }],
             recordform:{},
             rules: {
@@ -253,7 +269,9 @@ import {
                 uni_site:'',
                 vms_site_id:'',
                 custom_domain: '',
+                preview_domain: '',
                 blue_cloud_tag: '',
+                enable_sensitive_word_filter: '0',
                 bigdata_settings: {
                   signature: '',
                   customer_id: '',
