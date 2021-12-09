@@ -10,7 +10,14 @@ export function getScripts(query) {
     params: query
   })
 }
-
+/*新闻上线*/
+export function getOnline(query) {
+  return request({
+    url: '/api/news/',
+    method: 'get',
+    params: query
+  })
+}
 /*复制文稿*/
 export function copyScript(id, data) {
   return request({
@@ -227,6 +234,15 @@ export function getVideos(params) {
     url: '/api/videos',
     method: 'get',
     params
+  })
+}
+
+/*修改视频*/
+export function changeVideo(id, data) {
+  return request({
+    url: `/api/videos/${id}`,
+    method: 'patch',
+    data
   })
 }
 

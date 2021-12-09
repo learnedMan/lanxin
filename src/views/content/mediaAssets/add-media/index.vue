@@ -1642,6 +1642,7 @@ export default {
       editorOldValue: '',
       titleChageValue: false,
       titleOldValue: '',
+      enable_sensitive_word_filter: '0', //敏感词开关 0 禁止 1开启
       sourceId: '',// sourceId 敏感词检测
       newsId: '', //保存草稿再发布需要的id
       channel_idOld: [], //
@@ -1844,8 +1845,11 @@ export default {
     },
   },
   async created() {
-    let siteName = this.$store.state.user.u_info.site.name
+    let newsAdd =  JSON.parse(localStorage.getItem('addNews'))
+    if(!Array.isArray(newsAdd))localStorage.removeItem('addNews')
+    let siteName = this.$store.state.user.u_info.site.name,siteObj = this.$store.state.user.u_info
     console.log('站点信息',this.$store.state.user.u_info)
+    this.enable_sensitive_word_filter = siteObj.site.extra.enable_sensitive_word_filter || '0'
     if(siteName.indexOf('青田')> -1) {
       let obj = {
         label: '早播报',
@@ -1889,7 +1893,7 @@ export default {
     delLocalStorage() {
       let id = this.scriptsId || this.id
       if (id) {
-        let list = JSON.parse(localStorage.getItem('editNews'))
+        let list = JSON.parse(localStorage.getItem('editNews')) || []
         list.map((v,index) =>{
           if(v.id == id) {
             list.splice(index,1)
@@ -1898,7 +1902,7 @@ export default {
         localStorage.setItem('editNews',JSON.stringify(list))
       }else{
         let siteId = this.$store.state.user.u_info.site_id //站点id
-        let list = JSON.parse(localStorage.getItem('addNews'))
+        let list = JSON.parse(localStorage.getItem('addNews')) || []
          list.map((v,index) =>{
           if(v.siteId == siteId) {
             list.splice(index,1)
@@ -1913,7 +1917,7 @@ export default {
     getproductList(){
         getproduct({}).then((response) => {
             let obj = response.data.find(v => v.type == 'app');
-            this.sourceId = obj.source_id;
+            this.sourceId = obj.source_id || '';
         });
       },
     /*抓取编辑器文章中的第一张图片*/
@@ -1925,7 +1929,7 @@ export default {
       })
       if (arrimg != null && arrimg.length > 0) {
         return arrimg
-      } 
+      }
       return ''
     },
     /*编辑器每30s自动保存*/ 
@@ -2161,57 +2165,52 @@ export default {
       if (this.checkStatus) obj.status = 1
       console.log('obj',obj)
       // this.checkSensit()
-      // if(this.from.extra.type == 'news') {
-      //     let checkData = {
-      //     text: this.from.extra.content,
-      //     sourceId: this.sourceId,
-      //     terminalType: 6
-      //   }
-      //   checkSensitword(checkData).then(res =>{
-      //       let data = res.data
-      //       let type = this.formatFilterType(data.filterType)
-      //       if(data.filterType){
-      //         let text = data.keywords[0]
-      //         this.$confirm(`您所提交的内容中包含${type}类敏感词汇”${text}“，是否确认继续提交？`, '提示', {
-      //           confirmButtonText: '确定',
-      //           cancelButtonText: '取消',
-      //           type: 'warning'
-      //         }).then(() => {
-      //           let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
-      //             return promise.then((res) => {
-      //               this.$message.success(tip)
-      //               this.dialog.show = false;
-      //               cb && cb(res);
-      //             })
-      //         }).catch(() => {
-      //           this.$message({
-      //             type: 'info',
-      //             message: '已取消删除'
-      //           });
-      //         });
-      //       }else{
-      //         let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+      if(this.from.extra.type == 'news' && this.enable_sensitive_word_filter == '1') {
+          let checkData = {
+          text: this.from.extra.content,
+          sourceId: this.sourceId,
+          terminalType: 6
+        }
+        checkSensitword(checkData).then(res =>{
+            let data = res.data
+            let type = this.formatFilterType(data.filterType)
+            if(data.filterType){
+              let text = data.keywords[0]
+              this.$confirm(`您所提交的内容中包含${type}类敏感词汇”${text}“，是否确认继续提交？`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.fetchAcation(tip, cb,id,obj)
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消删除'
+                });
+              });
+            }else{
+               this.fetchAcation(tip, cb,id,obj)
+            }
+        }).catch(()=>{
+            this.fetchAcation(tip, cb,id,obj)
+        })
+      }else{
+         this.fetchAcation(tip, cb,id,obj)
+      }
+      //  let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
       //         return promise.then((res) => {
       //           this.$message.success(tip)
       //           this.dialog.show = false;
       //           cb && cb(res);
       //         })
-      //       }
-      //   })
-      // }else{
-      //   let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
-      //         return promise.then((res) => {
-      //           this.$message.success(tip)
-      //           this.dialog.show = false;
-      //           cb && cb(res);
-      //         })
-      // }
-       let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
-              return promise.then((res) => {
-                this.$message.success(tip)
-                this.dialog.show = false;
-                cb && cb(res);
-              })
+    },
+    fetchAcation(tip, cb,id,obj) {
+      let promise = this.typeDetails === 'script' ? changeScripts(id, obj) : changeNews(id, obj)
+        return promise.then((res) => {
+          this.$message.success(tip)
+          this.dialog.show = false;
+          cb && cb(res);
+       })
     },
     formatFilterType(val) {
           let obj = {
@@ -2256,7 +2255,7 @@ export default {
         if (valid) {
           this.handleSave('保存草稿成功!',(res)=>{
             this.newsId = res.data.id
-            this.delLocalStorage()
+            if(this.from.extra.type === 'news') this.delLocalStorage()
             this.editorSaveFlag = false
           })
         }else {
@@ -2276,8 +2275,8 @@ export default {
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存成功', ({ data: { id } = {} }) => {
-            this.delLocalStorage()
             if(id) this.$router.push({ name: 'Preview', query: { id, type: 'scripts' }})
+            if(this.from.extra.type === 'news') this.delLocalStorage()
           })
         }else {
           this.$message.warning(Object.keys(obj).map(key => obj[key][0].message).join())
@@ -2299,13 +2298,13 @@ export default {
             this.checkStatus = true
             const { channelId } = this.$route.query
             if(channelId) return this.handleSave('保存并发布成功', () => {
-              this.delLocalStorage()
+              if(this.from.extra.type === 'news') this.delLocalStorage()
               this.handleReturn();
             })
             this.dialog.show = true
           }else if (this.typeDetails === 'news') {
             this.handleSave('保存草稿成功!', () => {
-              this.delLocalStorage()
+              if(this.from.extra.type === 'news') this.delLocalStorage()
               this.$emit('refresh')
               this.handleClose()
               })

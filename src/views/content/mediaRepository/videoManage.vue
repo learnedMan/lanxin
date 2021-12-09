@@ -64,7 +64,7 @@
                   size="small"
                   unlink-panels
                   range-separator="~"
-                  value-format="yyyy-MM-dd HH:mm:ss"
+                  value-format="yyyy-MM-dd"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   :picker-options="pickerOptions"
@@ -72,6 +72,7 @@
                 />
               </el-form-item>
               <el-form-item>
+                <el-button v-points = "1500" type="primary" @click="rest('vmsParams')" size="mini" >重置</el-button>
                 <el-button v-points = "1500"
                   type="primary"
                   size="mini"
@@ -120,18 +121,17 @@
                    <span>{{getTime(scope.row.duration)}}</span>
                  </template>
                 </el-table-column>
-                <!-- <el-table-column
-                  label="创建时间"
+                <el-table-column
+                  label="同步时间"
                   align="center"
                   prop="created_at"
                   :show-overflow-tooltip="true"
-                /> -->
+                />
                 <el-table-column width="280px" label="操作" align="center">
                   <template slot-scope="scope">
                     <Iconbutton icontype="bf" label="播放" @fatherMethod="play(scope.row)"></Iconbutton>
                     <Iconbutton icontype="fz" label="复制" @fatherMethod="openLink(scope.row)"></Iconbutton>
-                    <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
-                    <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row,0)"></Iconbutton>
                   </template>
                 </el-table-column>
               </el-table>
@@ -179,6 +179,7 @@
                 />
               </el-form-item>
               <el-form-item>
+                <el-button v-points = "1500" type="primary" @click="rest('xlParams')" size="mini" >重置</el-button>
                 <el-button v-points = "1500"
                   type="primary"
                   size="mini"
@@ -198,7 +199,7 @@
                 <el-table-column label="ID" width="60px" align="center" prop="id" />
                 <el-table-column
                   label="视频封面"
-                  width="150px"
+                  width="100px"
                   align="center"
                   prop="cover"
                   :show-overflow-tooltip="true"
@@ -227,18 +228,17 @@
                    <span>{{getTime(scope.row.duration)}}</span>
                  </template>
                 </el-table-column>
-                <!-- <el-table-column
-                  label="创建时间"
+                <el-table-column
+                  label="同步时间"
                   align="center"
                   prop="created_at"
                   :show-overflow-tooltip="true"
-                /> -->
+                />
                 <el-table-column width="280px" label="操作" align="center">
                   <template slot-scope="scope">
                     <Iconbutton icontype="bf" label="播放" @fatherMethod="play(scope.row)"></Iconbutton>
                     <Iconbutton icontype="fz" label="复制" @fatherMethod="openLink(scope.row)"></Iconbutton>
-                    <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row)"></Iconbutton>
-                    <Iconbutton icontype="sc" label="删除" @fatherMethod="deldata(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row,1)"></Iconbutton>
                   </template>
                 </el-table-column>
               </el-table>
@@ -326,7 +326,7 @@
 </template>
 
 <script>
-  import { getVideoChannel, getVideos } from '@/api/content.js'
+  import { getVideoChannel, getVideos, changeVideo } from '@/api/content.js'
   import xlMenu from './menu'
   import xlMenuL from './menuL'
   import Cropper from '@/components/Cropper'
@@ -389,8 +389,8 @@
           },
           vmsParams: {
             keyword: '', // 关键词
-            startdate: '', // 开始时间
-            enddate: '', // 结束时间
+            startDate  : '', // 开始时间
+            endDate: '', // 结束时间
             dateValue: '', // 时间
             cloud: 0, // vms标识符
             vms_channel_id: '', // 栏目id
@@ -401,8 +401,8 @@
           }, // 搜索条件
           xlParams: {
             keyword: '', // 关键词
-            startdate: '', // 开始时间
-            enddate: '', // 结束时间
+            startDate  : '', // 开始时间
+            endDate: '', // 结束时间
             dateValue: '', // 时间
             cloud: 1, // vms标识符
             vms_channel_id: '', // 栏目id
@@ -430,12 +430,17 @@
       methods: {
          /* 播放视频 */
         play (row) {
-          console.log('视频详情',row)
           let url = row.item_list[0].path
           this.VideoDialog = {
             show: true,
             url: url
           }
+        },
+        rest(value) {
+          this[value].keyword = ''
+          this[value].dateValue = ''
+          this[value].startDate   = ''
+          this[value].endDate = ''
         },
         /*打开复制弹框*/
         openLink(row) {
@@ -444,27 +449,64 @@
             tableData: row.item_list
           }
         },
+        copyLink(data){
+          let url = data;
+          let oInput = document.createElement('input');
+          oInput.value = url;
+          document.body.appendChild(oInput);
+          oInput.select(); // 选择对象;
+          document.execCommand("Copy"); // 执行浏览器复制命令
+          this.$message({
+            message: '复制成功',
+            type: 'success'
+          });
+          oInput.remove()
+      },
         /*复制*/
         copy(row) {
-          console.log('地址',row)
+          this.copyLink(row.path)
         },
         /*编辑*/
-        editdata(row) {
-          console.log('编辑',row)
+        editdata(row,cloud) {
           let arr = [{ path: row.cover, status: 'success' }]
           this.editDialog = {
              show: true,
              cover: arr,
+             id: row.id,
+             cloud,
              form: {
                name: row.title || ''
              }
           }
+          console.log('editDialog',this.editDialog)
         },
         closeDialog() {
           this.editDialog.show = false
         },
         enterDialog() {
-          this.editDialog.show = false
+          // this.editDialog.show = false
+          this.$refs["dataForm"].validate((valid) => {
+          if (!valid) return;
+          let data = {
+            title: this.editDialog.form.name,
+            cover: this.editDialog.cover[0].path,
+            cloud: this.editDialog.cloud
+          }
+          console.log('封面图片',this.editDialog.cover)
+          console.log('提交数据',data)
+           changeVideo(this.editDialog.id,data).then(res => {
+             if(res.status_code == 200) {
+               this.$message({
+                 message: '修改成功',
+                 type: 'success'
+               });
+               this.editDialog.show = false
+               this.getVideoList(data.cloud? 'xlParams' : 'vmsParams')
+             }else{
+               this.$message.warning(res.message);
+             }
+            })
+         })
         },
         /* 设置默认激活项 */
         getDefaultActive (data) {
@@ -481,8 +523,8 @@
         /* 时间变化 */
         handleDateChange (val, identifier) {
           const arr = val || ['', ''];
-          this[identifier].startdate = arr[0];
-          this[identifier].enddate = arr[1];
+          this[identifier].startDate   = arr[0];
+          this[identifier].endDate = arr[1];
         },
         /* 获取视频列表数据 */
         menuChange (val, status) {

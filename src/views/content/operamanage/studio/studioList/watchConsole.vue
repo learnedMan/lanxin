@@ -48,6 +48,9 @@
                   <el-button v-points = "1500" type="text" size="small" @click="handleEnd">提前停播(点击立即停播)</el-button>
                   <el-button v-points = "1500" type="text" size="small" @click="handleSetEnd">调整直播结束时间</el-button>
                 </span>
+                <span style="margin-left: 10px" v-if="detail.live === 2">
+                  <el-button v-points = "1500" type="text" size="small" @click="handleStartLive">重新开始</el-button>
+                </span>
               </span>
             </el-col>
           </el-row>
@@ -187,6 +190,63 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 设置重新开始 -->
+    <el-dialog
+      width="600px"
+      :title="dialogStartLive.title"
+      :visible.sync="dialogStartLive.show"
+    >
+      <el-form
+        ref="startLiveForm"
+        :model="dialogStartLive.form"
+        :rules="dialogStartLive.rules"
+      >
+        <el-form-item
+          label-width="120px"
+          label="开始时间"
+          prop="old"
+        >
+          <el-date-picker
+            v-model="dialogStartLive.form.old"
+            type="datetime"
+            align="right"
+            size="small"
+            unlink-panels
+            range-separator="~"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+        </el-form-item>
+        <el-form-item
+          label-width="120px"
+          label="结束时间"
+          prop="now"
+        >
+          <el-date-picker
+            v-model="dialogStartLive.form.now"
+            type="datetime"
+            align="right"
+            size="small"
+            unlink-panels
+            range-separator="~"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button v-points = "1500" @click="dialogStartLive.show = false">
+          取 消
+        </el-button>
+        <el-button v-points = "1500"
+          type="primary"
+          @click="enterStartLiveDialog"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -258,7 +318,24 @@
                 { validator: validatorEnd, trigger: 'change' }
               ]
             }
-          }
+          },
+          dialogStartLive: {
+            title: '重新开始',
+            show: false,
+            form: {
+               old: '',
+               now: '',
+            },
+            rules: {
+              old: [
+                { required: true, message: '请选择开播时间', trigger: 'change' },
+              ],
+              now: [
+                { required: true, message: '请选择结束时间', trigger: 'change' },
+                { validator: validatorEnd, trigger: 'change' }
+              ]
+            }
+          },
         }
       },
       computed: {
@@ -365,6 +442,19 @@
             this.$refs.endForm?.resetFields();
           })
         },
+        /*直播间重新开始*/
+        handleStartLive() {
+           Object.assign(this.dialogStartLive, {
+            show: true,
+            form: {
+              old: this.detail.extra.start_time,
+              now: this.detail.extra.end_time
+            }
+          })
+          this.$nextTick(() => {
+            this.$refs.startLiveForm?.resetFields();
+          })
+        },
         /* 确认结束时间 */
         enterEndDialog () {
           this.$refs.endForm?.validate(val => {
@@ -382,6 +472,31 @@
             }
           })
         },
+        enterStartLiveDialog () {
+            this.$refs.startLiveForm?.validate(val => {
+            if(val) {
+              let start = new Date(this.dialogStartLive.form.old).getTime();
+              let end = new Date(this.dialogStartLive.form.now).getTime();
+              if(start >= end) {
+                  this.$message('开播时间必须小于现结束时间')
+              }else if(start > new Date()) {
+                changeStudio(this.id, {
+                  extra: {
+                    start_time: this.dialogStartLive.form.old,
+                    end_time: this.dialogStartLive.form.now
+                  }
+                }).then(() => {
+                  this.$message.success('修改成功!');
+                  this.getList();
+                }).finally(() => {
+                  this.dialogStartLive.show = false;
+                })
+              }else{
+                this.$message('开播时间必须大于当前时间')
+              }
+            }
+          })
+         },
         /* 提前停播 */
         handleEnd () {
           this.$confirm('确认提前停播?', '提示', {

@@ -1,6 +1,10 @@
 <style type="text/scss" lang="scss" scoped>
   .xl-media-all {
-
+    .onLineImg{
+      img{
+        transform: rotate(180deg);
+      }
+    }
   }
 </style>
 <template>
@@ -218,8 +222,17 @@
               label="修改"
               @fatherMethod="handleEdit(scope.row)"
             ></Iconbutton>
+             <!-- 一键上线 -->
+            <Iconbutton
+              v-if="onLineOrOffline(scope.row.news)"
+              class="onLineImg"
+              icontype="xx"
+              label="上线"
+              @fatherMethod="handleOnline(scope.row)"
+            ></Iconbutton>
             <!-- 一键下线 -->
             <Iconbutton
+              v-else
               icontype="xx"
               label="下线"
               @fatherMethod="handleOffline(scope.row)"
@@ -320,7 +333,7 @@
 </template>
 
 <script>
-import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript, offlineNews } from '@/api/content'
+import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript, offlineNews,changeNewsStatus } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 import FileSaver from 'file-saver'
@@ -457,6 +470,10 @@ export default {
        this.queryParams.enddate = time2
        this.dateValue = [str,time2]
 		},
+    onLineOrOffline(news) {
+      let stuat = news.some(v => v.status == 0)
+      return stuat
+    },
     formatDate() {
 			var date = new Date();
 			var YY = date.getFullYear() + '-'; 
@@ -626,6 +643,33 @@ export default {
           this.$message({
             message: message,
             type: status_code === 200? 'success' : 'warning'
+          })
+          this.getList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    /*一键上线*/
+    handleOnline(row) {
+      let list = row.news,str = ''
+      list.map(v=>{
+        str+= v.id + ','
+      })
+      let ids = str.slice(0,-1)
+      let params = { ids,status: 1}
+      this.$confirm(`此操作将上线该文稿下所有新闻, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        changeNewsStatus(params).then(() => {
+          this.$message({
+            message: '上线成功',
+            type:'success'
           })
           this.getList()
         })

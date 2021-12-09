@@ -1,7 +1,7 @@
 <template>
   <div class="iconbutton">
     <div class="icon_button" v-points = "1500" @click="childMethod">
-      <img class="img" :src="imgsrc" alt="">{{label}}
+      <img :class="['img', label == '上线' ? 'img-rate': '']" :src="imgsrc" alt="">{{label}}
     </div>
   </div>
 </template>
@@ -110,6 +110,13 @@ export default {
     align-items: center;
     .img{
       margin-right: 5px;
+    }
+    .img-rate{
+      -webkit-transform: rotate(180deg);
+      -moz-transform: rotate(180deg);
+      -o-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+      transform: rotate(180deg);
     }
   }
 }

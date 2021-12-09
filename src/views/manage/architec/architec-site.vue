@@ -168,9 +168,13 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item el-form-item  label-width="120px" label="敏感词开关" prop="extra.enable_sensitive_word_filter">
+            <el-select v-model="form.extra.enable_sensitive_word_filter" placeholder="请选择">
+              <el-option v-for="item in sensitiveWordoptions" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
         </div>
-        
-        
       </el-form>
 
       <div class="dialog-footer" slot="footer">
@@ -225,6 +229,13 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
         },{
           value: '0',
           label: '否'
+        }],
+        sensitiveWordoptions: [{
+          value: '1',
+          label: '启用'
+        },{
+          value: '0',
+          label: '禁用'
         }],
         dialogFormVisible: false,
         form: {},
@@ -349,6 +360,7 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
                 custom_domain: '',
                 preview_domain: '',
                 blue_cloud_tag: '',
+                enable_sensitive_word_filter: '0',
                 bigdata_settings: {
                   signature: '',
                   customer_id: '',
