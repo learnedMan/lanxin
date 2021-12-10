@@ -332,7 +332,6 @@
               ],
               now: [
                 { required: true, message: '请选择结束时间', trigger: 'change' },
-                { validator: validatorEnd, trigger: 'change' }
               ]
             }
           },
@@ -477,9 +476,7 @@
             if(val) {
               let start = new Date(this.dialogStartLive.form.old).getTime();
               let end = new Date(this.dialogStartLive.form.now).getTime();
-              if(start >= end) {
-                  this.$message('开播时间必须小于现结束时间')
-              }else if(start > new Date()) {
+              if(start < end) {
                 changeStudio(this.id, {
                   extra: {
                     start_time: this.dialogStartLive.form.old,
@@ -492,7 +489,7 @@
                   this.dialogStartLive.show = false;
                 })
               }else{
-                this.$message('开播时间必须大于当前时间')
+                  this.$message('开播时间必须小于现结束时间')
               }
             }
           })

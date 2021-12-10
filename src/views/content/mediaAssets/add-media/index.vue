@@ -2041,7 +2041,8 @@ export default {
       if (this.typeDetails === 'news') baseTopItem.push('extra.publish_timer.status')
       // 显示发布时间
       if (this.typeDetails === 'news' && this.from.extra.publish_timer.status === '1') baseTopItem.push('extra.publish_timer.publish_at')
-      const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
+      // const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
+      const baseBottomItem = ['author_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
       if (this.from.extra.is_original === '0') baseBottomItem.splice(2, 0, 'extra.source')
       switch (this.from.extra.type) {

@@ -318,7 +318,7 @@
                   ></Iconbutton>
                   <!-- 编辑 -->
                   <Iconbutton
-                    v-if="scope.row.status !== 1 && scope.row.type !== 'broadcast'"
+                    v-if="scope.row.type !== 'broadcast'"
                     icontype="xg"
                     label="修改"
                     @fatherMethod="handleEdit(scope.row)"
