@@ -8,7 +8,9 @@
       <el-tabs tab-position="left"
        v-model="activeName"
         style="height: 100%;">
-        <el-tab-pane label="按部门查看" name="department">
+        <!-- <el-tab-pane label="员工发稿情况" name="statffDispatches"> -->
+           <el-tab-pane label="按部门查看" name="department">
+          <!-- <statff-dispatches></statff-dispatches> -->
           <el-form
             ref="department"
             :model="department.queryParams"
@@ -62,16 +64,11 @@
             style="width: 100%"
             @selection-change="handleSelectionChange($event, 'department')"
           >
-            <!--<el-table-column
-              type="selection"
-              width="55"
-            />-->
             <el-table-column
               label="部门名称"
               align="center"
             >
               <template slot-scope="scope">
-                <!-- <span style="color: #409EFF;cursor: pointer" @click="watchDetail(scope.row)">{{ scope.row.department_name }}</span> -->
                 <span style="color: #409EFF;cursor: pointer" @click="goPerson(scope.row)">{{ scope.row.department_name }}</span>
               </template>
             </el-table-column>
@@ -88,6 +85,7 @@
           </el-table>
         </el-tab-pane>
         <el-tab-pane label="按人员查看" name="person">
+          <!-- <news-data></news-data> -->
           <el-form
             ref="person"
             :model="person.queryParams"
@@ -150,10 +148,6 @@
             style="width: 100%"
             @selection-change="handleSelectionChange($event, 'person')"
           >
-            <!--<el-table-column
-              type="selection"
-              width="55"
-            />-->
             <el-table-column
               label="人员"
               align="center"
@@ -188,7 +182,14 @@
   import {
   getDepartmentList,
   } from '@/api/manage'
+  import newsData from  './newsData'
+import StatffDispatches from './statffDispatches.vue'
+
     export default {
+      components: {
+        newsData,
+        StatffDispatches
+      },
       data() {
         return {
           activeName: 'department',
