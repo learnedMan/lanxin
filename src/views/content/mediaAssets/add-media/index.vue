@@ -1729,6 +1729,7 @@ export default {
     'from.extra.content': {
       handler: function(newValue,oldValue) {
         // 230 231需要三张图
+        if(this.from.extra.type != 'news') return
         var bdhhtml = document.getElementById('bdh').innerHTML;
         if(bdhhtml==1){
           this.$message.warning('正在图片本地化，请稍后')
@@ -2059,7 +2060,7 @@ export default {
           // arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max','extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num','extra.allow_share'];
           arr = [...baseTopItem, 'extra.link.type', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num','extra.allow_share'];
           const type = this.from.extra.link.type;
-          this.from.extra.template_style = '240'
+          if (this.scriptsId == null && this.id == null) this.from.extra.template_style = '240'
           if (type === 'target_obj'){
             arr.push('target_obj');
           } else if(['outer_link', 'auth_link', 'newspaper'].includes(type)) { 
