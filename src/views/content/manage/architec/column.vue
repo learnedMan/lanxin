@@ -1179,6 +1179,8 @@ import ChildPage1 from './pages/c_page1'
       },
       //删除栏目
       handleDelete(row){
+        console.log('row------',row)
+        return
         this.$confirm('此操作将永久删除id为'+row.id+'的栏目, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
