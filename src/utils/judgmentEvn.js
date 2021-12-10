@@ -7,4 +7,5 @@ export const VUE_APP_REQUEST2_API = (isTest || !isProduct)? 'http://10.30.10.158
 export const VUE_APP_REQUEST3_API = (isTest || !isProduct)? 'http://10.30.10.158/api' : 'https://p-internal.cztv.com/api';
 export const VUE_APP_REQUEST4_API = (isTest || !isProduct)? 'https://a-zrtghd.cztvcloud.com:4000' : 'https://a-zrtghd.cztvcloud.com:4000';
 export const VUE_APP_XLY_API = (isTest || !isProduct)? 'http://dev-a.cztvcloud.com' : 'https://a.cztvcloud.com';
-export const VUE_APP_STATIS = (isTest || !isProduct)? 'http://algo-api-dev.cztv.com' : 'https://algo.cztv.com';
+// export const VUE_APP_STATIS = (isTest || !isProduct)? 'http://algo-api-dev.cztv.com' : 'https://algo.cztv.com';
+export const VUE_APP_STATIS = (isTest || !isProduct)? 'https://algo.cztv.com' : 'https://algo.cztv.com';

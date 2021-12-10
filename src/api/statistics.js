@@ -41,4 +41,16 @@ export function fileImport(url, data) {
   return download(url, data, `statistics_kpi.xlsx`)
 }
 
+// 员工发稿列表
+export function kpiStatisticsByAuthor(data) {
+  return request({
+    url: '/api/statistics/kpi/statisticsByAuthor',
+    method: 'post',
+    data: data
+  })
+}
 
+/* 员工发稿列表 */
+export function fileImportAuthor(url, data) {
+  return download(url, data, `statisticsAuthor.xlsx`)
+}
