@@ -50,6 +50,11 @@ export function listnewsNum(data) {
   })
 }
 
+/* 稿件数量列表导出 */
+export function fileImportNews(url, data) {
+  return download(url, data, `statisticsNews.xlsx`)
+}
+
 // 员工发稿列表
 export function kpiStatisticsByAuthor(data) {
   return request({

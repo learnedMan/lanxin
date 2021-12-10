@@ -7,7 +7,7 @@
           >
             <el-form-item label="发布时间:" prop="Date">
               <el-date-picker
-                v-model="newsData.queryParams.Date"
+                v-model="dateValue"
                 type="daterange"
                 align="right"
                 size="small"
@@ -16,23 +16,26 @@
                 value-format="yyyy-MM-dd"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
+                :picker-options="pickerOptions"
                 @change="handleDateChange($event)"
               />
             </el-form-item>
-             <el-form-item  label="部门:" prop="departmentId">
+             <el-form-item  label="部门:" prop="departmentList">
                 <el-cascader
                 :show-all-levels = false
                 v-model="newsData.queryParams.departmentList"
                 :options="departmentList"
-                :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
+                :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
                 clearable></el-cascader>
           </el-form-item>
-          <el-form-item label="编辑：">
-          <el-input
-            v-model="newsData.queryParams.editor"
-            placeholder="请输入编辑名称"
-            clearable
-          />
+          <el-form-item label="编辑：" prop="authorlList">
+            <el-cascader
+                :show-all-levels = false
+                v-model="newsData.queryParams.authorlList"
+                :options="authorlList"
+                filterable
+                :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
+                clearable></el-cascader>
           </el-form-item>
         <!-- <el-form-item label="来源：">
           <el-input
@@ -90,49 +93,63 @@
             <el-table-column
               label="序号"
               align="center"
-              width="80"
-              prop="num"
+              type="index"
+              min-width="5%"
             />
              <el-table-column
               label="稿件标题"
               align="center"
               prop="title"
-            />
+              show-overflow-tooltip
+              min-width="30%"
+            >
+             <template slot-scope="scope">
+               <div class="watch-detail-btn">{{ scope.row.title }}</div>
+            </template>
+             </el-table-column>
              <el-table-column
               label="发布栏目"
               align="center"
-              prop="num"
+              prop="channelName"
+              show-overflow-tooltip
+              min-width="8%"
             />
             <el-table-column
               label="部门"
                align="center"
-               prop="num"
+               prop="departmentName"
+               min-width="8%"
             >
             </el-table-column>
              <el-table-column
               label="编辑"
               align="center"
-              prop="num"
+              prop="auhtorName"
+              min-width="8%"
             />
             <el-table-column
               label="点击量(真实)"
               align="center"
-              prop="num"
+              prop="real_view"
+              min-width="5%"
             />
-             <el-table-column
+             <!-- <el-table-column
               label="点击量(美化)"
               align="center"
               prop="num"
-            />
+            /> -->
              <el-table-column
               label="链接地址"
               align="center"
-              prop="num"
+              prop="extra.url"
+              show-overflow-tooltip
+              min-width="15%"
             />
             <el-table-column
               label="创建时间"
               align="center"
-              prop="real_view"
+              prop="created_at"
+              min-width="8%"
             />
           </el-table>
            <pagination
@@ -145,16 +162,25 @@
     </div>
 </template>
 <script>
-import { getDepartmentList,getChannels } from '@/api/manage'
-import { listnewsNum } from '@/api/statistics'
+import { getDepartmentList,getChannels,getUser } from '@/api/manage'
+import { listnewsNum,fileImportNews } from '@/api/statistics'
 export default {
     name: 'newsDate',
+    props: {
+      channelsList: {
+         type: Array,
+         default: ()=> []
+      },
+      departmentList: {
+        type: Array,
+        default: ()=> []
+      },
+    },
     data() {
         return{
             newsData: {
                 queryParams: {
                 beginTime: '',
-                departmentId: '',
                 editor: '',
                 channelList: [],
                 departmentList: [],
@@ -163,28 +189,47 @@ export default {
                 endTime: '',
                 page: 1,
                 pageSize: 10,
-                Date: ''
                 },
             loading: false,
             tableData: [],
             selection: []
           }, // 部门
           total: 0,
-          departmentList: [],
-          channelsList: [],
-           cascaderOption: {
+          dateValue:[],
+          // departmentList: [],
+          // channelsList: [],
+          authorlList: [],
+          cascaderOption: {
             checkStrictly: true, // 是否强制父子不关联
             emitPath: false, // 返回值是否为数组
             value: 'id', // 选项值
             label: 'name', // 显示值
             multiple: true, // 多选
-        }, // 级联选择器配置
+          }, // 级联选择器配置
+          pickerOptions: {
+            onPick: obj => {
+              this.pickerMinDate = new Date(obj.minDate).getTime();
+            },
+            disabledDate: time => {
+              if (this.pickerMinDate) {
+                const day1 = 366 * 24 * 3600 * 1000;
+                let maxTime = this.pickerMinDate + day1;
+                let minTime = this.pickerMinDate - day1;
+                return time.getTime() > maxTime || time.getTime() < minTime;
+              }
+            }
+          }
         }
     },
     created() {
-        this.getDepartList()
-        this.getChannelsList()
+        this.dateValue =  this.timeDefault;
+        this.newsData.queryParams.beginTime = this.dateValue[0];
+        this.newsData.queryParams.endTime = this.dateValue[1];
+
+        // this.getDepartList()
+        // this.getChannelsList()
         this.getNewsList()
+        this.getUersList()
     },
      computed: {
         site ({ $store: { state: { user: { u_info } } } }) {
@@ -193,6 +238,19 @@ export default {
             productId: data.product_id || '',
             customerId: data.customer_id || ''
           }
+        },
+         // 默认时间
+        timeDefault () {
+          let date = new Date()
+          // 通过时间戳计算
+          let defalutStartTime = date.getTime() - 30 * 24 * 3600 * 1000 // 转化为时间戳
+          let defalutEndTime = date.getTime()
+          let startDateNs = new Date(defalutStartTime)
+          let endDateNs = new Date(defalutEndTime)
+          // 月，日 不够10补0
+          defalutStartTime = startDateNs.getFullYear() + '-' + ((startDateNs.getMonth() + 1) >= 10 ? (startDateNs.getMonth() + 1) : '0' + (startDateNs.getMonth() + 1)) + '-' + (startDateNs.getDate() >= 10 ? startDateNs.getDate() : '0' + startDateNs.getDate())
+          defalutEndTime = endDateNs.getFullYear() + '-' + ((endDateNs.getMonth() + 1) >= 10 ? (endDateNs.getMonth() + 1) : '0' + (endDateNs.getMonth() + 1)) + '-' + (endDateNs.getDate() >= 10 ? endDateNs.getDate() : '0' + endDateNs.getDate())
+          return [defalutStartTime, defalutEndTime]
         }
       },
     methods: {
@@ -202,22 +260,35 @@ export default {
           this.newsData.queryParams.beginTime = arr[0];
           this.newsData.queryParams.endTime = arr[1];
         },
-        /*获取部门数据*/ 
-        getDepartList(){
-            getDepartmentList().then(res => {
-            this.departmentList = res;
-            })
+         /* 重置 */
+      handleReset() {
+        this.dateValue=this.timeDefault;
+        this.newsData.queryParams.beginTime = this.dateValue[0];
+        this.newsData.queryParams.endTime = this.dateValue[1];
+
+        this.newsData.queryParams.channelList = [];
+        this.newsData.queryParams.departmentList = [];
+        this.newsData.queryParams.authorlList = [];
+        // this.resetForm('queryForm')
+      },
+       /* 导出 */
+        handleImport () {
+          let data = {
+            ...this.newsData.queryParams,
+            customerId: this.site.customerId,
+            productId: this.site.productId,
+          }
+          fileImportNews('/api/statistics/kpi/exportNews',this.removePropertyOfNullFor0(data))
         },
-      /*获取栏目数据*/ 
-      getChannelsList() {
-        getChannels({
-          with_special_channels: 'topic'
-        }).then(res => {
-          let arr = ['product','topic','broadcast','radio_replay','radio_channel','radio_live','tv_channel','tv_replay','tv_live']
-          this.channelsList = res.map(n => ({
-            ...n,
-          disabled: arr.includes(n.type),
-          }))
+      /*获取编辑者列表*/ 
+      getUersList() {
+        let params = {
+          model: 'User',
+          page: 1,
+          pageSize: 999999
+        }
+         getUser(params).then(res => {
+           this.authorlList = res.data
         })
       },
       /*获取稿件列表*/ 
@@ -231,12 +302,13 @@ export default {
          listnewsNum(this.removePropertyOfNullFor0(params)).then(res => {
             this.newsData.loading = false;
             this.newsData.tableData = res.data;
+            this.total = res.total
           })
       },
     }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .newsData{
   .el-cascader-menu__wrap {
       height: 554px!important;

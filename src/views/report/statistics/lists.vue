@@ -14,7 +14,7 @@
         </el-tab-pane>
         <!-- <el-tab-pane label="按人员查看" name="person"> -->
           <el-tab-pane label="按稿件数据" name="newsData">
-          <news-data></news-data>
+          <news-data :channelsList="channelsList" :departmentList="dataList"></news-data>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -23,7 +23,7 @@
 <script>
   import { listDepartmentKpi, listAuthorDetail, fileImport } from '@/api/statistics'
   import {
-  getDepartmentList,
+  getDepartmentList,getChannels
   } from '@/api/manage'
   import newsData from  './newsData'
 import StatffDispatches from './statffDispatches.vue'
@@ -35,8 +35,9 @@ import StatffDispatches from './statffDispatches.vue'
       },
       data() {
         return {
-          activeName: 'newsData',
+          activeName: 'statffDispatches',
           dataList: [],
+          channelsList: [], //栏目数据
           department: {
             queryParams: {
               beginTime: '',
@@ -100,6 +101,18 @@ import StatffDispatches from './statffDispatches.vue'
           this.dataList = res;
         })
       },
+       /*获取栏目数据*/ 
+      getChannelsList() {
+        getChannels({
+          with_special_channels: 'topic'
+        }).then(res => {
+          let arr = ['product','topic','broadcast','radio_replay','radio_channel','radio_live','tv_channel','tv_replay','tv_live']
+          this.channelsList = res.map(n => ({
+            ...n,
+          disabled: arr.includes(n.type),
+          }))
+        })
+      },
         /* 获取部门数据 */
         getDepartmentList () {
           const department = this.department;
@@ -147,6 +160,7 @@ import StatffDispatches from './statffDispatches.vue'
       },
       created() {
         this.getDepart();
+        this.getChannelsList()
         if(this.site.productId && this.site.customerId) {
           this.getDepartmentList();
           this.getPersonLists();
