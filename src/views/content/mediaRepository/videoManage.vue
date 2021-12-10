@@ -256,9 +256,10 @@
       <el-dialog
       width="640px"
       title="视频"
+      @close="closeVideo"
       :visible.sync="VideoDialog.show"
     >
-      <video height="400" width="600" controls>
+      <video height="400" width="600" controls id="video">
         <source :src="VideoDialog.url">
         您的浏览器不支持 video 标签。
       </video>
@@ -441,6 +442,10 @@
           this[value].dateValue = ''
           this[value].startDate   = ''
           this[value].endDate = ''
+        },
+        closeVideo() {
+          let myVideo = document.getElementById('video')
+          myVideo.pause()
         },
         /*打开复制弹框*/
         openLink(row) {

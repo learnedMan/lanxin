@@ -8,9 +8,10 @@
       <el-tabs tab-position="left"
        v-model="activeName"
         style="height: 100%;">
-        <el-tab-pane label="员工发稿情况" name="statffDispatches">
-          <statff-dispatches></statff-dispatches>
-          <!-- <el-form
+        <!-- <el-tab-pane label="员工发稿情况" name="statffDispatches"> -->
+           <el-tab-pane label="按部门查看" name="department">
+          <!-- <statff-dispatches></statff-dispatches> -->
+          <el-form
             ref="department"
             :model="department.queryParams"
             :inline="true"
@@ -81,11 +82,11 @@
               align="center"
               prop="real_view"
             />
-          </el-table> -->
+          </el-table>
         </el-tab-pane>
-        <el-tab-pane label="稿件数据" name="newsData">
-          <news-data></news-data>
-          <!-- <el-form
+        <el-tab-pane label="按人员查看" name="person">
+          <!-- <news-data></news-data> -->
+          <el-form
             ref="person"
             :model="person.queryParams"
             :inline="true"
@@ -170,7 +171,7 @@
               align="center"
               prop="real_view"
             />
-          </el-table> -->
+          </el-table>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -191,7 +192,7 @@ import StatffDispatches from './statffDispatches.vue'
       },
       data() {
         return {
-          activeName: 'statffDispatches',
+          activeName: 'department',
           dataList: [],
           department: {
             queryParams: {
@@ -296,7 +297,7 @@ import StatffDispatches from './statffDispatches.vue'
         },
         goPerson (row) {
           console.log('row',row)
-          this.activeName = 'newsData'
+          this.activeName = 'person'
           this.person.queryParams.departmentId = row.department_id
           this.getPersonLists()
         },

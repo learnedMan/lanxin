@@ -164,6 +164,14 @@
         label="编辑"
         align="center"
         min-width="6%"
+        prop="editor_name"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+      v-if="!isMobile"
+        label="作者"
+        align="center"
+        min-width="6%"
         prop="author_name"
         :show-overflow-tooltip="true"
       />
@@ -615,7 +623,7 @@ export default {
     * */
     handleEdit(row) {
       const { id, news } = row;
-      if(news.some(n => n.status === 1)) return this.$message.warning('该文稿下存在已发布的新闻，请点击“一键下线”按钮下线所有新闻后再进行编辑')
+      //if(news.some(n => n.status === 1)) return this.$message.warning('该文稿下存在已发布的新闻，请点击“一键下线”按钮下线所有新闻后再进行编辑')
       this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media' }})
     },
     /* 预览 */
