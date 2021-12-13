@@ -8,7 +8,7 @@
 export default {
     data () {
         return {
-            src:'https://a-zrtghd.cztvcloud.com:3001/'
+            src:'https://a-zrtghd.cztvcloud.com:3001/#/sent_news_list/all_sent_news'
         }
     },
     // methods: {
