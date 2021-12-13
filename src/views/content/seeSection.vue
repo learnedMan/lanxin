@@ -193,7 +193,12 @@
             tooltip-effect="dark"
             style="width: 100%;overflow: auto"
             :key="tablekey"
+            @selection-change="handleSelectionChange"
           >
+           <el-table-column
+              type="selection"
+              min-width="3%"
+            />
             <el-table-column
             v-if="!isMobile"
               label="新闻ID"
@@ -604,6 +609,7 @@ export default {
     return {
       tablekey:false,
       channelsList: [], // 栏目
+      selection: [], //表格选中项
       typeOptions: [
         {
           label: '全部',
@@ -820,6 +826,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.dialogForm?.clearValidate('push_time')
       })
+    },
+     handleSelectionChange(arr) {
+      this.selection = arr.map(n => n.id)
     },
      /*表格导出*/ 
      exportExcel () {

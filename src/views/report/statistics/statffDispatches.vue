@@ -22,7 +22,7 @@
               <el-cascader
                   filterable
                   v-model="queryParams.departmentList"
-                  style="width: 200px"
+                  style="width: 250px"
                   :options="departmentList"
                   :props="departmentOption"
                   clearable/>
@@ -31,8 +31,9 @@
                <el-cascader
                   filterable
                   v-model="queryParams.channelList"
-                  style="width: 200px"
+                  style="width: 250px"
                   :options="channelsList"
+                  collapse-tags
                   :props="channelOption"
                   clearable/>
             </el-form-item>
@@ -114,7 +115,7 @@ export default {
           channelsList: [], // 栏目列表
           departmentList:[],//部门；列表
           channelOption: {
-            checkStrictly: true, // 是否强制父子不关联
+            checkStrictly: false, // 是否强制父子不关联
             emitPath: false, // 返回值是否为数组
             value: 'id', // 选项值
             label: 'name', // 显示值

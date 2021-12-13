@@ -106,11 +106,7 @@ import StatffDispatches from './statffDispatches.vue'
         getChannels({
           with_special_channels: 'topic'
         }).then(res => {
-          let arr = ['product','topic','broadcast','radio_replay','radio_channel','radio_live','tv_channel','tv_replay','tv_live']
-          this.channelsList = res.map(n => ({
-            ...n,
-          disabled: arr.includes(n.type),
-          }))
+           this.channelsList = res
         })
       },
         /* 获取部门数据 */

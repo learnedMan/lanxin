@@ -23,6 +23,7 @@
              <el-form-item  label="部门:" prop="departmentList">
                 <el-cascader
                 :show-all-levels = false
+                 style="width: 250px"
                 v-model="newsData.queryParams.departmentList"
                 :options="departmentList"
                 :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
@@ -31,6 +32,7 @@
           <el-form-item label="编辑：" prop="authorlList">
             <el-cascader
                 :show-all-levels = false
+                 style="width: 250px"
                 v-model="newsData.queryParams.authorlList"
                 :options="authorlList"
                 filterable
@@ -50,9 +52,11 @@
         >
           <el-cascader
             filterable
+            style="width: 250px"
             v-model="newsData.queryParams.channelList"
             :options="channelsList"
             :props="cascaderOption"
+            collapse-tags
             clearable
           />
         </el-form-item>
@@ -200,7 +204,7 @@ export default {
           // channelsList: [],
           authorlList: [],
           cascaderOption: {
-            checkStrictly: true, // 是否强制父子不关联
+            checkStrictly: false, // 是否强制父子不关联
             emitPath: false, // 返回值是否为数组
             value: 'id', // 选项值
             label: 'name', // 显示值
@@ -270,6 +274,10 @@ export default {
         this.newsData.queryParams.departmentList = [];
         this.newsData.queryParams.authorlList = [];
         // this.resetForm('queryForm')
+      },
+       /* 搜索 */
+      handleQuery() {
+        this.getNewsList()
       },
        /* 导出 */
         handleImport () {

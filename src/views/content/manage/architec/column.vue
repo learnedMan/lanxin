@@ -1179,19 +1179,19 @@ import ChildPage1 from './pages/c_page1'
       },
       //删除栏目
       handleDelete(row){
-        console.log('row------',row)
-        return
-        this.$confirm('此操作将永久删除id为'+row.id+'的栏目, 是否继续?', '提示', {
+       let tip = row?.children?.length ? '删除当前栏目会影响该栏目子栏目数据展示，是否确认删除？' : `此操作将永久删除id为'${row.id}'的栏目, 是否继续?`
+        // return
+        this.$confirm(tip, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           delchannels(row.id).then(response => {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            });
-            this.getList();
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+              this.getList();
           })
         }).catch(() => {
           this.$message({
