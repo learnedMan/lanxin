@@ -102,7 +102,8 @@ export function removePropertyOfNull(obj) {
 // 删除对象中空属性（不删调用接口可能报错）
 export function removePropertyOfNullFor0(obj) {
   Object.keys(obj).forEach((item) => {
-    if (obj[item] == null || obj[item] === '') delete obj[item]
+    if (obj[item] == null || obj[item] === '' || obj[item] === []) delete obj[item]
+    if(Array.isArray(obj[item]) && obj[item].length == 0) delete obj[item]
   })
   return obj
 }

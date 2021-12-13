@@ -8,170 +8,13 @@
       <el-tabs tab-position="left"
        v-model="activeName"
         style="height: 100%;">
-        <!-- <el-tab-pane label="员工发稿情况" name="statffDispatches"> -->
-           <el-tab-pane label="按部门查看" name="department">
-          <!-- <statff-dispatches></statff-dispatches> -->
-          <el-form
-            ref="department"
-            :model="department.queryParams"
-            :inline="true"
-          >
-            <el-form-item label="时间区间:" prop="Date">
-              <el-date-picker
-                v-model="department.queryParams.Date"
-                type="daterange"
-                align="right"
-                size="small"
-                unlink-panels
-                range-separator="~"
-                value-format="yyyy-MM-dd"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                @change="handleDateChange($event, 'department')"
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-button v-points = "1500"
-                type="primary"
-                size="mini"
-                @click="handleReset('department')"
-              >
-                重置
-              </el-button>
-              <el-button v-points = "1500"
-                type="primary"
-                size="mini"
-                @click="handleQuery('department')"
-              >
-                搜索
-              </el-button>
-              <el-button v-points = "1500"
-                type="warning"
-                size="mini"
-                @click="handleImport('department')"
-              >
-                导出
-              </el-button>
-            </el-form-item>
-          </el-form>
-          <el-table
-            ref="multipleTable"
-            v-loading="department.loading"
-            :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
-            :data="department.tableData"
-            border
-            tooltip-effect="dark"
-            style="width: 100%"
-            @selection-change="handleSelectionChange($event, 'department')"
-          >
-            <el-table-column
-              label="部门名称"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <span style="color: #409EFF;cursor: pointer" @click="goPerson(scope.row)">{{ scope.row.department_name }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="发稿量"
-              align="center"
-              prop="num"
-            />
-            <el-table-column
-              label="截止昨日点击量"
-              align="center"
-              prop="real_view"
-            />
-          </el-table>
+        <el-tab-pane label="员工发稿情况" name="statffDispatches">
+           <!-- <el-tab-pane label="按部门查看" name="department"> -->
+          <statff-dispatches></statff-dispatches>
         </el-tab-pane>
-        <el-tab-pane label="按人员查看" name="person">
-          <!-- <news-data></news-data> -->
-          <el-form
-            ref="person"
-            :model="person.queryParams"
-            :inline="true"
-          >
-            <el-form-item label="时间区间:" prop="Date">
-              <el-date-picker
-                v-model="person.queryParams.Date"
-                type="daterange"
-                align="right"
-                size="small"
-                unlink-panels
-                range-separator="~"
-                value-format="yyyy-MM-dd"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                @change="handleDateChange($event, 'person')"
-              />
-            </el-form-item>
-            <el-form-item  label="部门:" prop="departmentId">
-            <el-cascader
-            :show-all-levels = false
-            v-model="person.queryParams.departmentId"
-            style="width: 350px"
-            :options="dataList"
-            :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name'}"
-            clearable></el-cascader>
-          </el-form-item>
-            <el-form-item>
-              <el-button v-points = "1500"
-                type="primary"
-                size="mini"
-                @click="handleReset('person')"
-              >
-                重置
-              </el-button>
-              <el-button v-points = "1500"
-                type="primary"
-                size="mini"
-                @click="handleQuery('person')"
-              >
-                搜索
-              </el-button>
-              <el-button v-points = "1500"
-                type="warning"
-                size="mini"
-                @click="handleImport('person')"
-              >
-                导出
-              </el-button>
-            </el-form-item>
-          </el-form>
-          <el-table
-            ref="multipleTable"
-            v-loading="person.loading"
-            :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
-            :data="person.tableData"
-            border
-            tooltip-effect="dark"
-            style="width: 100%"
-            @selection-change="handleSelectionChange($event, 'person')"
-          >
-            <el-table-column
-              label="人员"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <span style="color: #409EFF;cursor: pointer" @click="watchDetail(scope.row)">{{ scope.row.auhtor_name}}</span>
-              </template>
-            </el-table-column>
-             <el-table-column
-              label="部门"
-              align="center"
-              prop="department_name"
-            />
-            <el-table-column
-              label="发稿量"
-              align="center"
-              prop="num"
-            />
-            <el-table-column
-              label="截止昨日点击量"
-              align="center"
-              prop="real_view"
-            />
-          </el-table>
+        <!-- <el-tab-pane label="按人员查看" name="person"> -->
+          <el-tab-pane label="按稿件数据" name="newsData">
+          <news-data :channelsList="channelsList" :departmentList="dataList"></news-data>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -180,7 +23,7 @@
 <script>
   import { listDepartmentKpi, listAuthorDetail, fileImport } from '@/api/statistics'
   import {
-  getDepartmentList,
+  getDepartmentList,getChannels
   } from '@/api/manage'
   import newsData from  './newsData'
 import StatffDispatches from './statffDispatches.vue'
@@ -192,8 +35,9 @@ import StatffDispatches from './statffDispatches.vue'
       },
       data() {
         return {
-          activeName: 'department',
+          activeName: 'statffDispatches',
           dataList: [],
+          channelsList: [], //栏目数据
           department: {
             queryParams: {
               beginTime: '',
@@ -257,6 +101,14 @@ import StatffDispatches from './statffDispatches.vue'
           this.dataList = res;
         })
       },
+       /*获取栏目数据*/ 
+      getChannelsList() {
+        getChannels({
+          with_special_channels: 'topic'
+        }).then(res => {
+           this.channelsList = res
+        })
+      },
         /* 获取部门数据 */
         getDepartmentList () {
           const department = this.department;
@@ -304,6 +156,7 @@ import StatffDispatches from './statffDispatches.vue'
       },
       created() {
         this.getDepart();
+        this.getChannelsList()
         if(this.site.productId && this.site.customerId) {
           this.getDepartmentList();
           this.getPersonLists();

@@ -173,6 +173,30 @@
                   新增新闻
                 </el-button>
                 <el-button v-points = "1500"
+                  type="success"
+                  size="mini"
+                  :disabled="selection.length === 0"
+                  @click="handleBatch('sx')"
+                >
+                  批量上线
+                </el-button>
+                 <el-button v-points = "1500"
+                  type="success"
+                  size="mini"
+                  :disabled="selection.length === 0"
+                  @click="handleBatch('xx')"
+                >
+                  批量下线
+                </el-button>
+                 <el-button v-points = "1500"
+                  type="success"
+                  size="mini"
+                  :disabled="selection.length === 0"
+                  @click="handleBatch('del')"
+                >
+                  批量删除
+                </el-button>
+                <el-button v-points = "1500"
                   type="primary"
                   size="mini"
                   @click="exportExcel"
@@ -193,7 +217,12 @@
             tooltip-effect="dark"
             style="width: 100%;overflow: auto"
             :key="tablekey"
+            @selection-change="handleSelectionChange"
           >
+           <el-table-column
+              type="selection"
+              min-width="3%"
+            />
             <el-table-column
             v-if="!isMobile"
               label="新闻ID"
@@ -576,7 +605,7 @@
 import { getChannels } from '@/api/manage'
 import { getMultiHits } from '@/api/statistics'
 import { addPushDetail} from '@/api/operamanage'
-import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail } from '@/api/content'
+import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail,batchdelNews } from '@/api/content'
 import NewDetail from './reviewNews/detail'
 import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
@@ -604,6 +633,7 @@ export default {
     return {
       tablekey:false,
       channelsList: [], // 栏目
+      selection: [], //表格选中项
       typeOptions: [
         {
           label: '全部',
@@ -820,6 +850,46 @@ export default {
       this.$nextTick(() => {
         this.$refs.dialogForm?.clearValidate('push_time')
       })
+    },
+     handleSelectionChange(arr) {
+      this.selection = arr.map(n => n.id)
+      console.log('selection',this.selection)
+    },
+    handleBatch(val) {
+      let str = ''
+      this.selection.map(v => str+= v + ',' )
+      let ids = str.slice(0,-1)
+      console.log('ids',ids)
+      if(val == 'sx') {
+         changeNewsStatus({
+          ids,
+          status: 1
+        }).then(() => {
+          this.$message.success('修改状态成功')
+          this.getList();
+        }).catch(()=>{
+          this.getList()
+        })
+      }else if(val == 'xx') {
+         changeNewsStatus({
+          ids,
+          status: 2
+        }).then(() => {
+          this.$message.success('修改状态成功')
+          this.getList();
+        }).catch(()=>{
+          this.getList()
+        })
+      }else if(val == 'del') {//batchdelNews
+         batchdelNews({
+          ids,
+        }).then(() => {
+          this.$message.success('删除成功')
+          this.getList();
+        }).catch(()=>{
+          this.getList()
+        })
+      }
     },
      /*表格导出*/ 
      exportExcel () {
