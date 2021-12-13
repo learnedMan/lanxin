@@ -153,6 +153,15 @@ export function changeNewsStatus(data) {
     data
   })
 }
+/*批量删除新闻*/
+
+export function batchdelNews(data) {
+  return request({
+    url: '/api/news/deleteNews',
+    method: 'post',
+    data
+  })
+}
 /* 获取新闻或文稿的操作记录 */
 export function getHistory(params) {
   return request({
