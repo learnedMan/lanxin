@@ -340,7 +340,8 @@ export default {
             baseURL:VUE_APP_REQUEST4_API,
             headers: {
               'authToken': token
-            }
+            },
+            withCredentials: true
           }).then(res => {
             if (res.data.code === 200) {
             }else{
