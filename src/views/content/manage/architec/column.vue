@@ -1244,6 +1244,8 @@ import ChildPage1 from './pages/c_page1'
                 data.extra.template_json = this.styleoptions[i].styleJson
               }
             }
+          }else{
+            data.extra.template_json = null
           }
           console.log('提交的数据',data)
           // return
