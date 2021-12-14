@@ -2,9 +2,9 @@
 .dashboard-container{
   width: 100%;
   min-height: calc(100vh - 84px);
-  // display: flex;
-  // justify-content: space-between;
-  // align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .imgbox{
   width: 100%;
@@ -31,25 +31,22 @@
         ></iframe>
       </el-tab-pane>
     </el-tabs> -->
-    <!-- <iframe
+    <iframe
           :src="secret"
           width="100%"
           :style="{ height: height }"
           frameborder="0"
-        ></iframe> -->
-        <home></home>
+        ></iframe>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import waiting from '@/assets/c_images/waiting.jpg'
-import home from './home.vue'
+
 export default {
   name: 'Dashboard',
-  components: {
-    home
-  },
+  components: {},
   data() {
     return {
       waiting,
