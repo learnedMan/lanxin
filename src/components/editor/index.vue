@@ -173,7 +173,7 @@
     </el-dialog>
     <!-- 选择视频弹框 -->
     <el-dialog
-      width="1000px"
+      width="80%"
       top="4vh"
       :title="videoDialog.title"
       :visible.sync="videoDialog.show"
@@ -208,7 +208,8 @@
       /*编辑器的层级*/ 
       zIndex: {
         type: Number,
-        default: 900
+        // default: 900
+        default: 3000
       },
       /* 水印 */
       watermark: {

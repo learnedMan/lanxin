@@ -26,6 +26,7 @@
                  style="width: 250px"
                 v-model="newsData.queryParams.departmentList"
                 :options="departmentList"
+                collapse-tags
                 :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
                 clearable></el-cascader>
           </el-form-item>
@@ -35,6 +36,7 @@
                  style="width: 250px"
                 v-model="newsData.queryParams.authorlList"
                 :options="authorlList"
+                collapse-tags
                 filterable
                 :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
                 clearable></el-cascader>
@@ -179,6 +181,10 @@ export default {
         type: Array,
         default: ()=> []
       },
+      authorlList: {
+        type: Array,
+        default: ()=> []
+      }
     },
     data() {
         return{
@@ -202,7 +208,7 @@ export default {
           dateValue:[],
           // departmentList: [],
           // channelsList: [],
-          authorlList: [],
+          // authorlList: [],
           cascaderOption: {
             checkStrictly: false, // 是否强制父子不关联
             emitPath: false, // 返回值是否为数组
@@ -229,11 +235,10 @@ export default {
         this.dateValue =  this.timeDefault;
         this.newsData.queryParams.beginTime = this.dateValue[0];
         this.newsData.queryParams.endTime = this.dateValue[1];
-
         // this.getDepartList()
         // this.getChannelsList()
         this.getNewsList()
-        this.getUersList()
+        // this.getUersList()
     },
      computed: {
         site ({ $store: { state: { user: { u_info } } } }) {
@@ -288,17 +293,6 @@ export default {
           }
           fileImportNews('/api/statistics/kpi/exportNews',this.removePropertyOfNullFor0(data))
         },
-      /*获取编辑者列表*/ 
-      getUersList() {
-        let params = {
-          model: 'User',
-          page: 1,
-          pageSize: 999999
-        }
-         getUser(params).then(res => {
-           this.authorlList = res.data
-        })
-      },
       /*获取稿件列表*/ 
       getNewsList() {
          this.newsData.loading = false;
@@ -322,4 +316,12 @@ export default {
       height: 554px!important;
   }
 }
+
+// .newsData .el-cascader__tags {
+//   max-height: 100px !important;
+//   overflow: auto !important; // 勾选的tags出现滚动条显示
+// }
+// .newsData .el-cascader .el-input {
+//   height: 72px !important;
+// }
 </style>

@@ -56,6 +56,21 @@
                   @keyup.enter.native="getVideoList('vmsParams')"
                 />
               </el-form-item>
+              <el-form-item  label="类型:" prop="type">
+                <el-select
+                v-model="vmsParams.type"
+                size="small"
+                placeholder="请选择类型"
+                clearable
+              >
+                <el-option
+                  v-for="item in typeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              </el-form-item>
               <el-form-item label="同步时间:">
                 <el-date-picker
                   v-model="vmsParams.dateValue"
@@ -162,6 +177,21 @@
                   style="width: 200px"
                   @keyup.enter.native="getVideoList('xlParams')"
                 />
+              </el-form-item>
+              <el-form-item  label="类型:" prop="type">
+                <el-select
+                v-model="xlParams.type"
+                size="small"
+                placeholder="请选择类型"
+                clearable
+              >
+                <el-option
+                  v-for="item in typeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
               </el-form-item>
               <el-form-item label="同步时间:">
                 <el-date-picker
@@ -388,10 +418,25 @@
               }
             }]
           },
+          typeOptions: [
+            {
+              label: '全部',
+              value: ''
+            },
+            {
+              label: '视频',
+              value: 1
+            },
+            {
+              label: '音频',
+              value: 2
+            }
+          ],
           vmsParams: {
             keyword: '', // 关键词
             startDate  : '', // 开始时间
             endDate: '', // 结束时间
+            type: '',
             dateValue: '', // 时间
             cloud: 0, // vms标识符
             vms_channel_id: '', // 栏目id
@@ -404,6 +449,7 @@
             keyword: '', // 关键词
             startDate  : '', // 开始时间
             endDate: '', // 结束时间
+            type: '',
             dateValue: '', // 时间
             cloud: 1, // vms标识符
             vms_channel_id: '', // 栏目id

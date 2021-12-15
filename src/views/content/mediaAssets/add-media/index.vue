@@ -818,7 +818,8 @@ export default {
    /*编辑器的层级*/ 
     zIndex: {
       type: Number,
-      default: 900
+      // default: 900
+      default: 3000
     },
   /* 类型 */
     typeDetails: {

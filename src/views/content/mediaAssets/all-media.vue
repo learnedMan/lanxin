@@ -358,7 +358,7 @@ export default {
         type: '',
         startdate: '',
         enddate: '',
-        pageSize: 10,
+        pageSize: 50,
         page: 1
       },
       loading: false,
