@@ -68,3 +68,29 @@ export function kpiStatisticsByAuthor(data) {
 export function fileImportAuthor(url, data) {
   return download(url, data, `statisticsAuthor.xlsx`)
 }
+
+/*来源列表*/
+export function kpiStatisticsBySource(data) {
+  return request({
+    url: '/api/statistics/kpi/statisticsBySource',
+    method: 'post',
+    data: data
+  })
+}
+
+export function fileImportSource(url, data) {
+  return download(url, data, `statisticsSource.xlsx`)
+}
+
+/*部门列表*/
+export function kpiStatisticsByDepartment(data) {
+  return request({
+    url: '/api/statistics/kpi/statisticsByDepartment',
+    method: 'post',
+    data: data
+  })
+}
+
+export function fileImportDepartment(url, data) {
+  return download(url, data, `statisticsByDepartment.xlsx`)
+}
