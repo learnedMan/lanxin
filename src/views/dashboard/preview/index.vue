@@ -47,7 +47,7 @@
         >
           <div class="xl-preview-script--box">
             <div class="xl-preview-script--phone" v-if="flag">
-              <iframe :src="url" frameborder="0" style="height: 100%"></iframe>
+              <iframe :src="returnurl()" frameborder="0" style="height: 100%"></iframe>
             </div>
             <div style="margin-left: 20px;text-align: center">
               <canvas id="canvas" ref="canvas" width="200" height="200"></canvas>
@@ -96,10 +96,18 @@
             this.$message.warning('站点未配置预览域名，请联系管理员去站点管理页面配置');
           }
           return `${previewDomin}?id=${id}&type=${type}&token=${token}`
-          // return `https://h5.cztv.com/qujiang/h5/Preview/?id=815595&type=news&token=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYXRyaXguY3p0di5jb21cL2FwaVwvYXV0aG9yaXphdGlvbnMiLCJpYXQiOjE2Mzk0NDQyMzcsImV4cCI6MTYzOTQ4MDIzNywibmJmIjoxNjM5NDQ0MjM3LCJqdGkiOiIzdzBsMU03dDN0RzZFVzZuIiwic3ViIjoxMzQ2LCJwcnYiOiJmZWY4ODIyYmJjODllNDI5MTVhMWQ4ZjVlYzlmODY2MTFjYjE4MTExIiwiem9uZV9pZCI6Mywic2l0ZV9pZCI6NiwiaWQiOjEzNDYsInByb2R1Y3RzIjoiNywxMywxNiIsInNvdXJjZV9pZHMiOiIyNSwwLDI1In0.R232Ws6f-tzc-tnnLyoKl1NPle64EAg520NIQex3x6k`
+          // return `https://h5.cztv.com/qujiang/h5/Preview/?id=489458&type=scripts&token=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYXRyaXguY3p0di5jb21cL2FwaVwvYXV0aG9yaXphdGlvbnMiLCJpYXQiOjE2Mzk2MzcwNzYsImV4cCI6MTYzOTY3MzA3NiwibmJmIjoxNjM5NjM3MDc2LCJqdGkiOiJQY2hCbmlqTlliRXV0QzdOIiwic3ViIjoxMzQ4LCJwcnYiOiJmZWY4ODIyYmJjODllNDI5MTVhMWQ4ZjVlYzlmODY2MTFjYjE4MTExIiwiem9uZV9pZCI6Mywic2l0ZV9pZCI6NiwiaWQiOjEzNDgsInByb2R1Y3RzIjoiNywxMywxNiIsInNvdXJjZV9pZHMiOiIyNSwwLDI1In0.l_xazTdCH1H-u-yF5nsk-qXf7WZe-61jH6lG3F99jO0`
         }
       },
       methods: {
+        returnurl(){
+          const token = sessionStorage.getItem('token');
+          if(!this.previewDomin){
+            this.$message.warning('站点未配置预览域名，请联系管理员去站点管理页面配置');
+          }
+          return `${this.previewDomin}?id=${this.id}&type=${this.type}&token=${token}`
+          // return `https://h5.cztv.com/qujiang/h5/Preview/?id=489458&type=scripts&token=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYXRyaXguY3p0di5jb21cL2FwaVwvYXV0aG9yaXphdGlvbnMiLCJpYXQiOjE2Mzk2MzcwNzYsImV4cCI6MTYzOTY3MzA3NiwibmJmIjoxNjM5NjM3MDc2LCJqdGkiOiJQY2hCbmlqTlliRXV0QzdOIiwic3ViIjoxMzQ4LCJwcnYiOiJmZWY4ODIyYmJjODllNDI5MTVhMWQ4ZjVlYzlmODY2MTFjYjE4MTExIiwiem9uZV9pZCI6Mywic2l0ZV9pZCI6NiwiaWQiOjEzNDgsInByb2R1Y3RzIjoiNywxMywxNiIsInNvdXJjZV9pZHMiOiIyNSwwLDI1In0.l_xazTdCH1H-u-yF5nsk-qXf7WZe-61jH6lG3F99jO0`
+        },
         getList () {
           let promise;
           if(this.type === 'news') {
