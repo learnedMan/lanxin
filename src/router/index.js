@@ -191,7 +191,7 @@ export const asyncRoutes = [
             component: () => import('@/views/content/mediaAssets/all-media'),
             name: 'All-media',
             permission: 'content.script.list',
-            meta: { title: '所有稿件' }
+            meta: { title: '所有稿件',keepAlive: true } //需要缓存
           },
           {
             path: 'my',

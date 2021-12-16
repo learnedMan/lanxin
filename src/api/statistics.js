@@ -72,7 +72,7 @@ export function fileImportAuthor(url, data) {
 /*来源列表*/
 export function kpiStatisticsBySource(data) {
   return request({
-    url: '/api/statistics/kpi/statisticsBySource',
+    url: '/api/statistics/kpi/source/statistics',
     method: 'post',
     data: data
   })
@@ -93,4 +93,22 @@ export function kpiStatisticsByDepartment(data) {
 
 export function fileImportDepartment(url, data) {
   return download(url, data, `statisticsByDepartment.xlsx`)
+}
+
+/*首页统计数据*/
+export function getHomeData(query) {
+  return request({
+    url: '/api/statistics/analysis/getBasic',
+    method: 'get',
+    params: query
+  })
+}
+
+/*首页折线图*/
+export function getOnlineData(query) {
+  return request({
+    url: '/api/statistics/analysis/getTrendChart',
+    method: 'get',
+    params: query
+  })
 }

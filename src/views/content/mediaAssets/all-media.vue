@@ -1,5 +1,6 @@
 <style type="text/scss" lang="scss" scoped>
   .xl-media-all {
+    min-height: 600px;
     .onLineImg{
       img{
         transform: rotate(180deg);
@@ -8,7 +9,7 @@
   }
 </style>
 <template>
-  <div class="xl-media-all">
+  <div class="xl-media-all" id="mediaAll">
     <div class="search">
       <el-form
         ref="queryForm"
@@ -363,6 +364,7 @@ export default {
       },
       loading: false,
       total: 0, // 总数
+      scrollTop: 0, // 滚动位置
       dateValue: '',
       typeOptions: [
         {
@@ -442,6 +444,16 @@ export default {
       }
     }
   },
+  activated() {
+    this.getList()
+  },
+  beforeRouteLeave(to, from, next) {
+      // 离开组件时保存滚动位置
+      // 注意, 此时需调用路由守卫`beforeRouterLeave`而非生命周期钩子`deactivated`
+      // 因为, 此时利用`deactivated`获取的 DOM 信息已经是新页面得了
+      this.scrollTop = document.documentElement.scrollTop;
+      next();
+  },
   created() {
     let id = this.$route.query?.id || ''
     this.queryParams.keyword = id
@@ -464,6 +476,9 @@ export default {
       const arr = val || ['', '']
       this.queryParams.startdate = arr[0]
       this.queryParams.enddate = arr[1]
+    },
+    handleSrcoll() {
+
     },
     //默认时间
     defaultDate() {
@@ -587,6 +602,11 @@ export default {
           }
         })
         this.total = res.total
+        this.$nextTick(() => {
+		      setTimeout(() => {
+		          document.documentElement.scrollTop = this.scrollTop
+		      })
+		})
       }).finally(() => {
         this.loading = false
       })
@@ -623,8 +643,9 @@ export default {
     * */
     handleEdit(row) {
       const { id, news } = row;
+      const scrollTop = document.documentElement.scrollTop
       //if(news.some(n => n.status === 1)) return this.$message.warning('该文稿下存在已发布的新闻，请点击“一键下线”按钮下线所有新闻后再进行编辑')
-      this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media' }})
+      this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media',scrollTop }})
     },
     /* 预览 */
     handlePreview (row) {

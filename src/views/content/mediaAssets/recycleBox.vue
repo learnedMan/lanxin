@@ -46,7 +46,7 @@
       <el-table-column label="栏目" align="center" prop="channel.name" />
       <el-table-column label="新闻封面" width="80px" align="center" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <img :src="scope.row.extra.cover[0].path||noimg" alt="" style="width: 50px;height: 50px;">
+            <img :src="getImgSrc(scope.row)" alt="" style="width: 50px;height: 50px;">
           </template>
       </el-table-column>
       <el-table-column label="新闻标题" align="center" prop="title" :show-overflow-tooltip="true" />
@@ -216,6 +216,10 @@ import {
           this.total = response.total;
         //   console.log(this.dataList)
         })
+      },
+      getImgSrc(row) {
+        // scope.row.extra.cover[0].path||noimg
+        return row.extra.cover.length ? row.extra.cover[0].path : this.noimg
       },
       recovery(data){
           var ids = data.id||this.multipleSelection.join(',');

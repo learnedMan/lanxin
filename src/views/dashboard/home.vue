@@ -11,23 +11,23 @@
                         <div class="details">
                             <div class="list">
                                 <div class="small-word">总阅读量(次)</div>
-                                <div class="num">3,193,000</div>
-                                <div class="bottom-word">今日阅读量 <span style="color:#EC6B33">3238</span></div>
+                                <div class="num">{{basicsData.readTotal}}</div>
+                                <div class="bottom-word">今日阅读量 <span style="color:#EC6B33">{{basicsData.readToday}}</span></div>
                             </div>
                             <div class="list">
                                 <div class="small-word">总分享量(次)</div>
-                                <div class="num">3,425</div>
-                                <div class="bottom-word">今日分享量  <span style="color:#EC6B33">427</span></div>
+                                <div class="num">{{basicsData.shareTotal}}</div>
+                                <div class="bottom-word">今日分享量  <span style="color:#EC6B33">{{basicsData.shareToday}}</span></div>
                             </div>
                             <div class="list">
                                 <div class="small-word">总注册用户量(人)</div>
-                                <div class="num">3,193,000</div>
-                                <div class="bottom-word">今日注册量  <span style="color:#EC6B33">54</span></div>
+                                <div class="num">{{basicsData.userTotal}}</div>
+                                <div class="bottom-word">今日注册量  <span style="color:#EC6B33">{{basicsData.userToday}}</span></div>
                             </div>
                             <div class="list">
                                 <div class="small-word">月活跃用户量(次)</div>
-                                <div class="num">219,300</div>
-                                <div class="bottom-word">今日活跃用户量  <span style="color:#EC6B33">320</span></div>
+                                <div class="num">{{basicsData.activeTotal}}</div>
+                                <div class="bottom-word">今日活跃用户量  <span style="color:#EC6B33">{{basicsData.activeToday}}</span></div>
                             </div>
                         </div>
                     </div>
@@ -89,24 +89,24 @@
                         <div class="statistics">
                              <div class="title">数据详情</div>
                              <el-tabs v-model="chartsNmae" @tab-click="handleCharts">
-                            <el-tab-pane label="阅读量" name="readNum">
-                               <div id="readNum" style="width: 100%;height: 250px;"></div>
+                            <el-tab-pane label="阅读量" name="read">
+                               <div id="read" style="width: 100%;height: 250px;"></div>
                             </el-tab-pane>
-                            <el-tab-pane label="分享次数" name="shareNum">
-                                分享次数
+                            <el-tab-pane label="分享次数" name="share">
+                               <div id="share" style="width: 100%;height: 250px;"></div>
                             </el-tab-pane>
                             <el-tab-pane label="注册用户" name="register">
-                                注册用户
+                               <div id="register" style="width: 100%;height: 250px;"></div>
                             </el-tab-pane>
                             <el-tab-pane label="活跃用户" name="active">
-                                活跃用户
+                               <div id="active" style="width: 100%;height: 250px;"></div>
                             </el-tab-pane>
-                             <el-tab-pane label="评论数" name="commentNum">
+                             <!-- <el-tab-pane label="评论数" name="commentNum">
                                 评论数
                             </el-tab-pane>
                             <el-tab-pane label="发稿量" name="newsNum">
                                 发稿量
-                            </el-tab-pane>
+                            </el-tab-pane> -->
                        </el-tabs>
                        <div class="slect-concaiter">
                            <el-dropdown @command="handleCommand">
@@ -150,12 +150,23 @@
 </template>
 <script>
 import echarts from 'echarts'
+import { getHomeData,getOnlineData } from '@/api/statistics'
 export default {
     name: 'home',
     data() {
         return {
             activeName: 'yesterday',
-            chartsNmae: 'readNum',
+            chartsNmae: 'read',
+            basicsData: {
+                readTotal: '',
+                readToday: '',
+                shareTotal: '',
+                shareToday: '',
+                userTotal: '',
+                userToday: '',
+                activeTotal: '',
+                activeToday: '',
+            },
             dateSelectValue: '7',
             list: [{},{},{},{},{},{},{},{},{},{},{},{},]
         }
@@ -163,10 +174,18 @@ export default {
     created() {
         let data =  this.$store.state.user.u_info
         console.log('data',data)
+        this.getBasicsData()
     },
     computed: {
         siteName() {
             return this.$store.state.user.u_info.name || ''
+        },
+        site ({ $store: { state: { user: { u_info } } } }) {
+          const data = u_info?.site?.extra?.bigdata_settings || {};
+          return {
+            productId: data.product_id || '',
+            customerId: data.customer_id || ''
+          }
         },
        formatDate() { 
             var date = new Date(); var YY = date.getFullYear() + '-';
@@ -179,30 +198,88 @@ export default {
         }
     },
     methods: {
+      getBasicsData() {
+        let params = {
+            customer_id: this.site.customerId,
+            product_id: this.site.productId
+        }
+        console.log('params',params)
+        getHomeData(params).then(res => {
+            let data = res.data
+            this.basicsData.readTotal = data.read.total.toLocaleString() || ''
+            this.basicsData.shareTotal = data.share.total.toLocaleString() || ''
+            this.basicsData.userTotal = data.user.total.toLocaleString() || ''
+            this.basicsData.activeTotal = data.active.total.toLocaleString() || ''
+            this.basicsData.readToday = data.read.today || ''
+            this.basicsData.shareToday = data.share.today || ''
+            this.basicsData.userToday = data.user.today || ''
+            this.basicsData.activeToday = data.active.today || ''
+            console.log('res基础数据',res)
+        })
+     },
+     dataFxied(data) {
+         let obj = {
+             x: [],
+             y: [],
+             average: 0,
+         }
+         data.map(v =>{
+            obj.x.push(v.x)
+            obj.y.push(v.y)
+         })
+        let num = obj.y.reduce((accumulator,crrentval)=>{
+                return accumulator+crrentval
+        },0)
+        obj.average = parseInt(num/obj.y.length)
+        return obj
+     },
      handleClick(tab) {
         console.log('tab',tab);// this.$router.push({ name: 'StudioList', query: { title:script_id } })
         console.log('----',this.activeName)
       },
       handleCharts() {
-
+          console.log('chartsNmae',this.chartsNmae)
+          this.chartsOnline(this.chartsNmae)
       },
     /* 快捷入口跳转*/
       goLink(name) {
           this.$router.push({ name })
       },
       handleCommand(value) {
-          console.log('value',value)
           this.dateSelectValue = value
-          console.log('dateSelectValue',this.dateSelectValue)
+          this.chartsOnline(this.chartsNmae)
       },
-      intCharts() {
-           let myChart = echarts.init(document.getElementById('readNum'))
-           let option = {
+      chartsOnline(type) { // type 类型
+           let params = {
+            customer_id: this.site.customerId,
+            product_id: this.site.productId,
+            dimension: type,
+            time: this.dateSelectValue
+         }
+         getOnlineData(params).then(res =>{
+             let data = res.data
+             console.log('折线图',data)
+             let obj = this.dataFxied(data)
+             console.log('obj',obj)
+            let myChart = echarts.init(document.getElementById(type))
+            window.addEventListener('resize',function() {myChart.resize()});
+            let textObj = {
+                read: '阅读量',
+                share: '分享量',
+                register: '注册用户',
+                active: '活跃用户',
+            }
+            let readOption = this.echartsOptions(obj.x,obj.y,textObj[type],obj.average)
+             myChart.setOption(readOption)
+         })
+      },
+      echartsOptions(x,y,type,num) {
+          let  option = {
                 tooltip: {
                     trigger: 'axis'
                 },
                 legend: {
-                    data: ['阅读量'],
+                    data: [type],
                     right: 30,
                 },
                 grid: {
@@ -214,16 +291,14 @@ export default {
                 },
                 xAxis: {
                     type: 'category',
-                    // boundaryGap: false,
-                    // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日','周一', '周二', '周三', '周四', '周五', '周六', '周日','周一']
-                    data: ['2020.1.1', '2020.1.2', '2020.1.3', '2020.1.4', '2020.1.5', '2020.1.6', '2020.1.7','2020.1.8', '2020.1.9', '2020.1.10', '2020.1.11', '2020.1.12', '2020.1.13', '2020.1.14','2020.1.15','2020.1.16', '2020.1.17', '2020.1.18', '2020.1.19', '2020.1.20', '2020.1.21', '2020.1.22','2020.1.23', '2020.1.24', '2020.1.25', '2020.1.26', '2020.1.27', '2020.1.28', '2020.1.29','2020.1.30'],
+                    data: x,
                 },
                 yAxis: {
                     type: 'value'
                 },
                 series: [
                     {
-                        name: '阅读量',
+                        name: type,
                         type: 'line',
                         stack: '总量',
                         itemStyle: {
@@ -234,7 +309,7 @@ export default {
                                 }
                             }
                         },
-                        data: [820, 932, 901, 934, 1290, 1330, 1320,820, 932, 901, 934, 1290, 1330, 1320,820,820, 932, 901, 934, 1290, 1330, 1320,820, 932, 901, 934, 1290, 1330, 1320,820],
+                        data: y,
                         markLine : {
                             symbol:"none",   //该线无样式
                             itemStyle: {
@@ -252,20 +327,18 @@ export default {
                     　　　　　　    }
                     　　　　　　  }
                     　　　　},
-                　　　　　　data: [{yAxis:1000}]
+                　　　　　　data: [{yAxis:num}]
                     　　　　},
                             type: 'line',
                             smooth: true
                     },
                 ]
             };
-            myChart.setOption(option)
-            window.addEventListener('resize',function() {myChart.resize()});
-
+        return option
       },
     },
     mounted() {
-        this.intCharts()
+        this.chartsOnline('read')
     },
 }
 </script>
