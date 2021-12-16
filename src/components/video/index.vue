@@ -56,6 +56,21 @@
                   @keyup.enter.native="getVideoList('vmsParams')"
                 />
               </el-form-item>
+              <el-form-item prop="type">
+                <el-select
+                v-model="vmsParams.type"
+                size="small"
+                placeholder="请选择类型"
+                clearable
+              >
+                <el-option
+                  v-for="item in typeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              </el-form-item>
               <el-form-item>
                 <el-date-picker
                   v-model="vmsParams.dateValue"
@@ -89,6 +104,7 @@
                   您的浏览器不支持 HTML5 video 标签。
                 </video>
                 <div class="bottom">
+                  <span style="display: inline-block;margin-right: 110px;">{{list.type == 1? '视频': list.type == 2 ? '音频' : ''}}</span>
                   <el-button v-points = "1500" type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
                   <el-dropdown size="mini" @command="changeVideo($event, list)">
                     <el-button v-points = "1500" type="primary" size="mini">
@@ -131,6 +147,21 @@
                   @keyup.enter.native="getVideoList('xlParams')"
                 />
               </el-form-item>
+              <el-form-item prop="type">
+                <el-select
+                v-model="xlParams.type"
+                size="small"
+                placeholder="请选择类型"
+                clearable
+              >
+                <el-option
+                  v-for="item in typeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              </el-form-item>
               <el-form-item>
                 <el-date-picker
                   v-model="xlParams.dateValue"
@@ -164,6 +195,7 @@
                   您的浏览器不支持 HTML5 video 标签。
                 </video>
                 <div class="bottom">
+                  <span style="display: inline-block;margin-right: 110px;">{{list.type == 1? '视频': list.type == 2 ? '音频' : ''}}</span>
                   <el-button v-points = "1500" type="primary" size="mini" style="margin-right: 10px" @click="handleChoose(list)">选择</el-button>
                   <el-dropdown size="mini" @command="changeVideo($event, list)">
                     <el-button v-points = "1500" type="primary" size="mini">
@@ -235,9 +267,24 @@
               }
             }]
           },
+           typeOptions: [
+            {
+              label: '全部',
+              value: ''
+            },
+            {
+              label: '视频',
+              value: 1
+            },
+            {
+              label: '音频',
+              value: 2
+            }
+          ],
           vmsParams: {
             keyword: '', // 关键词
             startdate: '', // 开始时间
+            type: '', //类型
             enddate: '', // 结束时间
             dateValue: '', // 时间
             cloud: 0, // vms标识符
@@ -250,6 +297,7 @@
           xlParams: {
             keyword: '', // 关键词
             startdate: '', // 开始时间
+            type: '', //类型
             enddate: '', // 结束时间
             dateValue: '', // 时间
             cloud: 1, // vms标识符

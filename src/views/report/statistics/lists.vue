@@ -8,13 +8,27 @@
       <el-tabs tab-position="left"
        v-model="activeName"
         style="height: 100%;">
-        <el-tab-pane label="员工发稿情况" name="statffDispatches">
-           <!-- <el-tab-pane label="按部门查看" name="department"> -->
-          <statff-dispatches></statff-dispatches>
+        <el-tab-pane label="部门发稿情况" name="department">
+          <department
+          :channelsList="channelsList"
+         ></department>
         </el-tab-pane>
-        <!-- <el-tab-pane label="按人员查看" name="person"> -->
+        <el-tab-pane label="员工发稿情况" name="statffDispatches">
+          <statff-dispatches
+          :channelsList="channelsList"
+          :authorlList="authorlList"
+          :departmentList="dataList"></statff-dispatches>
+        </el-tab-pane>
+        <el-tab-pane label="来源发稿情况" name="sourceData">
+          <sourceData
+          :channelsList="channelsList"
+         ></sourceData>
+        </el-tab-pane>
           <el-tab-pane label="按稿件数据" name="newsData">
-          <news-data :channelsList="channelsList" :departmentList="dataList"></news-data>
+          <news-data
+          :channelsList="channelsList"
+          :authorlList="authorlList"
+          :departmentList="dataList"></news-data>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -23,21 +37,25 @@
 <script>
   import { listDepartmentKpi, listAuthorDetail, fileImport } from '@/api/statistics'
   import {
-  getDepartmentList,getChannels
+  getDepartmentList,getChannels,getUser
   } from '@/api/manage'
   import newsData from  './newsData'
-import StatffDispatches from './statffDispatches.vue'
-
+  import StatffDispatches from './statffDispatches.vue'
+  import department from './department.vue'
+  import sourceData from './sourceData.vue'
     export default {
       components: {
         newsData,
-        StatffDispatches
+        StatffDispatches,
+        department,
+        sourceData
       },
       data() {
         return {
-          activeName: 'statffDispatches',
+          activeName: 'department',
           dataList: [],
           channelsList: [], //栏目数据
+          authorlList: [], //作者列表
           department: {
             queryParams: {
               beginTime: '',
@@ -109,57 +127,25 @@ import StatffDispatches from './statffDispatches.vue'
            this.channelsList = res
         })
       },
-        /* 获取部门数据 */
-        getDepartmentList () {
-          const department = this.department;
-          department.loading = true;
-          department.tableData = [];
-          department.selection = [];
-          const params = {
-            ...department.queryParams,
-            customerId: this.site.customerId,
-            productId: this.site.productId,
-          };
-          delete params.Date;
-          listDepartmentKpi(this.removePropertyOfNullFor0(params)).then(res => {
-            department.loading = false;
-            department.tableData = res.data;
-          })
-        },
-        /* 获取人员数据 */
-        getPersonLists () {
-          const person = this.person;
-          person.loading = true;
-          person.tableData = [];
-          person.selection = [];
-          const params = {
-            ...person.queryParams,
-            customerId: this.site.customerId,
-            productId: this.site.productId,
-          };
-          delete params.Date;
-          listAuthorDetail(this.removePropertyOfNullFor0(params)).then(res => {
-            person.loading = false;
-            person.tableData = res.data;
-          })
-        },
-        /* 查看详情 */
-        watchDetail (row) {
-          this.$emit('watch-detail', row.department_id,row.auth_id);
-        },
-        goPerson (row) {
-          console.log('row',row)
-          this.activeName = 'person'
-          this.person.queryParams.departmentId = row.department_id
-          this.getPersonLists()
-        },
+       /*获取编辑者列表*/ 
+      getUersList() {
+        let params = {
+          model: 'User',
+          page: 1,
+          pageSize: 999999
+        }
+         getUser(params).then(res => {
+           this.authorlList = res.data
+        })
+       },
       },
       created() {
         this.getDepart();
         this.getChannelsList()
+        this.getUersList()
         if(this.site.productId && this.site.customerId) {
-          this.getDepartmentList();
-          this.getPersonLists();
+          // this.getDepartmentList();
+          // this.getPersonLists();
         }else{
           this.$message("请联系管理员配置productId和customerId参数")
         }

@@ -18,27 +18,6 @@
                 @change="handleDateChange">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="部门:" prop="departmentList">
-              <el-cascader
-                  filterable
-                  v-model="queryParams.departmentList"
-                  style="width: 250px"
-                  :options="departmentList"
-                  :props="departmentOption"
-                  collapse-tags
-                  clearable/>
-            </el-form-item>
-            <el-form-item label="编辑：" prop="authorlList">
-            <el-cascader
-                :show-all-levels = false
-                 style="width: 250px"
-                v-model="queryParams.authorlList"
-                :options="authorlList"
-                collapse-tags
-                filterable
-                :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
-                clearable></el-cascader>
-          </el-form-item>
             <el-form-item label="发布栏目:" prop="channelList">
                <el-cascader
                   filterable
@@ -91,9 +70,9 @@
             width="50">
           </el-table-column>
             <el-table-column
-              label="人员名称"
+              label="来源名称"
               align="center"
-              prop="user_name"
+              prop="sourceName"
             />
             <el-table-column
               label="发布新闻数量"
@@ -103,7 +82,7 @@
             <el-table-column
               label="点击量（真实）"
               align="center"
-              prop="real_view"
+              prop="realView"
             />
             <!-- <el-table-column
               label="点击量（美化）"
@@ -115,11 +94,9 @@
     </div>
 </template>
 <script>
-import { getChannels } from '@/api/manage'
-import { kpiStatisticsByAuthor ,fileImportAuthor } from '@/api/statistics'
-import {getDepartmentList} from '@/api/manage'
+import { kpiStatisticsBySource,fileImportSource } from '@/api/statistics'
 export default {
-    name: 'statffDispatches',
+    name: 'sourceData',
      props: {
       channelsList: {
          type: Array,
@@ -156,9 +133,9 @@ export default {
           },
           dateValue:[],
           queryParams: {
-            departmentList:[],
+            // departmentList:[],
             channelList:[],
-            authorlList: [],
+            // authorlList: [],
             beginTime:"",
             endTime:""
           },
@@ -222,8 +199,8 @@ export default {
         this.queryParams.endTime = this.dateValue[1];
 
         this.queryParams.channelList = [];
-        this.queryParams.departmentList = [];
-        this.queryParams.authorlList = [];
+        // this.queryParams.departmentList = [];
+        // this.queryParams.authorlList = [];
         // this.resetForm('queryForm')
       },
       /* 搜索 */
@@ -239,32 +216,19 @@ export default {
             productId: this.constQueryParams.productId,
         };
         delete params.dateValue;
-        kpiStatisticsByAuthor(params).then(res => {
+        kpiStatisticsBySource(params).then(res => {
           this.loading = false;
           this.tableData = (res.data || [])
         })
       },
-      /* 获取栏目列表 */
-      getChannels() {
-        getChannels({
-          with_special_channels: 'topic'
-        }).then(res => {
-          this.channelsList = res
-        })
-      },
-      /* 获取栏目列表 */
-      getDepartment() {
-        getDepartmentList({
-        }).then(res => {
-          this.departmentList = res
-        })
-      },
       /* 导出 */
       handleImport () {
-        fileImportAuthor('/api/statistics/kpi/statisticsByAuthor/export', {
-          customerId: this.constQueryParams.customerId,
-          productId: this.constQueryParams.productId
-        })
+          let data = {
+            ...this.queryParams,
+            customerId: this.constQueryParams.customerId,
+            productId: this.constQueryParams.productId
+          }
+        fileImportSource('/api/statistics/kpi/statisticsBySource/export', this.removePropertyOfNullFor0(data))
       },
     }
 }

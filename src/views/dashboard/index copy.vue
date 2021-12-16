@@ -37,19 +37,16 @@
           :style="{ height: height }"
           frameborder="0"
         ></iframe>
-        <!-- <home></home> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import waiting from '@/assets/c_images/waiting.jpg'
-import home from './home.vue'
+
 export default {
   name: 'Dashboard',
-  components: {
-    home
-  },
+  components: {},
   data() {
     return {
       waiting,
