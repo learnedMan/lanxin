@@ -112,3 +112,12 @@ export function getOnlineData(query) {
     params: query
   })
 }
+
+/*排行榜*/
+export function getItemsRank(query) {
+  return request({
+    url: '/api/statistics/analysis/getItemsRank',
+    method: 'get',
+    params: query
+  })
+}

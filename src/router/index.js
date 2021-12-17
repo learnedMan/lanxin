@@ -136,6 +136,26 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '/dataCharts',
+    component: Layout,
+    redirect: '/dataCharts/charts',
+    permission: 'dataCharts.manage',
+    name: 'DataCharts',
+    meta: {
+      title: '数据驾驶舱',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'charts',
+        component: () => import('@/views/dashboard/charts'),
+        permission: 'dataCharts.charts',
+        name: 'Charts',
+        meta: { title: '数据驾驶舱' },
+      },
+    ]
+  },
+  {
     path: '/content',
     component: Layout,
     redirect: '/content/mediaAssets/all-media',

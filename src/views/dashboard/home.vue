@@ -133,13 +133,29 @@
                                 <div class="list" v-for="(item,index) in list" :key="index">
                                     <div class="list-left">
                                       <div class="index word-font">{{index >= 9 ? index+1 :  `0${index+1}`}}</div>
-                                      <div class="title word-font">31省区市新增本土确诊22例</div>
+                                      <div class="title word-font">{{item.title}}</div>
                                     </div>
-                                    <div class="list-right word-font">317万</div>
+                                    <div class="list-right word-font">{{getNumber(item.score)}}</div>
                                 </div>
                             </el-tab-pane>
-                            <el-tab-pane label="今日阅读榜单" name="today">今日阅读榜单</el-tab-pane>
-                            <el-tab-pane label="今日分享榜单" name="share">今日分享榜单</el-tab-pane>
+                            <el-tab-pane label="今日阅读榜单" name="today">
+                                   <div class="list" v-for="(item,index) in list" :key="index">
+                                    <div class="list-left">
+                                      <div class="index word-font">{{index >= 9 ? index+1 :  `0${index+1}`}}</div>
+                                      <div class="title word-font">{{item.title}}</div>
+                                    </div>
+                                    <div class="list-right word-font">{{getNumber(item.score)}}</div>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="今日分享榜单" name="share">
+                                 <div class="list" v-for="(item,index) in list" :key="index">
+                                    <div class="list-left">
+                                      <div class="index word-font">{{index >= 9 ? index+1 :  `0${index+1}`}}</div>
+                                      <div class="title word-font">{{item.title}}</div>
+                                    </div>
+                                    <div class="list-right word-font">{{getNumber(item.score)}}</div>
+                                </div>
+                            </el-tab-pane>
                        </el-tabs>
                     </div>
                 </div>
@@ -150,7 +166,7 @@
 </template>
 <script>
 import echarts from 'echarts'
-import { getHomeData,getOnlineData } from '@/api/statistics'
+import { getHomeData,getOnlineData,getItemsRank } from '@/api/statistics'
 export default {
     name: 'home',
     data() {
@@ -168,13 +184,14 @@ export default {
                 activeToday: '',
             },
             dateSelectValue: '7',
-            list: [{},{},{},{},{},{},{},{},{},{},{},{},]
+            list: [{},{},{},{},{},{},{},{},{},{},{},{},] //排行榜
         }
     },
     created() {
         let data =  this.$store.state.user.u_info
         console.log('data',data)
         this.getBasicsData()
+        this.getItemsRankList('read','yesterday')
     },
     computed: {
         siteName() {
@@ -187,7 +204,7 @@ export default {
             customerId: data.customer_id || ''
           }
         },
-       formatDate() { 
+       formatDate() {
             var date = new Date(); var YY = date.getFullYear() + '-';
             var MM = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
             var DD = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate());
@@ -206,16 +223,29 @@ export default {
         console.log('params',params)
         getHomeData(params).then(res => {
             let data = res.data
-            this.basicsData.readTotal = data.read.total.toLocaleString() || ''
-            this.basicsData.shareTotal = data.share.total.toLocaleString() || ''
-            this.basicsData.userTotal = data.user.total.toLocaleString() || ''
-            this.basicsData.activeTotal = data.active.total.toLocaleString() || ''
-            this.basicsData.readToday = data.read.today || ''
-            this.basicsData.shareToday = data.share.today || ''
-            this.basicsData.userToday = data.user.today || ''
-            this.basicsData.activeToday = data.active.today || ''
+            this.basicsData.readTotal = data?.read.total.toLocaleString() || 0
+            this.basicsData.shareTotal = data?.share.total.toLocaleString() || 0
+            this.basicsData.userTotal = data?.user.total.toLocaleString() || 0
+            this.basicsData.activeTotal = data?.active.total.toLocaleString() || 0
+            this.basicsData.readToday = data?.read.today || 0
+            this.basicsData.shareToday = data?.share.today || 0
+            this.basicsData.userToday = data?.user.today || 0
+            this.basicsData.activeToday = data?.active.today || 0
             console.log('res基础数据',res)
         })
+     },
+     getItemsRankList(type,dateType) {
+          let params = {
+            customer_id: this.site.customerId,
+            product_id: this.site.productId,
+            type,
+            dateType,
+            number: '12'
+        }
+         getItemsRank(params).then(res =>{
+             console.log('排行榜', res)
+             this.list = res.data || []
+         })
      },
      dataFxied(data) {
          let obj = {
@@ -233,9 +263,20 @@ export default {
         obj.average = parseInt(num/obj.y.length)
         return obj
      },
-     handleClick(tab) {
-        console.log('tab',tab);// this.$router.push({ name: 'StudioList', query: { title:script_id } })
-        console.log('----',this.activeName)
+     getNumber(num) {
+        if(num > 100000) {
+         return (num/10000).toFixed(2) + '万'
+        }
+        return num || 0
+     },
+     handleClick() {
+        if(this.activeName == 'yesterday') {
+            this.getItemsRankList('read','yesterday')
+        }else if(this.activeName == 'today') {
+            this.getItemsRankList('read','today')
+        }else if(this.activeName == 'share'){
+            this.getItemsRankList('share','today')
+        }
       },
       handleCharts() {
           console.log('chartsNmae',this.chartsNmae)
@@ -258,9 +299,7 @@ export default {
          }
          getOnlineData(params).then(res =>{
              let data = res.data
-             console.log('折线图',data)
              let obj = this.dataFxied(data)
-             console.log('obj',obj)
             let myChart = echarts.init(document.getElementById(type))
             window.addEventListener('resize',function() {myChart.resize()});
             let textObj = {
@@ -475,6 +514,11 @@ export default {
                         display: flex;
                         .title{
                          color: #26282B;
+                         width: 280px;
+                         white-space: nowrap;
+                         text-overflow: ellipsis;
+                         overflow: hidden;
+                         word-break: break-all;
                          margin-left: 16px;
                         }
                     }
