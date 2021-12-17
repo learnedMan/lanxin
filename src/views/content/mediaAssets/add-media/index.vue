@@ -15,6 +15,9 @@
   // .el-input--suffix >input{
   //   height: 100px!important;
   // }
+  .zZindex{
+    z-index: 50000!important;
+  }
   .xl-add-media {
     background-color: #f9f9f9;
     margin: -30px;
@@ -819,7 +822,7 @@ export default {
     zIndex: {
       type: Number,
       // default: 900
-      default: 3000
+      default: 2000
     },
   /* 类型 */
     typeDetails: {
@@ -1847,6 +1850,7 @@ export default {
     },
   },
   async created() {
+    console.log('路由信息',this.$route.query)
     let newsAdd =  JSON.parse(localStorage.getItem('addNews'))
     if(!Array.isArray(newsAdd))localStorage.removeItem('addNews')
     let siteName = this.$store.state.user.u_info.site.name,siteObj = this.$store.state.user.u_info
@@ -1999,7 +2003,8 @@ export default {
        this.$confirm('是否使用上次本地缓存?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          customClass:'zZindex'
         }).then(() => {
            this.from.extra.title = obj.title
            this.from.extra.content = obj.content

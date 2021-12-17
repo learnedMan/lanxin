@@ -228,7 +228,7 @@ export default {
             customerId: this.constQueryParams.customerId,
             productId: this.constQueryParams.productId
           }
-        fileImportSource('/api/statistics/kpi/statisticsBySource/export', this.removePropertyOfNullFor0(data))
+        fileImportSource('/api/statistics/kpi/source/statistics/export', data)
       },
     }
 }
