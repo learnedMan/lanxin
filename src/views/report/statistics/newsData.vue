@@ -30,12 +30,12 @@
                 :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
                 clearable></el-cascader>
           </el-form-item>
-          <el-form-item label="编辑：" prop="authorlList">
+          <el-form-item label="编辑：" prop="authorList">
             <el-cascader
                 :show-all-levels = false
                  style="width: 250px"
-                v-model="newsData.queryParams.authorlList"
-                :options="authorlList"
+                v-model="newsData.queryParams.authorList"
+                :options="authorList"
                 collapse-tags
                 filterable
                 :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
@@ -181,7 +181,7 @@ export default {
         type: Array,
         default: ()=> []
       },
-      authorlList: {
+      authorList: {
         type: Array,
         default: ()=> []
       }
@@ -194,7 +194,7 @@ export default {
                 editor: '',
                 channelList: [],
                 departmentList: [],
-                authorlList: [],
+                authorList: [],
                 // source: '',
                 endTime: '',
                 page: 1,
@@ -208,7 +208,7 @@ export default {
           dateValue:[],
           // departmentList: [],
           // channelsList: [],
-          // authorlList: [],
+          // authorList: [],
           cascaderOption: {
             checkStrictly: false, // 是否强制父子不关联
             emitPath: false, // 返回值是否为数组
@@ -277,7 +277,7 @@ export default {
 
         this.newsData.queryParams.channelList = [];
         this.newsData.queryParams.departmentList = [];
-        this.newsData.queryParams.authorlList = [];
+        this.newsData.queryParams.authorList = [];
         // this.resetForm('queryForm')
       },
        /* 搜索 */

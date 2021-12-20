@@ -28,12 +28,12 @@
                   collapse-tags
                   clearable/>
             </el-form-item>
-            <el-form-item label="编辑：" prop="authorlList">
+            <el-form-item label="编辑：" prop="authorList">
             <el-cascader
                 :show-all-levels = false
                  style="width: 250px"
-                v-model="queryParams.authorlList"
-                :options="authorlList"
+                v-model="queryParams.authorList"
+                :options="authorList"
                 collapse-tags
                 filterable
                 :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
@@ -129,7 +129,7 @@ export default {
         type: Array,
         default: ()=> []
       },
-       authorlList: {
+       authorList: {
         type: Array,
         default: ()=> []
       }
@@ -158,7 +158,7 @@ export default {
           queryParams: {
             departmentList:[],
             channelList:[],
-            authorlList: [],
+            authorList: [],
             beginTime:"",
             endTime:""
           },
@@ -223,7 +223,7 @@ export default {
 
         this.queryParams.channelList = [];
         this.queryParams.departmentList = [];
-        this.queryParams.authorlList = [];
+        this.queryParams.authorList = [];
         // this.resetForm('queryForm')
       },
       /* 搜索 */

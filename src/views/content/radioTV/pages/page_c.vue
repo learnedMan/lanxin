@@ -125,12 +125,18 @@
             </template>
           </el-table-column>
         </el-table>
+        <pagination
+        v-show="Tvtotal > 0 && !showlist"
+        :total="Tvtotal"
+        :page.sync="queryParams.page"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
         <Pageclist @back="back" :showlist="showlist" :_channel_id="_channel_id" v-if="showlist" />
       </div>
         </el-col>
       </el-row>
     </div>
-
     <el-dialog
       width="540px"
       :title="dialogTitle"
@@ -268,6 +274,7 @@ export default {
       _channel_id: "",
       importHeaders: { Authorization: mytoken }, //传图片时的token
       loading: true,
+      Tvtotal: 0,
       dataList: [],
       tvList: [],
       videocatalogoptions: [], //蓝云
@@ -281,7 +288,7 @@ export default {
       },
       queryParams: {
         page: 1,
-        pageSize: 999,
+        pageSize: 10,
         channel_id: "",
         type: "tv_replay",
       },
@@ -389,11 +396,17 @@ export default {
     getList() {
       this.showlist = false;
       this.loading = true;
-      var data = this.queryParams.channel_id;
-      if (data) {
-        getChildcatalog(data).then((response) => {
+      var id = this.queryParams.channel_id;
+      // let data = this.queryParams
+      let query = {
+        page: this.queryParams.page,
+        pageSize: this.queryParams.pageSize
+      }
+      if (id) {
+        getChildcatalog(id,query).then((response) => {
           this.loading = false;
-          this.dataList = response;
+          this.dataList = response.data;
+          this.Tvtotal = response.total
         });
       }
     },

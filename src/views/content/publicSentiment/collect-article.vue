@@ -133,6 +133,11 @@
         align="center"
         prop="source"
       />
+       <el-table-column
+        label="采集时间"
+        align="center"
+        prop="created_at"
+      />
       <el-table-column
       v-if="!isMobile"
         label="发布栏目"

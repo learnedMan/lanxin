@@ -394,7 +394,7 @@ export default {
       if (data) {
         getChildcatalog(data).then((response) => {
           this.loading = false;
-          this.dataList = response;
+          this.dataList = response.data;
         });
       }
     },

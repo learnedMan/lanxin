@@ -52,7 +52,13 @@
                 <el-radio :label="'0'">不显示</el-radio>
             </el-radio-group>
         </el-form-item>
-
+          <!-- 显示数据 -->
+        <el-form-item label-width="150px" label="显示数据:" prop="extra.show_data">
+            <el-radio-group v-model="c_form.extra.show_data">
+                <el-radio :label="'1'">显示</el-radio>
+                <el-radio :label="'0'">不显示</el-radio>
+            </el-radio-group>
+        </el-form-item>
     </div>
 </template>
 
