@@ -1,9 +1,16 @@
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
-      <keep-alive :include="cachedViews">
+      <!-- 缓存组件跳转的页面 -->
+      <keep-alive>
+      　　<router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive> 
+      <!-- <keep-alive :include="cachedViews">
         <router-view :key="key" />
-      </keep-alive>
+      </keep-alive> -->
+    </transition>
+     <transition name="fade-transform" mode="out-in">
+       <router-view v-if="!$route.meta.keepAlive" :key="key"></router-view>
     </transition>
   </section>
 </template>
@@ -56,4 +63,10 @@ export default {
     padding-right: 15px;
   }
 }
+// .el-message-box__wrapper{
+//   z-index: 4001!important;
+// }
+// .v-modal{
+//   z-index: 4000!important;
+// }
 </style>
