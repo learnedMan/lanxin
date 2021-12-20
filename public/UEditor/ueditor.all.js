@@ -12140,7 +12140,19 @@ UE.plugins['removeformat'] = function(){
                     }
 
                 }
+                //video不处理
+                if(!notIncludeA){
+                    var aNode = domUtils.findParentByTagName(range.startContainer,'video',true);
+                    if(aNode){
+                        range.setStartBefore(aNode);
+                    }
 
+                    aNode = domUtils.findParentByTagName(range.endContainer,'video',true);
+                    if(aNode){
+                        range.setEndAfter(aNode);
+                    }
+
+                }
 
                 bookmark = range.createBookmark();
 
@@ -12234,13 +12246,13 @@ UE.plugins['removeformat'] = function(){
 
                 }
             }
-
-
-
             range = this.selection.getRange();
-            doRemove( range );
-            range.select();
-
+            // console.log(range)
+            // if(range.startContainer.nodeName=='VIDEO'){
+            // }else{
+                doRemove( range );
+                range.select();
+            // }
         }
 
     };
@@ -23224,6 +23236,7 @@ UE.plugins['customstyle'] = function() {
  UE.plugins['catchremoteimage'] = function() {
     var me = this,
         ajax = UE.ajax;
+
     var bdhhtml = document.getElementById('bdh');
     if(me.options.catchRemoteImageEnable === false) return;
     me.setOpt({
@@ -23278,6 +23291,7 @@ UE.plugins['customstyle'] = function() {
                 }
             }
         }
+        // 图片本地化
         if(remoteImages.length) {
             bdhhtml.innerHTML=1;
             me.fireEvent('catchremoteimgstart');
@@ -23302,19 +23316,30 @@ UE.plugins['customstyle'] = function() {
                             }
                         }
                     }
+
                     var bodyHtml = me.document.body.innerHTML;
-                    for(var a = 0; a < backgroundimages.length; a++) {
-                        oldSrc = backgroundimages[a] || "";
-                        for(j = 0; cj = list[j++];) {
-                            if(oldSrc == cj.source && cj.state == "SUCCESS") {
-                                newSrc = catcherUrlPrefix + cj.url;
-                                bodyHtml = bodyHtml.replace(oldSrc, newSrc);
-                                break;
-                            }
+
+                    for (var a = 0; a < backgroundimages.length; a++) {
+                        oldSrc = backgroundimages[a] || "";            
+                        for (j = 0; cj = list[j++];) {
+                          if (oldSrc == cj.source && cj.state == "SUCCESS") {
+                            newSrc = catcherUrlPrefix + cj.url;
+                            me.document.body.innerHTML.replace(oldSrc, newSrc);
+                            break;
+                          }
                         }
                     }
-                    me.document.body.innerHTML = bodyHtml;
-
+                    // for(var a = 0; a < backgroundimages.length; a++) {
+                    //     oldSrc = backgroundimages[a] || "";
+                    //     for(j = 0; cj = list[j++];) {
+                    //         if(oldSrc == cj.source && cj.state == "SUCCESS") {
+                    //             newSrc = catcherUrlPrefix + cj.url;
+                    //             bodyHtml = bodyHtml.replace(oldSrc, newSrc);
+                    //             break;
+                    //         }
+                    //     }
+                    // }
+                    // me.document.body.innerHTML = bodyHtml;
                     bdhhtml.innerHTML=2;
                     me.fireEvent('catchremotesuccess')
                 },
