@@ -728,6 +728,7 @@ export default {
       currentKey: '', // 树节点默认选中项
       defaultExpandedKeys: [], // 默认展开的节点
       total: 0,
+      scrollTop: 0,
       loading: false,
       detailDialog: {
         show: false,
@@ -818,6 +819,13 @@ export default {
       this.product_id = this.$refs.tree.getCurrentNode()?.product_id || '';
       this.getList()
     })
+  },
+  activated() {
+    this.getList()
+  },
+  beforeRouteLeave(to, from, next) {
+      this.scrollTop = document.documentElement.scrollTop;
+      next();
   },
   watch: {
     total() {
@@ -1211,6 +1219,13 @@ export default {
             setTimeout(() => {
               //  !that.isMobile && that.initSort();
             }, 0);
+            this.$nextTick(() => {
+                this.initSort()
+                setTimeout(() => {
+                    document.documentElement.scrollTop = this.scrollTop
+                    console.log('scrollTop',this.scrollTop)
+                })
+            })
           })
         }
         // !this.isMobile && this.initSort();

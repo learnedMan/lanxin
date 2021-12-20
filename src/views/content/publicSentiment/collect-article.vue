@@ -267,11 +267,12 @@ export default {
         source: '',
         startdate: '',
         enddate: '',
-        pageSize: 10,
+        pageSize: 50,
         page: 1
       },
       loading: false,
       total: 0, // 总数
+      scrollTop: 0, // 滚动位置
       dateValue: '',
       typeOptions: [
         {
@@ -351,6 +352,13 @@ export default {
     this.getList()
     this.getChannels()
   },
+  activated() {
+    this.getList()
+  },
+  beforeRouteLeave(to, from, next) {
+      this.scrollTop = document.documentElement.scrollTop;
+      next();
+  },
   methods: {
     /*
       * 搜索时间变化
@@ -405,6 +413,11 @@ export default {
           }
         })
         this.total = res.total
+        this.$nextTick(() => {
+            setTimeout(() => {
+                document.documentElement.scrollTop = this.scrollTop
+            })
+	     	})
       }).finally(() => {
         this.loading = false
       })

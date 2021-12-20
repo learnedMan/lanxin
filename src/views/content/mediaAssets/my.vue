@@ -325,11 +325,12 @@ export default {
         startdate: '',
         enddate: '',
         reviewer_id: '', // 用户id
-        pageSize: 10,
+        pageSize: 50,
         page: 1
       },
       loading: false,
       total: 0, // 总数
+      scrollTop: 0, // 滚动位置
       dateValue: '',
       typeOptions: [
         {
@@ -419,6 +420,13 @@ export default {
     this.queryParams.reviewer_id = this.reviewer_id
     this.getList()
     this.getChannels()
+  },
+  activated() {
+    this.getList()
+  },
+  beforeRouteLeave(to, from, next) {
+      this.scrollTop = document.documentElement.scrollTop;
+      next();
   },
   filters: {
     totalNum(news) {
@@ -516,6 +524,11 @@ export default {
           }
         })
         this.total = res.total
+        this.$nextTick(() => {
+            setTimeout(() => {
+                document.documentElement.scrollTop = this.scrollTop
+            })
+	     	})
       }).finally(() => {
         this.loading = false
       })

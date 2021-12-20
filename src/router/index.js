@@ -171,7 +171,7 @@ export const asyncRoutes = [
         component: () => import('@/views/content/seeSection'),
         name: 'SeeSection',
         permission: 'content.news.list',
-        meta: { title: '栏目数据' }
+        meta: { title: '栏目数据',keepAlive: true }
       },
       {
         path: 'projectManage',
@@ -218,7 +218,7 @@ export const asyncRoutes = [
             component: () => import('@/views/content/mediaAssets/my'),
             name: 'My',
             permission: 'content.script.list',
-            meta: { title: '我的稿件' }
+            meta: { title: '我的稿件',keepAlive: true }
           },
           {
             path: 'labelManage',
@@ -270,7 +270,7 @@ export const asyncRoutes = [
             component: () => import('@/views/content/publicSentiment/collect-article'),
             name: 'collect-article',
             permission: 'content.collect.article',
-            meta: { title: '采集文章管理' }
+            meta: { title: '采集文章管理', keepAlive: true}
           },
           {
             path: 'watch-column',

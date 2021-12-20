@@ -39,7 +39,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
+         <el-form-item
           label="启用状态:"
           prop="status"
         >
@@ -51,6 +51,24 @@
           >
             <el-option
               v-for="item in statusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="专题类型:"
+          prop="topic_type"
+        >
+          <el-select
+            v-model="queryParams.topic_type"
+            size="small"
+            placeholder="请选择类型"
+            clearable
+          >
+            <el-option
+              v-for="item in topic_typeOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -383,6 +401,7 @@
           queryParams: {
             product_id: '', // 所属产品
             type: 'topic',
+            topic_type: '',
             status: '',
             keyword: '',
             createDate: '',
@@ -404,6 +423,20 @@
             {
               label: '禁用',
               value: 0
+            }
+          ],
+          topic_typeOptions: [
+            {
+              label: '全部',
+              value: ''
+            },
+            {
+              label: '简单聚合',
+              value: '1'
+            },
+            {
+              label: '多模块聚合',
+              value: '2'
             }
           ],
           loading: false,

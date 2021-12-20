@@ -9969,6 +9969,52 @@ var LocalStorage = UE.LocalStorage = (function () {
 
 })();
 
+/**
+   * 设置字间距
+   * @file
+   * @since 1.2.6.1
+   */
+ UE.plugins['letterspacing'] = function () {
+    var me = this;
+    me.setOpt({ 'letterspacing': ['0', '0.25', '0.5', '1', '1.5', '2', '2.5', '3', '4', '5'] });
+ 
+    /**
+     * 字间距
+     * @command letterspacing
+     * @method execCommand
+     * @param { String } cmdName 命令字符串
+     * @param { String } value 传入的行高值， 该值是当前字体的倍数， 例如： 1.5, 2.5
+     * @example
+     * ```javascript
+     * editor.execCommand( 'letterspacing', 1.5);
+     * ```
+     */
+    /**
+     * 查询当前选区内容的行高大小
+     * @command letterspacing
+     * @method queryCommandValue
+     * @param { String } cmd 命令字符串
+     * @return { String } 返回当前行高大小
+     * @example
+     * ```javascript
+     * editor.queryCommandValue( 'letterspacing' );
+     * ```
+     */
+ 
+    me.commands['letterspacing'] = {
+      execCommand: function (cmdName, value) {
+        this.execCommand('paragraph', 'p', { style: 'letter-spacing:' + (value == "1" ? "normal" : value + 'em') });
+        return true;
+      },
+      queryCommandValue: function () {
+        var pN = domUtils.filterNodeList(this.selection.getStartElementPath(), function (node) { return domUtils.isBlockElm(node) });
+        if (pN) {
+          var value = domUtils.getComputedStyle(pN, 'letter-spacing');
+          return value == 'normal' ? 1 : value.replace(/[^\d.]*/ig, "");
+        }
+      }
+    };
+  };
 
 // plugins/defaultfilter.js
 ///import core
@@ -27856,7 +27902,7 @@ UE.ui = baidu.editor.ui = {};
         'strikethrough', 'subscript', 'superscript', 'source', 'indent', 'outdent',
         'blockquote', 'pasteplain', 'pagebreak',
         'selectall', 'print','horizontal', 'removeformat', 'time', 'date', 'unlink',
-        'insertparagraphbeforetable', 'insertrow', 'insertcol', 'mergeright', 'mergedown', 'deleterow',
+        'insertparagraphbeforetable', 'insertrow', 'insertcol', 'mergeright', 'mergedown', 'deleterow', 'letterspacing',
         'deletecol', 'splittorows', 'splittocols', 'splittocells', 'mergecells', 'deletetable', 'drafts',
         'imglist'
     ];
@@ -27891,6 +27937,44 @@ UE.ui = baidu.editor.ui = {};
             };
         }(ci);
     }
+    editorui.letterspacing = function (editor) {
+        var val = editor.options.letterspacing || [];
+        if (!val.length) return;
+        for (var i = 0, ci, items = []; ci = val[i++];) {
+          items.push({
+            //todo:写死了
+            label: ci,
+            value: ci,
+            theme: editor.options.theme,
+            onclick: function () {
+              editor.execCommand("letterspacing", this.value);
+            }
+          })
+        }
+        var ui = new editorui.MenuButton({
+          editor: editor,
+          className: 'edui-for-letterspacing',
+          title: editor.options.labelMap['letterspacing'] || editor.getLang("labelMap.letterspacing") || '',
+          items: items,
+          onbuttonclick: function () {
+            var value = editor.queryCommandValue('LetterSpacing') || this.value;
+            editor.execCommand("LetterSpacing", value);
+          }
+        });
+        editorui.buttons['letterspacing'] = ui;
+        editor.addListener('selectionchange', function () {
+          var state = editor.queryCommandState('LetterSpacing');
+          if (state == -1) {
+            ui.setDisabled(true);
+          } else {
+            ui.setDisabled(false);
+            var value = editor.queryCommandValue('LetterSpacing');
+            value && ui.setValue((value + '').replace(/cm/, ''));
+            ui.setChecked(state)
+          }
+        });
+        return ui;
+      };
 
     //清除文档
     editorui.cleardoc = function (editor) {
