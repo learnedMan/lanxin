@@ -124,6 +124,7 @@
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       :data="tableData"
       border
+      :key="tablekey"
       tooltip-effect="dark"
       style="width: 100%"
     >
@@ -140,6 +141,12 @@
         prop="title"
         min-width="25%"
         :show-overflow-tooltip="true"
+      />
+       <el-table-column
+        label="点击量"
+        align="center"
+        prop="hits"
+        min-width="5%"
       />
       <el-table-column
         label="直播间类型"
@@ -545,6 +552,7 @@
 <script>
   import { getStudioList, addStudio, getStudio, editStudio, deleteStudio } from '@/api/operamanage'
   import { getChannels } from '@/api/manage'
+  import { getMultiHits } from '@/api/statistics'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
   import Cropper from '@/components/Cropper'
 
@@ -568,6 +576,7 @@
       }
       return {
         loading: false,
+        tablekey: false,
         queryParams: {
           keyword: '',
           live: '',
@@ -862,6 +871,12 @@
       imgCount ({ dialog, templateStyleLists }) {
         return templateStyleLists.find(n => n.value === dialog.form.extra.template_style)?.count ?? 1
       },
+      customerId() {
+        return this.$store.state.user.u_info.site.extra.bigdata_settings.customer_id || '1'
+      },
+      product_id_dsj() {
+        return this.$store.state.user.u_info.site.extra.bigdata_settings.product_id || '1'
+      },
     },
     methods: {
       /* 重置 */
@@ -1056,12 +1071,38 @@
         this.loading = true;
         const params = { ...this.queryParams };
         getStudioList(this.removePropertyOfNullFor0(params)).then(res => {
-          this.tableData = (res.data || []).map(n => ({
-            ...n,
-            broadcast_typeLabel: this.broadcast_typeOptions.find(item => item.value === n.broadcast_type)?.label ?? '',
-            liveLabel: this.liveOptions.find(item => item.value === n.live)?.label ?? ''
-          }));
+          this.tableData = (res.data || []).map(n => {
+            return{
+
+              ...n,
+              newsId: n.news[0]?.id || 0,
+              broadcast_typeLabel: this.broadcast_typeOptions.find(item => item.value === n.broadcast_type)?.label ?? '',
+              liveLabel: this.liveOptions.find(item => item.value === n.live)?.label ?? ''
+            }
+          });
           this.total = res.total;
+          let arr = (this.tableData || []).map(item => {
+          return item.news[0]?.id || 0
+        })
+        let data = {
+          customer_id:this.customerId,
+          product_id:this.product_id_dsj,
+          itemIds:arr
+        }
+        // multiplying_factor
+        if(arr.length!=0){
+          getMultiHits(data).then(res=>{ //请求点击量
+            let idarr = res.data;
+            this.tableData.forEach((item,index,arr)=>{
+              idarr.forEach((_item,_index,_arr)=>{
+                if(item.newsId==_item.item_id){
+                  this.tableData[index].hits = parseInt(_item.hits) || 0;
+                }
+              })
+            })
+             this.tablekey = !this.tablekey;
+          })
+        }
         }).finally(() => {
           this.loading = false;
         })

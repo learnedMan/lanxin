@@ -133,6 +133,11 @@
         align="center"
         prop="source"
       />
+       <el-table-column
+        label="采集时间"
+        align="center"
+        prop="created_at"
+      />
       <el-table-column
       v-if="!isMobile"
         label="发布栏目"
@@ -262,11 +267,12 @@ export default {
         source: '',
         startdate: '',
         enddate: '',
-        pageSize: 10,
+        pageSize: 50,
         page: 1
       },
       loading: false,
       total: 0, // 总数
+      scrollTop: 0, // 滚动位置
       dateValue: '',
       typeOptions: [
         {
@@ -346,6 +352,13 @@ export default {
     this.getList()
     this.getChannels()
   },
+  activated() {
+    this.getList()
+  },
+  beforeRouteLeave(to, from, next) {
+      this.scrollTop = document.documentElement.scrollTop;
+      next();
+  },
   methods: {
     /*
       * 搜索时间变化
@@ -400,6 +413,11 @@ export default {
           }
         })
         this.total = res.total
+        this.$nextTick(() => {
+            setTimeout(() => {
+                document.documentElement.scrollTop = this.scrollTop
+            })
+	     	})
       }).finally(() => {
         this.loading = false
       })

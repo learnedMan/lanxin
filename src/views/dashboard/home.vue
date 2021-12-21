@@ -11,23 +11,23 @@
                         <div class="details">
                             <div class="list">
                                 <div class="small-word">总阅读量(次)</div>
-                                <div class="num">{{basicsData.readTotal}}</div>
-                                <div class="bottom-word">今日阅读量 <span style="color:#EC6B33">{{basicsData.readToday}}</span></div>
+                                <div class="num">{{readTotal}}</div>
+                                <div class="bottom-word">今日阅读量 <span style="color:#EC6B33">{{readToday}}</span></div>
                             </div>
                             <div class="list">
                                 <div class="small-word">总分享量(次)</div>
-                                <div class="num">{{basicsData.shareTotal}}</div>
-                                <div class="bottom-word">今日分享量  <span style="color:#EC6B33">{{basicsData.shareToday}}</span></div>
+                                <div class="num">{{shareTotal}}</div>
+                                <div class="bottom-word">今日分享量  <span style="color:#EC6B33">{{shareToday}}</span></div>
                             </div>
                             <div class="list">
                                 <div class="small-word">总注册用户量(人)</div>
-                                <div class="num">{{basicsData.userTotal}}</div>
-                                <div class="bottom-word">今日注册量  <span style="color:#EC6B33">{{basicsData.userToday}}</span></div>
+                                <div class="num">{{userTotal}}</div>
+                                <div class="bottom-word">今日注册量  <span style="color:#EC6B33">{{userToday}}</span></div>
                             </div>
                             <div class="list">
                                 <div class="small-word">月活跃用户量(次)</div>
-                                <div class="num">{{basicsData.activeTotal}}</div>
-                                <div class="bottom-word">今日活跃用户量  <span style="color:#EC6B33">{{basicsData.activeToday}}</span></div>
+                                <div class="num">{{activeTotal}}</div>
+                                <div class="bottom-word">今日活跃用户量  <span style="color:#EC6B33">{{activeToday}}</span></div>
                             </div>
                         </div>
                     </div>
@@ -173,16 +173,14 @@ export default {
         return {
             activeName: 'yesterday',
             chartsNmae: 'read',
-            basicsData: {
-                readTotal: '',
-                readToday: '',
-                shareTotal: '',
-                shareToday: '',
-                userTotal: '',
-                userToday: '',
-                activeTotal: '',
-                activeToday: '',
-            },
+            readTotal: '',
+            readToday: '',
+            shareTotal: '',
+            shareToday: '',
+            userTotal: '',
+            userToday: '',
+            activeTotal: '',
+            activeToday: '',
             dateSelectValue: '7',
             list: [{},{},{},{},{},{},{},{},{},{},{},{},] //排行榜
         }
@@ -222,16 +220,23 @@ export default {
         }
         console.log('params',params)
         getHomeData(params).then(res => {
-            let data = res.data
-            this.basicsData.readTotal = data?.read.total.toLocaleString() || 0
-            this.basicsData.shareTotal = data?.share.total.toLocaleString() || 0
-            this.basicsData.userTotal = data?.user.total.toLocaleString() || 0
-            this.basicsData.activeTotal = data?.active.total.toLocaleString() || 0
-            this.basicsData.readToday = data?.read.today || 0
-            this.basicsData.shareToday = data?.share.today || 0
-            this.basicsData.userToday = data?.user.today || 0
-            this.basicsData.activeToday = data?.active.today || 0
-            console.log('res基础数据',res)
+            console.log('read',res.data)
+            this.shareTotal = res.data?.share.total.toLocaleString() || 0
+            this.userTotal = res.data?.user.total.toLocaleString() || 0
+            this.activeTotal =res.data?.active.total.toLocaleString() || 0
+            this.shareToday = res.data?.share.today || 0
+            this.userToday = res.data?.user.today || 0
+            this.activeToday = res.data?.active.today || 0
+            this.readToday = res.data?.read.today || 0
+            this.readTotal = res.data?.read.total.toLocaleString() || 0
+            console.log('read',res.data.read.total)
+            console.log('read',res.data.read.today)
+            console.log('read',res.data.share.total)
+            console.log('read',res.data.share.today)
+            console.log('read',res.data.user.total)
+            console.log('read',res.data.user.today)
+            console.log('read',res.data.active.total)
+            console.log('read',res.data.active.today)
         })
      },
      getItemsRankList(type,dateType) {
@@ -243,7 +248,7 @@ export default {
             number: '12'
         }
          getItemsRank(params).then(res =>{
-             console.log('排行榜', res)
+            //  console.log('排行榜', res)
              this.list = res.data || []
          })
      },

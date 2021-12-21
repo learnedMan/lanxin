@@ -596,15 +596,23 @@ export function addtvchannels(data) {
   })
 }
 
-export function getChildcatalog(id) {
+export function getChildcatalog(id,params) {
   return request({
     url: `/api/channels/${id}/getChild`,
     method: 'get',
+    params
   })
 }
 export function editChildcatalog(id,data) {
   return request({
     url: '/api/channels/'+id,
+    method: 'patch',
+    data:data
+  })
+}
+export function editBunchTime(id,data) {
+  return request({
+    url: '/api/replays/'+id,
     method: 'patch',
     data:data
   })

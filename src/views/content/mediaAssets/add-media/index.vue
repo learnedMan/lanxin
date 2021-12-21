@@ -1735,6 +1735,7 @@ export default {
         // 230 231需要三张图
         if(this.from.extra.type != 'news') return
         var bdhhtml = document.getElementById('bdh').innerHTML;
+        console.log('bdhhtml',bdhhtml)
         if(bdhhtml==1){
           this.$message.warning('正在图片本地化，请稍后')
           return
@@ -1744,6 +1745,8 @@ export default {
               }
             if(!this.from.extra.cover.length) {
               let arr = this.getFirstImg(newValue) || []
+              console.log('newValue',newValue)
+              console.log('抓取的图片',this.getFirstImg(newValue))
               if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
                 let list = arr.slice(0,3),arr_ = []
                 list.map(v =>{
@@ -1850,7 +1853,6 @@ export default {
     },
   },
   async created() {
-    console.log('路由信息',this.$route.query)
     let newsAdd =  JSON.parse(localStorage.getItem('addNews'))
     if(!Array.isArray(newsAdd))localStorage.removeItem('addNews')
     let siteName = this.$store.state.user.u_info.site.name,siteObj = this.$store.state.user.u_info

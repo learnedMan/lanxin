@@ -494,7 +494,7 @@ export default {
        this.dateValue = [str,time2]
 		},
     onLineOrOffline(news) {
-      let stuat = news.some(v => v.status == 0)
+      let stuat = news.every(v => v.status == 0)
       return stuat
     },
     formatDate() {
@@ -643,9 +643,8 @@ export default {
     * */
     handleEdit(row) {
       const { id, news } = row;
-      const scrollTop = document.documentElement.scrollTop
       //if(news.some(n => n.status === 1)) return this.$message.warning('该文稿下存在已发布的新闻，请点击“一键下线”按钮下线所有新闻后再进行编辑')
-      this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media',scrollTop }})
+      this.$router.push({ name: 'Add-media', query: { id, redirect: 'All-media' }})
     },
     /* 预览 */
     handlePreview (row) {
