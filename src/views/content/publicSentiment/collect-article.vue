@@ -496,7 +496,7 @@ export default {
     /* 查看详情 */
     handleWatch (row) {
       const { id } = row;
-      this.$router.push({ name: 'Add-media', query: { id, disabled: '1' } })
+      this.$router.push({ name: 'Add-media', query: { id, disabled: '1',detailsType: 'TPNews' } })
     },
     /*
       * 列表删除
