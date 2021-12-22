@@ -418,10 +418,14 @@ export default {
   },
   created() {
     this.queryParams.reviewer_id = this.reviewer_id
+    let id = this.$route.query?.id || ''
+    this.queryParams.keyword = id
     this.getList()
     this.getChannels()
   },
   activated() {
+    let id = this.$route.query?.id || ''
+    this.queryParams.keyword = id
     this.getList()
   },
   beforeRouteLeave(to, from, next) {

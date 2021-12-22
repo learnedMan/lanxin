@@ -35,7 +35,7 @@
                 <el-col :span="8">
                     <div class="bg-purple" style="display: flex;padding-right: 24px">
                         <div class="info">
-                            <div class="word">上午好，</div>
+                            <div class="word">{{dayTypeName}}，</div>
                             <div class="word">{{siteName}}同学</div>
                             <!-- <div class="small-word" style="color: #949597;margin-bottom: 8px">上次登录时间</div>
                             <div class="small-word" style="color:#26282B">2021-09-13 11:28:32</div> -->
@@ -167,12 +167,14 @@
 <script>
 import echarts from 'echarts'
 import { getHomeData,getOnlineData,getItemsRank } from '@/api/statistics'
+import { getUserLists,getproduct } from '@/api/manage'
 export default {
     name: 'home',
     data() {
         return {
             activeName: 'yesterday',
             chartsNmae: 'read',
+            sourceId: '', //用户来源id
             readTotal: '',
             readToday: '',
             shareTotal: '',
@@ -189,6 +191,7 @@ export default {
         let data =  this.$store.state.user.u_info
         console.log('data',data)
         this.getBasicsData()
+        this.getproductList()
         this.getItemsRankList('read','yesterday')
     },
     computed: {
@@ -210,7 +213,16 @@ export default {
             var mm = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
             var ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
             return YY + MM + DD +" "+hh + mm + ss;
-        }
+        },
+        dayTypeName() {
+            let date = new Date(),hours = date.getHours()
+            if(hours < 12) {
+                return '上午好'
+            }else if(hours > 12 && hours < 17) {
+                return '下午好'
+            }
+            return '晚上好'
+        },
     },
     methods: {
       getBasicsData() {
@@ -218,26 +230,31 @@ export default {
             customer_id: this.site.customerId,
             product_id: this.site.productId
         }
-        console.log('params',params)
         getHomeData(params).then(res => {
-            console.log('read',res.data)
             this.shareTotal = res.data?.share.total.toLocaleString() || 0
-            this.userTotal = res.data?.user.total.toLocaleString() || 0
+            // this.userTotal = res.data?.user.total.toLocaleString() || 0
             this.activeTotal =res.data?.active.total.toLocaleString() || 0
             this.shareToday = res.data?.share.today || 0
             this.userToday = res.data?.user.today || 0
             this.activeToday = res.data?.active.today || 0
             this.readToday = res.data?.read.today || 0
             this.readTotal = res.data?.read.total.toLocaleString() || 0
-            console.log('read',res.data.read.total)
-            console.log('read',res.data.read.today)
-            console.log('read',res.data.share.total)
-            console.log('read',res.data.share.today)
-            console.log('read',res.data.user.total)
-            console.log('read',res.data.user.today)
-            console.log('read',res.data.active.total)
-            console.log('read',res.data.active.today)
         })
+     },
+    getproductList(){
+        getproduct({}).then((response) => {
+            let obj = response.data.find(v => v.type == 'app');
+            let sourceId = obj.source_id || '';
+            this.getUserList(sourceId)
+        });
+      },
+     getUserList(sourceId) {
+         let params = { sourceId }
+          getUserLists(params).then(res => {
+            if(res.code == 200) {
+              this.userTotal = res.data.totalCount.toLocaleString() || 0
+            }
+          })
      },
      getItemsRankList(type,dateType) {
           let params = {
@@ -284,7 +301,6 @@ export default {
         }
       },
       handleCharts() {
-          console.log('chartsNmae',this.chartsNmae)
           this.chartsOnline(this.chartsNmae)
       },
     /* 快捷入口跳转*/

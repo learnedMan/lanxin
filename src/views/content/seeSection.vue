@@ -1117,7 +1117,11 @@ export default {
       console.log('row',row)
       let id = row.script_id,type = row.type
       if(type == 'news' || type == 'video' || type == 'album' || type == 'outer_link') {
-        this.$router.push({ name: 'All-media', query: { id }})
+        if(window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1) {
+           this.$router.push({ name: 'My', query: { id }})
+        }else{
+          this.$router.push({ name: 'All-media', query: { id }})
+        }
       }else if(type == 'broadcast') {
          this.$router.push({ name: 'StudioList', query: { id }})
       }
@@ -1244,6 +1248,8 @@ export default {
           const { sort } = this.tableData[newIndex];
           console.log('newIndex',newIndex)
           console.log('oldIndex',oldIndex)
+          console.log('id',id)
+          console.log('sort',sort)
           this.tableData = [];
           changeNewsSort({
             [id]: sort

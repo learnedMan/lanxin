@@ -6,6 +6,18 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
+import MediaAssetsMange  from '@/views/content/index'
+
+import allMediaTemplate  from '@/views/content/mediaAssets/all-media'
+
+import MyTemplate  from '@/views/content/mediaAssets/my'
+
+import collectarticleTemplate  from '@/views/content/publicSentiment/collect-article'
+
+import seeSectionTemplate  from '@/views/content/seeSection'
+
+
+
 /* Router Modules */
 
 /**
@@ -168,7 +180,8 @@ export const asyncRoutes = [
     children: [
       {
         path: 'seeSection',
-        component: () => import('@/views/content/seeSection'),
+        // component: () => import('@/views/content/seeSection'),
+        component: seeSectionTemplate,
         name: 'SeeSection',
         permission: 'content.news.list',
         meta: { title: '栏目数据',keepAlive: true }
@@ -200,7 +213,8 @@ export const asyncRoutes = [
       },
       {
         path: 'mediaAssets',
-        component: () => import('@/views/content/index'), // Parent router-view
+       // component: () => import('@/views/content/index'), // Parent router-view  MediaAssetsMange
+        component: MediaAssetsMange,
         name: 'MediaAssets',
         permission: 'content.script.manage',
         meta: { title: '稿件管理' },
@@ -208,14 +222,16 @@ export const asyncRoutes = [
         children: [
           {
             path: 'all-media',
-            component: () => import('@/views/content/mediaAssets/all-media'),
+            // component: () => import('@/views/content/mediaAssets/all-media'),
+            component: allMediaTemplate,
             name: 'All-media',
             permission: 'content.script.list',
             meta: { title: '所有稿件',keepAlive: true } //需要缓存
           },
           {
             path: 'my',
-            component: () => import('@/views/content/mediaAssets/my'),
+            // component: () => import('@/views/content/mediaAssets/my'),
+            component: MyTemplate,
             name: 'My',
             permission: 'content.script.list',
             meta: { title: '我的稿件',keepAlive: true }
@@ -252,7 +268,8 @@ export const asyncRoutes = [
       },
       {
         path: 'publicSentiment',
-        component: () => import('@/views/content/index'),
+        // component: () => import('@/views/content/index'),
+        component: MediaAssetsMange,
         name: 'publicSentiment',
         permission: 'content.collect.manage',
         meta: { title: '舆情大数据' },
@@ -267,7 +284,8 @@ export const asyncRoutes = [
           },
           {
             path: 'collect-article',
-            component: () => import('@/views/content/publicSentiment/collect-article'),
+            // component: () => import('@/views/content/publicSentiment/collect-article'),
+            component: collectarticleTemplate,
             name: 'collect-article',
             permission: 'content.collect.article',
             meta: { title: '采集文章管理', keepAlive: true}
