@@ -98,6 +98,12 @@
           <el-form-item  label-width="120px" label="云媒资站点标签配置" prop="blue_cloud_tag">
             <el-input style="width: 300px" autocomplete="off" placeholder="请输入云媒资站点标签配置" v-model="form.extra.blue_cloud_tag"></el-input>
           </el-form-item>
+           <el-form-item el-form-item  label-width="120px" label="允许h5页面复制" prop="extra.allow_h5_copy">
+            <el-select :disabled="editflag" v-model="form.extra.allow_h5_copy" placeholder="请选择">
+              <el-option  v-for="item in outloginoptions" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
         </div>
         <div class="form-r" style="width:50%;padding-left:50px;">
           <el-form-item  label-width="120px" label="个性化域名" prop="extra.custom_domain">
@@ -272,6 +278,7 @@ import {
                 preview_domain: '',
                 blue_cloud_tag: '',
                 enable_sensitive_word_filter: '0',
+                allow_h5_copy: '0',
                 bigdata_settings: {
                   signature: '',
                   customer_id: '',

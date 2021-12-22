@@ -479,9 +479,6 @@ export default {
       this.queryParams.startdate = arr[0]
       this.queryParams.enddate = arr[1]
     },
-    handleSrcoll() {
-
-    },
     //默认时间
     defaultDate() {
        var dt = new Date();

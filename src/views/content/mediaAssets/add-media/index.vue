@@ -1745,6 +1745,7 @@ export default {
               }
             // if(!this.from.extra.cover.length) {
               let arr = this.getFirstImg(newValue) || []
+              if(!arr.length) return
               if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
                 let list = arr.slice(0,3),arr_ = []
                 list.map(v =>{
