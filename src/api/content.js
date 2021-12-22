@@ -80,12 +80,14 @@ export function offlineNews(id) {
 }
 
 /* 获取稿件详情 */
-export function getScriptDetail(id) {
+export function getScriptDetail(id,name) {
+  let type = name || 'scripts'
   return request({
-    url: `/api/scripts/${id}`,
+    url: `/api/${type}/${id}`,
     method: 'get'
   })
 }
+
 
 /* 获取多媒体稿件详情 */
 export function getMeditDetail(id) {

@@ -165,7 +165,7 @@
         label="编辑"
         align="center"
         min-width="6%"
-        prop="editor_name"
+        prop="author_name"
         :show-overflow-tooltip="true"
       />
       <el-table-column
@@ -173,7 +173,7 @@
         label="作者"
         align="center"
         min-width="6%"
-        prop="author_name"
+        prop="editor_name"
         :show-overflow-tooltip="true"
       />
       <el-table-column
@@ -445,6 +445,8 @@ export default {
     }
   },
   activated() {
+    let id = this.$route.query?.id || ''
+    this.queryParams.keyword = id
     this.getList()
   },
   beforeRouteLeave(to, from, next) {

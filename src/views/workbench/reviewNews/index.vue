@@ -153,7 +153,7 @@
        <el-table-column
         label="作者"
         align="center"
-        prop="author_name"
+        prop="editor_name"
         min-width="8%"
       />
       <el-table-column

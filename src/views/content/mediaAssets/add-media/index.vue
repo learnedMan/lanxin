@@ -1147,7 +1147,7 @@ export default {
           item: {
             key: 'author_name',
             props: {
-              label: '作者:'
+              label: '编辑:'
             },
             component: 'tag' // 组件名
           }
@@ -1156,7 +1156,7 @@ export default {
           item: {
             key: 'editor_name',
             props: {
-              label: '编辑:'
+              label: '作者:'
             },
             component: 'tag' // 组件名
           }
@@ -1413,12 +1413,12 @@ export default {
             component: 'radio', // 组件名
             lists: [
               {
-                label: '目标对象',
-                value: 'target_obj'
-              },
-              {
                 label: '外链',
                 value: 'outer_link'
+              },
+              {
+                label: '目标对象',
+                value: 'target_obj'
               },
               {
                 label: '授权外链',
@@ -1649,6 +1649,7 @@ export default {
       enable_sensitive_word_filter: '0', //敏感词开关 0 禁止 1开启
       sourceId: '',// sourceId 敏感词检测
       newsId: '', //保存草稿再发布需要的id
+      detailsType: '', //采集文章管理稿件 和其他稿件 获取详情接口区别
       channel_idOld: [], //
       editorSaveFlag: true,// 自动保存开关
       from: {
@@ -1691,7 +1692,7 @@ export default {
             image_list: []
           }, // 图片
           link: {
-            type: 'target_obj', // 链接类型
+            type: 'outer_link', // 链接类型
             id: '', // 链接对象
             url: '' // 链接地址
           }, // 外链
@@ -1733,7 +1734,6 @@ export default {
     'from.extra.content': {
       handler: function(newValue,oldValue) {
         // 230 231需要三张图
-        if(this.from.extra.type != 'news') return
         var bdhhtml = document.getElementById('bdh').innerHTML;
         console.log('bdhhtml',bdhhtml)
         if(bdhhtml==1){
@@ -1743,10 +1743,8 @@ export default {
             if(newValue != this.editorOldValue) {
               this.editorChangeValue = true //编辑器内容变化了开启自动保存
               }
-            if(!this.from.extra.cover.length) {
+            // if(!this.from.extra.cover.length) {
               let arr = this.getFirstImg(newValue) || []
-              console.log('newValue',newValue)
-              console.log('抓取的图片',this.getFirstImg(newValue))
               if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
                 let list = arr.slice(0,3),arr_ = []
                 list.map(v =>{
@@ -1765,7 +1763,7 @@ export default {
                 list.unshift(obj)
                 this.from.extra.cover = list
               }
-            }
+            // }
          },
     },
     'from.extra.album_extra': {
@@ -1878,6 +1876,7 @@ export default {
         clearInterval(timer);
       })
     }
+    this.detailsType = this.$route.query?.detailsType || 'scripts'
     this.getChannels()
     await this.getLabels()
     await this.getList()
@@ -2006,7 +2005,6 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
-          customClass:'zZindex'
         }).then(() => {
            this.from.extra.title = obj.title
            this.from.extra.content = obj.content
@@ -2051,7 +2049,7 @@ export default {
       // 显示发布时间
       if (this.typeDetails === 'news' && this.from.extra.publish_timer.status === '1') baseTopItem.push('extra.publish_timer.publish_at')
       // const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
-      const baseBottomItem = ['author_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
+      const baseBottomItem = ['editor_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
       if (this.from.extra.is_original === '0') baseBottomItem.splice(2, 0, 'extra.source')
       switch (this.from.extra.type) {
@@ -2090,6 +2088,7 @@ export default {
         * */
     enterDialog() {
       if(this.publishLoading) return;
+      this.$message('保存稿件后将会对该稿件下所有新闻内容进行覆盖')
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
           this.publishLoading = true;
@@ -2260,7 +2259,7 @@ export default {
         this.$message.warning('正在图片本地化，请稍后')
         return
       }
-
+      this.$message('保存稿件后将会对该稿件下所有新闻内容进行覆盖')
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存草稿成功!',(res)=>{
@@ -2282,6 +2281,7 @@ export default {
         this.$message.warning('正在图片本地化，请稍后')
         return
       }
+      this.$message('保存稿件后将会对该稿件下所有新闻内容进行覆盖')
       this.$refs.submitForm.validate((valid, obj) => {
         if (valid) {
           this.handleSave('保存成功', ({ data: { id } = {} }) => {
@@ -2396,7 +2396,7 @@ export default {
         }
         return
       }
-        promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId) : getNewDetail(this.id)
+        promise = this.typeDetails === 'script' ? getScriptDetail(this.scriptsId,this.detailsType) : getNewDetail(this.id)
       return (this.fetchSuggestions? this.fetchSuggestions() : promise).then(res => {
         const extra = res.extra;
         let link_type = extra?.link && extra?.link?.type || '';

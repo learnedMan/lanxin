@@ -214,7 +214,7 @@ export default {
         source: '',
         startdate: '',
         enddate: '',
-        pageSize: 10,
+        pageSize: 50,
         page: 1
       },
       concent: '',
