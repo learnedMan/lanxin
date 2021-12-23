@@ -614,6 +614,7 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
 import Sortable from 'sortablejs'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
+import elementIcons from '../icons/element-icons'
 export default {
   name: 'SeeSection',
   components: {
@@ -1240,50 +1241,40 @@ export default {
         ghostClass: 'sortable-ghost',
         onEnd: evt => {
           const { newIndex, oldIndex } = evt;
-          const { id } = this.tableData[oldIndex];
-          const { sort } = this.tableData[newIndex];
-          console.log('newIndex',newIndex)
-          console.log('oldIndex',oldIndex)
-          // const targetRow = this.tableData.splice(evt.oldIndex, 1)[0];
-          // this.tableData.splice(evt.newIndex, 0, targetRow);   0 1 2 3 4 5 6
-          /***
-           *  将第5个 序号4拖到第3个序号2的位置
-           *  首先将 第5个sort 变成 第3个的sort
-           *  序号4的sort 变成序号2的sort 序号2的sort 变成序号3的sort依次类推
-           *
-           * **/
           let arr = this.tableData.map(v =>{
             let { id,sort } = {...v}
             let obj = { id,sort}
             return obj
           })
-          console.log('table',this.tableData)
-          console.log('arr',arr)
-          arr[oldIndex].sort = arr[newIndex].sort
-          let l = arr.length -1
-
-          // arr.map((v,index) =>{
-          //   if(index > newIndex) {
-          //      arr[index].sort = arr[index-1].sort
-          //   }
-          // })
-          // console.log('arr2',arr)
-          // let arrObj = {}
-          // for(let i = 0; i< arr.length; i++) {
-          //     arrObj[arr[i].id] = arr[i].sort
-          // }
-          // console.log('arrObj',arrObj)
-          // console.log('newIndex',newIndex)
-          // console.log('oldIndex',oldIndex)
-          // console.log('arr', arr)
-          // console.log('id',id)
-          // console.log('sort',sort)
-          // console.log('table',this.tableData)
-          // this.tableData = [];
-          // changeNewsSort(obj_).then(() => {
-          //   this.$message.success('修改成功');
-          //   this.getList();
-          // })
+          if(oldIndex > newIndex) {
+            let sort_ = arr[newIndex].sort
+            for(let i = 0; i < arr.length; i++) {
+                 if(i >= newIndex && i < oldIndex) {
+                    arr[i].sort = arr[i+1].sort
+                 }else if(i == oldIndex) {
+                    arr[oldIndex].sort = sort_
+                 }
+            }
+          }else{
+            let sort_ = arr[newIndex].sort
+            for(let i = newIndex; i >= 0; i--) {
+                 if(i == oldIndex) {
+                    arr[i].sort = sort_
+                    break
+                 }else{
+                   arr[i].sort = arr[i-1].sort
+                 }
+            }
+          }
+          let arrObj = {}
+          for(let i = 0; i< arr.length; i++) {
+              arrObj[arr[i].id] = arr[i].sort
+          }
+          this.tableData = [];
+          changeNewsSort(arrObj).then(() => {
+            this.$message.success('修改成功');
+            this.getList();
+          })
         }
       })
     },

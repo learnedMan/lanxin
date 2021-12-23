@@ -1743,9 +1743,9 @@ export default {
             if(newValue != this.editorOldValue) {
               this.editorChangeValue = true //编辑器内容变化了开启自动保存
               }
-            // if(!this.from.extra.cover.length) {
+            if(!this.from.extra.cover.length) {
               let arr = this.getFirstImg(newValue) || []
-              if(!arr.length) return
+              // if(!arr.length) return
               if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
                 let list = arr.slice(0,3),arr_ = []
                 list.map(v =>{
@@ -1764,7 +1764,7 @@ export default {
                 list.unshift(obj)
                 this.from.extra.cover = list
               }
-            // }
+            }
          },
     },
     'from.extra.album_extra': {
@@ -2459,6 +2459,7 @@ export default {
             }
           }
         }// 表单
+        console.log('88888888888',this.from.extra.cover)
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
         if(!this.disabled && this.typeDetails === 'script') {
           this.dialog.form.channel_id = res.news.map(n => n.channel_id)
