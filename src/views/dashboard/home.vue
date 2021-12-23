@@ -62,10 +62,12 @@
                                         <img class="img" src="@/assets/home/cloum.png" alt="">
                                         <div class="word">栏目数据</div>
                                     </div>
-                                    <div class="list" @click="goLink('ReviewNews')">
-                                        <img class="img" src="@/assets/home/news.png" alt="">
-                                        <div class="word">新闻审核</div>
-                                    </div>
+                                        <div class="list" @click="goLink('ReviewNews')">
+                                            <img class="img" src="@/assets/home/news.png" alt="">
+                                            <div class="word">新闻审核</div>
+                                        </div>
+                                    <!-- <el-badge :value="200" :max="99" class="tip-item">
+                                    </el-badge> -->
                                     <div class="list" @click="goLink('CommentVerify')">
                                         <img class="img" src="@/assets/home/comment.png" alt="">
                                         <div class="word">评论审核</div>
@@ -241,6 +243,12 @@ export default {
             this.readTotal = res.data?.read.total.toLocaleString() || 0
         })
      },
+     getCheckNum() {
+      const params = { status: 0, reviewer_id: this.$store.state.user.u_info.id }
+      getNews(this.removePropertyOfNullFor0(params)).then(res => {
+        this.total = res.total || 0
+      })
+    },
     getproductList(){
         getproduct({}).then((response) => {
             let obj = response.data.find(v => v.type == 'app');
@@ -479,6 +487,10 @@ export default {
                     justify-content: space-between;
                     padding-left: 44px;
                     box-sizing: border-box;
+                    .tip-item {
+                    margin-top: 10px;
+                    margin-right: 40px;
+                    }
                     .list{
                         width: 56px;
                         cursor: pointer;
