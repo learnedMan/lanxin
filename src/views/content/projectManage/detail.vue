@@ -922,7 +922,7 @@
         /* 获取子专题 */
         getChildTopic () {
           return getChildTopic(this.id).then(res => {
-            this.channelsList = res;
+            this.channelsList = res.data;
             const { id } = this.$route.query;
             this.currentKey = id || this.currentKey || res?.[0]?.id || '';
             this.$nextTick(() => {
