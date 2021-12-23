@@ -1219,12 +1219,8 @@ export default {
               })
             })
             this.tablekey = !this.tablekey;
-            let that = this
-            setTimeout(() => {
-              //  !that.isMobile && that.initSort();
-            }, 0);
             this.$nextTick(() => {
-                this.initSort()
+                // this.initSort()
                 setTimeout(() => {
                     document.documentElement.scrollTop = this.scrollTop
                     console.log('scrollTop',this.scrollTop)
@@ -1248,15 +1244,46 @@ export default {
           const { sort } = this.tableData[newIndex];
           console.log('newIndex',newIndex)
           console.log('oldIndex',oldIndex)
-          console.log('id',id)
-          console.log('sort',sort)
-          this.tableData = [];
-          changeNewsSort({
-            [id]: sort
-          }).then(() => {
-            this.$message.success('修改成功');
-            this.getList();
+          // const targetRow = this.tableData.splice(evt.oldIndex, 1)[0];
+          // this.tableData.splice(evt.newIndex, 0, targetRow);   0 1 2 3 4 5 6
+          /***
+           *  将第5个 序号4拖到第3个序号2的位置
+           *  首先将 第5个sort 变成 第3个的sort
+           *  序号4的sort 变成序号2的sort 序号2的sort 变成序号3的sort依次类推
+           *
+           * **/
+          let arr = this.tableData.map(v =>{
+            let { id,sort } = {...v}
+            let obj = { id,sort}
+            return obj
           })
+          console.log('table',this.tableData)
+          console.log('arr',arr)
+          arr[oldIndex].sort = arr[newIndex].sort
+          let l = arr.length -1
+
+          // arr.map((v,index) =>{
+          //   if(index > newIndex) {
+          //      arr[index].sort = arr[index-1].sort
+          //   }
+          // })
+          // console.log('arr2',arr)
+          // let arrObj = {}
+          // for(let i = 0; i< arr.length; i++) {
+          //     arrObj[arr[i].id] = arr[i].sort
+          // }
+          // console.log('arrObj',arrObj)
+          // console.log('newIndex',newIndex)
+          // console.log('oldIndex',oldIndex)
+          // console.log('arr', arr)
+          // console.log('id',id)
+          // console.log('sort',sort)
+          // console.log('table',this.tableData)
+          // this.tableData = [];
+          // changeNewsSort(obj_).then(() => {
+          //   this.$message.success('修改成功');
+          //   this.getList();
+          // })
         }
       })
     },
