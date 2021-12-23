@@ -3,7 +3,7 @@
     <transition name="fade-transform" mode="out-in">
       <!-- 缓存组件跳转的页面 -->
       <keep-alive>
-      　　<router-view v-if="$route.meta.keepAlive"></router-view>
+      　　<router-view v-if="$route.meta.keepAlive" :key="key"></router-view>
       </keep-alive> 
       <!-- <keep-alive :include="cachedViews">
         <router-view :key="key" />

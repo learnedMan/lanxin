@@ -1275,7 +1275,7 @@
                 cover: cover && cover.path || '' // 图片
               }
             })
-            !this.isMobile && this.initSort();
+            // !this.isMobile && this.initSort();
           }).finally(() => {
             this.loading = false
           })
