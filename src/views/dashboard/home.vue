@@ -66,7 +66,7 @@
                                             <img class="img" src="@/assets/home/news.png" alt="">
                                             <div class="word">新闻审核</div>
                                         </div>
-                                    <!-- <el-badge :value="200" :max="99" class="tip-item">
+                                    <!-- <el-badge :value="checkNum" :max="99">
                                     </el-badge> -->
                                     <div class="list" @click="goLink('CommentVerify')">
                                         <img class="img" src="@/assets/home/comment.png" alt="">
@@ -170,6 +170,7 @@
 import echarts from 'echarts'
 import { getHomeData,getOnlineData,getItemsRank } from '@/api/statistics'
 import { getUserLists,getproduct } from '@/api/manage'
+import { getNews } from '@/api/content'
 export default {
     name: 'home',
     data() {
@@ -185,6 +186,7 @@ export default {
             userToday: '',
             activeTotal: '',
             activeToday: '',
+            checkNum: 0,
             dateSelectValue: '7',
             list: [{},{},{},{},{},{},{},{},{},{},{},{},] //排行榜
         }
@@ -193,6 +195,7 @@ export default {
         let data =  this.$store.state.user.u_info
         console.log('data',data)
         this.getBasicsData()
+        this.getCheckNum()
         this.getproductList()
         this.getItemsRankList('read','yesterday')
     },
@@ -246,7 +249,8 @@ export default {
      getCheckNum() {
       const params = { status: 0, reviewer_id: this.$store.state.user.u_info.id }
       getNews(this.removePropertyOfNullFor0(params)).then(res => {
-        this.total = res.total || 0
+        this.checkNum = res.total || 0
+        console.log('checkNum',this.checkNum)
       })
     },
     getproductList(){
