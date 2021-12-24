@@ -924,7 +924,7 @@
           return getChildTopic(this.id).then(res => {
             this.channelsList = res.data;
             const { id } = this.$route.query;
-            this.currentKey = id || this.currentKey || res?.[0]?.id || '';
+            this.currentKey = id || this.currentKey || res.data?.[0]?.id || '';
             this.$nextTick(() => {
               this.$refs.tree?.setCurrentKey(this.currentKey);
               this.getList();
@@ -1275,7 +1275,7 @@
                 cover: cover && cover.path || '' // 图片
               }
             })
-            // !this.isMobile && this.initSort();
+            !this.isMobile && this.initSort();
           }).finally(() => {
             this.loading = false
           })
@@ -1287,12 +1287,37 @@
             ghostClass: 'sortable-ghost',
             onEnd: evt => {
               const { newIndex, oldIndex } = evt;
-              const { id } = this.tableData[oldIndex];
-              const { sort } = this.tableData[newIndex];
+              let arr = this.tableData.map(v =>{
+                let { id,sort } = {...v}
+                let obj = { id,sort}
+                return obj
+              })
+              if(oldIndex > newIndex) {
+                let sort_ = arr[newIndex].sort
+                for(let i = 0; i < arr.length; i++) {
+                    if(i >= newIndex && i < oldIndex) {
+                        arr[i].sort = arr[i+1].sort
+                    }else if(i == oldIndex) {
+                        arr[oldIndex].sort = sort_
+                    }
+                }
+              }else{
+                let sort_ = arr[newIndex].sort
+                for(let i = newIndex; i >= 0; i--) {
+                    if(i == oldIndex) {
+                        arr[i].sort = sort_
+                        break
+                    }else{
+                      arr[i].sort = arr[i-1].sort
+                    }
+                }
+              }
+              let arrObj = {}
+              for(let i = 0; i< arr.length; i++) {
+                  arrObj[arr[i].id] = arr[i].sort
+              }
               this.tableData = [];
-              changeNewsSort({
-                [id]: sort
-              }).then(() => {
+              changeNewsSort(arrObj).then(() => {
                 this.$message.success('修改成功');
                 this.getList();
               })

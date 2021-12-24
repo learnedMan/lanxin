@@ -62,20 +62,24 @@
                                         <img class="img" src="@/assets/home/cloum.png" alt="">
                                         <div class="word">栏目数据</div>
                                     </div>
+                                    <el-badge :value="checkNum" :max="99">
                                         <div class="list" @click="goLink('ReviewNews')">
                                             <img class="img" src="@/assets/home/news.png" alt="">
                                             <div class="word">新闻审核</div>
                                         </div>
-                                    <!-- <el-badge :value="checkNum" :max="99">
-                                    </el-badge> -->
-                                    <div class="list" @click="goLink('CommentVerify')">
-                                        <img class="img" src="@/assets/home/comment.png" alt="">
-                                        <div class="word">评论审核</div>
-                                    </div>
-                                    <div class="list" @click="goLink('Gossip')">
-                                        <img class="img" src="@/assets/home/announce.png" alt="">
-                                        <div class="word">爆料审核</div>
-                                    </div>
+                                    </el-badge>
+                                     <el-badge :value="commentNum" :max="99">
+                                        <div class="list" @click="goLink('CommentVerify')">
+                                            <img class="img" src="@/assets/home/comment.png" alt="">
+                                            <div class="word">评论审核</div>
+                                        </div>
+                                    </el-badge>
+                                    <el-badge :value="gossipNum" :max="99">
+                                        <div class="list" @click="goLink('Gossip')">
+                                            <img class="img" src="@/assets/home/announce.png" alt="">
+                                            <div class="word">爆料审核</div>
+                                        </div>
+                                    </el-badge>
                                     <div class="list" @click="goLink('Column')">
                                         <img class="img" src="@/assets/home/manage.png" alt="">
                                         <div class="word">栏目管理</div>
@@ -171,6 +175,7 @@ import echarts from 'echarts'
 import { getHomeData,getOnlineData,getItemsRank } from '@/api/statistics'
 import { getUserLists,getproduct } from '@/api/manage'
 import { getNews } from '@/api/content'
+import { getGossipLists,getCommentLists } from '@/api/workbench'
 export default {
     name: 'home',
     data() {
@@ -187,8 +192,10 @@ export default {
             activeTotal: '',
             activeToday: '',
             checkNum: 0,
+            gossipNum: 0,
+            commentNum: 0,
             dateSelectValue: '7',
-            list: [{},{},{},{},{},{},{},{},{},{},{},{},] //排行榜
+            list: [] //排行榜
         }
     },
     created() {
@@ -250,7 +257,6 @@ export default {
       const params = { status: 0, reviewer_id: this.$store.state.user.u_info.id }
       getNews(this.removePropertyOfNullFor0(params)).then(res => {
         this.checkNum = res.total || 0
-        console.log('checkNum',this.checkNum)
       })
     },
     getproductList(){
@@ -258,15 +264,31 @@ export default {
             let obj = response.data.find(v => v.type == 'app');
             let sourceId = obj.source_id || '';
             this.getUserList(sourceId)
+            this.getGossipListNum(sourceId)
+            this.getCommentListNum(sourceId)
         });
       },
-     getUserList(sourceId) {
+    getUserList(sourceId) {
          let params = { sourceId }
           getUserLists(params).then(res => {
             if(res.code == 200) {
               this.userTotal = res.data.totalCount.toLocaleString() || 0
             }
           })
+     },
+     getGossipListNum(sourceId) {
+          let params = {sourceId,status: 2,type: 0}
+          getGossipLists(params).then(res => {
+            if(res.code == 200) {
+              this.gossipNum = res.data.totalCount || 0
+            }
+          })
+     },
+     getCommentListNum(sourceId) {
+          let params = {sourceId,status: 0}
+          getCommentLists(params).then(res => {
+          this.commentNum = res.data.totalCount || 0;
+        })
      },
      getItemsRankList(type,dateType) {
           let params = {

@@ -39,128 +39,6 @@
 <template>
     <div class="xl-video">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="vms视频库" name="0" class="xl-video-tab">
-          <xl-menu  :menus="vmsChannel" :active-menu="vmsParams.defaultActive" v-if="showVmsChannel" @select="menuChange($event, 'vmsParams')"></xl-menu>
-          <div class="xl-video-tab--content">
-            <el-form
-              :model="vmsParams"
-              :inline="true"
-            >
-              <el-form-item label="视频名称:" prop="keyword">
-                <el-input
-                  v-model="vmsParams.keyword"
-                  placeholder="请输入关键字"
-                  clearable
-                  size="small"
-                  style="width: 200px"
-                  @keyup.enter.native="getVideoList('vmsParams')"
-                />
-              </el-form-item>
-              <el-form-item  label="类型:" prop="type">
-                <el-select
-                v-model="vmsParams.type"
-                size="small"
-                placeholder="请选择类型"
-                clearable
-              >
-                <el-option
-                  v-for="item in typeOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-              </el-form-item>
-              <el-form-item label="同步时间:">
-                <el-date-picker
-                  v-model="vmsParams.dateValue"
-                  type="daterange"
-                  align="right"
-                  size="small"
-                  unlink-panels
-                  range-separator="~"
-                  value-format="yyyy-MM-dd"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  :picker-options="pickerOptions"
-                  @change="handleDateChange($event, 'vmsParams')"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-button v-points = "1500" type="primary" @click="rest('vmsParams')" size="mini" >重置</el-button>
-                <el-button v-points = "1500"
-                  type="primary"
-                  size="mini"
-                  @click="getVideoList('vmsParams')"
-                >
-                  搜索
-                </el-button>
-              </el-form-item>
-            </el-form>
-            <div class="xl-video-tab--content-ul" style="width: 98%">
-                  <el-table
-                    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-                    border
-                    v-loading="loading"
-                    :data="vmsVideo"
-                  >
-                <el-table-column label="ID" width="60px" align="center" prop="id" />
-                <el-table-column
-                  label="视频封面"
-                  width="150px"
-                  align="center"
-                  prop="cover"
-                  :show-overflow-tooltip="true"
-                >
-                  <template slot-scope="scope">
-                    <img
-                      :src="scope.row.cover"
-                      alt=""
-                      style="width: 50px; height: 50px;"
-                    />
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  label="视频名称"
-                  align="center"
-                  prop="title"
-                  :show-overflow-tooltip="true"
-                />
-                <el-table-column
-                  label="时长"
-                  align="center"
-                  prop="duration"
-                >
-                 <template slot-scope="scope">
-                   <span>{{getTime(scope.row.duration)}}</span>
-                 </template>
-                </el-table-column>
-                <el-table-column
-                  label="同步时间"
-                  align="center"
-                  prop="created_at"
-                  :show-overflow-tooltip="true"
-                />
-                <el-table-column width="280px" label="操作" align="center">
-                  <template slot-scope="scope">
-                    <Iconbutton icontype="bf" label="播放" @fatherMethod="play(scope.row)"></Iconbutton>
-                    <Iconbutton icontype="fz" label="复制" @fatherMethod="openLink(scope.row)"></Iconbutton>
-                    <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row,0)"></Iconbutton>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-
-            <pagination
-              v-show="vmsParams.total > 0"
-              :total="vmsParams.total"
-              :page.sync="vmsParams.page"
-              :limit.sync="vmsParams.pageSize"
-              @pagination="getVideoList('vmsParams')"
-            />
-          </div>
-        </el-tab-pane>
         <el-tab-pane label="蓝云视频库" name="1" class="xl-video-tab">
           <xl-menuL :menus="xlChannel" :active-menu="xlParams.defaultActive" v-if="showXlChannel" @select="menuChange($event, 'xlParams')"></xl-menuL>
           <div class="xl-video-tab--content">
@@ -282,6 +160,128 @@
             />
           </div>
         </el-tab-pane>
+         <el-tab-pane label="vms视频库" name="0" class="xl-video-tab">
+          <xl-menu  :menus="vmsChannel" :active-menu="vmsParams.defaultActive" v-if="showVmsChannel" @select="menuChange($event, 'vmsParams')"></xl-menu>
+          <div class="xl-video-tab--content">
+            <el-form
+              :model="vmsParams"
+              :inline="true"
+            >
+              <el-form-item label="视频名称:" prop="keyword">
+                <el-input
+                  v-model="vmsParams.keyword"
+                  placeholder="请输入关键字"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @keyup.enter.native="getVideoList('vmsParams')"
+                />
+              </el-form-item>
+              <el-form-item  label="类型:" prop="type">
+                <el-select
+                v-model="vmsParams.type"
+                size="small"
+                placeholder="请选择类型"
+                clearable
+              >
+                <el-option
+                  v-for="item in typeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              </el-form-item>
+              <el-form-item label="同步时间:">
+                <el-date-picker
+                  v-model="vmsParams.dateValue"
+                  type="daterange"
+                  align="right"
+                  size="small"
+                  unlink-panels
+                  range-separator="~"
+                  value-format="yyyy-MM-dd"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :picker-options="pickerOptions"
+                  @change="handleDateChange($event, 'vmsParams')"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button v-points = "1500" type="primary" @click="rest('vmsParams')" size="mini" >重置</el-button>
+                <el-button v-points = "1500"
+                  type="primary"
+                  size="mini"
+                  @click="getVideoList('vmsParams')"
+                >
+                  搜索
+                </el-button>
+              </el-form-item>
+            </el-form>
+            <div class="xl-video-tab--content-ul" style="width: 98%">
+                  <el-table
+                    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                    border
+                    v-loading="loading"
+                    :data="vmsVideo"
+                  >
+                <el-table-column label="ID" width="60px" align="center" prop="id" />
+                <el-table-column
+                  label="视频封面"
+                  width="150px"
+                  align="center"
+                  prop="cover"
+                  :show-overflow-tooltip="true"
+                >
+                  <template slot-scope="scope">
+                    <img
+                      :src="scope.row.cover"
+                      alt=""
+                      style="width: 50px; height: 50px;"
+                    />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="视频名称"
+                  align="center"
+                  prop="title"
+                  :show-overflow-tooltip="true"
+                />
+                <el-table-column
+                  label="时长"
+                  align="center"
+                  prop="duration"
+                >
+                 <template slot-scope="scope">
+                   <span>{{getTime(scope.row.duration)}}</span>
+                 </template>
+                </el-table-column>
+                <el-table-column
+                  label="同步时间"
+                  align="center"
+                  prop="created_at"
+                  :show-overflow-tooltip="true"
+                />
+                <el-table-column width="280px" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <Iconbutton icontype="bf" label="播放" @fatherMethod="play(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="fz" label="复制" @fatherMethod="openLink(scope.row)"></Iconbutton>
+                    <Iconbutton icontype="xg" label="修改" @fatherMethod="editdata(scope.row,0)"></Iconbutton>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+
+            <pagination
+              v-show="vmsParams.total > 0"
+              :total="vmsParams.total"
+              :page.sync="vmsParams.page"
+              :limit.sync="vmsParams.pageSize"
+              @pagination="getVideoList('vmsParams')"
+            />
+          </div>
+        </el-tab-pane>
       </el-tabs>
       <el-dialog
       width="640px"
@@ -367,7 +367,7 @@
       },
       data() {
         return {
-          activeName: '0',
+          activeName: '1',
           vmsChannel: [], // vms栏目
           vmsVideo: [], // vms视频列表
           xlChannel: [], // 新蓝云栏目
@@ -598,7 +598,7 @@
         },
         /* 视频库切换 */
         handleClick (tag) {
-          this.getVideoChannel(tag.name);
+          this.getVideoChannel(Number(tag.name));
         },
         /* 修改视频清晰度 */
         changeVideo (item, target) {
@@ -621,7 +621,7 @@
           this.$emit('choose-url', url);
         },
         /* 获取栏目 */
-        getVideoChannel (code = 0) {
+        getVideoChannel (code = 1) {
           getVideoChannel({
             cloud: code
           }).then(res => {

@@ -493,8 +493,9 @@ export default {
        this.dateValue = [str,time2]
 		},
     onLineOrOffline(news) {
-      let stuat = news.every(v => v.status == 0)
-      return stuat
+       let l = news.filter(v => v.status == 1) || []
+       let flag = l.length ? false : true
+      return flag
     },
     formatDate() {
 			var date = new Date();
@@ -546,13 +547,14 @@ export default {
       * */
     handleReset() {
       this.dateValue = ''
-      Object.assign(this.queryParams, {
-        startdate: '',
-        type: '',
-        keyword: '',
-        enddate: '',
-        page: 1
-      })
+        Object.assign(this.queryParams, {
+          startdate: '',
+          type: '',
+          keyword: '',
+          enddate: '',
+          page: 1
+        })
+        this.$forceUpdate()
       // this.resetForm('queryForm')
     },
     /*

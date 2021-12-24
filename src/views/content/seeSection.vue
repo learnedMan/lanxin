@@ -63,7 +63,8 @@
   <div class="xl-see-section">
     <el-row>
       <el-col :span="4">
-        <div class="xl-see-section--tree" style="width:100%;overflow:hidden;">
+        <!-- <div class="xl-see-section--tree" style="width:100%;overflow:hidden;"> -->
+        <div class="xl-see-section--tree" style="width:100%;overflow:auto;height: 600px;">
           <el-tree
             style="width:100%;"
             ref="tree"
@@ -1221,7 +1222,7 @@ export default {
             })
             this.tablekey = !this.tablekey;
             this.$nextTick(() => {
-                // this.initSort()
+                this.initSort()
                 setTimeout(() => {
                     document.documentElement.scrollTop = this.scrollTop
                     console.log('scrollTop',this.scrollTop)

@@ -1743,8 +1743,15 @@ export default {
             if(newValue != this.editorOldValue) {
               this.editorChangeValue = true //编辑器内容变化了开启自动保存
               }
-            if(!this.from.extra.cover.length) {
               let arr = this.getFirstImg(newValue) || []
+              let defaultImg = '/UEditor/themes/default/images/spacer.gif'
+              let  coverFlag =  null
+              if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
+                coverFlag = this.from.extra.cover.length ? this.from.extra.cover.every(v => v.path !='') : false
+              }else{
+                coverFlag = this.from.extra.cover[0]?.path
+              }
+            if(!coverFlag && arr[0] != defaultImg && arr[0] !=undefined) {
               // if(!arr.length) return
               if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
                 let list = arr.slice(0,3),arr_ = []
