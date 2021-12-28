@@ -517,11 +517,11 @@ export default {
         let status = v.status
         let obj = (channel || []).find(k =>{
           if(v.channel_id == k.id) {
-            return k.name
+            return k.name || ''
           }
         })
         let statusText = statusObj[status]
-        let name = `${obj.name}(${statusText})`
+        let name = `${obj?.name}(${statusText})`
         return { status,name}
       })
       return arr
@@ -547,6 +547,7 @@ export default {
       * */
     handleReset() {
       this.dateValue = ''
+      this.defaultDate()
         Object.assign(this.queryParams, {
           startdate: '',
           type: '',

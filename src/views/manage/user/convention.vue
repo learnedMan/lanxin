@@ -108,17 +108,17 @@
         <el-table-column
           label="积分"
           align="center"
-          prop="points"
+          prop="risePoints"
         />
         <el-table-column
-          label="每日最高限额"
+          label="单日限制次数"
           align="center"
-          prop="upperLineEverydayLabel"
+          prop="maxNumDayLabe"
         />
         <el-table-column
-          label="最高限额积分"
+          label="最高限制次数"
           align="center"
-          prop="upperLineLabel"
+          prop="maxNumLabe"
         />
         <el-table-column label="状态" align="center">
           <template slot-scope="scope">
@@ -196,7 +196,7 @@
             />
           </el-form-item>
           <el-form-item
-            label="规则类型"
+            label="所属模块"
             prop="type"
           >
             <el-select
@@ -232,37 +232,48 @@
               />
             </el-select>
           </el-form-item>
+           <el-form-item
+            label="(广电/直播)观看时长"
+            prop="duration"
+          >
+            <el-input
+              clearable
+              style="width: 200px"
+              placeholder="请输入时长"
+              v-model.number="dialogForm.duration"
+            />
+          </el-form-item>
           <el-form-item
-            label="赠送积分"
-            prop="points"
+            label="每次赠送积分"
+            prop="risePoints"
           >
             <el-input
               clearable
               style="width: 200px"
               placeholder="请输入赠送积分值"
-              v-model.number="dialogForm.points"
+              v-model.number="dialogForm.risePoints"
             />
           </el-form-item>
           <el-form-item
-            label="每日最高限额"
-            prop="upperLineEveryday"
+            label="单日限制次数"
+            prop="maxNumDay"
           >
             <el-input
               clearable
               style="width: 200px"
-              placeholder="请输入积分值(0表示不限)"
-              v-model.number="dialogForm.upperLineEveryday"
+              placeholder="请输入次数(0表示不限)"
+              v-model.number="dialogForm.maxNumDay"
             />
           </el-form-item>
           <el-form-item
-            label="最高限额"
-            prop="upperLine"
+            label="最高限制次数"
+            prop="maxNum"
           >
             <el-input
               clearable
               style="width: 200px"
-              placeholder="请输入积分值(0表示不限)"
-              v-model.number="dialogForm.upperLine"
+              placeholder="请输入次数(0表示不限)"
+              v-model.number="dialogForm.maxNum"
             />
           </el-form-item>
           <el-form-item
@@ -300,7 +311,7 @@
         const checkUpperLineEveryday = (rule, value, callback) => {
           console.log(value)
           if (value == null || value === '') {
-            return callback(new Error('每日最高限额不能为空'));
+            return callback(new Error('每日次数限制不能为空'));
           }
           if (!Number.isInteger(value) || value < 0) {
             callback(new Error('请输入正整数'));
@@ -310,7 +321,7 @@
         };
         const checkUpperLine = (rule, value, callback) => {
           if (value == null || value === '') {
-            return callback(new Error('最高限额不能为空'));
+            return callback(new Error('最高限制次数不能为空'));
           }
           if (!Number.isInteger(value) || value < 0) {
             callback(new Error('请输入正整数'));
@@ -362,10 +373,11 @@
             ruleName: '', // 名称
             ruleRemark: '', // 说明
             type: '', // 规则类型
-            points: '', // 赠送积分值
+            risePoints: '', // 赠送积分值
             action: '', // 行为
-            upperLineEveryday: '', // 每日最高限额
-            upperLine: '', // 最高限额积分
+            duration: '', //观看时长
+            maxNumDay: '', // 每日限制次数
+            maxNum: '', // 最高限制次数
             status: 1, // 开启关闭
           },
           dialogRules: {
@@ -378,13 +390,13 @@
             action: [
               { required: true, message: '请选择行为', trigger: 'change' }
             ],
-            upperLineEveryday: [
+            maxNumDay: [
               { required: true, validator: checkUpperLineEveryday, trigger: 'blur' }
             ],
-            upperLine: [
+            maxNum: [
               { required: true, validator: checkUpperLine, trigger: 'blur' }
             ],
-            points: [
+            risePoints: [
               { required: true, validator: checkPoints, trigger: 'blur' }
             ]
           }
@@ -457,11 +469,12 @@
           this.dialogForm = {
             ruleName: row.ruleName,
             ruleRemark: row.ruleRemark,
-            points: row.points,
+            risePoints: row.risePoints,
             type: row.type,
             action: row.action,
-            upperLineEveryday: row.upperLineEveryday,
-            upperLine: row.upperLine,
+            duration: row.duration,
+            maxNumDay: row.maxNumDay,
+            maxNum: row.maxNum,
             status: row.status,
           }
           this.dialog = {
@@ -509,7 +522,7 @@
         },
         /* 修改状态 */
         handleChangeStatus (row) {
-          const { sourceId, id, status, ruleName, ruleRemark, type, action, upperLineEveryday, upperLine, points } = row;
+          const { sourceId, id, status, ruleName, ruleRemark, type, action, maxNumDay, maxNum, risePoints } = row;
           const user = this.$store.state.user.u_info;
           const params = {
             sourceId,
@@ -519,10 +532,10 @@
             ruleName, // 名称
             ruleRemark, // 说明
             type, // 规则类型
-            points,
+            risePoints,
             action, // 行为
-            upperLineEveryday, // 每日最高限额
-            upperLine, // 最高限额积分
+            maxNumDay, // 每日限制次数
+            maxNum, // 最高限制次数
             status, // 开启关闭
           }
           editRule(params).then(res => {
@@ -543,8 +556,8 @@
                 ...n,
                 typeLabel: this.typeLists.find(list => list.value === n.type)?.label,
                 actionLabel: this.actionLists.find(list => list.value === n.action)?.label,
-                upperLineEverydayLabel: n.upperLineEveryday || '不限制',
-                upperLineLabel: n.upperLine || '不限制',
+                maxNumDayLabe: n.maxNumDay || '不限制',
+                maxNumLabe: n.maxNum || '不限制',
               }))
               this.total = data.totalCount;
             }
