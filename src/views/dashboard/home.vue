@@ -24,7 +24,15 @@
                                 <div class="num">{{userTotal}}</div>
                                 <div class="bottom-word">今日注册量  <span style="color:#EC6B33">{{userToday}}</span></div>
                             </div>
-                            <div class="list">
+                            <div class="list" style="position: relative">
+                                <el-popover
+                                    placement="top"
+                                    trigger="hover"
+                                >
+                                    <span slot="reference"><img src="@/assets/home/tip.png" style="position: absolute;right: -6px;width: 16px" alt=""></span>
+                                     <p>月活跃用户量：近三十天在线人数</p>
+                                     <p>今日活跃用户量：当日在线人数</p>
+                                </el-popover>
                                 <div class="small-word">月活跃用户量(次)</div>
                                 <div class="num">{{activeTotal}}</div>
                                 <div class="bottom-word">今日活跃用户量  <span style="color:#EC6B33">{{activeToday}}</span></div>
@@ -62,20 +70,24 @@
                                         <img class="img" src="@/assets/home/cloum.png" alt="">
                                         <div class="word">栏目数据</div>
                                     </div>
+                                    <el-badge :value="checkNum" :max="99">
                                         <div class="list" @click="goLink('ReviewNews')">
                                             <img class="img" src="@/assets/home/news.png" alt="">
                                             <div class="word">新闻审核</div>
                                         </div>
-                                    <!-- <el-badge :value="checkNum" :max="99">
-                                    </el-badge> -->
-                                    <div class="list" @click="goLink('CommentVerify')">
-                                        <img class="img" src="@/assets/home/comment.png" alt="">
-                                        <div class="word">评论审核</div>
-                                    </div>
-                                    <div class="list" @click="goLink('Gossip')">
-                                        <img class="img" src="@/assets/home/announce.png" alt="">
-                                        <div class="word">爆料审核</div>
-                                    </div>
+                                    </el-badge>
+                                     <el-badge :value="commentNum" :max="99">
+                                        <div class="list" @click="goLink('CommentVerify')">
+                                            <img class="img" src="@/assets/home/comment.png" alt="">
+                                            <div class="word">评论审核</div>
+                                        </div>
+                                    </el-badge>
+                                    <el-badge :value="gossipNum" :max="99">
+                                        <div class="list" @click="goLink('Gossip')">
+                                            <img class="img" src="@/assets/home/announce.png" alt="">
+                                            <div class="word">爆料审核</div>
+                                        </div>
+                                    </el-badge>
                                     <div class="list" @click="goLink('Column')">
                                         <img class="img" src="@/assets/home/manage.png" alt="">
                                         <div class="word">栏目管理</div>
@@ -171,6 +183,7 @@ import echarts from 'echarts'
 import { getHomeData,getOnlineData,getItemsRank } from '@/api/statistics'
 import { getUserLists,getproduct } from '@/api/manage'
 import { getNews } from '@/api/content'
+import { getGossipLists,getCommentLists } from '@/api/workbench'
 export default {
     name: 'home',
     data() {
@@ -187,8 +200,10 @@ export default {
             activeTotal: '',
             activeToday: '',
             checkNum: 0,
+            gossipNum: 0,
+            commentNum: 0,
             dateSelectValue: '7',
-            list: [{},{},{},{},{},{},{},{},{},{},{},{},] //排行榜
+            list: [] //排行榜
         }
     },
     created() {
@@ -250,7 +265,6 @@ export default {
       const params = { status: 0, reviewer_id: this.$store.state.user.u_info.id }
       getNews(this.removePropertyOfNullFor0(params)).then(res => {
         this.checkNum = res.total || 0
-        console.log('checkNum',this.checkNum)
       })
     },
     getproductList(){
@@ -258,15 +272,31 @@ export default {
             let obj = response.data.find(v => v.type == 'app');
             let sourceId = obj.source_id || '';
             this.getUserList(sourceId)
+            this.getGossipListNum(sourceId)
+            this.getCommentListNum(sourceId)
         });
       },
-     getUserList(sourceId) {
+    getUserList(sourceId) {
          let params = { sourceId }
           getUserLists(params).then(res => {
             if(res.code == 200) {
               this.userTotal = res.data.totalCount.toLocaleString() || 0
             }
           })
+     },
+     getGossipListNum(sourceId) {
+          let params = {sourceId,status: 2,type: 0}
+          getGossipLists(params).then(res => {
+            if(res.code == 200) {
+              this.gossipNum = res.data.totalCount || 0
+            }
+          })
+     },
+     getCommentListNum(sourceId) {
+          let params = {sourceId,status: 0}
+          getCommentLists(params).then(res => {
+          this.commentNum = res.data.totalCount || 0;
+        })
      },
      getItemsRankList(type,dateType) {
           let params = {
@@ -540,12 +570,14 @@ export default {
                 .list{
                     display: flex;
                     justify-content: space-between;
-                    margin-bottom: 23px;
+                    // margin-bottom: 23px;
+                    height: 37px;
+                    line-height: 35px;
                     .word-font{
-                        height: 14px;
+                        // height: 14px;
                         font-size: 14px;
                         font-weight: 400;
-                        line-height: 14px;
+                        // line-height: 14px;
                     }
                     .list-left{
                         display: flex;

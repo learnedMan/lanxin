@@ -747,6 +747,7 @@
     <el-dialog
       width="600px"
       :title="dialog.title"
+      :close-on-click-modal="false"
       :visible.sync="dialog.show"
     >
       <el-form
@@ -1678,7 +1679,7 @@ export default {
           is_original: '1', // 是否原创
           source: '', // 来源
           use_watermarks: '', // 水印
-          allow_comment: '0', // 评论控制
+          allow_comment: '1', // 评论控制
           allow_share: '1', // 允许分享
           trans_to_audio: '1', // 同步生成语音稿件
           view_base_num: undefined, // 点击量
@@ -1733,18 +1734,21 @@ export default {
   watch: {
     'from.extra.content': {
       handler: function(newValue,oldValue) {
-        // 230 231需要三张图
+        if(newValue != this.editorOldValue) this.editorChangeValue = true //编辑器内容变化了开启自动保存
         var bdhhtml = document.getElementById('bdh').innerHTML;
-        console.log('bdhhtml',bdhhtml)
         if(bdhhtml==1){
           this.$message.warning('正在图片本地化，请稍后')
           return
         }
-            if(newValue != this.editorOldValue) {
-              this.editorChangeValue = true //编辑器内容变化了开启自动保存
-              }
-            if(!this.from.extra.cover.length) {
               let arr = this.getFirstImg(newValue) || []
+              let defaultImg = '/UEditor/themes/default/images/spacer.gif'
+              let  coverFlag =  null
+              if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
+                coverFlag = this.from.extra.cover.length ? this.from.extra.cover.every(v => v.path !='') : false
+              }else{
+                coverFlag = this.from.extra.cover[0]?.path
+              }
+            if(!coverFlag && arr[0] != defaultImg && arr[0] !=undefined) {
               // if(!arr.length) return
               if(this.from.extra.template_style == '230' || this.from.extra.template_style == '231') {
                 let list = arr.slice(0,3),arr_ = []
@@ -1899,17 +1903,18 @@ export default {
     },
     /* 删除本地存储 */
     delLocalStorage() {
+      console.log('删除本地缓存')
       let id = this.scriptsId || this.id
+      let siteId = this.$store.state.user.u_info.site_id //站点id
       if (id) {
         let list = JSON.parse(localStorage.getItem('editNews')) || []
         list.map((v,index) =>{
-          if(v.id == id) {
+          if(v.id == id && v.siteId == siteId) {
             list.splice(index,1)
           }
         })
         localStorage.setItem('editNews',JSON.stringify(list))
       }else{
-        let siteId = this.$store.state.user.u_info.site_id //站点id
         let list = JSON.parse(localStorage.getItem('addNews')) || []
          list.map((v,index) =>{
           if(v.siteId == siteId) {
@@ -1972,8 +1977,10 @@ export default {
           }
         } else if(this.editorChangeValue || this.titleChageValue){
           let arr = [],id = this.scriptsId || this.id
+          let siteId = this.$store.state.user.u_info.site_id //站点id
           let editObj = {
             id: this.scriptsId || this.id,
+            siteId: siteId,
             title: this.from.extra.title,
             content: this.from.extra.content,
           }
@@ -1982,7 +1989,8 @@ export default {
           if (localStorage.getItem('editNews')) {
             let list = JSON.parse(localStorage.getItem('editNews'))
             let IsExist = list.some(v => v.id == id)
-            if (IsExist) {
+            let siteFlag = list.some(v => v.siteId == siteId)
+            if (IsExist && siteFlag) {
               list.map(v =>{
                 if(v.id == id) {
                   v.title = this.from.extra.title
@@ -2094,6 +2102,7 @@ export default {
         if (valid) {
           this.publishLoading = true;
           this.handleSave('保存并发布成功', () => {
+            if(this.from.extra.type === 'news') this.delLocalStorage()
             this.handleReturn();
           }).finally(() => {
             this.publishLoading = false;
@@ -2309,7 +2318,6 @@ export default {
             this.checkStatus = true
             const { channelId } = this.$route.query
             if(channelId) return this.handleSave('保存并发布成功', () => {
-              if(this.from.extra.type === 'news') this.delLocalStorage()
               this.handleReturn();
             })
             this.dialog.show = true
@@ -2459,7 +2467,6 @@ export default {
             }
           }
         }// 表单
-        console.log('88888888888',this.from.extra.cover)
         this.editorVideoLists = [...(extra.video_extra && extra.video_extra.video_list || [])]
         if(!this.disabled && this.typeDetails === 'script') {
           this.dialog.form.channel_id = res.news.map(n => n.channel_id)
@@ -2469,7 +2476,8 @@ export default {
           if (localStorage.getItem('editNews')) {
             let list = JSON.parse(localStorage.getItem('editNews'))
             let id = this.scriptsId || this.id
-            let obj = list.find(v => v.id == id)
+            let siteId = this.$store.state.user.u_info.site_id
+            let obj = list.find(v => v.id == id && v.siteId == siteId)
             if (obj) {
               this.userNewsLocalStorgeTips(obj)
             }

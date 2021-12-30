@@ -155,6 +155,14 @@
         align="center"
         prop="editor_name"
         min-width="8%"
+        :show-overflow-tooltip="true"
+      />
+       <el-table-column
+        label="编辑"
+        align="center"
+        prop="author_name"
+        min-width="8%"
+        :show-overflow-tooltip="true"
       />
       <el-table-column
         label="来源"

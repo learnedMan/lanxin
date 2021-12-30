@@ -211,6 +211,13 @@
               >
                 新增新闻
               </el-button>
+               <el-button v-points = "1500"
+                type="primary"
+                size="mini"
+                @click="exportExcel"
+              >
+                导出
+              </el-button>
               <el-button v-points = "1500"
                 type="success"
                 size="mini"
@@ -223,6 +230,7 @@
         </div>
         <el-table
           ref="multipleTable"
+          id="exportTab"
           v-loading="loading"
           :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
           :data="tableData"
@@ -298,6 +306,14 @@
             align="center"
             min-width="6%"
             prop="author_name"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            v-if="!isMobile"
+            label="作者"
+            align="center"
+            min-width="6%"
+            prop="editor_name"
             :show-overflow-tooltip="true"
           />
           <el-table-column
@@ -666,7 +682,8 @@
   import NewDetail from '@/views/workbench/reviewNews/detail.vue'
   import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
   import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
-
+  import FileSaver from 'file-saver'
+  import XLSX from 'xlsx'
     export default {
       name: 'ProjectDetail',
       props: ['id'],
@@ -894,6 +911,22 @@
             this.catalogOptions = res.data.list;
           })
         },
+        /*表格导出*/ 
+        exportExcel () {
+          var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
+          var wb = XLSX.utils.table_to_book(document.querySelector('#exportTab'), xlsxParam)
+
+          /* get binary string as output */
+          var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+          try {
+            FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '表格.xlsx')
+          } catch (e) {
+            if (typeof console !== 'undefined') {
+              console.log(e, wbout)
+            }
+          }
+          return wbout
+        },
         /* 联动模板化样式 */
         catalogchange (val, isClear = true) {
           isClear && (this.topicDialog.form.extra.template_json_id = '');
@@ -924,7 +957,7 @@
           return getChildTopic(this.id).then(res => {
             this.channelsList = res.data;
             const { id } = this.$route.query;
-            this.currentKey = id || this.currentKey || res?.[0]?.id || '';
+            this.currentKey = id || this.currentKey || res.data?.[0]?.id || '';
             this.$nextTick(() => {
               this.$refs.tree?.setCurrentKey(this.currentKey);
               this.getList();
@@ -1275,7 +1308,7 @@
                 cover: cover && cover.path || '' // 图片
               }
             })
-            // !this.isMobile && this.initSort();
+            !this.isMobile && this.initSort();
           }).finally(() => {
             this.loading = false
           })
@@ -1287,12 +1320,37 @@
             ghostClass: 'sortable-ghost',
             onEnd: evt => {
               const { newIndex, oldIndex } = evt;
-              const { id } = this.tableData[oldIndex];
-              const { sort } = this.tableData[newIndex];
+              let arr = this.tableData.map(v =>{
+                let { id,sort } = {...v}
+                let obj = { id,sort}
+                return obj
+              })
+              if(oldIndex > newIndex) {
+                let sort_ = arr[newIndex].sort
+                for(let i = 0; i < arr.length; i++) {
+                    if(i >= newIndex && i < oldIndex) {
+                        arr[i].sort = arr[i+1].sort
+                    }else if(i == oldIndex) {
+                        arr[oldIndex].sort = sort_
+                    }
+                }
+              }else{
+                let sort_ = arr[newIndex].sort
+                for(let i = newIndex; i >= 0; i--) {
+                    if(i == oldIndex) {
+                        arr[i].sort = sort_
+                        break
+                    }else{
+                      arr[i].sort = arr[i-1].sort
+                    }
+                }
+              }
+              let arrObj = {}
+              for(let i = 0; i< arr.length; i++) {
+                  arrObj[arr[i].id] = arr[i].sort
+              }
               this.tableData = [];
-              changeNewsSort({
-                [id]: sort
-              }).then(() => {
+              changeNewsSort(arrObj).then(() => {
                 this.$message.success('修改成功');
                 this.getList();
               })

@@ -697,6 +697,13 @@ export const asyncRoutes = [
             name: 'sign-integral',
             permission: 'system.user.signIntegral',
             meta: { title: '签到积分规则' }
+          },
+          {
+            path: 'behavior-manage',
+            component: () => import('@/views/manage/user/behavior-manage'),
+            name: 'Behavior-manage',
+            roles: ['Maintainer', 'Administrator', 'Admin'],
+            meta: { title: '积分行为管理' }
           }
         ]
       },

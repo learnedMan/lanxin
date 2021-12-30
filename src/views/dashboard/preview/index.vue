@@ -121,7 +121,8 @@
         },
         /* 复制内容 */
         copyText () {
-          const text = this.url;
+          // const text = this.url;
+          const text = this.replaceStr(this.url,'%20');
           const input = document.createElement('input');
           input.value = text; // 修改文本框的内容
           document.body.appendChild(input);    // 新增临时实例
@@ -129,6 +130,10 @@
           document.execCommand('copy'); // 执行浏览器复制命令
           document.body.removeChild(input); // 删除临时实例
           this.$message.success('复制成功!');
+        },
+        replaceStr(str, rstr){
+          let n = str.replace(/\s+/g, rstr)
+          return n;
         }
       },
       mounted () {

@@ -493,8 +493,9 @@ export default {
        this.dateValue = [str,time2]
 		},
     onLineOrOffline(news) {
-      let stuat = news.every(v => v.status == 0)
-      return stuat
+       let l = news.filter(v => v.status == 1) || []
+       let flag = l.length ? false : true
+      return flag
     },
     formatDate() {
 			var date = new Date();
@@ -516,11 +517,11 @@ export default {
         let status = v.status
         let obj = (channel || []).find(k =>{
           if(v.channel_id == k.id) {
-            return k.name
+            return k.name || ''
           }
         })
         let statusText = statusObj[status]
-        let name = `${obj.name}(${statusText})`
+        let name = `${obj?.name}(${statusText})`
         return { status,name}
       })
       return arr
@@ -546,13 +547,15 @@ export default {
       * */
     handleReset() {
       this.dateValue = ''
-      Object.assign(this.queryParams, {
-        startdate: '',
-        type: '',
-        keyword: '',
-        enddate: '',
-        page: 1
-      })
+      this.defaultDate()
+        Object.assign(this.queryParams, {
+          startdate: '',
+          type: '',
+          keyword: '',
+          enddate: '',
+          page: 1
+        })
+        this.$forceUpdate()
       // this.resetForm('queryForm')
     },
     /*

@@ -480,6 +480,7 @@ export default {
         page: 1
       })
       this.resetForm('queryForm')
+       this.$forceUpdate()
     },
     /*
         * 搜索

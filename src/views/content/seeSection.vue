@@ -63,7 +63,8 @@
   <div class="xl-see-section">
     <el-row>
       <el-col :span="4">
-        <div class="xl-see-section--tree" style="width:100%;overflow:hidden;">
+        <!-- <div class="xl-see-section--tree" style="width:100%;overflow:hidden;"> -->
+        <div class="xl-see-section--tree" style="width:100%;overflow:auto;height: 600px;">
           <el-tree
             style="width:100%;"
             ref="tree"
@@ -299,6 +300,14 @@
               align="center"
               min-width="6%"
               prop="author_name"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+              v-if="!isMobile"
+              label="作者"
+              align="center"
+              prop="editor_name"
+              min-width="6%"
               :show-overflow-tooltip="true"
             />
             <el-table-column
@@ -1221,7 +1230,7 @@ export default {
             })
             this.tablekey = !this.tablekey;
             this.$nextTick(() => {
-                // this.initSort()
+                this.initSort()
                 setTimeout(() => {
                     document.documentElement.scrollTop = this.scrollTop
                     console.log('scrollTop',this.scrollTop)
