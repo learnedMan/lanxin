@@ -303,6 +303,14 @@
               :show-overflow-tooltip="true"
             />
             <el-table-column
+              v-if="!isMobile"
+              label="作者"
+              align="center"
+              prop="editor_name"
+              min-width="6%"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
             v-if="!isMobile"
               label="排序"
               align="center"

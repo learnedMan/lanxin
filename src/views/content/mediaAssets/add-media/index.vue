@@ -1679,7 +1679,7 @@ export default {
           is_original: '1', // 是否原创
           source: '', // 来源
           use_watermarks: '', // 水印
-          allow_comment: '0', // 评论控制
+          allow_comment: '1', // 评论控制
           allow_share: '1', // 允许分享
           trans_to_audio: '1', // 同步生成语音稿件
           view_base_num: undefined, // 点击量

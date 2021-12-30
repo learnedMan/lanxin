@@ -24,7 +24,15 @@
                                 <div class="num">{{userTotal}}</div>
                                 <div class="bottom-word">今日注册量  <span style="color:#EC6B33">{{userToday}}</span></div>
                             </div>
-                            <div class="list">
+                            <div class="list" style="position: relative">
+                                <el-popover
+                                    placement="top"
+                                    trigger="hover"
+                                >
+                                    <span slot="reference"><img src="@/assets/home/tip.png" style="position: absolute;right: -6px;width: 16px" alt=""></span>
+                                     <p>月活跃用户量：近三十天在线人数</p>
+                                     <p>今日活跃用户量：当日在线人数</p>
+                                </el-popover>
                                 <div class="small-word">月活跃用户量(次)</div>
                                 <div class="num">{{activeTotal}}</div>
                                 <div class="bottom-word">今日活跃用户量  <span style="color:#EC6B33">{{activeToday}}</span></div>
@@ -562,12 +570,14 @@ export default {
                 .list{
                     display: flex;
                     justify-content: space-between;
-                    margin-bottom: 23px;
+                    // margin-bottom: 23px;
+                    height: 37px;
+                    line-height: 35px;
                     .word-font{
-                        height: 14px;
+                        // height: 14px;
                         font-size: 14px;
                         font-weight: 400;
-                        line-height: 14px;
+                        // line-height: 14px;
                     }
                     .list-left{
                         display: flex;

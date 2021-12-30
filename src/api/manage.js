@@ -848,7 +848,8 @@ export function blacklistRestore(data) {
 /* 获取列表数据 */
 export function getRuleList(data) {
   return request2({
-    url: '/internal/points/getRuleList',
+    // url: '/internal/points/getRuleList',
+    url: '/mall/points/rule/list',
     method: 'post',
     data
   })
@@ -857,7 +858,8 @@ export function getRuleList(data) {
 /* 新增 */
 export function addRule(data) {
   return request2({
-    url: '/internal/points/ruleSave',
+   // url: '/internal/points/ruleSave',
+    url: '/mall/points/rule/save',
     method: 'post',
     data
   })
@@ -866,7 +868,8 @@ export function addRule(data) {
 /* 编辑 */
 export function editRule(data) {
   return request2({
-    url: '/internal/points/ruleUpdate',
+    // url: '/internal/points/ruleUpdate',
+    url: '/mall/points/rule/update',
     method: 'post',
     data
   })
@@ -875,7 +878,8 @@ export function editRule(data) {
 /* 删除 */
 export function deleteRule(data) {
   return request2({
-    url: '/internal/points/ruleDelete',
+    // url: '/internal/points/ruleDelete',
+    url: '/mall/points/rule/delete',
     method: 'post',
     data
   })
@@ -890,10 +894,12 @@ export function getTypeList() {
 }
 
 /* 获取行为集合 */
-export function getActionList() {
+export function getActionList(data) {
   return request2({
-    url: '/internal/points/rule/actionlist',
-    method: 'get'
+    // url: '/internal/points/rule/actionlist',
+    url: '/mall/points/action/item/data',
+    method: 'post',
+    data
   })
 }
 
@@ -923,6 +929,43 @@ export function getSignIntegral(data) {
   })
 }
 
+/*--------------------用户管理-积分行为管理---------------------------*/
+
+/*行为列表*/
+export function getBehaviorList(data) {
+  return request2({
+    url: '/mall/points/action/item/list',
+    method: 'post',
+    data
+  })
+}
+
+/*新增行为*/
+export function addBehavior(data) {
+  return request2({
+    url: '/mall/points/action/item/save',
+    method: 'post',
+    data
+  })
+}
+
+/*修改行为*/
+export function editBehavior(data) {
+  return request2({
+    url: '/mall/points/action/item/update',
+    method: 'post',
+    data
+  })
+}
+
+/*删除行为*/
+export function delBehavior(data) {
+  return request2({
+    url: '/mall/points/action/item/delete',
+    method: 'post',
+    data
+  })
+}
 /*--------------------用户管理-部门管理---------------------------*/
 
 /* 获取部门列表 */ 

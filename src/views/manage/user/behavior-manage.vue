@@ -11,7 +11,7 @@
         :inline="true"
         size="small"
       >
-        <el-form-item
+        <!-- <el-form-item
           label="所属产品:"
         >
           <el-select
@@ -26,13 +26,13 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item
           label="规则名称:"
-          prop="ruleName"
+          prop="actionName"
         >
           <el-input
-            v-model="queryParams.ruleName"
+            v-model="queryParams.actionName"
             placeholder="请输入规则名称"
             clearable
             style="width: 200px"
@@ -88,37 +88,22 @@
         style="width: 100%"
         v-loading="loading"
       >
+         <el-table-column
+          label="行为Id"
+          align="center"
+          prop="actionCode"
+          showOverflowTooltip
+        />
         <el-table-column
           label="规则名称"
           align="center"
-          prop="ruleName"
+          prop="actionName"
         />
         <el-table-column
           label="所属模块"
           align="center"
-          prop="typeLabel"
+          prop="modeName"
           showOverflowTooltip
-        />
-        <el-table-column
-          label="行为"
-          align="center"
-          prop="actionName"
-          showOverflowTooltip
-        />
-        <el-table-column
-          label="积分"
-          align="center"
-          prop="risePoints"
-        />
-        <el-table-column
-          label="单日限制次数"
-          align="center"
-          prop="maxNumDayLabe"
-        />
-        <el-table-column
-          label="最高限制次数"
-          align="center"
-          prop="maxNumLabe"
         />
         <el-table-column label="状态" align="center">
           <template slot-scope="scope">
@@ -135,6 +120,11 @@
             </el-select>
           </template>
         </el-table-column>
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createdAt"
+        />
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <!-- 编辑 -->
@@ -173,115 +163,51 @@
           label-width="120px"
         >
           <el-form-item
-            label="积分规则名称"
-            prop="ruleName"
-          >
-            <el-input
-              clearable
-              style="width: 200px"
-              v-model="dialogForm.ruleName"
-            />
-          </el-form-item>
-          <el-form-item
-            label="规则说明"
-            prop="ruleRemark"
-          >
-            <el-input
-              clearable
-              style="width: 200px"
-              placeholder="请输入积分规则说明"
-              type="textarea"
-              :rows="6"
-              v-model="dialogForm.ruleRemark"
-            />
-          </el-form-item>
-          <el-form-item
             label="所属模块"
-            prop="type"
+            prop="modeCode"
           >
             <el-select
               style="width: 200px"
-              v-model="dialogForm.type"
-              @change="selectType"
-              placeholder="请选择规则类型"
+              v-model="dialogForm.modeCode"
+              @change="typeAction"
+              placeholder="请选择所属模块"
               clearable
             >
               <el-option
                 v-for="item in typeLists"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="行为"
-            prop="action"
-          >
-            <el-select
-              style="width: 200px"
-              v-model="dialogForm.action"
-               @change="selectActionType"
-              placeholder="请选择行为"
-              clearable
-            >
-              <el-option
-                v-for="item in actionLists"
-                :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value"
               />
             </el-select>
           </el-form-item>
            <el-form-item
-            label="(广电/直播)观看时长"
-            prop="duration"
+            label="行为名称"
+            prop="actionName"
           >
             <el-input
               clearable
               style="width: 200px"
-              placeholder="请输入时长"
-              v-model.number="dialogForm.duration"
+              placeholder="请输入行为名称"
+              v-model="dialogForm.actionName"
             />
           </el-form-item>
           <el-form-item
-            label="每次赠送积分"
-            prop="risePoints"
+            label="行为Id"
+            prop="actionCode"
           >
             <el-input
               clearable
               style="width: 200px"
-              placeholder="请输入赠送积分值"
-              v-model.number="dialogForm.risePoints"
-            />
-          </el-form-item>
-          <el-form-item
-            label="单日限制次数"
-            prop="maxNumDay"
-          >
-            <el-input
-              clearable
-              style="width: 200px"
-              placeholder="请输入次数(0表示不限)"
-              v-model.number="dialogForm.maxNumDay"
-            />
-          </el-form-item>
-          <el-form-item
-            label="最高限制次数"
-            prop="maxNum"
-          >
-            <el-input
-              clearable
-              style="width: 200px"
-              placeholder="请输入次数(0表示不限)"
-              v-model.number="dialogForm.maxNum"
+              :placeholder="actionPlaceholder"
+              v-model.number="dialogForm.actionCode"
             />
           </el-form-item>
           <el-form-item
             label="状态"
             prop="status"
           >
-            <el-switch v-model="dialogForm.status" :active-value="1" :inactive-value="0">
+            <el-switch v-model="dialogForm.status" :active-value="1" :inactive-value="2">
             </el-switch>
           </el-form-item>
         </el-form>
@@ -304,38 +230,18 @@
 </template>
 
 <script>
-  import { getproduct, getRuleList, getActionList, addRule, editRule, deleteRule } from '@/api/manage.js'
+  import {  getActionList, editRule, delBehavior,getBehaviorList,addBehavior,editBehavior } from '@/api/manage.js'
 
     export default {
       name: 'Convention',
       data() {
-        const checkUpperLineEveryday = (rule, value, callback) => {
-          console.log(value)
+        const checkActionCode = (rule, value, callback) => {
+         let min = this.modeCode,max = Number(this.modeCode)+99
           if (value == null || value === '') {
-            return callback(new Error('每日次数限制不能为空'));
+            return callback(new Error('行为ID不能为空'));
           }
-          if (!Number.isInteger(value) || value < 0) {
-            callback(new Error('请输入正整数'));
-          } else {
-            callback()
-          }
-        };
-        const checkUpperLine = (rule, value, callback) => {
-          if (value == null || value === '') {
-            return callback(new Error('最高限制次数不能为空'));
-          }
-          if (!Number.isInteger(value) || value < 0) {
-            callback(new Error('请输入正整数'));
-          } else {
-            callback()
-          }
-        };
-        const checkPoints = (rule, value, callback) => {
-          if (value == null || value === '') {
-            return callback(new Error('赠送积分值不能为空'));
-          }
-          if (!Number.isInteger(value) || value < 0) {
-            callback(new Error('请输入正整数'));
+          if (!Number.isInteger(value) ||(value < min || value > max)) {
+            callback(new Error(`请输入${min}-${max}整数`));
           } else {
             callback()
           }
@@ -349,40 +255,40 @@
             },
             {
               label: '禁用',
-              value: 0
+              value: 2
             }
           ],
           typeLists: [
             {
-              label: '新闻媒资',
+              name: '新闻媒资',
               value: 8000
             },
             {
-              label: '广电',
+              name: '广电',
               value: 8100
             },
             {
-              label: '社区',
+              name: '社区',
               value: 8200
             },
             {
-              label: '爆料',
+              name: '爆料',
               value: 8300
             },
             {
-              label: '互动',
+              name: '互动',
               value: 8400
             },
             {
-              label: '个人信息/邀请注册',
+              name: '个人信息/邀请注册',
               value: 8500
             },
             {
-              label: '举报反馈',
+              name: '举报反馈',
               value: 8600
             },
             {
-              label: '行为',
+              name: '行为',
               value: 8700
             },
           ],
@@ -390,9 +296,8 @@
 
           ],
           queryParams: {
-            sourceId: '',
-            ruleName: '',
-            status: 1,
+            actionName: '',
+            status: '',
             page: 1,
             limit: 10
           },
@@ -403,66 +308,49 @@
             title: '新增',
             show: false
           },
+          actionPlaceholder: '请输入行为ID',
+          modeCode: '',
           dialogForm: {
-            ruleName: '', // 名称
-            ruleRemark: '', // 说明
-            type: '', // 规则类型
-            risePoints: '', // 赠送积分值
-            action: '', // 行为
-            actionName: '',//行为名称
-            duration: '', //观看时长
-            maxNumDay: '', // 每日限制次数
-            maxNum: '', // 最高限制次数
+            modeCode: '', // 所属模块
+            actionCode: '', // 行为ID
+            actionName: '', //行为名称
             status: 1, // 开启关闭
           },
           dialogRules: {
-            ruleName: [
-              { required: true, message: '请输入规则名称', trigger: 'blur' },
+            actionName: [
+              { required: true, message: '请输入行为名称', trigger: 'blur' },
             ],
-            type: [
-              { required: true, message: '请选择规则类型', trigger: 'change' }
+            modeCode: [
+              { required: true, message: '请选择所属模块', trigger: 'change' }
             ],
-            action: [
-              { required: true, message: '请选择行为', trigger: 'change' }
-            ],
-            maxNumDay: [
-              { required: true, validator: checkUpperLineEveryday, trigger: 'blur' }
-            ],
-            maxNum: [
-              { required: true, validator: checkUpperLine, trigger: 'blur' }
-            ],
-            risePoints: [
-              { required: true, validator: checkPoints, trigger: 'blur' }
+            actionCode: [
+              { required: true, validator: checkActionCode, trigger: 'blur' }
             ]
           }
         }
       },
+      computed: {
+        actionOfType () {
+          return this.actionLists.filter(n => n.parent === this.dialogForm.type)
+        }
+      },
       methods: {
-        /* 获取产品列表 */
-        getProductList () {
-          return getproduct({}).then(res => {
-            const data = res.data || []
-            this.productLists = data.map(n => ({
-              label: n.name,
-              value: n.source_id
-            }));
-            this.queryParams.sourceId = data?.[0]?.source_id;
-          });
-        },
-        selectType(value) {
-          this.getActionList(value)
-        },
-        selectActionType(value) {
-          this.dialogForm.actionName = this.actionLists.find(list => list.value === value)?.label
+        typeAction(value) {
+          this.dialogForm.actionName = ''
+          this.dialogForm.actionCode = ''
+          this.dialogForm.status = 1
+          this.modeCode = value
+          let num = Number(value)
+          this.actionPlaceholder = '请输入行为ID' +`(${num}-${num+99})`
         },
         /* 获取行为集合 */
-        getActionList (modeCode) {
-           let params = {modeCode}
-          return getActionList(params).then(res => {
+        getActionList () {
+          return getActionList().then(res => {
             if(res.code == 200) {
               this.actionLists = (res.data || []).map(n => ({
-                label: n.actionName,
-                value: Number(n.actionCode),
+                label: n.remarkTwo,
+                value: Number(n.dictValue),
+                parent: Number(n.remark)
               }))
             }
           })
@@ -489,18 +377,13 @@
         },
         /* 编辑 */
         handleEdit (row) {
-          const { id,type} = row;
-           this.getActionList(type)
+          const { id } = row;
           this.resetForm('dialogForm');
+          this.modeCode = row.modeCode
           this.dialogForm = {
-            ruleName: row.ruleName,
-            ruleRemark: row.ruleRemark,
-            risePoints: row.risePoints,
-            type: row.type,
-            action: row.action,
-            duration: row.duration,
-            maxNumDay: row.maxNumDay,
-            maxNum: row.maxNum,
+            modeCode: row.modeCode,
+            actionCode: row.actionCode,
+            actionName: row.actionName,
             status: row.status,
           }
           this.dialog = {
@@ -512,13 +395,19 @@
         /* 确认修改或新增 */
         enterDialog () {
           this.$refs.dialogForm.validate(val => {
+            const getmodeName = code =>{
+              let obj = this.typeLists.find(v => v.value == code)
+              return obj.name
+            }
             if(val) {
-              const data = {
+              let modeName = getmodeName(this.modeCode)
+              const params = {
                 ...this.dialogForm,
-                sourceId: this.queryParams.sourceId
+                modeName
               }
-              const params = this.removePropertyOfNullFor0(data)
-              let promise = this.dialog.id? editRule({ ...params, id: this.dialog.id}) : addRule(params)
+              console.log('params',params)
+              // return
+              let promise = this.dialog.id? editBehavior({ ...params, id: this.dialog.id}) : addBehavior(params)
               promise.then(res => {
                 if(res.code == 200) {
                   this.$message.success(res.msg);
@@ -532,34 +421,33 @@
         /* 删除 */
         handleDelete (row) {
           const { id } = row;
-          deleteRule(
-            {
-              'id': [id]
-            }
-          ).then(res => {
-            if(res.code == 200) {
-              this.$message.success(res.msg);
-              this.getList();
-            }
+          this.$confirm(`此操作将永久删除这条行为id为${id}的明细, 是否继续?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            delBehavior({
+                id
+              }).then(res => {
+                if(res.code == 200) {
+                  this.$message.success(res.msg);
+                  this.getList();
+                }
+              })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
           })
         },
         /* 修改状态 */
         handleChangeStatus (row) {
-          const { sourceId, id, status, ruleName, ruleRemark, type, action, maxNumDay, maxNum, risePoints,actionName } = row;
+          const { actionCode, id, status, modeName, actionName,modeCode } = row;
           const params = {
-            sourceId,
-            id,
-            ruleName, // 名称
-            ruleRemark, // 说明
-            type, // 规则类型
-            actionName,
-            risePoints,
-            action, // 行为
-            maxNumDay, // 每日限制次数
-            maxNum, // 最高限制次数
-            status, // 开启关闭
+            actionCode,id,status,modeName,actionName,modeCode
           }
-          editRule(params).then(res => {
+          editBehavior(params).then(res => {
             if(res.code == 200) {
               this.$message.success(res.msg);
               this.getList();
@@ -570,15 +458,10 @@
         getList () {
           const params = { ...this.queryParams };
           this.loading = true;
-          getRuleList(this.removePropertyOfNullFor0(params)).then(res => {
+          getBehaviorList(this.removePropertyOfNullFor0(params)).then(res => {
             if(res.code == 200) {
-              const data = res.data;
-              this.tableData = (data.list || []).map(n => ({
-                ...n,
-                typeLabel: this.typeLists.find(list => list.value === n.type)?.label,
-                maxNumDayLabe: n.maxNumDay || '不限制',
-                maxNumLabe: n.maxNum || '不限制',
-              }))
+              let data = res.data
+              this.tableData = data.list
               this.total = data.totalCount;
             }
           }).finally(() => {
@@ -586,9 +469,7 @@
           })
         }
       },
-      async created() {
-        await this.getProductList();
-        // await this.getActionList();
+       created() {
         this.getList();
       }
     }

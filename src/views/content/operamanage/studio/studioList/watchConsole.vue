@@ -255,7 +255,7 @@
   import reservation from './component/reservation'
   import directSeeding from './component/directSeeding'
   import comment from './component/comment'
-
+  import interactive from './component/interactive'
     export default {
       props: {
         id: Number
@@ -263,7 +263,8 @@
       components: {
         reservation,
         directSeeding,
-        comment
+        comment,
+        interactive
       },
       data() {
         const validatorStart = (rule, value, callback) => {
@@ -350,10 +351,11 @@
             label: '图文直播',
             name: 'directSeeding'
           })
-          arr.push({
-            label: '评论审核',
-            name: 'comment'
-          })
+          // arr.push({
+          //   label: '评论审核',
+          //   name: 'comment'
+          // })
+           arr.push({label: '评论审核',name: 'comment'},{label: '互动配置',name: 'interactive'})
           return arr
         }
       },

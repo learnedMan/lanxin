@@ -798,7 +798,7 @@
               banner: '',
               template_style: '240',
               cover: [], // 直播间封面
-              allow_comment: '0',
+              allow_comment: '1',
               allow_share: '1', // 允许分享
               broadcast_type: '1', // 直播类型
               statement: 'none', // 图文直播
@@ -911,7 +911,7 @@
               type: 'broadcast',
               title: '', // 直播间名
               banner: '',
-              allow_comment: '0',
+              allow_comment: '1',
               allow_share: '1',
               template_style: '240',
               cover: [], // 直播间封面
