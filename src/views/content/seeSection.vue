@@ -63,16 +63,30 @@
   <div class="xl-see-section">
     <el-row>
       <el-col :span="4">
-        <!-- <div class="xl-see-section--tree" style="width:100%;overflow:hidden;"> -->
-        <div class="xl-see-section--tree" style="width:100%;overflow:auto;height: 600px;">
+        <!-- style="width:100%;overflow:auto;height: 600px; -->
+        <!-- <div class="xl-see-section--tree" style="width:100%;overflow:hidden;"> --> 
+        <div class="xl-see-section--tree" 
+        :style="{
+          width: '100%',
+          overflow: 'auto',
+          height:getViewPortHeight-84 + 'px'
+        }"
+        style="width:100%;overflow:auto;height: 600px;">
+          <el-input
+          style="margin-bottom: 10px"
+            placeholder="输入关键字进行过滤"
+            v-model="filterText">
+          </el-input>
           <el-tree
             style="width:100%;"
             ref="tree"
+            class="filter-tree"
             :data="channelsList"
             node-key="id"
             :props="props"
             :expand-on-click-node="false"
             :default-expanded-keys="defaultExpandedKeys"
+             :filter-node-method="filterNodetext"
             @current-change="treeChange"
           />
         </div>
@@ -644,6 +658,7 @@ export default {
       tablekey:false,
       channelsList: [], // 栏目
       selection: [], //表格选中项
+      filterText: '',
       typeOptions: [
         {
           label: '全部',
@@ -844,6 +859,10 @@ export default {
             this.getList()
         }
     },
+    filterText(val) {
+      console.log('val',val)
+        this.$refs.tree.filter(val);
+      }
   },
   computed:{
     /* 当前站点租户 */
@@ -855,6 +874,9 @@ export default {
     },
     multiplying_factor(){
       return this.$store.state.user.u_info.site.extra.multiplying_factor || 1
+    },
+    getViewPortHeight() {
+      return document.documentElement.clientHeight || document.body.clientHeight;
     }
   },
   methods: {
@@ -869,6 +891,10 @@ export default {
         this.$refs.dialogForm?.clearValidate('push_time')
       })
     },
+    filterNodetext(value, data) {
+        if (!value) return true;
+        return data.name.indexOf(value) !== -1;
+      },
      handleSelectionChange(arr) {
       this.selection = arr.map(n => n.id)
       console.log('selection',this.selection)
@@ -1129,8 +1155,10 @@ export default {
       if(type == 'news' || type == 'video' || type == 'album' || type == 'outer_link') {
         if(window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1) {
            this.$router.push({ name: 'My', query: { id }})
-        }else{
-          this.$router.push({ name: 'All-media', query: { id }})
+        }else if(row.script_type === 'App\\Models\\Zones\\TPNews'){
+           this.$router.push({ name: 'collect-article', query: { id }})
+          }else{
+            this.$router.push({ name: 'All-media', query: { id }})
         }
       }else if(type == 'broadcast') {
          this.$router.push({ name: 'StudioList', query: { id }})

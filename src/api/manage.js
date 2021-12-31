@@ -650,10 +650,10 @@ export function getbroadcasts(id) {
     method: 'get'
   })
 }
-// 获取直播间发言列表
-export function getbroadcastStatement(id,stream_id) {
+//获取直播间发言列表params
+export function getbroadcastStatement(id,stream_id,pageSize) {
   return request({
-    url: `/api/broadcastStatement?broadcast_id=${id}&stream_id=${stream_id}`,
+    url: `/api/broadcastStatement?broadcast_id=${id}&stream_id=${stream_id}&pageSize=${pageSize}`,
     method: 'get'
   })
 }

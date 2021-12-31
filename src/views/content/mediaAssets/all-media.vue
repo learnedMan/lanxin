@@ -207,9 +207,9 @@
       </el-table-column>
       <el-table-column
       v-if="!isMobile"
-        label="更新时间"
+        label="创建时间"
         align="center"
-        prop="updated_at"
+        prop="created_at"
         min-width="8%"
       />
       <el-table-column
