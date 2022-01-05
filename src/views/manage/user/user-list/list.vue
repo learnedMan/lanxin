@@ -114,7 +114,6 @@
         :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
         :data="tableData"
         border
-        id="exportTab"
         tooltip-effect="dark"
         style="width: 100%"
       >
@@ -203,6 +202,65 @@
             ></Iconbutton>
           </template>
         </el-table-column>
+      </el-table>
+      <!-- 导出表格 -->
+      <el-table
+        ref="multipleTable"
+        v-loading="loading"
+        :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
+        :data="tableData"
+        border
+        id="exportTab"
+        tooltip-effect="dark"
+        style="width: 100%;display: none"
+      >
+        <el-table-column
+          label="会员ID"
+          align="center"
+          prop="userId"
+        />
+        <el-table-column
+          label="用户名"
+          align="center"
+          prop="nickName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          label="手机号"
+          align="center"
+          prop="mobile"
+        />
+        <el-table-column
+          label="邀请码"
+          align="center"
+          width="200"
+          prop="invitationCode"
+        />
+         <el-table-column
+          label="邀请人数"
+          align="center"
+          prop="invitationCount"
+        />
+        <el-table-column
+          label="积分值"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-button v-points = "1500"
+              type="text"
+              size="small"
+              @click="integralValue(scope.row)"
+              style="text-decoration: underline"
+            >
+              {{ scope.row.points }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="注册时间"
+          align="center"
+          prop="createdTime"
+        />
       </el-table>
       <pagination
         v-show="total > 0"

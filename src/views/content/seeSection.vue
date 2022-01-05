@@ -224,7 +224,6 @@
           <el-table
             ref="multipleTable"
             v-loading="loading"
-             id="exportTab"
              row-key="id"
             :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
             :data="tableData"
@@ -408,6 +407,101 @@
                 </div>
               </template>
             </el-table-column>
+          </el-table>
+          <!-- 导出表格 -->
+           <el-table
+            ref="multipleTable"
+            v-loading="loading"
+             id="exportTab"
+             row-key="id"
+            :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
+            :data="tableData"
+            border
+            tooltip-effect="dark"
+            style="width: 100%;overflow: auto;display: none"
+            :key="tablekey"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+            v-if="!isMobile"
+              label="新闻ID"
+              align="center"
+              prop="id"
+              min-width="5%"
+            />
+            <el-table-column
+            v-if="!isMobile"
+              label="点击量"
+              align="center"
+              prop="hits"
+              min-width="5%"
+            />
+            <el-table-column
+              label="新闻标题"
+              align="center"
+              min-width="28%"
+              prop="title"
+              :show-overflow-tooltip="true"
+            >
+              <template slot-scope="scope">
+                <el-button v-points = "1500" type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="新闻类型"
+              align="center"
+              prop="typeLabel"
+              min-width="7%"
+            />
+            <el-table-column
+              label="状态"
+              align="center"
+              min-width="9%"
+            >
+              <template slot-scope="scope">
+                <span>{{getStautsName(scope.row.status)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+            v-if="!isMobile"
+              label="编辑"
+              align="center"
+              min-width="6%"
+              prop="author_name"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+              v-if="!isMobile"
+              label="作者"
+              align="center"
+              prop="editor_name"
+              min-width="6%"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+            v-if="!isMobile"
+              label="排序"
+              align="center"
+              min-width="6%"
+            >
+              <template slot-scope="scope">
+                <el-button v-points = "1500"
+                  type="text"
+                  size="small"
+                  @click="handleSort(scope.row)"
+                >
+                  {{ scope.row.sort }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+            v-if="!isMobile"
+              label="发布时间"
+              align="center"
+              min-width="7%"
+              prop="created_at"
+              :show-overflow-tooltip="true"
+            />
           </el-table>
           <pagination
             v-show="total > 0"
@@ -946,6 +1040,15 @@ export default {
         })
       }
     },
+     getStautsName(value) {
+          let obj = {
+            '0': '待审核',
+            '1': '已上线',
+            '2': '已下线',
+            '5': '待定时发布'
+          }
+          return obj[value] || ''
+        },
      /*表格导出*/ 
      exportExcel () {
       var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换

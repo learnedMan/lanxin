@@ -104,7 +104,6 @@
     </div>
     <el-table
       ref="multipleTable"
-      id="exportTab"
       v-loading="loading"
       :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       :data="tableData"
@@ -279,6 +278,92 @@
           </div>
         </template>
       </el-table-column>
+    </el-table>
+    <!-- 导出表格 -->
+    <el-table
+      ref="multipleTable"
+      id="exportTab"
+      v-loading="loading"
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      :data="tableData"
+      border
+      tooltip-effect="dark"
+      style="width: 100%;overflow: auto;display: none"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+      v-if="!isMobile"
+        label="稿件ID"
+        align="center"
+        prop="id"
+        min-width="5%"
+      />
+      <el-table-column
+        label="稿件标题"
+        align="center"
+        min-width="30%"
+        prop="title"
+        :show-overflow-tooltip="true"
+      >
+        <template slot-scope="scope">
+          <el-button v-points = "1500" type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="稿件类型"
+        align="center"
+        min-width="7%"
+        prop="type"
+      />
+      <el-table-column
+      v-if="!isMobile"
+        label="编辑"
+        align="center"
+        min-width="6%"
+        prop="author_name"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+      v-if="!isMobile"
+        label="作者"
+        align="center"
+        min-width="6%"
+        prop="editor_name"
+        :show-overflow-tooltip="true"
+      />
+       <el-table-column
+        label="发布状态"
+        align="center"
+        :show-overflow-tooltip="true"
+      >
+        <template slot-scope="scope">
+         <span>{{scope.row.news | totalNum}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+      v-if="!isMobile"
+        label="发布栏目"
+        align="center"
+        prop="id"
+        min-width="9%"
+      >
+        <template slot-scope="scope">
+          <div v-for="(item,index) in formatText(scope.row.channel,scope.row.news)" 
+            :style="{
+              color: item.status == 1 ? '#1890ff' : '#606266',
+              lineHeight: '25px'
+            }"
+            :key="index">{{item.name}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+      v-if="!isMobile"
+        label="创建时间"
+        align="center"
+        prop="created_at"
+        min-width="8%"
+      />
+     
     </el-table>
     <pagination
       v-show="total > 0"
