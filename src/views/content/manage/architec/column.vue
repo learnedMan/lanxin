@@ -1132,6 +1132,7 @@ import ChildPage1 from './pages/c_page1'
       // 编辑栏目
       editdata(row) {
         this.initForm();
+        this.columnSetting.multiple = row.channel_link_type == 'union' ? true : false
         this.catalogid = '';
         this.dialogTitle = "编辑栏目";
         this.dialogType = "edit";

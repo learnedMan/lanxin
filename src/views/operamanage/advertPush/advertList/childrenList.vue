@@ -112,7 +112,6 @@
             <el-select
               v-model="scope.row.status"
               @change="changeStatus(scope.row)"
-              clearable
             >
               <el-option
                 v-for="item in statusOptions.filter(n => n.value !== '')"

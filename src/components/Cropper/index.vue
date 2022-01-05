@@ -477,7 +477,7 @@ export default {
           const canvas = document.createElement('canvas')// 创建一个canvas
           canvas.width = img.width // 设置对应的宽高
           canvas.height = img.height
-          const ctx = canvas.getContext('2d') // 二维绘图环境
+          const ctx = canvas.getContext('2d').translate(0.5,0.5) // 二维绘图环境
           ctx.drawImage(img, 0, 0, img.width, img.height) // 将图片画在画布上
           const ext = img.src.substring(img.src.lastIndexOf('.') + 1).toLowerCase() // 获取到图片的格式
           const dataURL = canvas.toDataURL('image/' + ext) // 得到base64 编码的 dataURL

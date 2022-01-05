@@ -63,16 +63,30 @@
   <div class="xl-see-section">
     <el-row>
       <el-col :span="4">
-        <!-- <div class="xl-see-section--tree" style="width:100%;overflow:hidden;"> -->
-        <div class="xl-see-section--tree" style="width:100%;overflow:auto;height: 600px;">
+        <!-- style="width:100%;overflow:auto;height: 600px; -->
+        <!-- <div class="xl-see-section--tree" style="width:100%;overflow:hidden;"> --> 
+        <div class="xl-see-section--tree" 
+        :style="{
+          width: '100%',
+          overflow: 'auto',
+          height:getViewPortHeight-84 + 'px'
+        }"
+        style="width:100%;overflow:auto;height: 600px;">
+          <el-input
+          style="margin-bottom: 10px"
+            placeholder="输入关键字进行过滤"
+            v-model="filterText">
+          </el-input>
           <el-tree
             style="width:100%;"
             ref="tree"
+            class="filter-tree"
             :data="channelsList"
             node-key="id"
             :props="props"
             :expand-on-click-node="false"
             :default-expanded-keys="defaultExpandedKeys"
+             :filter-node-method="filterNodetext"
             @current-change="treeChange"
           />
         </div>
@@ -210,7 +224,6 @@
           <el-table
             ref="multipleTable"
             v-loading="loading"
-             id="exportTab"
              row-key="id"
             :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
             :data="tableData"
@@ -333,7 +346,11 @@
               min-width="7%"
               prop="created_at"
               :show-overflow-tooltip="true"
-            />
+            >
+              <template slot-scope="scope">
+              <span style="color: #1890ff;cursor: pointer;" @click="changeTime(scope.row)">{{scope.row.created_at}}</span>
+            </template>
+            </el-table-column>
             <el-table-column
               label="操作"
               align="center"
@@ -395,6 +412,100 @@
               </template>
             </el-table-column>
           </el-table>
+          <!-- 导出表格 -->
+           <el-table
+            ref="multipleTable"
+            v-loading="loading"
+             id="exportTab"
+             row-key="id"
+            :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
+            :data="tableData"
+            border
+            tooltip-effect="dark"
+            style="width: 100%;overflow: auto;display: none"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+            v-if="!isMobile"
+              label="新闻ID"
+              align="center"
+              prop="id"
+              min-width="5%"
+            />
+            <el-table-column
+            v-if="!isMobile"
+              label="点击量"
+              align="center"
+              prop="hits"
+              min-width="5%"
+            />
+            <el-table-column
+              label="新闻标题"
+              align="center"
+              min-width="28%"
+              prop="title"
+              :show-overflow-tooltip="true"
+            >
+              <template slot-scope="scope">
+                <el-button v-points = "1500" type="text" @click="handleWatch(scope.row)" class="watch-detail-btn">{{ scope.row.title }}</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="新闻类型"
+              align="center"
+              prop="typeLabel"
+              min-width="7%"
+            />
+            <el-table-column
+              label="状态"
+              align="center"
+              min-width="9%"
+            >
+              <template slot-scope="scope">
+                <span>{{getStautsName(scope.row.status)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+            v-if="!isMobile"
+              label="编辑"
+              align="center"
+              min-width="6%"
+              prop="author_name"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+              v-if="!isMobile"
+              label="作者"
+              align="center"
+              prop="editor_name"
+              min-width="6%"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+            v-if="!isMobile"
+              label="排序"
+              align="center"
+              min-width="6%"
+            >
+              <template slot-scope="scope">
+                <el-button v-points = "1500"
+                  type="text"
+                  size="small"
+                  @click="handleSort(scope.row)"
+                >
+                  {{ scope.row.sort }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+            v-if="!isMobile"
+              label="发布时间"
+              align="center"
+              min-width="7%"
+              prop="created_at"
+              :show-overflow-tooltip="true"
+            />
+          </el-table>
           <pagination
             v-show="total > 0"
             :total="total"
@@ -423,6 +534,64 @@
       :disabledNews="detailDialog.disabled" 
       @refresh="refresh" />
     </el-dialog>
+      <!-- 修改时间时间 -->
+      <el-dialog
+        width="600px"
+        title="修改时间"
+        :visible.sync="dialogStart.show"
+      >
+        <el-form
+          ref="startForm"
+          :model="dialogStart.form"
+          :rules="dialogStart.rules"
+        >
+          <el-form-item
+            label-width="120px"
+            label="当前时间"
+            prop="old"
+          >
+            <el-date-picker
+              v-model="dialogStart.form.old"
+              disabled
+              type="datetime"
+              align="right"
+              size="small"
+              unlink-panels
+              range-separator="~"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            />
+          </el-form-item>
+          <el-form-item
+            label-width="120px"
+            label="调整到"
+            prop="now"
+          >
+            <el-date-picker
+              v-model="dialogStart.form.now"
+              type="datetime"
+              align="right"
+              size="small"
+              unlink-panels
+              range-separator="~"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            />
+          </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button v-points = "1500" @click="dialogStart.show = false">
+            取 消
+          </el-button>
+          <el-button v-points = "1500"
+            type="primary"
+            @click="enterStartDialog"
+          >
+            确 定
+          </el-button>
+        </div>
+      </el-dialog>
     <!-- 修改排序 -->
     <el-dialog
       width="400px"
@@ -614,7 +783,7 @@
 import { getChannels } from '@/api/manage'
 import { getMultiHits } from '@/api/statistics'
 import { addPushDetail} from '@/api/operamanage'
-import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail,batchdelNews } from '@/api/content'
+import { getNews, deleteNews, setTop, changeNewsStatus,changeNews, changeNewsSort ,getNewDetail,batchdelNews } from '@/api/content'
 import NewDetail from './reviewNews/detail'
 import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
@@ -623,7 +792,6 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
 import Sortable from 'sortablejs'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
-import elementIcons from '../icons/element-icons'
 export default {
   name: 'SeeSection',
   components: {
@@ -644,6 +812,7 @@ export default {
       tablekey:false,
       channelsList: [], // 栏目
       selection: [], //表格选中项
+      filterText: '',
       typeOptions: [
         {
           label: '全部',
@@ -745,6 +914,19 @@ export default {
         id: '',
         disabled: false
       },
+       dialogStart: {
+        show: false,
+        id: '',
+        form: {
+          old: '',
+          now: ''
+        },
+        rules: {
+          now: [
+            { required: true, message: '请选择时间', trigger: 'change' },
+          ]
+        }
+      },
       sortDialog: {
         show: false,
         id: '',
@@ -844,6 +1026,10 @@ export default {
             this.getList()
         }
     },
+    filterText(val) {
+      console.log('val',val)
+        this.$refs.tree.filter(val);
+      }
   },
   computed:{
     /* 当前站点租户 */
@@ -855,6 +1041,9 @@ export default {
     },
     multiplying_factor(){
       return this.$store.state.user.u_info.site.extra.multiplying_factor || 1
+    },
+    getViewPortHeight() {
+      return document.documentElement.clientHeight || document.body.clientHeight;
     }
   },
   methods: {
@@ -869,6 +1058,10 @@ export default {
         this.$refs.dialogForm?.clearValidate('push_time')
       })
     },
+    filterNodetext(value, data) {
+        if (!value) return true;
+        return data.name.indexOf(value) !== -1;
+      },
      handleSelectionChange(arr) {
       this.selection = arr.map(n => n.id)
       console.log('selection',this.selection)
@@ -920,6 +1113,15 @@ export default {
         })
       }
     },
+     getStautsName(value) {
+          let obj = {
+            '0': '待审核',
+            '1': '已上线',
+            '2': '已下线',
+            '5': '待定时发布'
+          }
+          return obj[value] || ''
+        },
      /*表格导出*/ 
      exportExcel () {
       var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
@@ -1071,6 +1273,29 @@ export default {
         }
       })
     },
+    changeTime(data) {
+        this.dialogStart.show = true
+        this.dialogStart.form.old = data.created_at
+        this.dialogStart.id = data.id
+    },
+    /*确认修改发布时间*/
+    enterStartDialog() {
+       this.$refs.startForm?.validate(val => {
+          if(val) {
+            changeNews(this.dialogStart.id, {
+              extra: {
+                set_created_at: this.dialogStart.form.now
+              }
+            }).then(() => {
+              this.$message.success('修改成功!');
+              this.dialogStart.form.now = ''
+              this.getList();
+            }).finally(() => {
+              this.dialogStart.show = false;
+            })
+          }
+        })
+    },
     /*
       * 置顶和取消置顶
       * */
@@ -1129,8 +1354,10 @@ export default {
       if(type == 'news' || type == 'video' || type == 'album' || type == 'outer_link') {
         if(window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1) {
            this.$router.push({ name: 'My', query: { id }})
-        }else{
-          this.$router.push({ name: 'All-media', query: { id }})
+        }else if(row.script_type === 'App\\Models\\Zones\\TPNews'){
+           this.$router.push({ name: 'collect-article', query: { id }})
+          }else{
+            this.$router.push({ name: 'All-media', query: { id }})
         }
       }else if(type == 'broadcast') {
          this.$router.push({ name: 'StudioList', query: { id }})
@@ -1233,7 +1460,6 @@ export default {
                 this.initSort()
                 setTimeout(() => {
                     document.documentElement.scrollTop = this.scrollTop
-                    console.log('scrollTop',this.scrollTop)
                 })
             })
           })

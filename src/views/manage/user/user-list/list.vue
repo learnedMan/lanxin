@@ -99,6 +99,13 @@
           >
             搜索
           </el-button>
+          <el-button v-points = "1500"
+            type="primary"
+            size="mini"
+            @click="exportExcel"
+          >
+            导出
+          </el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -196,6 +203,65 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 导出表格 -->
+      <el-table
+        ref="multipleTable"
+        v-loading="loading"
+        :header-cell-style="{ background:'#eef1f6', color:'#606266' }"
+        :data="tableData"
+        border
+        id="exportTab"
+        tooltip-effect="dark"
+        style="width: 100%;display: none"
+      >
+        <el-table-column
+          label="会员ID"
+          align="center"
+          prop="userId"
+        />
+        <el-table-column
+          label="用户名"
+          align="center"
+          prop="nickName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          label="手机号"
+          align="center"
+          prop="mobile"
+        />
+        <el-table-column
+          label="邀请码"
+          align="center"
+          width="200"
+          prop="invitationCode"
+        />
+         <el-table-column
+          label="邀请人数"
+          align="center"
+          prop="invitationCount"
+        />
+        <el-table-column
+          label="积分值"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-button v-points = "1500"
+              type="text"
+              size="small"
+              @click="integralValue(scope.row)"
+              style="text-decoration: underline"
+            >
+              {{ scope.row.points }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="注册时间"
+          align="center"
+          prop="createdTime"
+        />
+      </el-table>
       <pagination
         v-show="total > 0"
         :total="total"
@@ -277,7 +343,8 @@
   import { getproduct, getUserLists, getUserDetail, editDetail } from '@/api/manage'
   import { disableSendMsg, releaseShutup /* 拉黑用户 */} from '@/api/workbench'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
-
+  import FileSaver from 'file-saver'
+  import XLSX from 'xlsx'
     export default {
       components: {
         uploadSingle
@@ -380,6 +447,22 @@
         invitedRecord (row) {
           const { id } = row;
           this.$emit('invitedRecord', id);
+        },
+         /*表格导出*/ 
+        exportExcel () {
+          var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
+          var wb = XLSX.utils.table_to_book(document.querySelector('#exportTab'), xlsxParam)
+
+          /* get binary string as output */
+          var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+          try {
+            FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '表格.xlsx')
+          } catch (e) {
+            if (typeof console !== 'undefined') {
+              console.log(e, wbout)
+            }
+          }
+          return wbout
         },
          /*邀请量查询*/
         goQuery () {

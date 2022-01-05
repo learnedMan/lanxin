@@ -154,6 +154,7 @@ export default {
       statementquery: {
         id: "",
         stream_id: "",
+        pageSize: 9999
       },
       dataList: [],
       streamlist: [],
@@ -204,7 +205,8 @@ export default {
       this.dataList = [];
       getbroadcastStatement(
         this.statementquery.id,
-        this.statementquery.stream_id
+        this.statementquery.stream_id,
+        this.statementquery.pageSize
       ).then((res) => {
         this.dataList = res.data.reverse();
       let arr = (res.data || []).map(v=>{
