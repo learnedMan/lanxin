@@ -1,7 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-
+import Cookies from 'js-cookie'
 const state = {
   token: getToken(),
   name: '',
@@ -66,6 +66,8 @@ const actions = {
         commit('SET_ROLES', roles)
         commit('SET_AVATAR', avatar)
         commit('SET_INFO', data)
+        Cookies.set('siteId', data.site_id)
+        Cookies.set('userId', data.site.user_id)
         if(site) {
           resolve({ roles, permissions,site })
         }else{

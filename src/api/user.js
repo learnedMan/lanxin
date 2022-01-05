@@ -40,3 +40,10 @@ export function refreshToken() {
     method: 'post'
   })
 }
+
+export function getPreviewToken() {
+  return request({
+    url: '/api/authorizations/getTokenForPreview',
+    method: 'post'
+  })
+}

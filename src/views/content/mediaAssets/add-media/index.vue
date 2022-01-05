@@ -1,23 +1,4 @@
 <style type="text/scss" lang="scss">
-//   .el-checkbox__inner{
-//     width: 20px!important;
-//     height: 20px!important;
-//   }
-//   .checkbox__inner::after {
-//     margin-left: 2px;
-//     margin-top: 2px;
-//     transform: rotate(45deg) scaleY(1.3);
-//     /* padding-left: 3px; */
-// }
-  //   .el-input--suffix{
-  //   height: 100px!important;
-  // }
-  // .el-input--suffix >input{
-  //   height: 100px!important;
-  // }
-  .zZindex{
-    z-index: 50000!important;
-  }
   .xl-add-media {
     background-color: #f9f9f9;
     margin: -30px;
@@ -26,7 +7,7 @@
     .album-site{
       position: absolute;
       left: 130px;
-      top: 35px;
+      top: 70px;
     }
     .album-site-other{
       left: 360px!important;
@@ -184,27 +165,60 @@
                     @input="handleInput($event, formOptions['extra.intro'].item)"
                   />
                 </el-form-item>
-                <!-- 标签 -->
-                <el-form-item
-                  v-show="initFrom().includes('extra.tags')"
-                  v-bind="formOptions['extra.tags'].item.props"
-                >
-                  <el-select
-                    :value="parseObj(formOptions['extra.tags'].item)"
-                    size="small"
-                    style="width: 300px;"
-                    clearable
-                    v-bind="formOptions['extra.tags'].item.componentProps"
-                    @input="handleInput($event, formOptions['extra.tags'].item)"
-                  >
-                    <el-option
-                      v-for="list in formOptions['extra.tags'].item.lists"
-                      :key="list.value"
-                      :label="list.label"
-                      :value="list.value"
-                    />
-                  </el-select>
-                </el-form-item>
+                <div style="display: flex;justify-content: space-between;">
+                  <div>
+                    <!-- 标签 -->
+                    <el-form-item
+                      v-show="initFrom().includes('extra.tags')"
+                      v-bind="formOptions['extra.tags'].item.props"
+                    >
+                      <el-select
+                        :value="parseObj(formOptions['extra.tags'].item)"
+                        size="small"
+                        style="width: 200px;"
+                        clearable
+                        v-bind="formOptions['extra.tags'].item.componentProps"
+                        @input="handleInput($event, formOptions['extra.tags'].item)"
+                      >
+                        <el-option
+                          v-for="list in formOptions['extra.tags'].item.lists"
+                          :key="list.value"
+                          :label="list.label"
+                          :value="list.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </div>
+                  <div>
+                    <!-- pc标题颜色 -->
+                    <el-form-item
+                      v-show="initFrom().includes('extra.title_color')"
+                      v-bind="formOptions['extra.title_color'].item.props"
+                    >
+                      <el-select
+                        :value="parseObj(formOptions['extra.title_color'].item)"
+                        size="small"
+                        style="width: 200px;"
+                        clearable
+                        v-bind="formOptions['extra.title_color'].item.componentProps"
+                        @input="handleInput($event, formOptions['extra.title_color'].item)"
+                      >
+                        <el-option
+                          v-for="list in formOptions['extra.title_color'].item.lists"
+                          :key="list.value"
+                          :label="list.label"
+                          :value="list.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </div>
+                </div>
+                 <!-- <el-col :span="24">
+                   <el-col :span="12">
+                   </el-col>
+                    <el-col :span="12">
+                    </el-col>
+                 </el-col> -->
                 <!-- 关键词 -->
                 <el-form-item
                   v-show="initFrom().includes('extra.keywords')"
@@ -1066,6 +1080,33 @@ export default {
             lists: []
           }
         },
+         'extra.title_color': {
+          item: {
+            key: 'extra.title_color',
+            props: {
+              label: 'PC标题颜色:'
+            },
+            component: 'select', // 组件名
+            componentProps: {
+              placeholder: '请选择PC标题颜色',
+              multiple: false
+            },
+            lists: [
+              {
+                label: '黑色',
+                value: 'normal'
+              },
+              {
+                label: '红色',
+                value: 'red'
+              },
+              {
+                label: '蓝色',
+                value: 'blue'
+              }
+            ]
+          }
+        },
         'extra.keywords': {
           item: {
             key: 'extra.keywords',
@@ -1689,6 +1730,7 @@ export default {
           cover: [], // 封面样式的图片集合
           intro: '', // 简介
           tags: '', // 标签
+          title_color: '',//标题颜色
           keywords: '', // 关键词
           video_type: '1', //详情样式
           publish_timer: {
@@ -2106,7 +2148,7 @@ export default {
       // 确定图片显示个数
       this.formOptions['extra.cover'].item.componentProps.count = template_style?.count || 1
       // 基础显示的item
-      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.keywords', 'extra.set_created_at']
+      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.title_color', 'extra.keywords', 'extra.set_created_at']
       if (this.typeDetails === 'news') baseTopItem.push('extra.publish_timer.status')
       // 显示发布时间
       if (this.typeDetails === 'news' && this.from.extra.publish_timer.status === '1') baseTopItem.push('extra.publish_timer.publish_at')
@@ -2375,7 +2417,7 @@ export default {
             })
             this.dialog.show = true
           }else if (this.typeDetails === 'news') {
-            this.handleSave('保存草稿成功!', () => {
+            this.handleSave('保存并发布成功', () => {
               if(this.from.extra.type === 'news') this.delLocalStorage()
               this.$emit('refresh')
               this.handleClose()
@@ -2479,6 +2521,7 @@ export default {
             cover: extra?.cover, // 封面样式的图片集合
             intro: extra?.intro, // 简介
             tags: extra?.tags, // 标签
+            title_color: extra?.title_color, //标题颜色
             keywords: extra.keywords, // 关键词
             video_type: (extra.video_type || '1').toString(), //详情样式
              publish_timer: {

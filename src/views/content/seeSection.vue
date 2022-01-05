@@ -346,7 +346,11 @@
               min-width="7%"
               prop="created_at"
               :show-overflow-tooltip="true"
-            />
+            >
+              <template slot-scope="scope">
+              <span style="color: #1890ff;cursor: pointer;" @click="changeTime(scope.row)">{{scope.row.created_at}}</span>
+            </template>
+            </el-table-column>
             <el-table-column
               label="操作"
               align="center"
@@ -419,7 +423,6 @@
             border
             tooltip-effect="dark"
             style="width: 100%;overflow: auto;display: none"
-            :key="tablekey"
             @selection-change="handleSelectionChange"
           >
             <el-table-column
@@ -531,6 +534,64 @@
       :disabledNews="detailDialog.disabled" 
       @refresh="refresh" />
     </el-dialog>
+      <!-- 修改时间时间 -->
+      <el-dialog
+        width="600px"
+        title="修改时间"
+        :visible.sync="dialogStart.show"
+      >
+        <el-form
+          ref="startForm"
+          :model="dialogStart.form"
+          :rules="dialogStart.rules"
+        >
+          <el-form-item
+            label-width="120px"
+            label="当前时间"
+            prop="old"
+          >
+            <el-date-picker
+              v-model="dialogStart.form.old"
+              disabled
+              type="datetime"
+              align="right"
+              size="small"
+              unlink-panels
+              range-separator="~"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            />
+          </el-form-item>
+          <el-form-item
+            label-width="120px"
+            label="调整到"
+            prop="now"
+          >
+            <el-date-picker
+              v-model="dialogStart.form.now"
+              type="datetime"
+              align="right"
+              size="small"
+              unlink-panels
+              range-separator="~"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            />
+          </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button v-points = "1500" @click="dialogStart.show = false">
+            取 消
+          </el-button>
+          <el-button v-points = "1500"
+            type="primary"
+            @click="enterStartDialog"
+          >
+            确 定
+          </el-button>
+        </div>
+      </el-dialog>
     <!-- 修改排序 -->
     <el-dialog
       width="400px"
@@ -722,7 +783,7 @@
 import { getChannels } from '@/api/manage'
 import { getMultiHits } from '@/api/statistics'
 import { addPushDetail} from '@/api/operamanage'
-import { getNews, deleteNews, setTop, changeNewsStatus, changeNewsSort ,getNewDetail,batchdelNews } from '@/api/content'
+import { getNews, deleteNews, setTop, changeNewsStatus,changeNews, changeNewsSort ,getNewDetail,batchdelNews } from '@/api/content'
 import NewDetail from './reviewNews/detail'
 import scriptsDetails from '@/views/content/mediaAssets/add-media/index.vue'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
@@ -731,7 +792,6 @@ import uploadSingle from '@/components/Upload/uploadSingle.vue'
 import Sortable from 'sortablejs'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
-import elementIcons from '../icons/element-icons'
 export default {
   name: 'SeeSection',
   components: {
@@ -853,6 +913,19 @@ export default {
         show: false,
         id: '',
         disabled: false
+      },
+       dialogStart: {
+        show: false,
+        id: '',
+        form: {
+          old: '',
+          now: ''
+        },
+        rules: {
+          now: [
+            { required: true, message: '请选择时间', trigger: 'change' },
+          ]
+        }
       },
       sortDialog: {
         show: false,
@@ -1200,6 +1273,29 @@ export default {
         }
       })
     },
+    changeTime(data) {
+        this.dialogStart.show = true
+        this.dialogStart.form.old = data.created_at
+        this.dialogStart.id = data.id
+    },
+    /*确认修改发布时间*/
+    enterStartDialog() {
+       this.$refs.startForm?.validate(val => {
+          if(val) {
+            changeNews(this.dialogStart.id, {
+              extra: {
+                set_created_at: this.dialogStart.form.now
+              }
+            }).then(() => {
+              this.$message.success('修改成功!');
+              this.dialogStart.form.now = ''
+              this.getList();
+            }).finally(() => {
+              this.dialogStart.show = false;
+            })
+          }
+        })
+    },
     /*
       * 置顶和取消置顶
       * */
@@ -1364,7 +1460,6 @@ export default {
                 this.initSort()
                 setTimeout(() => {
                     document.documentElement.scrollTop = this.scrollTop
-                    console.log('scrollTop',this.scrollTop)
                 })
             })
           })
