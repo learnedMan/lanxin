@@ -364,7 +364,7 @@ export default {
              let data = res.data
              let obj = this.dataFxied(data)
             let myChart = echarts.init(document.getElementById(type))
-            window.addEventListener('resize',function() {myChart.resize()});
+            // window.addEventListener('resize',function() {myChart.resize()});
             let textObj = {
                 read: '阅读量',
                 share: '分享量',

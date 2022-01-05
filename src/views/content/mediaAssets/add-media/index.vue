@@ -23,6 +23,14 @@
     margin: -30px;
     padding: 10px;
     position: relative;
+    .album-site{
+      position: absolute;
+      left: 130px;
+      top: 35px;
+    }
+    .album-site-other{
+      left: 360px!important;
+    }
     &--header {
       display: flex;
       align-items: center;
@@ -254,6 +262,7 @@
                 <!-- 封面图片 -->
                 <el-form-item
                   v-show="initFrom().includes('extra.cover')"
+                  style="position:relative"
                   v-bind="formOptions['extra.cover'].item.props"
                 >
                   <cropper
@@ -261,6 +270,19 @@
                     :disabled="disabled"
                     :value="parseObj(formOptions['extra.cover'].item)"
                     @input="handleInput($event, formOptions['extra.cover'].item)"
+                  />
+                  <el-button v-points = "1500"
+                    type="primary"
+                    size="mini"
+                    :class="['album-site',this.from.extra.template_style == '230' || this.from.extra.template_style == '231' ? 'album-site-other' : '']"
+                    @click="slectAlbum"
+                  >
+                    从图库中选择
+                  </el-button>
+                  <ablumDialog
+                    :dialogShow="ablumDialogShow"
+                    @ablumCancel="ablumCancel"
+                    @ablumConfirm="ablumConfirm"
                   />
                 </el-form-item>
                 <!-- 详情样式 -->
@@ -798,7 +820,7 @@ import ImgTable from '@/components/media/imgTable'
 import scriptSelect from '@/components/media/scriptSelect.vue'
 import xlVideo from '@/components/video'
 import Editor from '@/components/editor'
-
+import ablumDialog from './ablum.vue'
 export default {
   name: 'Add-media',
   components: {
@@ -807,7 +829,8 @@ export default {
     xlVideo,
     Tag,
     Editor,
-    scriptSelect
+    scriptSelect,
+    ablumDialog
   },
   props: {
     id: {
@@ -1647,6 +1670,7 @@ export default {
       editorOldValue: '',
       titleChageValue: false,
       titleOldValue: '',
+      ablumDialogShow: false,
       enable_sensitive_word_filter: '0', //敏感词开关 0 禁止 1开启
       sourceId: '',// sourceId 敏感词检测
       newsId: '', //保存草稿再发布需要的id
@@ -1900,6 +1924,35 @@ export default {
       const arr = item.key.split('.')
       const val = arr.reduce((obj, key) => obj[key], this.from)
       return item.component === 'select' && item.componentProps.multiple ? val && val.toString().split(',') : val
+    },
+    /*从图库选择封面*/
+    slectAlbum() {
+      this.ablumDialogShow = true
+    },
+    ablumConfirm(arr) {
+      console.log('图集选中的值',arr)
+      let value = this.from.extra.template_style
+      let list = []
+      if(value == '230' || value == '231') {
+        let arr_ = arr.length > 3 ? arr.slice(0,3) : arr
+         list = arr_.map(v =>{
+          let obj = {}
+           obj.path = v
+           obj.status = 'success'
+           return obj
+        })
+      }else{
+        let obj = {
+          path: arr[0],
+          status: 'success'
+        }
+        list.push(obj)
+      }
+      console.log('list',list)
+      this.from.extra.cover = list
+    },
+    ablumCancel() {
+      this.ablumDialogShow = false
     },
     /* 删除本地存储 */
     delLocalStorage() {

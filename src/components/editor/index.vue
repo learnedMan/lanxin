@@ -288,7 +288,7 @@
         queryParams: {
           pageSize: 10,
           page: 1,
-          type: 'image',
+          // type: 'image',
           keyword: '',
           startdate: '',
           enddate: ''
@@ -348,9 +348,10 @@
         this.queryParams.enddate = arr[1]
       },
       /* 设置水印位置 */
-      setPosition (width, height, b = 0.15) {
+      setPosition (width, height, b = 0.15,scale) {
         const widthPercentage = Math.floor(width * b);
-        const heightPercentage = Math.floor(height * b);
+        // const heightPercentage = Math.floor(height * b);
+        const heightPercentage = Math.floor(widthPercentage*scale)
         let data = {};
         switch (this.position) {
           case 'nw': // 左上角
@@ -395,6 +396,8 @@
           newImg.setAttribute('crossOrigin', 'Anonymous')
           newImg.onload = () => {
             const { width, height } = newImg;
+            console.log('width',width)
+            console.log('height',height)
             let canvas = document.createElement("canvas");
             canvas.width = width;
             canvas.height = height;
@@ -403,8 +406,9 @@
             const shuiyin = new Image();
             shuiyin.src = this.watermark;
             shuiyin.crossOrigin = 'Anonymous';
+            let scale = (shuiyin.naturalHeight/shuiyin.naturalWidth).toFixed(2)
             shuiyin.onload = () => {
-              const position = this.setPosition(width, height);
+              const position = this.setPosition(width, height,0.2,scale);
               context.drawImage(shuiyin, position.left, position.top, position.width, position.height);
               canvas.toBlob((blob) => {
                 const file = new File([blob], `${new Date().getTime()}.png`, {
