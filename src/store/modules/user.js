@@ -66,8 +66,8 @@ const actions = {
         commit('SET_ROLES', roles)
         commit('SET_AVATAR', avatar)
         commit('SET_INFO', data)
-        Cookies.set('siteId', data.site_id)
-        Cookies.set('userId', data.site.user_id)
+        Cookies.set('site_id', data.site_id)
+        Cookies.set('user_id', data.id)
         if(site) {
           resolve({ roles, permissions,site })
         }else{

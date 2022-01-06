@@ -144,6 +144,7 @@
       </li>
     </ul>
     <div class="xl-cropper-tip" v-if="showTip">上传封面,建议比例16:9（最佳尺寸750*420）,单个图片不超过10M!</div>
+    <!-- 600 -->
     <el-dialog
       width="600px"
       :title="dialog.title"
@@ -250,7 +251,7 @@ export default {
         fixedBox: false, // 固定截图框大小 不允许改变
         autoCropWidth: 686, // 默认生成截图框宽度
         autoCropHeight: 180, // 默认生成截图框高度
-        maxImgSize: '2000', // 限制图片最高大宽高
+        maxImgSize: 0, // 限制图片最高大宽高
         fixed: true, // 是否开启截图框宽高固定比例
         fixedNumber: [16, 9], // 截图框的宽高比例
         infoTrue: true, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
@@ -492,7 +493,14 @@ export default {
         * 剪切图片
         * */
     handleShear(file, index) {
-      this.option.img = file.path
+       const img = new Image()
+       img.src = file.path
+       this.option.img = file.path
+       this.option.maxImgSize = img.naturalWidth;
+      //  console.log('给到原图的宽高', this.option.maxImgSize);
+      // console.log('file',file)
+      // console.log('图片原始宽度',img.naturalWidth)
+      // console.log('图片原始高度',img.naturalHeight)
       Object.assign(this.dialog, {
         show: true,
         index
@@ -502,6 +510,7 @@ export default {
     proportionChange(val) {
       const item = this.proportion.find(n => val === n.value)
       this.option.autoCropWidth = Math.random() + 686
+      console.log('autoCropWidth',this.option.autoCropWidth)
       this.$set(this, 'option', {
         ...this.option,
         ...item.option
