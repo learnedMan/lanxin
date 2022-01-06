@@ -351,11 +351,11 @@
             label: '图文直播',
             name: 'directSeeding'
           })
-          // arr.push({
-          //   label: '评论审核',
-          //   name: 'comment'
-          // })
-           arr.push({label: '评论审核',name: 'comment'},{label: '互动配置',name: 'interactive'})
+          arr.push({
+            label: '评论审核',
+            name: 'comment'
+          })
+          //  arr.push({label: '评论审核',name: 'comment'},{label: '互动配置',name: 'interactive'})
           return arr
         }
       },
