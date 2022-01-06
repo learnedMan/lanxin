@@ -452,7 +452,7 @@
             rows="5"
           />
         </el-form-item>
-        <el-form-item prop="extra.display_stat" label="数据显示">
+        <!-- <el-form-item prop="extra.display_stat" label="数据显示">
           <el-radio-group
             size="small"
             v-model="dialog.form.extra.display_stat"
@@ -460,7 +460,7 @@
             <el-radio key="1" label="1">是</el-radio>
             <el-radio key="0" label="0">否</el-radio>
           </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="机器人数据" prop="extra.robot_settings.enable">
           <el-switch v-model="dialog.form.extra.robot_settings.enable" :active-value="1" :inactive-value="0"></el-switch>
         </el-form-item>
@@ -861,9 +861,9 @@
              'extra.allow_share': [ 
               { required: true, message: '请选择是否允许分享', trigger: 'change' }
             ],
-             'extra.display_stat': [ 
-              { required: true, message: '请选择是否显示数据', trigger: 'change' }
-            ],
+            //  'extra.display_stat': [ 
+            //   { required: true, message: '请选择是否显示数据', trigger: 'change' }
+            // ],
           }
         },
         dialogLoading: false, // 防止连续点击

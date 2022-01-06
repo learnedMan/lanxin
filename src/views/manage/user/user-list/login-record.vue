@@ -76,7 +76,7 @@
       <el-table-column
         label="登录时间"
         align="center"
-        prop="createdTime"
+        prop="createTime"
       />
     </el-table>
     <pagination
