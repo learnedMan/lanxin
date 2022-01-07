@@ -190,11 +190,15 @@ export default {
         this.sitec.site_data = response;
         const siteId = window.localStorage.getItem('siteId');
         const username = window.localStorage.getItem('username')
-        if(siteId && username) {
+        let obj = response.find(v =>v.id == siteId)
+        if(siteId && username && obj) {
           this.sitec.site_select = Number(siteId) ;
           this.loginForm.username = username
           this.sitec.site_select_all = response.find(n => n.id == siteId);
-        } 
+        }else{
+          window.localStorage.removeItem('siteId')
+          window.localStorage.removeItem('username')
+        }
         // else {
         //   this.sitec.site_select = response[0]?.id || '';
         //   this.sitec.site_select_all = response[0];

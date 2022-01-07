@@ -12,6 +12,7 @@
         padding-top: 10px !important;
         padding-bottom: 10px !important;
       }
+    .element::-webkit-scrollbar { width: 0 !important }
     &--tree {
       display: inline-block;
       // min-width: 240px;
@@ -65,7 +66,7 @@
       <el-col :span="4">
         <!-- style="width:100%;overflow:auto;height: 600px; -->
         <!-- <div class="xl-see-section--tree" style="width:100%;overflow:hidden;"> --> 
-        <div class="xl-see-section--tree" 
+        <div class="xl-see-section--tree element" 
         :style="{
           width: '100%',
           overflow: 'auto',

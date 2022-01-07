@@ -1800,6 +1800,7 @@ export default {
   watch: {
     'from.extra.content': {
       handler: function(newValue,oldValue) {
+        if(this.from.extra.type !== 'news') return
         if(newValue != this.editorOldValue) this.editorChangeValue = true //编辑器内容变化了开启自动保存
         var bdhhtml = document.getElementById('bdh').innerHTML;
         if(bdhhtml==1){
@@ -1839,6 +1840,7 @@ export default {
     },
     'from.extra.album_extra': {
       handler: function(newValue,oldValue) {
+        if(this.from.extra.type !== 'album') return
         console.log('图集',newValue)
         if(this.from.extra.type == 'album') {
           let arr = newValue.image_list || []
@@ -2463,7 +2465,8 @@ export default {
         const { data } = res
         this.formOptions['extra.tags'].item.lists = data.map(n => ({
           label: n.name,
-          value: n.id.toString()
+          // value: n.id.toString()
+          value: n.name
         }))
       })
     },
