@@ -16,6 +16,16 @@
         :model="queryParams"
         :inline="true"
       >
+      <el-popover
+        placement="top-start"
+        title=""
+        width="200"
+        trigger="hover"
+        content="如果没有找到想要的结果请使用全面搜索">
+          <el-form-item slot="reference" label="全面搜索(慢速):" prop="disable_es">
+        <el-checkbox v-model="queryParams.disable_es"></el-checkbox>
+      </el-form-item>
+      </el-popover>
         <el-form-item
           label="稿件名称:"
           prop="keyword"
@@ -443,6 +453,7 @@ export default {
         keyword: '',
         type: '',
         startdate: '',
+        disable_es: false,
         enddate: '',
         pageSize: 50,
         page: 1
@@ -546,7 +557,7 @@ export default {
     this.queryParams.keyword = id
     this.getList()
     this.getChannels()
-    this.defaultDate()
+    // this.defaultDate()
   },
   filters: {
     totalNum(news) {
@@ -669,7 +680,9 @@ export default {
       this.loading = true
       this.selection = []
       this.tableData = []
-      getScripts(this.removePropertyOfNull(this.queryParams)).then(res => {
+      let { disable_es } = this.queryParams
+       const params = { ...this.queryParams, disable_es: disable_es? 1 : 0};
+      getScripts(this.removePropertyOfNullFor0(params)).then(res => {
         this.tableData = (res.data || []).map(item => {
           const type = this.typeOptions.find(n => item.type === n.value)
           const cover = item.cover[0]
