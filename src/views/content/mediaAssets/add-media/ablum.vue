@@ -6,6 +6,7 @@
           title="从图库中选择"
           :visible.sync="dialogShow"
           :close-on-click-modal="false"
+          :before-close="handleClose"
           append-to-body
         >
         <div>
@@ -149,6 +150,11 @@ export default {
           },
         }
     },
+    watch: {
+        dialogShow() {
+            this.getList()
+        }
+    },
     created() {
         this.getList()
     },
@@ -173,6 +179,9 @@ export default {
           if (status === 'confirm' && arr.length) {
             this.$emit('ablumConfirm',arr)
           }
+      },
+      handleClose() {
+          this.$emit('ablumCancel')
       },
     }
 }
