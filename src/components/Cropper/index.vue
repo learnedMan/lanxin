@@ -498,7 +498,7 @@ export default {
        const img = new Image()
        img.src = file.path
        this.option.img = file.path
-       this.option.maxImgSize = img.naturalWidth;
+      //  this.option.maxImgSize = img.naturalWidth;
       Object.assign(this.dialog, {
         show: true,
         index
