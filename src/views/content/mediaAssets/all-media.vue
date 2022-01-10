@@ -387,6 +387,7 @@
       width="600px"
       :title="dialog.title"
       :visible.sync="dialog.show"
+      :close-on-click-modal="false"
       v-if="dialog.show"
     >
       <el-form

@@ -75,8 +75,8 @@
       data() {
         return {
           flag:false,
-          token: '',
-          url: '',
+          // token: '',
+          // url: '',
           detail: {
             title: '',
           },
@@ -93,14 +93,14 @@
         previewDomin({ $store: { state: { user:{u_info:{site:{extra}}}} } }){
           return extra.preview_domain
         },
-        // url ({ id, type , previewDomin}) {
-        //   const token = sessionStorage.getItem('token');
-        //   if(!previewDomin){
-        //     this.$message.warning('站点未配置预览域名，请联系管理员去站点管理页面配置');
-        //   }
-        //   return `${previewDomin}?id=${id}&type=${type}&token=${token}`
-        //   // return `https://h5.cztv.com/qujiang/h5/Preview/?id=489458&type=scripts&token=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYXRyaXguY3p0di5jb21cL2FwaVwvYXV0aG9yaXphdGlvbnMiLCJpYXQiOjE2Mzk2MzcwNzYsImV4cCI6MTYzOTY3MzA3NiwibmJmIjoxNjM5NjM3MDc2LCJqdGkiOiJQY2hCbmlqTlliRXV0QzdOIiwic3ViIjoxMzQ4LCJwcnYiOiJmZWY4ODIyYmJjODllNDI5MTVhMWQ4ZjVlYzlmODY2MTFjYjE4MTExIiwiem9uZV9pZCI6Mywic2l0ZV9pZCI6NiwiaWQiOjEzNDgsInByb2R1Y3RzIjoiNywxMywxNiIsInNvdXJjZV9pZHMiOiIyNSwwLDI1In0.l_xazTdCH1H-u-yF5nsk-qXf7WZe-61jH6lG3F99jO0`
-        // }
+        url ({ id, type , previewDomin}) {
+          const token = sessionStorage.getItem('token');
+          if(!previewDomin){
+            this.$message.warning('站点未配置预览域名，请联系管理员去站点管理页面配置');
+          }
+          return `${previewDomin}?id=${id}&type=${type}&token=${token}`
+          // return `https://h5.cztv.com/qujiang/h5/Preview/?id=489458&type=scripts&token=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYXRyaXguY3p0di5jb21cL2FwaVwvYXV0aG9yaXphdGlvbnMiLCJpYXQiOjE2Mzk2MzcwNzYsImV4cCI6MTYzOTY3MzA3NiwibmJmIjoxNjM5NjM3MDc2LCJqdGkiOiJQY2hCbmlqTlliRXV0QzdOIiwic3ViIjoxMzQ4LCJwcnYiOiJmZWY4ODIyYmJjODllNDI5MTVhMWQ4ZjVlYzlmODY2MTFjYjE4MTExIiwiem9uZV9pZCI6Mywic2l0ZV9pZCI6NiwiaWQiOjEzNDgsInByb2R1Y3RzIjoiNywxMywxNiIsInNvdXJjZV9pZHMiOiIyNSwwLDI1In0.l_xazTdCH1H-u-yF5nsk-qXf7WZe-61jH6lG3F99jO0`
+        }
       },
       methods: {
         returnurl(){
@@ -136,8 +136,8 @@
         },
         /* 复制内容 */
         copyText () {
-          const text = this.url;
-          // const text = this.replaceStr(this.url,'%20');
+          // const text = this.url;
+          const text = this.replaceStr(this.url,'%20');
           console.log('text',text)
           const input = document.createElement('input');
           input.value = text; // 修改文本框的内容
@@ -163,17 +163,17 @@
         }
       },
       mounted () {
-        // this.flag = true
-        // QRCode.toCanvas(this.$refs.canvas, this.url, {
-        //   width: 200,
-        //   height: 200,
-        // },function (error) {
-        //   if (error) console.error(error);
-        //   else console.log('success');
-        // })
+        this.flag = true
+        QRCode.toCanvas(this.$refs.canvas, this.url, {
+          width: 200,
+          height: 200,
+        },function (error) {
+          if (error) console.error(error);
+          else console.log('success');
+        })
       },
       created() {
-        this.getToken()
+        // this.getToken()
         this.getList();
       }
     }
