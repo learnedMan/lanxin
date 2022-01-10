@@ -490,7 +490,7 @@
               this.tableData = data.list || [];
               if(this.queryParams.beginTime && this.queryParams.endTime) {
                 let data = {...this.queryParams}
-                data.sourceId = String(data.sourceId)
+                data.sourceId = Number(data.sourceId)
                 data.limit = String(data.limit)
                 data.page = String(data.page)
                  getInvitationCountDatas(this.removePropertyOfNullFor0(data)).then(res => {

@@ -13,7 +13,7 @@
         :inline="true"
       >
         <el-form-item
-          label="类型:"
+          label="资源类型:"
           prop="item_type"
         >
           <el-select
@@ -31,13 +31,13 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item
-          label="操作人:"
-          prop="user_id"
+         <el-form-item
+          label="资源ID:"
+          prop="item_id"
         >
           <el-input
-            v-model="queryParams.user_id"
-            placeholder="请输入操作人ID"
+            v-model="queryParams.item_id"
+            placeholder="请输入ID"
             clearable
             size="small"
             style="width: 200px"
@@ -45,12 +45,12 @@
           />
         </el-form-item>
         <el-form-item
-          label="ID:"
-          prop="item_id"
+          label="操作人ID:"
+          prop="user_id"
         >
           <el-input
-            v-model="queryParams.item_id"
-            placeholder="请输入ID"
+            v-model="queryParams.user_id"
+            placeholder="请输入操作人ID"
             clearable
             size="small"
             style="width: 200px"

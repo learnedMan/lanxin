@@ -33,7 +33,9 @@ service.interceptors.request.use(config => {
               sessionStorage.setItem('token', token)
               sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
               config.headers.Authorization = token
-              resolve(config);
+              setTimeout(() => {
+                resolve(config);
+              }, 500);
             } else {
               sessionStorage.removeItem('token')
               router.push({ path: '/login' })// 失败就跳转登陆

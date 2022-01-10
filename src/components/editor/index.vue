@@ -396,8 +396,6 @@
           newImg.setAttribute('crossOrigin', 'Anonymous')
           newImg.onload = () => {
             const { width, height } = newImg;
-            console.log('width',width)
-            console.log('height',height)
             let canvas = document.createElement("canvas");
             canvas.width = width;
             canvas.height = height;
@@ -458,7 +456,9 @@
                 img.setAttribute('data-canvas', '1');
               }
             })
-            this.$emit('input', div.innerHTML)
+            setTimeout(() => {
+              this.$emit('input', div.innerHTML)
+            }, 500);
           }).catch((err) => {
             console.log(err)
           })

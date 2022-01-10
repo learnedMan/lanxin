@@ -36,8 +36,9 @@ service.interceptors.request.use(config => {
             config.headers.Authorization = token
             config.headers.TempZone = sessionStorage.getItem('TempZone') || ''
             config.headers.TempSite = sessionStorage.getItem('TempSite') || ''
-            resolve(config);
-
+            setTimeout(() => {
+              resolve(config);
+            }, 500);
           } else {
             sessionStorage.removeItem('token')
             router.push({ path: '/login' })// 失败就跳转登陆

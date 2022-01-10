@@ -751,7 +751,7 @@ export function getInvitationCountDatas(data) {
   //   data
   // })
   return request2({
-    url: '/intranet/uc/queryInvitationCountDatas',
+    url: '/internal/uc/queryInvitationCountDatas',
     method: 'post',
     data
   })
