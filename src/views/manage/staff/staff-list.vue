@@ -135,7 +135,7 @@
          <el-form-item  label-width="180px" label="(乡镇上稿人员)发稿来源" prop="street_name">
           <el-input style="width: 300px" autocomplete="off" placeholder="请输入发稿来源" v-model="form.extra.street_name"></el-input>
         </el-form-item>
-        <el-form-item el-form-item  label-width="180px" label="允许外网登录" prop="extra.allow_www_login">
+        <el-form-item el-form-item  label-width="180px" label="乡镇上稿人员" prop="extra.allow_www_login">
           <el-select v-model="form.extra.allow_www_login" placeholder="请选择">
             <el-option v-for="item in www_loginoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>

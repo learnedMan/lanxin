@@ -144,7 +144,7 @@
                 :src="list.url"
               />
               <div class="xl-editor-images-info">{{ list.width }}*{{ list.height }}</div>
-              <div class="xl-editor-images-name">{{ list.description }}</div>
+              <div class="xl-editor-images-name">{{ list.title }}</div>
             </li>
           </ul>
         </el-checkbox-group>
@@ -153,6 +153,7 @@
         v-show="total > 0"
         :total="total"
         :page.sync="queryParams.page"
+        :pageSizes="[12,24,36,72,120,240,480]"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
@@ -286,7 +287,7 @@
         },
         imgLists: [], // 视频封面列表
         queryParams: {
-          pageSize: 10,
+          pageSize: 12,
           page: 1,
           // type: 'image',
           keyword: '',

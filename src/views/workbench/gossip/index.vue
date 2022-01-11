@@ -18,7 +18,7 @@
         :inline="true"
         size="small"
       >
-        <el-form-item
+        <!-- <el-form-item
           label="所属产品:"
         >
           <el-select
@@ -32,7 +32,13 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
+        <el-form-item label="所属产品：">
+        <el-select v-model="product_id" placeholder="请选择所属产品">
+          <el-option v-for="item in productList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
         <el-form-item
           label="爆料标题:"
           prop="title"
@@ -263,7 +269,7 @@
     export default {
       data() {
         return {
-          productLists: [],
+          productList: [],
           statusLists: [
             {
               label: '全部',
@@ -325,6 +331,7 @@
             page: 1,
             limit: 10
           },
+          product_id: 0,
           dialog: {
             show: false
           },
@@ -350,16 +357,26 @@
           return this.detail.files.filter(n => n.type === 2).map(n => n.path);
         }
       },
+       watch:{
+        product_id(val){
+          this.queryParams.sourceId = this.productList.filter(item=>item.id==val)[0].source_id||0;
+          this.getList();
+        },
+      },
       methods: {
         /* 获取产品列表 */
         getProductList () {
-          return getproduct({}).then(res => {
-            const data = res.data || []
-            this.productLists = data.map(n => ({
-              label: n.name,
-              value: n.source_id
-            }));
-            this.queryParams.sourceId = data?.[0]?.source_id;
+          // return getproduct({}).then(res => {
+          //   const data = res.data || []
+          //   this.productLists = data.map(n => ({
+          //     label: n.name,
+          //     value: n.source_id
+          //   }));
+          //   this.queryParams.sourceId = data?.[0]?.source_id;
+          // });
+           getproduct({}).then((response) => {
+            this.productList = response.data;
+            this.product_id = this.productList[0].id;
           });
         },
         /* 修改时间 */
@@ -454,7 +471,7 @@
       },
       async created() {
         await this.getProductList();
-        this.getList();
+        // this.getList();
       }
     }
 </script>

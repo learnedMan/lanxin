@@ -9,12 +9,20 @@
     <el-form ref="ruleForm" label-width="100px" :model="value" inline>
       <el-form-item v-for="(list, index) of lists"  :label="`${list.label}:`" :prop="list.key" :key="index">
         <el-input v-if="list.component === 'input'" v-model="value[list.key]" :size="list.componentSize" :placeholder="list.placeholder" />
-        <el-select v-if="list.component === 'select'" v-model="value[list.key]" :size="list.componentSize" :placeholder="list.placeholder">
+        <el-select v-if="list.component === 'select'&& !list.productFlag" v-model="value[list.key]" :size="list.componentSize" :placeholder="list.placeholder">
           <el-option
             v-for="item in list.selectOption"
             :key="item.value"
             :label="item.label"
             :value="item.value"
+          />
+        </el-select>
+        <el-select v-if="list.component === 'select' && list.productFlag" @change="selectChange" v-model="productId" :size="list.componentSize" :placeholder="list.placeholder">
+          <el-option
+            v-for="item in list.selectOption"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
           />
         </el-select>
         <el-date-picker
@@ -42,6 +50,10 @@
 export default {
   props: {
     /* 搜索列表集合 */
+    productId: {
+      type: [Number,String],
+      default: 0
+    },
     lists: {
       type: Array,
       default: () => []
@@ -77,6 +89,11 @@ export default {
           }
         }]
       }
+    }
+  },
+  methods: {
+    selectChange(val) {
+      this.$emit('changeProductId',val)
     }
   }
 }

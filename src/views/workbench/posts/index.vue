@@ -13,7 +13,7 @@
 <template>
   <div class="xl-posts">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small">
-      <el-form-item label="所属产品:">
+      <!-- <el-form-item label="所属产品:">
         <el-select @change="sourceIdChange" v-model="queryParams.sourceId" placeholder="请选择所属产品">
           <el-option
             v-for="item in productLists"
@@ -21,6 +21,12 @@
             :label="item.label"
             :value="item.value"
           />
+        </el-select>
+      </el-form-item> -->
+      <el-form-item label="所属产品：">
+        <el-select v-model="product_id" placeholder="请选择所属产品">
+          <el-option v-for="item in productList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="帖子内容:" prop="content">
@@ -249,7 +255,7 @@ export default {
   data() {
     return {
       topicLists:[],
-      productLists: [],
+      productList: [],
       statusLists: [
         {
           label: "全部",
@@ -315,6 +321,7 @@ export default {
         page: 1,
         limit: 10,
       },
+      product_id: 0,
       dialog: {
         show: false,
       },
@@ -357,6 +364,12 @@ export default {
       return data.map(item=>item.topicName).join(',')
     }
   },
+   watch:{
+    product_id(val){
+      this.queryParams.sourceId = this.productList.filter(item=>item.id==val)[0].source_id||0;
+      this.getList();
+    },
+  },
   methods: {
     /* sourceidchange */
     sourceIdChange(){
@@ -365,14 +378,18 @@ export default {
     },
     /* 获取产品列表 */
     getProductList() {
-      return getproduct({}).then((res) => {
-        const data = res.data || [];
-        this.productLists = data.map((n) => ({
-          label: n.name,
-          value: n.source_id,
-        }));
-        this.queryParams.sourceId = data?.[0]?.source_id;
-      });
+      // return getproduct({}).then((res) => {
+      //   const data = res.data || [];
+      //   this.productLists = data.map((n) => ({
+      //     label: n.name,
+      //     value: n.source_id,
+      //   }));
+      //   this.queryParams.sourceId = data?.[0]?.source_id;
+      // });
+        getproduct({}).then((response) => {
+            this.productList = response.data;
+            this.product_id = this.productList[0].id;
+          });
     },
     /* 获取话题列表 */
     getTopicList(){
@@ -487,7 +504,7 @@ export default {
   },
   async created() {
     await this.getProductList()
-    this.sourceIdChange()
+    // this.sourceIdChange()
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="sign-integral" style="padding-left:80px;padding-top:30px;">
       <el-form :model="form" :rules="rules" ref="dataForm">
-         <el-form-item label-width="120px"  label="所属产品:" prop="sourceId"
+         <!-- <el-form-item label-width="120px"  label="所属产品:" prop="sourceId"
         >
           <el-select
             v-model="form.sourceId"
@@ -15,7 +15,13 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
+         <el-form-item label-width="120px" label="所属产品：">
+        <el-select v-model="product_id" placeholder="请选择所属产品">
+          <el-option v-for="item in productList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
         <el-form-item  label-width="120px" label="签到模式:" prop="signPattern">
             <el-radio-group
               :disabled="editflag"
@@ -87,7 +93,8 @@ import {
             editflag: true,
             form: {},
             recordform:{},
-            productLists: [],
+            productList: [],
+            product_id: 0,
             patterns: [
               {
                 label: '7天连续循环签到(连续签到7天后,第8天重新从第1天开始循环)',
@@ -116,6 +123,12 @@ import {
         'u_info'
         ])
     },
+     watch:{
+        product_id(val){
+          this.form.sourceId = this.productList.filter(item=>item.id==val)[0].source_id||0;
+           this.getinfo()
+        },
+      },
   async created() {
       this.form = {
         circulatory: 1,
@@ -213,18 +226,22 @@ import {
       }
       this.recordform = deepClone(this.form)
       await this.getProductList();
-      this.getinfo()
+      // this.getinfo()
     },
     methods:{
         /* 获取产品列表 */
         getProductList () {
-          return getproduct({}).then(res => {
-            const data = res.data || []
-            this.productLists = data.map(n => ({
-              label: n.name,
-              value: n.source_id
-            }));
-            this.form.sourceId = data?.[0]?.source_id;
+          // return getproduct({}).then(res => {
+          //   const data = res.data || []
+          //   this.productLists = data.map(n => ({
+          //     label: n.name,
+          //     value: n.source_id
+          //   }));
+          //   this.form.sourceId = data?.[0]?.source_id;
+          // });
+           getproduct({}).then((response) => {
+            this.productList = response.data;
+            this.product_id = this.productList[0].id;
           });
         },
           /* 搜索 */
