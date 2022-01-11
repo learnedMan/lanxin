@@ -104,11 +104,11 @@
       },
       methods: {
         returnurl(){
-          const token = sessionStorage.getItem('token');
+          // const token = sessionStorage.getItem('token');
           if(!this.previewDomin){
             this.$message.warning('站点未配置预览域名，请联系管理员去站点管理页面配置');
           }
-          return `${this.previewDomin}?id=${this.id}&type=${this.type}&token=${token}`
+          return `${this.previewDomin}?id=${this.id}&type=${this.type}&token=${this.token}`
           // return `https://h5.cztv.com/qujiang/h5/Preview/?id=489458&type=scripts&token=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9iYXRyaXguY3p0di5jb21cL2FwaVwvYXV0aG9yaXphdGlvbnMiLCJpYXQiOjE2Mzk2MzcwNzYsImV4cCI6MTYzOTY3MzA3NiwibmJmIjoxNjM5NjM3MDc2LCJqdGkiOiJQY2hCbmlqTlliRXV0QzdOIiwic3ViIjoxMzQ4LCJwcnYiOiJmZWY4ODIyYmJjODllNDI5MTVhMWQ4ZjVlYzlmODY2MTFjYjE4MTExIiwiem9uZV9pZCI6Mywic2l0ZV9pZCI6NiwiaWQiOjEzNDgsInByb2R1Y3RzIjoiNywxMywxNiIsInNvdXJjZV9pZHMiOiIyNSwwLDI1In0.l_xazTdCH1H-u-yF5nsk-qXf7WZe-61jH6lG3F99jO0`
         },
         getToken() {
