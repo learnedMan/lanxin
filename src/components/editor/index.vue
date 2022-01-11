@@ -404,8 +404,8 @@
             const shuiyin = new Image();
             shuiyin.src = this.watermark;
             shuiyin.crossOrigin = 'Anonymous';
-            let scale = (shuiyin.naturalHeight/shuiyin.naturalWidth).toFixed(2)
             shuiyin.onload = () => {
+              let scale = (shuiyin.naturalHeight/shuiyin.naturalWidth).toFixed(2)
               const position = this.setPosition(width, height,0.2,scale);
               context.drawImage(shuiyin, position.left, position.top, position.width, position.height);
               canvas.toBlob((blob) => {

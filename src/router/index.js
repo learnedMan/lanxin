@@ -500,6 +500,33 @@ export const asyncRoutes = [
         meta: { title: '抽奖' },
       },
       {
+        path: 'answer',
+        component: () => import('@/views/operamanage/answer/index'),
+        name: 'Answer',
+        // permission: 'operation.answer',
+        defaultShow: true,
+        meta: { title: '答题管理' },
+        redirect: '/operaManage/answer/question',
+        children: [
+          {
+            path: 'question',
+            component: () => import('@/views/operamanage/answer/question'),
+            name: 'Question',
+            // permission: 'operation.answer.question',
+            defaultShow: true,
+            meta: { title: '题库管理' }
+          },
+          {
+            path: 'examination',
+            component: () => import('@/views/operamanage/answer/examination'),
+            name: 'Examination',
+            // permission: 'operation.answer.examination',
+            defaultShow: true,
+            meta: { title: '试卷管理' }
+          }
+        ]
+      },
+      {
         path: 'community',
         component: () => import('@/views/operamanage/community/index'),
         name: 'Community',
