@@ -1718,6 +1718,7 @@ export default {
       detailsType: '', //采集文章管理稿件 和其他稿件 获取详情接口区别
       channel_idOld: [], //
       editorSaveFlag: true,// 自动保存开关
+      refreshToken: false, //刷新token开关
       from: {
         author_name: '', // 作者
         editor_name: '', // 编辑
@@ -1800,6 +1801,7 @@ export default {
   watch: {
     'from.extra.content': {
       handler: function(newValue,oldValue) {
+        this.refreshToken = true
         if(this.from.extra.type !== 'news') return
         if(newValue != this.editorOldValue) this.editorChangeValue = true //编辑器内容变化了开启自动保存
         var bdhhtml = document.getElementById('bdh').innerHTML;
@@ -1958,8 +1960,16 @@ export default {
     let editorTime = setInterval(() => {
       if(this.editorSaveFlag) this.editorSelfSave()
     },30000)
+    let refreshToken = setInterval(() =>{
+        this.refreshToken = false
+    }, 5*60*1000)
+    let tokenID = setInterval(() => {
+      if(this.refreshToken) this.getproductList()
+    }, 10*60*1000);
     this.$once('hook:beforeDestroy', () => {
         clearInterval(editorTime);
+        clearInterval(refreshToken)
+        clearInterval(tokenID)
       })
   },
   methods: {

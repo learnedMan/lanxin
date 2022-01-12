@@ -15,7 +15,7 @@
 </style>
 <template>
   <div class="xl-comment-verify" :style="{ padding: newsId? 0 : '30px' }">
-    <search ref="search" v-model="search" :lists="searchLists">
+    <search ref="search" v-model="search" :lists="searchLists" :productId="product_id" @changeProductId="changeProductId">
       <div slot="action">
         <el-button v-points = "1500" size="mini" type="primary" @click="resetSearch">重置</el-button>
         <el-button v-points = "1500" size="mini" type="primary" @click="handleQuery">搜索</el-button>
@@ -270,11 +270,13 @@ export default {
         pageSize: 10, // 页码
         pageNo: 1 // 当前页
       },
+      product_id: 0,
       searchLists: [
         {
           component: 'select',
           componentSize: 'small',
           placeholder: '请选择产品',
+          productFlag: true,
           label: '所属产品',
           selectOption: [],
           span: 6,
@@ -292,6 +294,7 @@ export default {
           component: 'select',
           componentSize: 'small',
           placeholder: '请输入关键字',
+          productFlag: false,
           label: '状态',
           selectOption: [
             {
@@ -483,8 +486,14 @@ export default {
   },
   async created() {
     await this.getProductList();
-    this.getList();
+    // this.getList();
   },
+   watch:{
+        product_id(val){
+          this.search.sourceId = this.searchLists[0].selectOption.filter(item=>item.id==val)[0].source_id||0;
+          this.getList();
+        },
+      },
   methods: {
     /*
     * 重置搜索框
@@ -492,7 +501,7 @@ export default {
     resetSearch() {
       const form = this.$refs.search.$refs.ruleForm
       form.resetFields();
-      this.search.sourceId = this.searchLists[0].selectOption[0]?.value;
+      this.search.sourceId = this.searchLists[0].selectOption[0]?.source_id;
     },
     /* 搜索 */
     handleQuery () {
@@ -629,16 +638,23 @@ export default {
     handleInnerChoose(row) {
 
     },
+    changeProductId(val) {
+      this.product_id = val
+    },
     /* 获取产品列表 */
     getProductList(){
-      return getproduct({}).then(res => {
-        const data = res.data || []
-        this.searchLists[0].selectOption = data.map(n => ({
-          label: n.name,
-          value: n.source_id
-        }));
-        this.search.sourceId = data?.[0]?.source_id;
-      });
+      // return getproduct({}).then(res => {
+      //   const data = res.data || []
+      //   this.searchLists[0].selectOption = data.map(n => ({
+      //     label: n.name,
+      //     value: n.source_id
+      //   }));
+      //   this.search.sourceId = data?.[0]?.source_id;
+      // });
+       getproduct({}).then((response) => {
+            this.searchLists[0].selectOption = response.data;
+            this.product_id = this.searchLists[0].selectOption[0].id;
+          });
     },
   }
 }

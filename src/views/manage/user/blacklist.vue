@@ -11,7 +11,7 @@
         :inline="true"
         size="small"
       >
-        <el-form-item
+        <!-- <el-form-item
           label="所属产品:"
         >
           <el-select
@@ -26,7 +26,13 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
+        <el-form-item label="所属产品：">
+        <el-select v-model="product_id" placeholder="请选择所属产品">
+          <el-option v-for="item in productList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
         <el-form-item
           label="用户名:"
           prop="nickName"
@@ -163,7 +169,7 @@
     export default {
       data() {
         return {
-          productLists: [],
+          productList: [],
           pickerOptions: {
             shortcuts: [{
               text: '最近一周',
@@ -199,6 +205,7 @@
             page: 1,
             limit: 10
           },
+          product_id: 0,
           loading: false,
           tableData: [],
           selection: [],
@@ -210,16 +217,26 @@
           return this.selection.length === 0
         }
       },
+       watch:{
+        product_id(val){
+          this.queryParams.sourceId = this.productList.filter(item=>item.id==val)[0].source_id||0;
+          this.getList();
+        },
+      },
       methods: {
         /* 获取产品列表 */
         getProductList () {
-          return getproduct({}).then(res => {
-            const data = res.data || []
-            this.productLists = data.filter(n => n.source_id).map(n => ({
-              label: n.name,
-              value: n.source_id?.toString()
-            }));
-            this.queryParams.sourceId = data?.[0]?.source_id?.toString();
+          // return getproduct({}).then(res => {
+          //   const data = res.data || []
+          //   this.productLists = data.filter(n => n.source_id).map(n => ({
+          //     label: n.name,
+          //     value: n.source_id?.toString()
+          //   }));
+          //   this.queryParams.sourceId = data?.[0]?.source_id?.toString();
+          // });
+           getproduct({}).then((response) => {
+            this.productList = response.data;
+            this.product_id = this.productList[0].id;
           });
         },
         /* 修改时间 */
@@ -280,7 +297,7 @@
       },
       async created() {
         await this.getProductList();
-        this.getList();
+        // this.getList();
       }
     }
 </script>

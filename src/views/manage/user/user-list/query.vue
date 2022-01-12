@@ -9,7 +9,7 @@
         :inline="true"
         size="small"
       >
-        <el-form-item
+        <!-- <el-form-item
           label="所属产品:"
         >
           <el-select
@@ -24,7 +24,13 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
+        <el-form-item label="所属产品：">
+            <el-select v-model="product_id" placeholder="请选择所属产品">
+              <el-option v-for="item in productList" :key="item.id" :label="item.name" :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="被邀请人注册时间:">
           <el-date-picker
             v-model="queryParams.registerTime"
@@ -262,7 +268,7 @@
       },
       data() {
         return {
-          productLists: [], // 产品集合
+          productList: [], // 产品集合
           pickerOptions: {
             shortcuts: [{
               text: '最近一周',
@@ -303,6 +309,7 @@
             registerTime: ''
           },
           total: 0,
+          product_id: 0,
           loading: false,
           tableData: [],
           dialog: {
@@ -323,16 +330,26 @@
           }
         }
       },
+       watch:{
+        product_id(val,old){
+          this.queryParams.sourceId = this.productList.filter(item=>item.id==val)[0].source_id||0;
+          if(old !=0) this.getList();
+        },
+      },
       methods: {
         /* 获取产品列表 */
         getProductList () {
-          return getproduct({}).then(res => {
-            const data = res.data || []
-            this.productLists = data.map(n => ({
-              label: n.name,
-              value: n.source_id
-            }));
-            this.queryParams.sourceId = data?.[0]?.source_id;
+          // return getproduct({}).then(res => {
+          //   const data = res.data || []
+          //   this.productLists = data.map(n => ({
+          //     label: n.name,
+          //     value: n.source_id
+          //   }));
+          //   this.queryParams.sourceId = data?.[0]?.source_id;
+          // });
+           getproduct({}).then((response) => {
+            this.productList = response.data;
+            this.product_id = this.productList[0].id;
           });
         },
         /* 重置 */

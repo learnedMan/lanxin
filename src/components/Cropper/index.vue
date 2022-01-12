@@ -508,7 +508,6 @@ export default {
     proportionChange(val) {
       const item = this.proportion.find(n => val === n.value)
       this.option.autoCropWidth = Math.random() + 686
-      console.log('autoCropWidth',this.option.autoCropWidth)
       this.$set(this, 'option', {
         ...this.option,
         ...item.option
