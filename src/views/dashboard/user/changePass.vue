@@ -65,7 +65,7 @@
         <el-input
           ref="password"
           v-model.trim="form.password"
-          placeholder="请输入密码"
+          placeholder="请输入密码(必须包含大小写字母和数字)"
           type="password"
           style="width: 260px"
         ></el-input>

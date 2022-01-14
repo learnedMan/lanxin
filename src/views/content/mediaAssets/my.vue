@@ -208,8 +208,16 @@
               label="修改"
               @fatherMethod="handleEdit(scope.row)"
             ></Iconbutton>
+           <Iconbutton
+              v-if="onLineOrOffline(scope.row.news)"
+              class="onLineImg"
+              icontype="xx"
+              label="上线"
+              @fatherMethod="handleOnline(scope.row)"
+            ></Iconbutton>
             <!-- 一键下线 -->
             <Iconbutton
+              v-else
               icontype="xx"
               label="下线"
               @fatherMethod="handleOffline(scope.row)"
@@ -309,7 +317,7 @@
 </template>
 
 <script>
-import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript, offlineNews } from '@/api/content'
+import { getScripts, deleteScript, PatchScript, batchPublishScript, copyScript, offlineNews,changeNewsStatus } from '@/api/content'
 import { getChannels } from '@/api/manage'
 import VersionHistory from '@/views/content/mediaAssets/components/versionHistory'
 
@@ -447,6 +455,11 @@ export default {
       const arr = val || ['', '']
       this.queryParams.startdate = arr[0]
       this.queryParams.enddate = arr[1]
+    },
+     onLineOrOffline(news) {
+       let l = news.filter(v => v.status == 1) || []
+       let flag = l.length ? false : true
+      return flag
     },
     formatText(channel,news) {
     //定时发布 5 已下线2  已上线1 待审核0
@@ -612,6 +625,33 @@ export default {
           this.$message({
             message: message,
             type: status_code === 200? 'success' : 'warning'
+          })
+          this.getList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+     /*一键上线*/
+    handleOnline(row) {
+      let list = row.news,str = ''
+      list.map(v=>{
+        str+= v.id + ','
+      })
+      let ids = str.slice(0,-1)
+      let params = { ids,status: 1}
+      this.$confirm(`此操作将上线该文稿下所有新闻, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        changeNewsStatus(params).then(() => {
+          this.$message({
+            message: '上线成功',
+            type:'success'
           })
           this.getList()
         })

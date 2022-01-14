@@ -339,13 +339,13 @@
                     <el-radio :label="'0'">否</el-radio>
                 </el-radio-group>
           </el-form-item>
-          <el-form-item label-width="150px" label="社区评论设置" prop="extra.community_comment">
+          <!-- <el-form-item label-width="150px" label="社区评论设置" prop="extra.community_comment">
                 <el-radio-group v-model="form.extra.community_comment">
                     <el-radio :label="'0'">先审后发</el-radio>
                     <el-radio :label="'1'">先发后审</el-radio>
                     <el-radio :label="'2'">禁止评论</el-radio>
                 </el-radio-group>
-          </el-form-item>
+          </el-form-item> -->
         </div>
       </el-form>
       <el-dialog

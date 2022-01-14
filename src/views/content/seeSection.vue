@@ -246,7 +246,7 @@
           >
            <el-table-column
               type="selection"
-              min-width="3%"
+              min-width="2%"
             />
             <el-table-column
             v-if="!isMobile"
@@ -260,6 +260,13 @@
               label="点击量"
               align="center"
               prop="hits"
+              min-width="5%"
+            />
+            <el-table-column
+            v-if="!isMobile"
+              label="真实点击量"
+              align="center"
+              prop="realHits"
               min-width="5%"
             />
             <el-table-column
@@ -448,6 +455,13 @@
               label="点击量"
               align="center"
               prop="hits"
+              min-width="5%"
+            />
+             <el-table-column
+            v-if="!isMobile"
+              label="真实点击量"
+              align="center"
+              prop="realHits"
               min-width="5%"
             />
             <el-table-column
@@ -1464,6 +1478,7 @@ export default {
                 let view_base_num = this.tableData[index].view_base_num || '0'
                 if(item.id==_item.item_id){
                   this.tableData[index].hits = parseInt(_item.hits)*parseInt(this.multiplying_factor)+parseInt(view_base_num) || 0;
+                  this.tableData[index].realHits = parseInt(_item.hits)
                 }
               })
             })

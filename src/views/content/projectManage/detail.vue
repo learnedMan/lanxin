@@ -731,6 +731,13 @@
           </el-select>
           <el-button v-points = "1500" v-if="topicDialog.form.extra.template_json_id" @click="yulanfn" style="margin-left:10px;">预览</el-button>
         </el-form-item>
+        <el-form-item  label="展示条数:" prop="extra.show_num">
+            <el-input
+              style="width: 200px"
+              placeholder="请输入展示条数"
+              v-model="topicDialog.form.extra.show_num"
+              ></el-input>
+          </el-form-item>
       </el-form>
       <div
         slot="footer"
@@ -966,11 +973,15 @@
               extra: {
                 template_style: '',
                 template_json_id: '',
+                show_num: 10
               }
             },
             rules: {
               name: [
                 { required: true, message: '请输入标题', trigger: 'blur' }
+              ],
+              'extra.show_num': [
+                { required: true, message: '请输入展示条数', trigger: 'blur' }
               ]
             }
           }
@@ -1066,6 +1077,7 @@
               extra: {
                 template_style: '',
                 template_json_id: '',
+                show_num: 10
               }
             }
           })
@@ -1073,7 +1085,7 @@
         /* 修改子专题 */
         handleTopicEdit (data) {
           this.resetForm('topicForm');
-          const { name, id, extra: { template_style = '', template_json_id = '' } } = data;
+          const { name, id, extra: { template_style = '', template_json_id = '',show_num } } = data;
           Object.assign(this.topicDialog, {
             show: true,
             title: '修改专题',
@@ -1083,6 +1095,7 @@
               extra: {
                 template_style,
                 template_json_id,
+                show_num
               }
             }
           })

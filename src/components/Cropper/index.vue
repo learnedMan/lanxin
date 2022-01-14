@@ -520,7 +520,7 @@ export default {
     /* 确定 */
     enterDialog() {
       // 上传blob或base64获取图片路径
-      // 获取截图的blob数据
+      // 获取截图的blob数据getCropData  getCropBlob
       this.$refs.cropper.getCropBlob(data => {
         const file = new File([data], `${new Date().getTime()}.png`, {
           type: data.type

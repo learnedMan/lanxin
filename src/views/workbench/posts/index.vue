@@ -132,7 +132,7 @@
         <el-button v-points = "1500"
           size="mini"
           type="warning"
-          @click="batchAgreeOrRefused(2)"
+          @click="handleBatchReject"
           :disabled="disabledBatchAction"
           >批量拒绝</el-button>
       </el-form-item>
@@ -186,11 +186,17 @@
               @fatherMethod="handleAgreeOrRefused(scope.row, 1)"
             ></Iconbutton>
             <!-- 拒绝 -->
-            <Iconbutton
+            <!-- <Iconbutton
               v-if="scope.row.status != 2"
               icontype="shjj"
               label="拒绝"
               @fatherMethod="handleAgreeOrRefused(scope.row, 2)"
+            ></Iconbutton> -->
+             <Iconbutton
+              v-if="scope.row.status != 2"
+              icontype="shjj"
+              label="拒绝"
+              @fatherMethod="handleReject(scope.row)"
             ></Iconbutton>
           </div>
         </template>
@@ -203,6 +209,66 @@
       :limit.sync="queryParams.limit"
       @pagination="getList"
     />
+     <!-- 批量或单个拒绝 -->
+    <el-dialog
+      width="600px"
+      :title="rejectDialog.title"
+      :visible.sync="rejectDialog.show"
+    >
+      <el-form
+        ref="dialogForm"
+        :model="rejectDialog.form"
+        :rules="dialogRules"
+        label-width="120px"
+      >
+        <el-form-item
+          label="拒绝原因"
+          prop="remark"
+        >
+          <el-select
+            v-model.trim="rejectDialog.form.remark"
+            size="small"
+            placeholder="请选择拒绝原因"
+            clearable
+          >
+            <el-option
+              v-for="item in rejectLists"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="原因"
+          prop="reason"
+          v-if="rejectDialog.form.remark === '自定义原因'"
+        >
+          <el-input
+            v-model.trim="rejectDialog.form.reason"
+            type="textarea"
+            :rows="6"
+            clearable
+            size="small"
+            style="width: 300px"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button v-points = "1500" @click="handleDialogClose">
+          取 消
+        </el-button>
+        <el-button v-points = "1500"
+          type="primary"
+          @click="handleDialogClose('confirm')"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
     <!-- 详情 -->
     <el-dialog width="600px" title="详情" :visible.sync="dialog.show">
       <el-form size="small" label-width="120px">
@@ -245,6 +311,7 @@
 import {
   getPostLists,
   changePostStatus,
+  getReasons,
   getPostDetail,
 } from "@/api/workbench.js";
 import { getproduct } from "@/api/manage";
@@ -256,6 +323,7 @@ export default {
     return {
       topicLists:[],
       productList: [],
+      rejectLists: [], //拒绝原因列表
       statusLists: [
         {
           label: "全部",
@@ -325,6 +393,21 @@ export default {
       dialog: {
         show: false,
       },
+      rejectDialog: {
+        show: false,
+        title: '拒绝',
+        form: {
+          id: '',
+          sourceId: '',
+          status: 2,
+          reason: '',
+          remark: ''
+        }
+      },
+      dialogRules: {
+        remark: { required: true, message: '请选择拒绝原因', trigger: 'change' },
+        reason: { required: true, message: '请输入自定义原因', trigger: 'change' },
+      },
       detail: {
         title: "",
         content: "",
@@ -368,6 +451,7 @@ export default {
     product_id(val){
       this.queryParams.sourceId = this.productList.filter(item=>item.id==val)[0].source_id||0;
       this.getList();
+      this.getTopicList();
     },
   },
   methods: {
@@ -403,6 +487,19 @@ export default {
           arr.unshift({name:'全部',id:''});
           this.topicLists = arr;
         })
+    },
+    /* 获取拒绝原因列表 */
+    getRejectList() {
+      getReasons({
+        pageSize: 9999,
+        page: 1,
+        apply_to: '1'
+      }).then(res => {
+        this.rejectLists = [{
+          id: '98998989',
+          name: '自定义原因'
+        }].concat(res.data || [])
+      })
     },
     /* 修改时间 */
     handleDateChange(val, key) {
@@ -474,6 +571,66 @@ export default {
         }
       });
     },
+    /* 批量拒绝 */
+    handleBatchReject() {
+      Object.assign(this.rejectDialog, {
+        show: true,
+        title: '批量拒绝',
+        form: {
+          id: [...this.selection],
+          sourceId: this.queryParams.sourceId,
+          status: 2,
+          remark: ''
+        }
+      })
+      this.$nextTick(() => {
+        this.$refs.dialogForm?.clearValidate()
+      })
+    },
+     /* 拒绝 */
+    handleReject(row) {
+      const { id } = row
+      Object.assign(this.rejectDialog, {
+        show: true,
+        title: '拒绝',
+        form: {
+          id: [id],
+          status: 2,
+          sourceId: this.queryParams.sourceId,
+          remark: ''
+        }
+      })
+      this.$nextTick(() => {
+        this.$refs.dialogForm?.clearValidate()
+      })
+    },
+     /* 确认或关闭弹框 */
+    handleDialogClose(status) {
+      if (status === 'confirm') {
+        this.$refs.dialogForm.validate(val => {
+          if (val) {
+            const params = { ...this.rejectDialog.form };
+            if(params.remark === '自定义原因') params.remark = params.reason
+            params.refusalCause = params.remark
+            delete params.remark
+            delete params.reason
+            console.log('params',params)
+            // return
+            changePostStatus(params).then(() => {
+              this.$message({
+                message: `${this.rejectDialog.title}成功`,
+                type: 'success'
+              })
+              this.getList()
+            }).finally(() => {
+              this.rejectDialog.show = false
+            })
+          }
+        })
+      } else {
+        this.rejectDialog.show = false
+      }
+    },
     /* 修改选中项 */
     handleSelectionChange(arr) {
       this.selection = arr.map((n) => n.id);
@@ -505,6 +662,7 @@ export default {
   async created() {
     await this.getProductList()
     // this.sourceIdChange()
+    this.getRejectList()
   },
 };
 </script>

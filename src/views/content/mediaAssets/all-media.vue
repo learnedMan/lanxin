@@ -576,6 +576,9 @@ export default {
       this.queryParams.startdate = arr[0]
       this.queryParams.enddate = arr[1]
     },
+    testFn() {
+      console.log(888)
+    },
     //默认时间
     defaultDate() {
        var dt = new Date();
