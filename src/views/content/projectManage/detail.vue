@@ -212,6 +212,30 @@
                 新增新闻
               </el-button>
                <el-button v-points = "1500"
+                  type="success"
+                  size="mini"
+                  :disabled="selection.length === 0"
+                  @click="handleBatch('sx')"
+                >
+                  批量上线
+                </el-button>
+                 <el-button v-points = "1500"
+                  type="success"
+                  size="mini"
+                  :disabled="selection.length === 0"
+                  @click="handleBatch('xx')"
+                >
+                  批量下线
+                </el-button>
+                 <el-button v-points = "1500"
+                  type="success"
+                  size="mini"
+                  :disabled="selection.length === 0"
+                  @click="handleBatch('del')"
+                >
+                  批量删除
+                </el-button>
+               <el-button v-points = "1500"
                 type="primary"
                 size="mini"
                 @click="exportExcel"
@@ -236,7 +260,12 @@
           border
           tooltip-effect="dark"
           style="width: 100%;overflow: auto"
+           @selection-change="handleSelectionChange"
         >
+         <el-table-column
+              type="selection"
+              min-width="2%"
+            />
           <el-table-column
             v-if="!isMobile"
             label="新闻ID"
@@ -360,11 +389,17 @@
                 ></Iconbutton>
                 <!-- 编辑 -->
                 <Iconbutton
-                  v-if="scope.row.status !== 1 && scope.row.type !== 'broadcast'"
+                  v-if="scope.row.type !== 'broadcast'"
                   icontype="xg"
                   label="修改"
                   @fatherMethod="handleEdit(scope.row)"
                 ></Iconbutton>
+                <!-- 修改母稿 -->
+                 <Iconbutton
+                    icontype="xg"
+                    label="修改母稿"
+                    @fatherMethod="handleEditFater(scope.row)"
+                  ></Iconbutton>
                 <!-- 删除 -->
                 <Iconbutton
                   icontype="sc"
@@ -764,6 +799,7 @@
     changeNewsStatus,
     deleteNews,
     getNewDetail,
+    batchdelNews,
   } from '@/api/content'
   import { addPushDetail } from '@/api/operamanage'
   import { setSortchannels, cateloglist, stylelist, getproduct } from '@/api/manage'
@@ -793,6 +829,7 @@
         return {
           switchAction: false, // 修改开关
           channelsList: [], // 栏目
+          selection: [], //表格选中项
           props: Object.freeze({
             label: 'name',
             children: 'child'
@@ -1013,6 +1050,56 @@
           }
           return obj[value] || ''
         },
+     handleSelectionChange(arr) {
+      this.selection = arr.map(n => n.id)
+    },
+    handleBatch(val) {
+      let str = ''
+      this.selection.map(v => str+= v + ',' )
+      let ids = str.slice(0,-1)
+      console.log('ids',ids)
+      if(val == 'sx') {
+         changeNewsStatus({
+          ids,
+          status: 1
+        }).then(() => {
+          this.$message.success('修改状态成功')
+          this.getList();
+        }).catch(()=>{
+          this.getList()
+        })
+      }else if(val == 'xx') {
+         changeNewsStatus({
+          ids,
+          status: 2
+        }).then(() => {
+          this.$message.success('修改状态成功')
+          this.getList();
+        }).catch(()=>{
+          this.getList()
+        })
+      }else if(val == 'del') {//batchdelNews
+      this.$confirm(`此操作将永久删除这条新闻, 是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batchdelNews({
+            ids,
+          }).then(() => {
+            this.$message.success('删除成功')
+            this.getList();
+          }).catch(()=>{
+            this.getList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      }
+    },
         /*表格导出*/ 
         exportExcel () {
           var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
@@ -1053,6 +1140,22 @@
             this.hasChildTopic = topic_type == 2;// 多模块聚合才有子专题
             this.product_id = product_id;
           })
+        },
+        /*修改母稿*/ 
+        handleEditFater(row) {
+          console.log('row',row)
+          let id = row.script_id,type = row.type
+          if(type == 'news' || type == 'video' || type == 'album' || type == 'outer_link') {
+            if(window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1) {
+              this.$router.push({ name: 'My', query: { id }})
+            }else if(row.script_type === 'App\\Models\\Zones\\TPNews'){
+              this.$router.push({ name: 'collect-article', query: { id }})
+              }else{
+                this.$router.push({ name: 'All-media', query: { id }})
+            }
+          }else if(type == 'broadcast') {
+            this.$router.push({ name: 'StudioList', query: { id }})
+          }
         },
         /* 获取子专题 */
         getChildTopic () {

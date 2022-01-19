@@ -324,7 +324,7 @@
               { required: true, message: '请选择所属模块', trigger: 'change' }
             ],
             actionCode: [
-              { required: true, validator: checkActionCode, trigger: 'blur' }
+              { required: true,  message: '请填写行为Id', trigger: 'blur' }
             ]
           }
         }

@@ -16,7 +16,7 @@
         <el-tab-pane label="员工发稿情况" name="statffDispatches">
           <statff-dispatches
           :channelsList="channelsList"
-          :authorlList="authorlList"
+          :authorList="authorList"
           :departmentList="dataList"></statff-dispatches>
         </el-tab-pane>
         <el-tab-pane label="来源发稿情况" name="sourceData">
@@ -27,7 +27,7 @@
           <el-tab-pane label="按稿件数据" name="newsData">
           <news-data
           :channelsList="channelsList"
-          :authorlList="authorlList"
+          :authorList="authorList"
           :departmentList="dataList"></news-data>
         </el-tab-pane>
       </el-tabs>
@@ -55,7 +55,7 @@
           activeName: 'department',
           dataList: [],
           channelsList: [], //栏目数据
-          authorlList: [], //作者列表
+          authorList: [], //作者列表
           department: {
             queryParams: {
               beginTime: '',
@@ -135,7 +135,8 @@
           pageSize: 999999
         }
          getUser(params).then(res => {
-           this.authorlList = res.data
+           this.authorList = res.data
+           console.log('作者列表',res.data)
         })
        },
       },

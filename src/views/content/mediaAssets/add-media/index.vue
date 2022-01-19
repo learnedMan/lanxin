@@ -407,7 +407,7 @@
                     size="small"
                     :value="parseObj(formOptions['extra.link.type'].item)"
                     @input="handleInput($event, formOptions['extra.link.type'].item)"
-                    @change="handleTabChange"
+                    @change="handleTabChangeType"
                   >
                     <el-radio style="margin-bottom:15px;" v-for="list of formOptions['extra.link.type'].item.lists" :key="list.value" :label="list.value">{{ list.label }}</el-radio>
                   </el-radio-group>
@@ -2160,10 +2160,10 @@ export default {
       // 确定图片显示个数
       this.formOptions['extra.cover'].item.componentProps.count = template_style?.count || 1
       // 基础显示的item
-      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.intro', 'extra.tags', 'extra.title_color', 'extra.keywords', 'extra.set_created_at']
-      if (this.typeDetails === 'news') baseTopItem.push('extra.publish_timer.status')
+      const baseTopItem = ['extra.title', 'extra.subtitle', 'extra.template_style', 'extra.cover', 'extra.publish_timer.publish_at','extra.publish_timer.status', 'extra.intro', 'extra.tags', 'extra.title_color', 'extra.keywords', 'extra.set_created_at']
+      // if (this.typeDetails === 'news') baseTopItem.push('extra.publish_timer.status')
       // 显示发布时间
-      if (this.typeDetails === 'news' && this.from.extra.publish_timer.status === '1') baseTopItem.push('extra.publish_timer.publish_at')
+      // if (this.typeDetails === 'news' && this.from.extra.publish_timer.status === '1') baseTopItem.push('extra.publish_timer.publish_at')
       // const baseBottomItem = ['author_name', 'editor_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       const baseBottomItem = ['editor_name', 'extra.is_original', 'extra.allow_comment', 'extra.allow_share', 'extra.trans_to_audio', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num']
       // 显示来源
@@ -2461,6 +2461,10 @@ export default {
         }
         this.$refs.submitForm?.clearValidate()
       })
+    },
+    handleTabChangeType() {
+      this.from.extra.link.id = ''
+      this.from.extra.link.url = ''
     },
     /* 修改视频列表数据 */
     changeVideoList (val) {

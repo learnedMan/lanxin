@@ -242,7 +242,7 @@ export default {
       }, // 大图弹框
       option: {
         img: require('@/assets/c_images/useravatar.jpg'), // 裁剪图片的地址(支持url 地址 / base64 / blob)
-        outputSize: 1, // 裁剪生成的图片质量 (0.1 - 1)
+        size: 1, // 裁剪生成的图片质量 (0.1 - 1)
         outputType: 'png', // 裁剪生成图片的类型 (jpeg || png || webp)
         full: false, // 是否输出原图比例的截图
         canMove: false, // 上传图片是否可以移动
@@ -252,7 +252,7 @@ export default {
         fixedBox: false, // 固定截图框大小 不允许改变
         autoCropWidth: 686, // 默认生成截图框宽度
         autoCropHeight: 180, // 默认生成截图框高度
-        maxImgSize: 2000, // 限制图片最高大宽高
+        maxImgSize: 3000, // 限制图片最高大宽高
         fixed: true, // 是否开启截图框宽高固定比例
         fixedNumber: [16, 9], // 截图框的宽高比例
         infoTrue: true, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
@@ -280,41 +280,41 @@ export default {
             fixedNumber: [4, 3]
           }
         },
-        {
-          label: '10:14.2',
-          value: 3,
-          option: {
-            fixed: true,
-            full: false,
-            fixedBox: false,
-            fixedNumber: [10, 14.269]
-          }
-        },
-        {
-          label: '蓝媒视频竖屏',
-          value: 4,
-          option: {
-            fixed: true,
-            full: false,
-            fixedBox: false,
-            fixedNumber: [10, 15.5]
-          }
-        },
+        // {
+        //   label: '10:14.2',
+        //   value: 3,
+        //   option: {
+        //     fixed: true,
+        //     full: false,
+        //     fixedBox: false,
+        //     fixedNumber: [10, 14.269]
+        //   }
+        // },
+        // {
+        //   label: '蓝媒视频竖屏',
+        //   value: 4,
+        //   option: {
+        //     fixed: true,
+        //     full: false,
+        //     fixedBox: false,
+        //     fixedNumber: [10, 15.5]
+        //   }
+        // },
         {
           label: '自定义',
           value: 5,
           option: {
-            fixed: false,
-            fixedBox: true,
-            full: false
+            fixedBox: false,
+            full: true
           }
         },
         {
           label: '不剪切',
           value: 6,
           option: {
-            fixedBox: false,
-            full: true
+            fixed: false,
+            fixedBox: true,
+            full: false
           }
         }
       ], // 裁剪比例选项
