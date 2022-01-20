@@ -2426,12 +2426,13 @@ export default {
             this.checkStatus = true
             const { channelId } = this.$route.query
             if(channelId) return this.handleSave('保存并发布成功', () => {
+              this.delLocalStorage()
               this.handleReturn();
             })
             this.dialog.show = true
           }else if (this.typeDetails === 'news') {
             this.handleSave('保存并发布成功', () => {
-              if(this.from.extra.type === 'news') this.delLocalStorage()
+              this.delLocalStorage()
               this.$emit('refresh')
               this.handleClose()
               })
