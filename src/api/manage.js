@@ -898,7 +898,7 @@ export function getActionList(data) {
   return request2({
     url: '/internal/points/rule/actionlist',
     // url: '/mall/points/action/item/data',
-    method: 'post',
+    method: 'get',//新的用method: post
     data
   })
 }
