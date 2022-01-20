@@ -299,6 +299,19 @@
             </video>
           </span>
         </el-form-item>
+        <el-form-item
+          label="拒绝原因:"
+          v-if="detail.refusalCause"
+        >
+          <el-input
+            v-model.trim="detail.refusalCause"
+            type="textarea"
+            :rows="6"
+            clearable
+            size="small"
+            style="width: 300px"
+          />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button v-points = "1500" @click="dialog.show = false"> 关 闭 </el-button>
@@ -414,7 +427,8 @@ export default {
         userName: "",
         statusLabel: "",
         files: [],
-        nickName:""
+        nickName:"",
+        refusalCause: ''
       },
       loading: false,
       total: 0,
@@ -493,7 +507,7 @@ export default {
       getReasons({
         pageSize: 9999,
         page: 1,
-        apply_to: '1'
+        apply_to: '4'
       }).then(res => {
         this.rejectLists = [{
           id: '98998989',

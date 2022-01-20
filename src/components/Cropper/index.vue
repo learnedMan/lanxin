@@ -6,7 +6,7 @@
       justify-content: space-between;
       padding: 0 20px;
       &-left {
-        width: 350px;
+        width: 400px;
         height: 300px;
       }
       .radio-select-item {
@@ -244,7 +244,7 @@ export default {
         img: require('@/assets/c_images/useravatar.jpg'), // 裁剪图片的地址(支持url 地址 / base64 / blob)
         size: 1, // 裁剪生成的图片质量 (0.1 - 1)
         outputType: 'png', // 裁剪生成图片的类型 (jpeg || png || webp)
-        full: false, // 是否输出原图比例的截图
+        full: true, // 是否输出原图比例的截图
         canMove: false, // 上传图片是否可以移动
         original: false, // 上传图片按照原始比例渲染
         canMoveBox: true, // 截图框能否拖动
@@ -265,7 +265,7 @@ export default {
           value: 1,
           option: {
             fixed: true,
-            full: false,
+            full: true,
             fixedBox: false,
             fixedNumber: [16, 9]
           }
@@ -275,7 +275,7 @@ export default {
           value: 2,
           option: {
             fixed: true,
-            full: false,
+            full: true,
             fixedBox: false,
             fixedNumber: [4, 3]
           }
@@ -314,7 +314,7 @@ export default {
           option: {
             fixed: false,
             fixedBox: true,
-            full: false
+            full: true
           }
         }
       ], // 裁剪比例选项

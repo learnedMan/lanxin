@@ -244,7 +244,7 @@ export default {
           value: 3
         },
         {
-          label: '提现审核',
+          label: '帖子审核',
           value: 4
         }
       ], // 使用场景列表
