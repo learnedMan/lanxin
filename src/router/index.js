@@ -168,6 +168,40 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/checkdata',
+    component: Layout,
+    redirect: '/checkdata/companyManage',
+    permission: 'checkdata.manage',
+    name: 'Checkdata',
+    meta: {
+      title: '考核统计',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'companyManage',
+        component: () => import('@/views/checkdata/companyManage'),
+        permission: 'checkdata.manage.companyManage',
+        name: 'CompanyManage',
+        meta: { title: '单位统计' },
+      },
+      {
+        path: 'companyCheckData',
+        component: () => import('@/views/checkdata/companyCheckData'),
+        permission: 'checkdata.manage.companyCheckData',
+        name: 'CompanyCheckData',
+        meta: { title: '单位考核统计' },
+      },
+      {
+        path: 'personCheckData',
+        component: () => import('@/views/checkdata/personCheckData'),
+        permission: 'checkdata.manage.personCheckData',
+        name: 'PersonCheckData',
+        meta: { title: '人员考核统计' },
+      },
+    ]
+  },
+  {
     path: '/content',
     component: Layout,
     redirect: '/content/mediaAssets/all-media',
