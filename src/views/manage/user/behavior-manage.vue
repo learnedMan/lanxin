@@ -291,6 +291,10 @@
               name: '行为',
               value: 8700
             },
+            {
+              name: '积分调整',
+              value: 8800
+            },
           ],
           actionLists: [
 

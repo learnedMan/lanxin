@@ -172,6 +172,43 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 上传本地视频 -->
+     <el-dialog
+        width="600px"
+        title="上传视频"
+        :visible.sync="uploadDialog.show"
+      >
+        <el-form
+          ref="integralForm"
+          size="small"
+          label-width="100px"
+        > 
+        <el-form-item label="视频：" prop="video">
+         <upload-video v-model="path_video"></upload-video>
+        </el-form-item>
+        <el-form-item label="图片：" prop="picture">
+           <cropper
+            :count="1"
+            :showTip="false"
+            v-model="path_list"
+            />
+        </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button v-points = "1500" @click="uploadDialog.show = false">
+            取 消
+          </el-button>
+          <el-button v-points = "1500"
+            type="primary"
+            @click="enterUploadDialog"
+          >
+            确 定
+          </el-button>
+        </div>
+      </el-dialog>
     <!-- 选择视频弹框 -->
     <el-dialog
       width="80%"
@@ -188,13 +225,16 @@
 <script>
   import VueUeditorWrap from 'vue-ueditor-wrap'
   import xlVideo from '@/components/video'
+  import Cropper from '@/components/Cropper'
+  import uploadVideo from '@/components/Upload/uploadVideo.vue'
   import { getEditImgLists } from '@/api/content'
   import { uploadImg } from '@/api/content.js'
   let currentEditor, currentEditorId;
   export default {
     components: {
       VueUeditorWrap,
-      xlVideo
+      xlVideo,Cropper,
+      uploadVideo
     },
     props: {
       value: {
@@ -236,7 +276,7 @@
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
             'link', 'unlink', '|',
             'simpleupload', 'insertimage','imglist', 'attachment',
-            'insertvideo',
+            // 'insertvideo',
             '|',
             'searchreplace', '|',
             'fullscreen'
@@ -286,6 +326,11 @@
           checked: []
         },
         imgLists: [], // 视频封面列表
+        path_list: [], //视频封面图
+        path_video: '', //乡镇上稿上传视频
+        uploadDialog: {
+          show: false
+        },
         queryParams: {
           pageSize: 12,
           page: 1,
@@ -471,6 +516,20 @@
       beforeInit(id) {
         if(this.isMobile || this.disabled) return
         currentEditorId = id;
+        /*本地上传视频*/ 
+        if(window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1) {
+          window.UE.registerUI('uploadVideo', (editor, uiName) => {
+            const btn = new window.UE.ui.Button({
+              name: 'btn-dialog-' + uiName,
+              cssRules: `background-position: -320px -20px;`,
+              title: '上传视频',
+              onclick: () => {
+                this.uploadDialog.show = true;
+              }
+            })
+            return btn
+          }, undefined, id)
+        }
         window.UE.registerUI('135editor', (editor, uiName) => {
           /*const width = document.body.clientWidth * 0.9
           const height = window.innerHeight - 50
@@ -548,6 +607,20 @@
           return btn
         }, undefined, id)
       },
+      /*确认本地上传视频*/ 
+      enterUploadDialog() {
+        let path = this.path_list[0]?.path || ''
+        let obj = {
+          url: this.path_video,
+          title: '',
+          cover: path
+        }
+        if(this.path_video) {
+          this.videoDialogControl(obj)
+        }else{
+          this.$message('请上传视频')
+        }
+      },
       /* 已生成editor实例 */
       handleReady(editor) {
         if(!this.isMobile) editor.registerCommand('imglist', {
@@ -572,13 +645,13 @@
       //   <video style="width:300px;display:inline-block;" scale="0.0" title="安吉长龙山水电站" poster="http://img.cztv.com/cms_upload/cms_1624591586_LeiHPwfsPi.png" controls="" controlslist="" disablepictureinpicture="" form_repository="vms" preload="meta">
       //     <source src="http://ali-v.cztv.com/cztv/vod/2021/06/25/9b17fc8528b445c2a035f9796157ca49/h264_1500k_mp4.mp4" id="684381" type="video/mp4"/>
       // </video>&nbsp;
-
         const video =
                 `<p><video style="width:300px;display:inline-block;" title="${val.title}" poster="${val.cover}" class="" controls="" preload="none" width="420" src="${val.url}" data-setup="{}">
                     <source src="${val.url}" type="video/mp4"/>
                 </video>&nbsp;</p><b style='display:none;'>.</b>`
         currentEditor.execCommand('insertHtml', video);
         this.videoDialog.show = false;
+        this.uploadDialog.show = false
       },
       /* 用于传递给文稿或新闻的视频列表数据 */
       videoDialogChoose (val) {

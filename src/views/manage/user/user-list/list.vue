@@ -192,6 +192,7 @@
         <el-table-column
           label="操作"
           align="center"
+          width="250"
         >
           <template slot-scope="scope">
             <!-- 编辑 -->
@@ -205,6 +206,12 @@
               icontype="jy"
               label="禁言"
               @fatherMethod="handleDelete(scope.row)"
+            ></Iconbutton>
+            <!-- 积分 -->
+            <Iconbutton
+              icontype="jf"
+              label="积分调整"
+              @fatherMethod="integralAdjust(scope.row)"
             ></Iconbutton>
           </template>
         </el-table-column>
@@ -342,11 +349,73 @@
           </el-button>
         </div>
       </el-dialog>
+       <!-- 积分调整 -->
+      <el-dialog
+        width="600px"
+        title="积分调整"
+        :visible.sync="integralDialog.show"
+      >
+        <el-form
+          ref="integralForm"
+          :model="integralForm"
+          :rules="integralRules"
+          size="small"
+          label-width="100px"
+        > 
+        <el-form-item prop="type" label="调整类型">
+          <el-radio-group
+            size="small"
+            v-model="integralForm.type"
+          >
+            <el-radio  :label="0">增加</el-radio>
+            <el-radio  :label="1">扣减</el-radio>
+          </el-radio-group>
+        </el-form-item>
+          <el-form-item
+            label="积分"
+            prop="points"
+          >
+            <el-input
+              clearable
+              style="width: 300px"
+              v-model.number="integralForm.points"
+              placeholder="请输入调整积分值(请输入大于0的整数)"
+            />
+          </el-form-item>
+           <el-form-item
+              label="备注"
+              prop="remark"
+            >
+              <el-input
+                v-model.trim="integralForm.remark"
+                type="textarea"
+                :rows="6"
+                clearable
+                size="small"
+                style="width: 300px"
+              />
+            </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button v-points = "1500" @click="integralDialog.show = false">
+            取 消
+          </el-button>
+          <el-button v-points = "1500"
+            type="primary"
+            @click="enterIntegralDialog"
+          >
+            确 定
+          </el-button>
+        </div>
+      </el-dialog>
     </div>
 </template>
 
 <script>
-  import { getproduct, getUserLists, getUserDetail, editDetail } from '@/api/manage'
+  import { getproduct, getUserLists, getUserDetail, editDetail,manualIntegral } from '@/api/manage'
   import { disableSendMsg, releaseShutup /* 拉黑用户 */} from '@/api/workbench'
   import uploadSingle from '@/components/Upload/uploadSingle.vue'
   import FileSaver from 'file-saver'
@@ -356,6 +425,15 @@
         uploadSingle
       },
       data() {
+        const validateintegralNum = (rule, value, callback) => {
+        if(!value){
+          callback('请输入调整积分值非零数')
+        }else if (!(/^[1-9]\d*$/.test(value))) {
+          callback(new Error(`请输入正整数`))
+        } else {
+          callback()
+        }
+      }
         return {
           productList: [], // 产品集合
           pickerOptions: {
@@ -403,6 +481,32 @@
           dialog: {
             title: '编辑用户',
             show: false
+          },
+          integralDialog: {
+            show: false
+          },
+          integralForm: {
+            action: 8801,
+            remark: '', //备注
+            type: 0, //调整类型
+            points: '', //添加积分
+            sourceId: '', //产品id
+            dataId: '', //媒资id
+            userId: '',//用户id
+            operateUserId: '', //操作用户id
+            operateUserName: '', //操作用户名
+          },
+          actionLists: [], //行为集合
+          integralRules: {
+            remark: [
+               { required: true, message: '请输入备注', trigger: 'blur' }
+            ],
+            type: [
+               { required: true, message: '请选择调整类型', trigger: 'blur' }
+            ],
+            points: [
+              { required: true, validator: validateintegralNum, trigger: 'blur' }
+            ]
           },
           dialogForm: {
             id: '',
@@ -528,6 +632,38 @@
               })
             }
           })
+        },
+         /* 确认调整积分 */
+        enterIntegralDialog () {
+          this.$refs.integralForm?.validate(val => {
+            if(val) {
+              console.log('integralForm',this.integralForm)
+              let data = {...this.integralForm}
+              // return
+              manualIntegral(data).then(res => {
+                if(res.code == 200) {
+                  this.$message.success(res.msg);
+                  this.getList()
+                  this.integralDialog.show = false;
+                  this.integralForm.type = 0
+                  this.integralForm.remark = ''
+                  this.integralForm.points = ''
+                }
+              })
+            }
+          })
+        },
+        /*积分调整*/
+        integralAdjust(row) {
+          const { sourceId,id,userId} = row
+          const user_info =  this.$store.state.user.u_info
+          this.integralForm.dataId = id + ''
+          this.integralForm.sourceId = sourceId
+          this.integralForm.userId = userId
+          this.integralForm.operateUserId = user_info.id
+          this.integralForm.operateUserName = user_info.name
+          this.integralDialog.show = true
+          console.log('integralForm',this.integralForm)
         },
         /* 拉黑 */
         handleDelete (row) {

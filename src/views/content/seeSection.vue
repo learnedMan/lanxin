@@ -113,6 +113,9 @@
                 <el-checkbox v-model="queryParams.disable_es"></el-checkbox>
               </el-form-item>
               </el-popover>
+              <el-form-item  label="使用文章内容搜索:" prop="search_content">
+                <el-checkbox v-model="queryParams.search_content"></el-checkbox>
+              </el-form-item>
               <el-form-item
                 label="新闻名称:"
                 prop="keyword"
@@ -917,6 +920,7 @@ export default {
         enddate: '',
         isAllChannel: false,
         disable_es: false,
+        search_content: false,
         pageSize: 10,
         page: 1
       },
@@ -1435,10 +1439,10 @@ export default {
     /* 获取列表数据 */
     getList() {
       const data = this.$refs.tree.getCurrentNode();
-      const { isAllChannel,disable_es } = this.queryParams;
+      const { isAllChannel,disable_es,search_content } = this.queryParams;
       this.$router.push({ path: this.$route.path, query: { id: data.id }})
       this.loading = true
-      const params = { ...this.queryParams, channel_id: isAllChannel? '' : data.id,disable_es: disable_es? 1 : 0};
+      const params = { ...this.queryParams, channel_id: isAllChannel? '' : data.id,disable_es: disable_es? 1 : 0,search_content:search_content? 1: 0};
       delete params.isAllChannel;
       getNews(this.removePropertyOfNullFor0(params)).then(res => {
         this.total = res.total

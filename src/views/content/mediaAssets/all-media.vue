@@ -26,6 +26,9 @@
         <el-checkbox v-model="queryParams.disable_es"></el-checkbox>
       </el-form-item>
       </el-popover>
+      <el-form-item  label="使用文章内容搜索:" prop="search_content">
+        <el-checkbox v-model="queryParams.search_content"></el-checkbox>
+      </el-form-item>
         <el-form-item
           label="稿件名称:"
           prop="keyword"
@@ -455,6 +458,7 @@ export default {
         type: '',
         startdate: '',
         disable_es: false,
+        search_content: false,
         enddate: '',
         pageSize: 50,
         page: 1
@@ -684,8 +688,8 @@ export default {
       this.loading = true
       this.selection = []
       this.tableData = []
-      let { disable_es } = this.queryParams
-       const params = { ...this.queryParams, disable_es: disable_es? 1 : 0};
+      let { disable_es,search_content } = this.queryParams
+       const params = { ...this.queryParams, disable_es: disable_es? 1 : 0,search_content: search_content? 1: 0};
       getScripts(this.removePropertyOfNullFor0(params)).then(res => {
         this.tableData = (res.data || []).map(item => {
           const type = this.typeOptions.find(n => item.type === n.value)

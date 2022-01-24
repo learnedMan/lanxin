@@ -2242,6 +2242,7 @@ export default {
       let div = document.createElement("div");
       div.innerHTML = content;
       let videoList = Array.from(div.querySelectorAll('video'));
+      console.log('选择视频',videoList)
       if(videoList.length) {
         return this.editorVideoLists.filter(n => videoList.find(item => item.title === n.title && item.cover === n.poster));
       }
