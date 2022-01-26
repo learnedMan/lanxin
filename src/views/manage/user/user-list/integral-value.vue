@@ -89,6 +89,12 @@
         prop="ruleName"
       />
       <el-table-column
+        label="备注"
+        align="center"
+        prop="remark"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
         label="变动时间"
         align="center"
         prop="createdTime"
@@ -173,6 +179,14 @@
   export default {
     props: {
       id: {
+        type: [ Number, String ],
+        required: true
+      },
+       userId: {
+        type: [ Number, String ],
+        required: true
+      },
+       sourceId: {
         type: [ Number, String ],
         required: true
       }
@@ -272,9 +286,7 @@
         enterIntegralDialog () {
           this.$refs.integralForm?.validate(val => {
             if(val) {
-              console.log('integralForm',this.integralForm)
               let data = {...this.integralForm}
-              // return
               manualIntegral(data).then(res => {
                 if(res.code == 200) {
                   this.$message.success(res.msg);
@@ -289,15 +301,14 @@
           })
         },
        integralAdjust() {
-          // const { sourceId,id,userId} = row
           const user_info =  this.$store.state.user.u_info
-          // this.integralForm.dataId = id + ''
-          // this.integralForm.sourceId = sourceId
-          // this.integralForm.userId = userId
+          const {id,userId,sourceId} = this
+          this.integralForm.dataId =  id + ''
+          this.integralForm.sourceId = sourceId
+          this.integralForm.userId = userId
           this.integralForm.operateUserId = user_info.id
           this.integralForm.operateUserName = user_info.name
           this.integralDialog.show = true
-          console.log('integralForm',this.integralForm)
         },
        /*表格导出*/ 
      exportExcel () {

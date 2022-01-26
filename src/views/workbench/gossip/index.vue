@@ -209,6 +209,12 @@
                 label="拒绝"
                 @fatherMethod="handleAgreeOrRefused(scope.row, 3)"
               ></Iconbutton>
+              <!-- 积分 -->
+              <Iconbutton
+                icontype="jf"
+                label="积分调整"
+                @fatherMethod="integralAdjust(scope.row)"
+              ></Iconbutton>
             </div>
           </template>
         </el-table-column>
@@ -419,6 +425,11 @@
               this.dialog.show = true;
             }
           })
+        },
+        /*积分调整*/ 
+        integralAdjust(row) {
+          const { userId } = row
+          this.$router.push({ name: 'User-list', query: { userId }})
         },
         /* 批量通过或拒绝 */
         batchAgreeOrRefused (status) {

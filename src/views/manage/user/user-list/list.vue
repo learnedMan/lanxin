@@ -44,6 +44,18 @@
           />
         </el-form-item>
         <el-form-item
+          label="用户ID:"
+          prop="userId"
+        >
+          <el-input
+            v-model="queryParams.userId"
+            placeholder="请输入用户id"
+            clearable
+            style="width: 200px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
           label="手机号:"
           prop="mobile"
         >
@@ -124,7 +136,7 @@
         style="width: 100%"
       >
         <el-table-column
-          label="会员ID"
+          label="用户ID"
           align="center"
           prop="userId"
         />
@@ -228,7 +240,7 @@
         style="width: 100%;display: none"
       >
         <el-table-column
-          label="会员ID"
+          label="用户ID"
           align="center"
           prop="userId"
         />
@@ -468,6 +480,7 @@
             page: 1,
             limit: 10,
             nickName: '',
+            userId: '',
             mobile: '',
             invitationCode: '',
             registerBeginTime: '',
@@ -525,6 +538,8 @@
        watch:{
         product_id(val){
           this.queryParams.sourceId = this.productList.filter(item=>item.id==val)[0].source_id||0;
+          let userId = this.$route.query?.userId || ''
+          this.queryParams.userId = userId
           this.getList();
         },
       },
@@ -592,8 +607,8 @@
         },
         /* 查看积分值 */
         integralValue (row) {
-          const { id } = row;
-          this.$emit('integralValue', id);
+          const { id,userId,sourceId } = row;
+          this.$emit('integralValue', id,userId,sourceId);
         },
         /* 查看登录记录 */
         loginRecord (row) {
@@ -684,6 +699,7 @@
           this.loading = true;
           const params = { ...this.queryParams };
           delete params.registerTime;
+          params.userId = Number(params.userId)
           // console.log('params',params)
           getUserLists(this.removePropertyOfNullFor0(params)).then(res => {
             if(res.code == 200) {

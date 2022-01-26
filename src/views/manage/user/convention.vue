@@ -352,8 +352,12 @@
           productLists: [],
           statusLists: [
             {
-              label: '启用',
+              label: '启用(显示)',
               value: 1
+            },
+            {
+              label: '启用(不显示)',
+              value: 2
             },
             {
               label: '禁用',

@@ -4,6 +4,8 @@
       <component
         :is="component"
         :id="id"
+        :sourceId="sourceId"
+        :userId="userId"
         @handleReturn="handleReturn"
         @invitedRecord="invitedRecord"
         @integralValue="integralValue"
@@ -29,6 +31,8 @@
     data () {
       return {
         id: '',
+        userId: '',
+        sourceId: '',
         component: 'lists',
         include: ['lists']
       }
@@ -44,8 +48,10 @@
         this.component = 'invitedRecord';
       },
       /* 查看积分 */
-      integralValue (id) {
+      integralValue (id,userId,sourceId) {
         this.id = id;
+        this.userId = userId
+        this.sourceId = sourceId
         this.component = 'integralValue';
       },
       /* 查看登录记录 */

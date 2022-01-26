@@ -76,7 +76,11 @@
   }
   .el-cascader-menu__wrap {
     height: 554px!important;
-}
+  }
+  // .el-scrollbar__wrap--hidden-default{
+  //   height: 554px!important;
+  // }
+
 </style>
 <template>
   <el-container class="xl-add-media">
