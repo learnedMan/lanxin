@@ -116,7 +116,7 @@
     </el-header>
     <!-- <el-main style="padding: 10px 0;overflow: auto;"> -->
       <el-main style="padding: 60px 0 10px 0;overflow: auto;">
-      <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange('tab')">
+      <el-tabs v-model="from.extra.type" class="xl-add-media--tab" @tab-click="handleTabChange('tab',true)">
         <el-tab-pane
           v-for="item of tabs"
           :disabled="disabled || isEdit"
@@ -2187,7 +2187,7 @@ export default {
           // arr = [...baseTopItem, 'extra.link.type', 'extra.salary_range.min', 'extra.salary_range.max','extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num','extra.allow_share'];
           arr = [...baseTopItem, 'extra.link.type', 'extra.view_base_num', 'extra.praise_base_num', 'extra.post_base_num','extra.allow_share'];
           const type = this.from.extra.link.type;
-          this.from.extra.template_style = '240'
+          // if (this.scriptsId == null && this.id == null) this.from.extra.template_style = '240'
           if (type === 'target_obj'){
             arr.push('target_obj');
           } else if(['outer_link', 'auth_link', 'newspaper'].includes(type)) { 
@@ -2452,7 +2452,7 @@ export default {
       this.$emit('update:visible', false)
     },
     /* tab变化 */
-    handleTabChange(val) {
+    handleTabChange(val,flag) {
       const currentTabsFromItem = this.initFrom()
       this.currentTabsFromRules = currentTabsFromItem.reduce((obj, key) => ({
         ...obj,
@@ -2468,6 +2468,9 @@ export default {
         }
         this.$refs.submitForm?.clearValidate()
       })
+      if(this.from.extra.type == 'outer_link' && flag) {
+        this.from.extra.template_style = '240'
+      }
     },
     handleTabChangeType() {
       this.from.extra.link.id = ''

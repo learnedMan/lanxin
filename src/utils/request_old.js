@@ -65,10 +65,9 @@ service.interceptors.request.use(config => {
 //http response 拦截器
 service.interceptors.response.use(
     response => {
-        // console.log(response)
         const tokenQueryTime = new Date().getTime()
         sessionStorage.setItem('tokenQueryTime', tokenQueryTime)
-        if (response.data.code == 200 || response.headers.success === "true") {
+        if (response.data.code == 200 || response.headers.success === "true" || response.status==200) {
             return response.data
         } else {
             Message({
@@ -92,4 +91,41 @@ service.interceptors.response.use(
         return Promise.reject(error)
     }
 )
+
+function tansParams(params) {
+  let result = ''
+  Object.keys(params).forEach((key) => {
+    if (!Object.is(params[key], undefined) && !Object.is(params[key], null) && !Object.is(JSON.stringify(params[key]), '{}')) {
+      result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
+    }
+  })
+  return result
+}
+// 通用下载方法
+export function download(url, params, filename) {
+  return service.post(url, params, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    responseType: 'blob'
+  }).then((data) => {
+    const content = data
+    const blob = new Blob([content])
+    if ('download' in document.createElement('a')) {
+      const elink = document.createElement('a')
+      elink.download = filename
+      elink.style.display = 'none'
+      elink.href = URL.createObjectURL(blob)
+      document.body.appendChild(elink)
+      elink.click()
+      URL.revokeObjectURL(elink.href)
+      document.body.removeChild(elink)
+    } else {
+      navigator.msSaveBlob(blob, filename)
+    }
+  }).catch((r) => {
+    console.error(r)
+  })
+}
+
 export default service

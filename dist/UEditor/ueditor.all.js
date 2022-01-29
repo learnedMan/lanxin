@@ -6923,7 +6923,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                     //设置四周的留边
                     '.view{padding:0;word-wrap:break-word;cursor:text;height:90%;}\n' +
                     // 设置图片尺寸
-                    'img{max-width:100%;}'+
+                    'img{max-width:60%!important;}'+
                     //设置默认字体和字号
                     //font-family不能呢随便改，在safari下fillchar会有解析问题
                     'body{margin:8px;font-family:sans-serif;font-size:16px;}' +
@@ -9969,6 +9969,52 @@ var LocalStorage = UE.LocalStorage = (function () {
 
 })();
 
+/**
+   * 设置字间距
+   * @file
+   * @since 1.2.6.1
+   */
+ UE.plugins['letterspacing'] = function () {
+    var me = this;
+    me.setOpt({ 'letterspacing': ['0', '0.25', '0.5', '1', '1.5', '2', '2.5', '3', '4', '5'] });
+ 
+    /**
+     * 字间距
+     * @command letterspacing
+     * @method execCommand
+     * @param { String } cmdName 命令字符串
+     * @param { String } value 传入的行高值， 该值是当前字体的倍数， 例如： 1.5, 2.5
+     * @example
+     * ```javascript
+     * editor.execCommand( 'letterspacing', 1.5);
+     * ```
+     */
+    /**
+     * 查询当前选区内容的行高大小
+     * @command letterspacing
+     * @method queryCommandValue
+     * @param { String } cmd 命令字符串
+     * @return { String } 返回当前行高大小
+     * @example
+     * ```javascript
+     * editor.queryCommandValue( 'letterspacing' );
+     * ```
+     */
+ 
+    me.commands['letterspacing'] = {
+      execCommand: function (cmdName, value) {
+        this.execCommand('paragraph', 'p', { style: 'letter-spacing:' + (value == "1" ? "normal" : value + 'em') });
+        return true;
+      },
+      queryCommandValue: function () {
+        var pN = domUtils.filterNodeList(this.selection.getStartElementPath(), function (node) { return domUtils.isBlockElm(node) });
+        if (pN) {
+          var value = domUtils.getComputedStyle(pN, 'letter-spacing');
+          return value == 'normal' ? 1 : value.replace(/[^\d.]*/ig, "");
+        }
+      }
+    };
+  };
 
 // plugins/defaultfilter.js
 ///import core
@@ -12140,7 +12186,19 @@ UE.plugins['removeformat'] = function(){
                     }
 
                 }
+                //video不处理
+                if(!notIncludeA){
+                    var aNode = domUtils.findParentByTagName(range.startContainer,'video',true);
+                    if(aNode){
+                        range.setStartBefore(aNode);
+                    }
 
+                    aNode = domUtils.findParentByTagName(range.endContainer,'video',true);
+                    if(aNode){
+                        range.setEndAfter(aNode);
+                    }
+
+                }
 
                 bookmark = range.createBookmark();
 
@@ -12234,13 +12292,13 @@ UE.plugins['removeformat'] = function(){
 
                 }
             }
-
-
-
             range = this.selection.getRange();
-            doRemove( range );
-            range.select();
-
+            // console.log(range)
+            // if(range.startContainer.nodeName=='VIDEO'){
+            // }else{
+                doRemove( range );
+                range.select();
+            // }
         }
 
     };
@@ -17003,13 +17061,35 @@ UE.plugins['fiximgclick'] = (function () {
                 }
             },
             updateTargetElement: function () {
+                // var me = this;
+                // domUtils.setStyles(me.target, {
+                //     'width': me.resizer.style.width,
+                //     'height': me.resizer.style.height
+                // });
+                // me.target.width = parseInt(me.resizer.style.width);
+                // me.target.height = parseInt(me.resizer.style.height);
+                // me.attachTo(me.target);
                 var me = this;
+                // 拿到图片的原始大小
+                var o_width = me.target.naturalWidth;
+                var o_height = me.target.naturalHeight;
+                // 计算出原始图片比例
+                var o_scale = (o_width/o_height).toFixed(4);
+                // 再拿到图片现在的大小，可能是变形的
+                var width = parseInt(me.resizer.style.width)
+                var height = parseInt(me.resizer.style.height)
+                // 判断改变的是宽度还是高度
+                if (rect[me.dragId][2] != 0) {
+                    height = width/o_scale
+                }else if (rect[me.dragId][3] != 0) {
+                    width = height*o_scale
+                }
                 domUtils.setStyles(me.target, {
-                    'width': me.resizer.style.width,
-                    'height': me.resizer.style.height
+                    'width': width + 'px',
+                    'height': height + 'px'
                 });
-                me.target.width = parseInt(me.resizer.style.width);
-                me.target.height = parseInt(me.resizer.style.height);
+                me.target.width = width;
+                me.target.height = height;
                 me.attachTo(me.target);
             },
             updateContainerStyle: function (dir, offset) {
@@ -17676,7 +17756,7 @@ UE.plugins['video'] = function (){
                 if(ext == 'ogv') ext = 'ogg';
                 str = '<video' + (id ? ' id="' + id + '"' : '') + ' class="' + classname + ' video-js" ' + (align ? ' style="float:' + align + '"': '') +
                     ' controls preload="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}">' +
-                    '<source src="' + url + '" type="video/' + ext + '" /></video>';
+                    '<source src="' + url + '" type="video/' + ext + '" /></video><br/>';
                 break;
         }
         return str;
@@ -20029,6 +20109,13 @@ UE.plugins['table'] = function () {
 
                 var caption = domUtils.findParentByTagName(me.selection.getStart(), 'caption', true),
                     range = me.selection.getRange();
+                    var child = range.startContainer;
+                if (child != null) {
+                    var previouNode=child.previousElementSibling;
+                    if (child.length==1&&previouNode != null&&previouNode.tagName == "VIDEO") {
+                            domUtils.remove(previouNode);
+                        }
+                }
                 if (range.collapsed && caption && isEmptyBlock(caption)) {
                     me.fireEvent('saveScene');
                     var table = caption.parentNode;
@@ -23195,6 +23282,7 @@ UE.plugins['customstyle'] = function() {
  UE.plugins['catchremoteimage'] = function() {
     var me = this,
         ajax = UE.ajax;
+
     var bdhhtml = document.getElementById('bdh');
     if(me.options.catchRemoteImageEnable === false) return;
     me.setOpt({
@@ -23249,6 +23337,7 @@ UE.plugins['customstyle'] = function() {
                 }
             }
         }
+        // 图片本地化
         if(remoteImages.length) {
             bdhhtml.innerHTML=1;
             me.fireEvent('catchremoteimgstart');
@@ -23273,19 +23362,30 @@ UE.plugins['customstyle'] = function() {
                             }
                         }
                     }
+
                     var bodyHtml = me.document.body.innerHTML;
-                    for(var a = 0; a < backgroundimages.length; a++) {
-                        oldSrc = backgroundimages[a] || "";
-                        for(j = 0; cj = list[j++];) {
-                            if(oldSrc == cj.source && cj.state == "SUCCESS") {
-                                newSrc = catcherUrlPrefix + cj.url;
-                                bodyHtml = bodyHtml.replace(oldSrc, newSrc);
-                                break;
-                            }
+
+                    for (var a = 0; a < backgroundimages.length; a++) {
+                        oldSrc = backgroundimages[a] || "";            
+                        for (j = 0; cj = list[j++];) {
+                          if (oldSrc == cj.source && cj.state == "SUCCESS") {
+                            newSrc = catcherUrlPrefix + cj.url;
+                            me.document.body.innerHTML.replace(oldSrc, newSrc);
+                            break;
+                          }
                         }
                     }
-                    me.document.body.innerHTML = bodyHtml;
-
+                    // for(var a = 0; a < backgroundimages.length; a++) {
+                    //     oldSrc = backgroundimages[a] || "";
+                    //     for(j = 0; cj = list[j++];) {
+                    //         if(oldSrc == cj.source && cj.state == "SUCCESS") {
+                    //             newSrc = catcherUrlPrefix + cj.url;
+                    //             bodyHtml = bodyHtml.replace(oldSrc, newSrc);
+                    //             break;
+                    //         }
+                    //     }
+                    // }
+                    // me.document.body.innerHTML = bodyHtml;
                     bdhhtml.innerHTML=2;
                     me.fireEvent('catchremotesuccess')
                 },
@@ -27827,7 +27927,7 @@ UE.ui = baidu.editor.ui = {};
         'strikethrough', 'subscript', 'superscript', 'source', 'indent', 'outdent',
         'blockquote', 'pasteplain', 'pagebreak',
         'selectall', 'print','horizontal', 'removeformat', 'time', 'date', 'unlink',
-        'insertparagraphbeforetable', 'insertrow', 'insertcol', 'mergeright', 'mergedown', 'deleterow',
+        'insertparagraphbeforetable', 'insertrow', 'insertcol', 'mergeright', 'mergedown', 'deleterow', 'letterspacing',
         'deletecol', 'splittorows', 'splittocols', 'splittocells', 'mergecells', 'deletetable', 'drafts',
         'imglist'
     ];
@@ -27862,6 +27962,44 @@ UE.ui = baidu.editor.ui = {};
             };
         }(ci);
     }
+    editorui.letterspacing = function (editor) {
+        var val = editor.options.letterspacing || [];
+        if (!val.length) return;
+        for (var i = 0, ci, items = []; ci = val[i++];) {
+          items.push({
+            //todo:写死了
+            label: ci,
+            value: ci,
+            theme: editor.options.theme,
+            onclick: function () {
+              editor.execCommand("letterspacing", this.value);
+            }
+          })
+        }
+        var ui = new editorui.MenuButton({
+          editor: editor,
+          className: 'edui-for-letterspacing',
+          title: editor.options.labelMap['letterspacing'] || editor.getLang("labelMap.letterspacing") || '',
+          items: items,
+          onbuttonclick: function () {
+            var value = editor.queryCommandValue('LetterSpacing') || this.value;
+            editor.execCommand("LetterSpacing", value);
+          }
+        });
+        editorui.buttons['letterspacing'] = ui;
+        editor.addListener('selectionchange', function () {
+          var state = editor.queryCommandState('LetterSpacing');
+          if (state == -1) {
+            ui.setDisabled(true);
+          } else {
+            ui.setDisabled(false);
+            var value = editor.queryCommandValue('LetterSpacing');
+            value && ui.setValue((value + '').replace(/cm/, ''));
+            ui.setChecked(state)
+          }
+        });
+        return ui;
+      };
 
     //清除文档
     editorui.cleardoc = function (editor) {

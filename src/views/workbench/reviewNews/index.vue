@@ -217,6 +217,11 @@
               label="详情"
               @fatherMethod="goLink(scope.row)"
             ></Iconbutton>
+            <Iconbutton
+              icontype="xg"
+              label="修改母稿"
+              @fatherMethod="handleEditFater(scope.row)"
+            ></Iconbutton>
             <!-- 通过 -->
             <Iconbutton
               v-if="scope.row.status === 0"
@@ -508,6 +513,16 @@ export default {
         })
         this.getList()
       })
+    },
+     /*修改母稿*/ 
+    handleEditFater(row) {
+      console.log('row',row)
+      let id = row.script_id,type = row.type
+      if(type == 'news' || type == 'video' || type == 'album' || type == 'outer_link') {
+        this.$router.push({ name: 'All-media', query: { id }})
+      }else if(type == 'broadcast') {
+         this.$router.push({ name: 'StudioList', query: { id }})
+      }
     },
     /* 拒绝 */
     handleReject(row) {
