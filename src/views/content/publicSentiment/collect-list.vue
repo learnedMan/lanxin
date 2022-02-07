@@ -430,6 +430,7 @@
               account: [
                 { required: true, message: '请输入来源账号', trigger: 'blur' }
               ],
+              channel_id: { required: true, message: '请选择栏目', trigger: 'change' },
               'extra.is_valid': [
                 { required: true, message: '请选择是否启用', trigger: 'change' }
               ],
