@@ -77,9 +77,10 @@
   .el-cascader-menu__wrap {
     height: 554px!important;
   }
-  // .el-scrollbar__wrap--hidden-default{
-  //   height: 554px!important;
-  // }
+  .el-scrollbar__wrap >.el-cascader__suggestion-list {
+    max-height: 554px!important;
+  }
+
 
 </style>
 <template>
@@ -783,49 +784,86 @@
     >
       <xl-video @choose="videoDialogControl"></xl-video>
     </el-dialog>
-    <!-- 发布到栏目 -->
-    <el-dialog
-      width="600px"
-      :title="dialog.title"
-      :close-on-click-modal="false"
-      :visible.sync="dialog.show"
-    >
-      <el-form
-        ref="dialogForm"
-        :model="dialog.form"
-        :rules="dialogRules"
+     <!-- 上传本地视频 -->
+     <el-dialog
+        width="600px"
+        title="上传视频"
+        :visible.sync="uploadDialog.show"
       >
-        <el-form-item
-          label-width="120px"
-          label="栏目"
-          prop="channel_id"
-        >
-          <el-cascader
-            filterable
-            v-model="dialog.form.channel_id"
-            style="width: 350px;"
-            :options="channelsList"
-            :props="cascaderOption"
-            clearable
-          />
+        <el-form
+          ref="integralForm"
+          size="small"
+          label-width="100px"
+        > 
+        <el-form-item label="视频:" prop="video">
+         <upload-video v-model="uploadDialog.path_video"></upload-video>
         </el-form-item>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button v-points = "1500" @click="cancelDialog">
-          取 消
-        </el-button>
-        <el-button v-points = "1500"
-          type="primary"
-          :loading="publishLoading"
-          @click="enterDialog"
+        <el-form-item label="图片:" prop="picture">
+           <cropper
+            :count="1"
+            :showTip="false"
+            v-model="uploadDialog.path_list"
+            />
+        </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
         >
-          确 定
-        </el-button>
-      </div>
-    </el-dialog>
+          <el-button v-points = "1500" @click="uploadDialog.show = false">
+            取 消
+          </el-button>
+          <el-button v-points = "1500"
+            type="primary"
+            @click="enterUploadDialog"
+          >
+            确 定
+          </el-button>
+        </div>
+      </el-dialog>
+    <!-- 发布到栏目 -->
+      <el-dialog
+        width="600px"
+        :title="dialog.title"
+        :close-on-click-modal="false"
+        :visible.sync="dialog.show"
+      >
+        <el-form
+          ref="dialogForm"
+          :model="dialog.form"
+          :rules="dialogRules"
+        >
+          <el-form-item
+            label-width="120px"
+            label="栏目"
+            prop="channel_id"
+          >
+            <el-cascader
+              filterable
+              v-model="dialog.form.channel_id"
+              style="width: 350px;"
+              :options="channelsList"
+              :props="cascaderOption"
+              clearable
+            />
+          </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button v-points = "1500" @click="cancelDialog">
+            取 消
+          </el-button>
+          <el-button v-points = "1500"
+            type="primary"
+            :loading="publishLoading"
+            @click="enterDialog"
+          >
+            确 定
+          </el-button>
+        </div>
+      </el-dialog>
   </el-container>
 </template>
 
@@ -838,6 +876,7 @@ import ImgTable from '@/components/media/imgTable'
 import scriptSelect from '@/components/media/scriptSelect.vue'
 import xlVideo from '@/components/video'
 import Editor from '@/components/editor'
+import uploadVideo from '@/components/Upload/uploadVideo.vue'
 import ablumDialog from './ablum.vue'
 export default {
   name: 'Add-media',
@@ -848,7 +887,7 @@ export default {
     Tag,
     Editor,
     scriptSelect,
-    ablumDialog
+    ablumDialog,uploadVideo
   },
   props: {
     id: {
@@ -1774,6 +1813,11 @@ export default {
         title: '选择视频',
         show: false,
       }, // 选择视频弹框
+      uploadDialog: {
+        show: false,
+        path_video: '',
+        path_list: []
+      },
       dialog: {
         show: false,
         multiple: false, // 批量单选  单个多选
@@ -2151,7 +2195,25 @@ export default {
     * */
     handleChangeVideo() {
       if(this.disabled) return
-      this.videoDialog.show = true;
+      if(window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1 || window.location.host.indexOf('batrix-www-local') > -1) {
+        this.uploadDialog.show = true
+      }else{
+        this.videoDialog.show = true;
+      }
+    },
+    /*乡镇上稿本地视频上传*/
+    enterUploadDialog() {
+      let cover = this.uploadDialog.path_list[0]?.path || ''
+      let item_list = [{
+        path: this.uploadDialog.path_video
+      }]
+      let list =  [{cover,item_list}]
+       if(this.uploadDialog.path_video) {
+         this.from.extra.video_extra.video_list = list
+         this.uploadDialog.show = false
+        }else{
+          this.$message('请上传视频')
+        }
     },
     /* 控制视频弹框*/
     videoDialogControl(val) {
@@ -2535,6 +2597,8 @@ export default {
           link_type = 'target_obj';
         }
         console.log('extra',extra)
+        this.uploadDialog.path_video = extra.video_extra.video_list[0].item_list[0].path
+        this.uploadDialog.path_list = [{path: extra.video_extra.video_list[0].cover}]
         this.editorOldValue = extra.content
         this.titleOldValue = extra.title
         this.from = {

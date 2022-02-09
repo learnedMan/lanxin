@@ -11,7 +11,7 @@
         :inline="true"
         size="small"
       >
-        <el-form-item
+        <!-- <el-form-item
           label="所属产品:"
         >
           <el-select
@@ -25,6 +25,12 @@
               :label="item.label"
               :value="item.value"
             />
+          </el-select>
+        </el-form-item> -->
+        <el-form-item label="所属产品:">
+          <el-select v-model="product_id" placeholder="请选择所属产品">
+            <el-option v-for="item in productList" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item
@@ -234,7 +240,7 @@
             </el-select>
           </el-form-item>
            <el-form-item
-            label="(广电/直播)观看时长"
+            label="(广电/直播)观看时长(秒)"
             prop="duration"
           >
             <el-input
@@ -349,7 +355,9 @@
           }
         };
         return {
+          productList: [],
           productLists: [],
+          product_id: 0,
           statusLists: [
             {
               label: '启用(显示)',
@@ -453,16 +461,26 @@
           }
         }
       },
+       watch:{
+        product_id(val){
+          this.queryParams.sourceId = this.productList.filter(item=>item.id==val)[0].source_id||0;
+          this.getList();
+        },
+      },
       methods: {
         /* 获取产品列表 */
         getProductList () {
-          return getproduct({}).then(res => {
-            const data = res.data || []
-            this.productLists = data.map(n => ({
-              label: n.name,
-              value: n.source_id
-            }));
-            this.queryParams.sourceId = data?.[0]?.source_id;
+          // return getproduct({}).then(res => {
+          //   const data = res.data || []
+          //   this.productLists = data.map(n => ({
+          //     label: n.name,
+          //     value: n.source_id
+          //   }));
+          //   this.queryParams.sourceId = data?.[0]?.source_id;
+          // });
+           getproduct({}).then((response) => {
+            this.productList = response.data;
+            this.product_id = this.productList[0].id;
           });
         },
         selectType(value) {

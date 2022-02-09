@@ -28,7 +28,16 @@
                   :props="channelOption"
                   clearable/>
             </el-form-item>
-
+            <el-form-item  label="部门:" prop="departmentList">
+                <el-cascader
+                :show-all-levels = false
+                 style="width: 250px"
+                v-model="queryParams.departmentList"
+                :options="departmentList"
+                collapse-tags
+                :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
+                clearable></el-cascader>
+          </el-form-item>
             <el-form-item>
               <el-button v-points = "1500"
                 type="primary"
@@ -133,7 +142,7 @@ export default {
           },
           dateValue:[],
           queryParams: {
-            // departmentList:[],
+            departmentList:[],
             channelList:[],
             // authorlList: [],
             beginTime:"",
@@ -199,7 +208,7 @@ export default {
         this.queryParams.endTime = this.dateValue[1];
 
         this.queryParams.channelList = [];
-        // this.queryParams.departmentList = [];
+        this.queryParams.departmentList = [];
         // this.queryParams.authorlList = [];
         // this.resetForm('queryForm')
       },

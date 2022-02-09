@@ -30,7 +30,7 @@
                 :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
                 clearable></el-cascader>
           </el-form-item>
-          <el-form-item label="编辑：" prop="authorList">
+          <el-form-item label="编辑:" prop="authorList">
             <el-cascader
                 :show-all-levels = false
                  style="width: 250px"
@@ -41,27 +41,34 @@
                 :props="{ emitPath:false,checkStrictly: true ,value:'id',label:'name',multiple: true}"
                 clearable></el-cascader>
           </el-form-item>
-        <!-- <el-form-item label="来源：">
-          <el-input
-            v-model="newsData.queryParams.source"
-            placeholder="请输入编辑名称"
-            clearable
-          />
-        </el-form-item> -->
-        <el-form-item
-          label="发布栏目"
-          prop="channel_id"
-        >
-          <el-cascader
-            filterable
-            style="width: 250px"
-            v-model="newsData.queryParams.channelList"
-            :options="channelsList"
-            :props="cascaderOption"
-            collapse-tags
-            clearable
-          />
-        </el-form-item>
+            <el-form-item
+              label="发布栏目"
+              prop="channel_id"
+            >
+              <el-cascader
+                filterable
+                style="width: 250px"
+                v-model="newsData.queryParams.channelList"
+                :options="channelsList"
+                :props="cascaderOption"
+                collapse-tags
+                clearable
+              />
+            </el-form-item>
+           <el-form-item label="来源:">
+            <el-input
+              v-model="newsData.queryParams.source"
+              placeholder="请输入稿件来源"
+              clearable
+            />
+          </el-form-item>
+          <el-form-item label="稿件名称:">
+            <el-input
+              v-model="newsData.queryParams.title"
+              placeholder="请输入稿件名称"
+              clearable
+            />
+          </el-form-item>
             <el-form-item>
               <el-button v-points = "1500"
                 type="primary"
@@ -127,12 +134,25 @@
                min-width="8%"
             >
             </el-table-column>
+            <el-table-column
+              label="来源"
+              align="center"
+              prop="extra.source"
+              show-overflow-tooltip
+              min-width="8%"
+            />
              <el-table-column
-              label="编辑"
+              label="作者"
               align="center"
               prop="auhtorName"
               min-width="8%"
             />
+             <!-- <el-table-column
+              label="编辑"
+              align="center"
+              prop="extra.editor_name"
+              min-width="8%"
+            /> -->
             <el-table-column
               label="点击量(真实)"
               align="center"
@@ -195,7 +215,8 @@ export default {
                 channelList: [],
                 departmentList: [],
                 authorList: [],
-                // source: '',
+                source: '',
+                title: '',
                 endTime: '',
                 page: 1,
                 pageSize: 10,
@@ -278,6 +299,8 @@ export default {
         this.newsData.queryParams.channelList = [];
         this.newsData.queryParams.departmentList = [];
         this.newsData.queryParams.authorList = [];
+        this.newsData.queryParams.source = ''
+        this.newsData.queryParams.title = ''
         // this.resetForm('queryForm')
       },
        /* 搜索 */

@@ -183,10 +183,10 @@
           size="small"
           label-width="100px"
         > 
-        <el-form-item label="视频：" prop="video">
+        <el-form-item label="视频:" prop="video">
          <upload-video v-model="path_video"></upload-video>
         </el-form-item>
-        <el-form-item label="图片：" prop="picture">
+        <el-form-item label="图片:" prop="picture">
            <cropper
             :count="1"
             :showTip="false"
@@ -517,7 +517,7 @@
         if(this.isMobile || this.disabled) return
         currentEditorId = id;
         /*本地上传视频*/ 
-        if(window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1) {
+        if(window.location.host.indexOf('pub.cztvcloud.com')>-1 || window.location.host.indexOf('batrix-www.cztv.com') > -1 || window.location.host.indexOf('batrix-www-local') > -1) {
           window.UE.registerUI('uploadVideo', (editor, uiName) => {
             const btn = new window.UE.ui.Button({
               name: 'btn-dialog-' + uiName,

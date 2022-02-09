@@ -485,6 +485,8 @@ export default {
     }
   },
   async created() {
+    let id = this.$route.query?.commentId || ''
+    this.search.dataId = id
     await this.getProductList();
     // this.getList();
   },

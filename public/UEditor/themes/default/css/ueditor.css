@@ -7,6 +7,8 @@
     margin: 0;
     overflow: hidden;
 }
+/* #edui1_imagescale{display:none !important;}  */
+#edui1_imagescale{z-index: 1000 !important;} 
 /* .edui-default  .edui-for-letterspacing .edui-button-body .edui-icon {
     background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%234A4A51' fill-rule='evenodd'%3E%3Cg transform='rotate(90 7 10.5)'%3E%3Crect width='14' height='1.5' rx='.2'/%3E%3Crect transform='rotate(22 6.686 9.027)' x='1.946' y='8.277' width='9.479' height='1.5' rx='.2'/%3E%3Crect transform='rotate(-22 6.626 5.497)' x='1.951' y='4.747' width='9.35' height='1.5' rx='.2'/%3E%3Crect y='13' width='14' height='1.5' rx='.2'/%3E%3C/g%3E%3Cpath d='M8 10h5v1H8z'/%3E%3C/g%3E%3C/svg%3E");
     width: 20px;

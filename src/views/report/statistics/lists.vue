@@ -11,6 +11,7 @@
         <el-tab-pane label="部门发稿情况" name="department">
           <department
           :channelsList="channelsList"
+          :departmentList="dataList"
          ></department>
         </el-tab-pane>
         <el-tab-pane label="员工发稿情况" name="statffDispatches">

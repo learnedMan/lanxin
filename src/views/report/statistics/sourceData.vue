@@ -28,7 +28,13 @@
                   :props="channelOption"
                   clearable/>
             </el-form-item>
-
+             <el-form-item label="来源:">
+              <el-input
+                v-model="queryParams.source"
+                placeholder="请输入稿件来源"
+                clearable
+              />
+            </el-form-item>
             <el-form-item>
               <el-button v-points = "1500"
                 type="primary"
@@ -137,6 +143,7 @@ export default {
             channelList:[],
             // authorlList: [],
             beginTime:"",
+            source: '',
             endTime:""
           },
           pickerOptions: {
@@ -199,6 +206,7 @@ export default {
         this.queryParams.endTime = this.dateValue[1];
 
         this.queryParams.channelList = [];
+        this.queryParams.source = ''
         // this.queryParams.departmentList = [];
         // this.queryParams.authorlList = [];
         // this.resetForm('queryForm')

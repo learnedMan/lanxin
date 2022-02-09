@@ -411,6 +411,11 @@
                     label="删除"
                     @fatherMethod="handleListDelete(scope.row)"
                   ></Iconbutton>
+                   <Iconbutton
+                    icontype="pl"
+                    label="评论"
+                    @fatherMethod="handleComment(scope.row)"
+                  ></Iconbutton>
                   <!-- 预览 -->
                   <Iconbutton
                     icontype="yl"
@@ -1406,6 +1411,11 @@ export default {
         this.getList()
       })
     },
+     /*评论*/
+    handleComment(row) {
+      let commentId = row.comment_uuid 
+      this.$router.push({ name: 'CommentVerify', query: { commentId }})
+    }, 
     /*
       * 删除新闻
       * */

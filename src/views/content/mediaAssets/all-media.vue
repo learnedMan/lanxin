@@ -264,6 +264,12 @@
               label="删除"
               @fatherMethod="handleListDelete(scope.row)"
             ></Iconbutton>
+            <!-- 评论 -->
+            <Iconbutton
+              icontype="pl"
+              label="评论"
+              @fatherMethod="handleComment(scope.row)"
+            ></Iconbutton>
             <!-- 操作记录 -->
             <Iconbutton
               icontype="czjl"
@@ -789,6 +795,12 @@ export default {
         })
       })
     },
+    /*评论*/
+    handleComment(row) {
+      let commentId = row.comment_uuid 
+      // let commentId = '6b7f66207a2d11ea9107005056aacd01'
+      this.$router.push({ name: 'CommentVerify', query: { commentId }})
+    }, 
     /*一键上线*/
     handleOnline(row) {
       let list = row.news,str = ''

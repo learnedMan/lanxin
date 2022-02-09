@@ -656,6 +656,9 @@ import ChildPage1 from './pages/c_page1'
         },{
           value: 'm_level',
           label: '多层级'
+        },{
+          value: 'matrix',
+          label: '矩阵'
         }],
         catalogoptions:[],
         styleoptions:[],

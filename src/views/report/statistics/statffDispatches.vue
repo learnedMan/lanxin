@@ -28,7 +28,7 @@
                   collapse-tags
                   clearable/>
             </el-form-item>
-            <el-form-item label="编辑：" prop="authorList">
+            <el-form-item label="编辑:" prop="authorList">
             <el-cascader
                 :show-all-levels = false
                  style="width: 250px"

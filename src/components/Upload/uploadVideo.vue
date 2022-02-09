@@ -43,6 +43,7 @@
       title="视频"
       :visible.sync="dialog.show"
       v-if="dialog.show"
+      append-to-body
     >
       <video height="400" width="600" controls>
         <source :src="dialog.url">

@@ -326,13 +326,17 @@ export default {
                 })
             }else{
                 // 新增
-                addCompanyUserList(this.form).then(response => {
-                    this.$message({
+                addCompanyUserList(this.form).then(res => {
+                    if(res.code == 200){
+                        this.$message({
                         message: '新建成功',
                         type: 'success'
                     });
                     this.dialogFormVisible = false;
                     this.getList();
+                    }else{
+                         this.$message.warning(res.msg);
+                    }
                 })
             }
             })

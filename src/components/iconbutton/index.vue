@@ -39,6 +39,7 @@ import shjd from '@/assets/iconbox/审核进度.png'
 import czjl from '@/assets/iconbox/操作记录.png'
 import bf from '@/assets/iconbox/播放.png'
 import jf from '@/assets/iconbox/积分.png'
+import pl from '@/assets/iconbox/评论.png'
 export default {
   props: {
     label: {
@@ -56,6 +57,7 @@ export default {
       jf,
       shjd,
       czjl,
+      pl,
       ckxq:ckxq,
       ckjson:ckjson,
       dbjmd:dbjmd,
