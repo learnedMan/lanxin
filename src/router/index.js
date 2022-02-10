@@ -885,7 +885,7 @@ export const asyncRoutes = [
         component: () => import('@/views/checkdata/companyManage'),
         permission: 'checkdata.manage.companyManage',
         name: 'CompanyManage',
-        meta: { title: '单位统计' },
+        meta: { title: '单位管理' },
       },
       {
         path: 'companyCheckData',
